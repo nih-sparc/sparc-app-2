@@ -48,8 +48,7 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
-  css: [],
-  modules: ['@element-plus/nuxt', 'nuxt-icons'],
+  modules: ['nuxt-icons'],
   /*vite: {
     css: {
       preprocessorOptions: {
@@ -58,10 +57,10 @@ export default defineNuxtConfig({
         },
       },
     },
-  },*/
+  },
   elementPlus: {
     // example of custom options/styles: https://github.com/element-plus/element-plus-nuxt-starter/blob/main/assets/scss/index.scss
-  },
+  },*/
   runtimeConfig: {
     public: {
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
@@ -82,5 +81,5 @@ export default defineNuxtConfig({
   /*
   ** Global CSS
   */
-  //css: ['@nih-sparc/sparc-design-system-components/src/assets/styles.scss'],
+  css: ['sparc-design-system-components/src/assets/styles.scss'],
 })
