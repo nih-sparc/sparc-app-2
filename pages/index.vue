@@ -186,23 +186,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import 'sparc-design-system-components/src/assets/_variables.scss';
 .page-data {
   background-color: #f8faff;
 }
 .secondary-background {
-  //background-color: $background;
-}
-::v-deep h2 {
-  font-size: 1.5em;
-  font-weight: 500;
-  line-height: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  @media (min-width: 768px) {
-    font-size: 1.5em;
-    margin-bottom: 2rem;
-  }
+  background-color: $background;
 }
 .page-hero-video {
   width: 406px;
@@ -212,6 +201,6 @@ hr {
   margin: 0;
   padding: 0;
   border-top: none;
-  //border-color: $lineColor1;
+  border-color: $lineColor1;
 }
 </style>

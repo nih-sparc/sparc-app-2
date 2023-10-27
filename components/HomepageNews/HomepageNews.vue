@@ -1,6 +1,6 @@
 <template>
   <div class="featured-datasets container pt-32">
-    <h2 class="heading2">
+    <h2 class="heading2 title mt-0 mb-32">
       News &amp; Upcoming Events
     </h2>
     <sparc-card
@@ -226,9 +226,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '../../assets/_variables.scss';
 $tablet-small: 48em;
 $tablet-large: 64em;
+.title {
+  text-align: center;
+}
 .centered {
   display: flex;
   margin: auto;
@@ -237,14 +239,14 @@ h2 a:not(:hover) {
   color: #000;
   text-decoration: none;
 }
-div.sparc-card {
+:deep(div.sparc-card) {
   margin-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
     margin-bottom: 2.5rem;
   }
-  ::v-deep &__content-wrap {
+  .sparc-card__content-wrap {
     flex: 7 0 0rem;
-    &__content {
+    .sparc-card__content-wrap__content {
       @media (min-width: $tablet-small) {
         font-size: 0.9rem;
         line-height: 1.5rem;
@@ -265,7 +267,7 @@ div.sparc-card {
     line-height:1.33333333rem;
     margin:0 0 1rem;
   }
-  &__detail {
+  .sparc-card__detail {
     align-items: baseline;
     display: flex;
     margin-bottom: 1rem;
@@ -277,7 +279,7 @@ div.sparc-card {
       margin-bottom: 0rem;
       margin-right: 2rem;
     }
-    &--location {
+    .sparc-card__detail--location {
       margin-left: 1.25rem;
     }
   }

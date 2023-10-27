@@ -1,18 +1,16 @@
 <template>
   <div class="page-hero">
-    <div class="bx--grid">
-      <div class="container">
-        <div class="bx--row">
-          <div class="bx--col-sm-4 bx--col-md-8 bx--col-lg-11 bx--col-xlg-11 py-16 text-container">
-            <slot />
+    <div class="container">
+      <el-row class="hero-row">
+        <el-col class="text-container body2" :xs="0" :sm="24" :md="17" :lg="17" :xl="17">
+          <slot />
+        </el-col>
+        <el-col :xs="0" :sm="0" :md="7" :lg="7" :xl="7">
+          <div v-if="$slots['image']" class="graphic-container">
+            <slot name="image" />
           </div>
-          <div class="bx--col-sm-0 bx--col-md-0 bx--col-lg-5 bx--col-xlg-5">
-            <div v-if="$slots['image']" class="graphic-container">
-              <slot name="image" />
-            </div>
-          </div>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -30,40 +28,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import 'sparc-design-system-components/src/assets/_variables.scss';
 
 .page-hero {
-  //background: $darkBlue;
+  background: $darkBlue;
   font-size: 1rem;
   line-height: 1.5rem;
   font-weight: 400;
   color: white;
-  h1 {
-    font-size: 2em;
-    line-height: 2.75rem;
-    font-weight: 500;
-    color: white;
+  .el-row {
+    align-items: center;
+    justify-content: center;
   }
-  .bx--grid {
-    padding: 0;
-    .bx--row {
-      align-items: center;
-      margin: 0;
-    }
-  }
-  .graphic-container {
+  :deep(.graphic-container) {
     display: flex;
     img, video {
       height: 100%;
       width: 100%;
     }
   }
-  .text-container {
+  :deep(.text-container) {
     padding-left: 0 !important;
     padding-right: 0 !important;
-    ::v-deep a {
-      color: white;
-      text-decoration: underline;
+    color: white;
+    h1 {
+      font-size: 2em;
+      line-height: 2.75rem;
+      font-weight: 500;
     }
   }
 }

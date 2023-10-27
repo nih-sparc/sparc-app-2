@@ -1,6 +1,6 @@
 <template>
   <div v-loading="isLoadingOrganFacetIds" class="featured-data container py-32">
-    <h2>Find Data by Category</h2>
+    <h2 class="heading2 mt-0">Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
         v-for="(item, index) in featuredData"
@@ -119,13 +119,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '../../assets/_variables.scss';
-
 .featured-data {
   text-align: center;
-}
-h2 {
-  margin-bottom: 1.5625em;
 }
 .data-wrap {
   align-items: center;
@@ -162,13 +157,13 @@ h2 {
     display: block;
     margin-bottom: 8px;
     width: 128px;
-    //border: solid 1px $lightblue;
+    border: solid 1px #c0c4cc;
     height: 128px;
   }
   p {
     font-size: 1em;
     font-weight: 700;
-    //color: $navy;
+    color: #24245b;
     &:hover {
       text-decoration: underline;
     }

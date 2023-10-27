@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import 'sparc-design-system-components/src/assets/_variables.scss';
 .card-container {
   background-color: white;
   height: 100%;
@@ -91,7 +91,7 @@ export default {
 .image-container {
   display: flex;
   aspect-ratio: 1;
-  //border: 1px solid $lineColor2;
+  border: 1px solid $lineColor2;
 }
 .banner-image {
   height: auto;

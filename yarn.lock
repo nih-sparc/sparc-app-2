@@ -5375,10 +5375,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-design-system-components@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-components/-/sparc-design-system-components-0.0.0.tgz#a3e2f5371549397dfd38184fb26870563d67abaf"
-  integrity sha512-cCL6b80HyCrktazahthI+LzpWyHSFSyfYD6dggGg4xwWXVQUMMmKkDd269ThuVCshqaq53UJxknjKuQLUL0q5g==
+sparc-design-system-components@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/sparc-design-system-components/-/sparc-design-system-components-0.0.1.tgz#79ed610e1d31c1566666ea4c7aef75e0662689fa"
+  integrity sha512-gY+Z0fqMAAjUrzQmfJkMcO7hLCYqev+40a4P3E+E9Eqs4ro/xomhKKYNHivnJcfC3KR0qodqwxoMh4awJDUEsw==
   dependencies:
     "@carbon/grid" "^11.20.0"
     element-plus "^2.4.1"
