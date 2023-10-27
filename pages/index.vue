@@ -22,7 +22,7 @@
     <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
-      <!--<projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />-->
+      <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     </div>
     <hr />
     <homepage-news :news="newsAndEvents" />
