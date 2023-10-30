@@ -1,9 +1,9 @@
 <template>
-  <div :class="[scrollingState ? 'layout' : '']">
+  <div :class="[disableScrolling ? 'layout' : '']">
     <!--<sparc-header />-->
     <slot />
     <sparc-footer />
-    <!--<cookie-notice v-if="!hasAcceptedGDPR" />-->
+    <cookie-notice v-if="!hasAcceptedGDPR" />
   </div>
 </template>
 
@@ -11,9 +11,10 @@
 //import sparcHeader from '@/components/header/Header.vue'
 import sparcFooter from '@/components/Footer/Footer.vue'
 //import CookieNotice from '@/components/CookieNotice/CookieNotice.vue'
-import { pathOr, propOr } from 'ramda'
+import { propOr } from 'ramda'
 import DOMPurify from 'isomorphic-dompurify'
 import { useMainStore } from '../store/index.js'
+import { mapState } from 'pinia'
 
 export default {
   components: {
@@ -27,18 +28,7 @@ export default {
     }
   },
   computed: {
-    scrollingState() {
-      return pathOr('', ['state','disableScrolling'], this.store)
-    },
-    hasAcceptedGDPR() {
-      return pathOr('', ['state','hasAcceptedGDPR'], this.store)
-    },
-    hasSeenPortalNotification() {
-      return pathOr('', ['state','hasSeenPortalNotification'], this.store)
-    },
-    portalNotification() {
-      return pathOr('', ['state','portalNotification'], this.store)
-    },
+    ...mapState(useMainStore, ['disableScrolling', 'hasAcceptedGDPR', 'hasSeenPortalNotification', 'portalNotification']),
   },
   mounted() {
     this.showPortalNotification()
