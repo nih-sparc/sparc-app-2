@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :visible="visible"
+    v-model="showModal"
     :show-close="false"
     :append-to-body="true"
     @close="closeDialog"
@@ -56,6 +56,12 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    }
+  },
+
+  computed: {
+    showModal() {
+      return this.visible
     }
   },
 

@@ -21,7 +21,6 @@ export const useMainStore = defineStore('main', {
       services: [],
       resourceCategories: []
     },
-    persist: true,
   }),
   getters: {
 
@@ -40,7 +39,7 @@ export const useMainStore = defineStore('main', {
     setFooterData(value) {
       this.footerData = value
     },
-    setHasAcceptedGdpr(value) {
+    setHasAcceptedGDPR(value) {
       this.hasAcceptedGDPR = value
     },
     setPortalNotification(value) {
@@ -102,10 +101,13 @@ export const useMainStore = defineStore('main', {
         this.setFooterData(response.fields)
         // Load GDPR cookie info
         //const hasAcceptedGDPR = await useNuxtApp().useCookie('GDPR:accepted', { default: () => false })
-        //this.setHasAcceptedGdpr(hasAcceptedGDPR)
+        //this.setHasAcceptedGDPR(hasAcceptedGDPR)
       } catch (e) {
         console.error(e)
       }
     }
+  },
+  persist: {
+    storage: persistedState.localStorage,
   }
 })

@@ -3,10 +3,10 @@
     <div class="container">
       <div class="cookie-notice__content">
         <div class="cookie-notice__copy">
-          <h2>
+          <div class="heading2">
             This website uses cookies to ensure that you get the best
             experience.
-          </h2>
+          </div>
           <p>
             To learn more, please refer to the
             <nuxt-link to="about/policies-and-standards/privacy-policy">
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <el-button @click="closeNotice">
+    <el-button class="btn-close" @click="closeNotice">
       <svg-icon name="icon-remove" height="10" width="10" />
     </el-button>
     <accessibility-dialog
@@ -37,7 +37,7 @@
 <script>
 import AccessibilityDialog from '../AccessibilityDialog/AccessibilityDialog.vue'
 import { useMainStore } from '../store/index.js'
-import { mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 
 export default {
   name: 'CookieNotice',
@@ -55,6 +55,7 @@ export default {
     ...mapState(useMainStore, ['hasAcceptedGDPR']),
   },
   methods: {
+    ...mapActions(useMainStore, ['setHasAcceptedGDPR']),
     /**
      * Close notice and accept the policy
      */
@@ -62,7 +63,8 @@ export default {
       const today = new Date()
       const expirationDate = new Date(today.setDate(today.getDate() + 30))
       //this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
-      //this.$store.dispatch('layouts/default/setHasAcceptedGdpr', true)
+      //this.$store.dispatch('layouts/default/setHasAcceptedGDPR', true)
+      this.setHasAcceptedGDPR(true)
     },
 
     /**
@@ -121,6 +123,11 @@ h2 {
 }
 a {
   font-size: 1em;
+  color: $purple;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 p {
   font-size: 0.875em;
@@ -128,8 +135,8 @@ p {
   margin: 0;
 }
 .btn-close {
-  background: none;
-  border: none;
+  background: none !important;
+  border: none !important;
   cursor: pointer;
   padding: 0.25em;
   position: absolute;

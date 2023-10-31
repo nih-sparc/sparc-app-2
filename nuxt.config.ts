@@ -49,6 +49,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
+    '@element-plus/nuxt',
     'nuxt-icons', 
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
