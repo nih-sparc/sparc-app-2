@@ -2,29 +2,24 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svg-icon class="mr-4" icon="icon-contact" width="18" height="18" />
+        <svgo-icon-contact class="tab3 mr-4 mt-4"/>
         <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
           Contact Us
         </nuxt-link>
-        <svg-icon class="mr-4" icon="icon-help" width="18" height="18" />
+        <svgo-icon-help class="tab3 mr-4 mt-4"/>
         <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
-        <svg-icon
-          name="icon-sign-in"
-          class="login-logo"
-          height="1rem"
-          width="1rem"
-        />
+        <svgo-icon-sign-in class="tab3 mt-4"/>
         <a class="sign-in-link" v-if="!pennsieveUser" @click="showLoginDialog = true">
           Sign in
         </a>
         <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
-          <el-submenu index="user">
+          <el-sub-menu index="user">
             <template :v-slot="title">{{pennsieveUsername}}</template>
             <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
             <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
-          </el-submenu>
+          </el-sub-menu>
         </el-menu>
       </div>
       <div class="header__nav--main">
@@ -33,7 +28,7 @@
             class="nav-main-container__mobile-menu"
             @click="openMobileNav"
           >
-            <svg-icon icon="icon-hamburger" height="25" width="25" />
+            <svgo-icon-hamburger height="25" width="25" />
           </button>
           <div class="logo">
             <nuxt-link :to="{ name: 'index' }">
@@ -61,24 +56,19 @@
               </ul>
               <ul class="mobile-navigation__links">
                 <li>
-                  <svg-icon icon="icon-contact" width="18" height="18" />
+                  <svgo-icon-contact class="tab2"/>
                   <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
-                  <svg-icon icon="icon-help" width="18" height="18" />
+                  <svgo-icon-help class="tab2"/>
                   <a href="https://docs.sparc.science/" target="_blank">
                     Help
                   </a>
                 </li>
                 <li>
-                  <svg-icon
-                    name="icon-sign-in"
-                    class="login-menu-logo"
-                    height="1rem"
-                    width="1rem"
-                  />
+                  <svgo-icon-sign-in class="tab2"/>
                   <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
                     Sign in
                   </a>
@@ -94,23 +84,13 @@
               </ul>
               <div class="mobile-navigation__links--social">
                 <a href="https://twitter.com/sparc_science" target="_blank">
-                  <svg-icon
-                    icon="icon-twitter"
-                    width="30"
-                    height="26"
-                    color="#606266"
-                  />
+                  <svgo-icon-twitter class="social-media-icon pr-16"/>
                 </a>
                 <a
                   href="https://www.youtube.com/results?search_query=sparc+nih"
                   target="_blank"
                 >
-                  <svg-icon
-                    icon="icon-youtube"
-                    width="30"
-                    height="26"
-                    color="#606266"
-                  />
+                <svgo-icon-youtube class="social-media-icon"/>
                 </a>
               </div>
             </div>
@@ -126,7 +106,7 @@
 </template>
 
 <script>
-//import SparcLogo from '../SparcLogo/SparcLogo.vue'
+import SparcLogo from '../SparcLogo/SparcLogo.vue'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { useMainStore } from '../../store/index.js'
 import { mapActions, mapState } from 'pinia'
@@ -168,7 +148,7 @@ const links = [
 export default {
   name: 'SparcHeader',
   components: {
-    //SparcLogo,
+    SparcLogo,
     LoginModal
   },
   mounted: async function() {
@@ -286,6 +266,10 @@ export default {
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components/src/assets/_variables.scss';
+.social-media-icon {
+  color: #606266;
+  font-size: 2rem;
+}
 
 .nav {
   height: 4em;
@@ -565,10 +549,10 @@ export default {
 .sign-in-link:hover {
   cursor: pointer;
 }
-:deep(.el-submenu__title:hover) {
+:deep(.el-sub-menu__title:hover) {
   background-color: inherit !important;
 }
-:deep(.el-submenu__title) {
+:deep(.el-sub-menu__title) {
   line-height: inherit !important;
   height: fit-content !important;
   color: white !important;

@@ -11,6 +11,7 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "nuxt": "^3.7.1",
+    "nuxt-svgo": "^3.5.6",
     "sass": "^1.66.1"
   },
   "dependencies": {
@@ -23,7 +24,6 @@
     "date-fns": "^2.30.0",
     "isomorphic-dompurify": "^1.9.0",
     "marked": "^8.0.1",
-    "nuxt-icons": "^3.2.1",
     "ramda": "^0.29.0",
     "sparc-design-system-components": "^0.0.2",
     "striptags": "^3.2.0",

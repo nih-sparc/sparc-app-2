@@ -25,7 +25,7 @@
       </div>
     </div>
     <el-button class="btn-close" @click="closeNotice">
-      <svg-icon name="icon-remove" height="10" width="10" />
+      <svgo-icon-remove class="body4"/>
     </el-button>
     <accessibility-dialog
       v-model:visible="accessibilityDialogVisible"
@@ -137,10 +137,11 @@ p {
 .btn-close {
   background: none !important;
   border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
   cursor: pointer;
-  padding: 0.25em;
   position: absolute;
-  right: 0.25rem;
+  right: 1rem;
   top: 0.25rem;
 }
 </style>

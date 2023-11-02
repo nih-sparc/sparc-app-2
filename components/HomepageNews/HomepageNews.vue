@@ -55,15 +55,12 @@
         </h3>
         <div class="sparc-card__detail" v-if="eventDate(item) || item.fields.location">
           <template v-if="eventDate(item)">
-            <nuxt-icon name="icon-calendar" height="16" width="16" />
+            <svgo-icon-calendar class="body1"/>
             <p>{{ eventDate(item) }}</p>
           </template>
           <template v-if="item.fields.location">
-            <nuxt-icon
-              class="sparc-card__detail--location"
-              name="icon-map"
-              height="16"
-              width="16"
+            <svgo-icon-map
+              class="body1 sparc-card__detail--location"
             />
             <p>{{ item.fields.location }}</p>
           </template>

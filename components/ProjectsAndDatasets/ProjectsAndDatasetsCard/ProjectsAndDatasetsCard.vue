@@ -42,7 +42,7 @@
           >
             <el-button class="secondary mt-16">
               {{ buttonText }}
-              <nuxt-icon name="icon-open" height="20" width="20" />
+              <svgo-icon-open class="tab1" />
             </el-button>
           </a>
         </template>

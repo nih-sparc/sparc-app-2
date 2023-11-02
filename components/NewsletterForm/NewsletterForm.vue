@@ -19,7 +19,7 @@
               name="subscribe"
               class="secondary"
             >
-              Sign Up <nuxt-icon name="icon-open" height="16" width="16" />
+              Sign Up <svgo-icon-open class="tab1" />
             </el-button>
           </div>
         </div>

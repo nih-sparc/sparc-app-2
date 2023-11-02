@@ -44,7 +44,8 @@ import StayConnected from '@/components/StayConnected/StayConnected.vue'
 //import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
-//import { mapGetters } from 'vuex'
+import { useMainStore } from '../store/index.js'
+import { mapState } from 'pinia'
 import { pathOr } from 'ramda'
 
 export default {
@@ -99,7 +100,7 @@ export default {
   },
 
   computed: {
-    //...mapGetters('user', ['cognitoUserToken', 'profileComplete']),
+    ...mapState(useMainStore, ['profileComplete', 'cognitoUserToken']),
   },
 
   beforeMount() {

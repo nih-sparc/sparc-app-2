@@ -16,38 +16,23 @@
             </div>
             <div class="footer__info--social">
               <a href="https://twitter.com/sparc_science" target="_blank">
-                <svg-icon
-                  icon="icon-twitter"
-                  color="#606266"
-                  height="32px"
-                  width="32px"
-                />
+                <svgo-icon-twitter class="social-media-icon pr-16"/>
               </a>
               <a
                 href="https://www.linkedin.com/groups/12694019"
                 target="_blank"
               >
-                <svg-icon
-                  icon="icon-linkedin"
-                  color="#606266"
-                  height="32px"
-                  width="32px"
-                />
+                <svgo-icon-linkedin class="social-media-icon pr-16"/>
               </a>
               <a
                 href="https://www.youtube.com/channel/UCCmUx4tOSlTAwlUrjSGz2mw"
                 target="_blank"
               >
-                <svg-icon
-                  icon="icon-youtube"
-                  color="#606266"
-                  height="32px"
-                  width="32px"
-                />
+                <svgo-icon-youtube class="social-media-icon"/>
               </a>
             </div>
             <div class="footer__info--re3data">
-              <object type="image/svg+xml" data="/images/100013719.svg">
+              <object type="image/svg+xml" data="../../static/images/100013719.svg">
                 <img src="../../static/images/100013719.svg" alt="re3data badge"/>
               </object>
             </div>
@@ -113,14 +98,12 @@
 <script>
 import { mapState } from 'pinia'
 import FooterLink from './FooterLink.vue'
-//import SparcLogo from '@/components/SparcLogo/SparcLogo.vue'
 import { useMainStore } from '../store/index.js'
 
 export default {
   name: 'SparcFooter',
   components: {
     FooterLink,
-    //SparcLogo
   },
   computed: {
     ...mapState(useMainStore, ['footerData'])
@@ -136,6 +119,11 @@ export default {
   flex-direction: row;
   padding: 3rem 1rem;
   background-color: #F8FAFF;
+
+  .social-media-icon {
+    color: #606266;
+    font-size: 2rem;
+  }
 
   &__info {
     &--logo {
