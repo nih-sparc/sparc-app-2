@@ -1,6 +1,6 @@
 <template>
   <div :class="[disableScrolling ? 'layout' : '']">
-    <!--<sparc-header />-->
+    <sparc-header />
     <slot />
     <sparc-footer />
     <cookie-notice v-if="!hasAcceptedGDPR" />
@@ -8,9 +8,9 @@
 </template>
 
 <script>
-//import sparcHeader from '@/components/header/Header.vue'
-import sparcFooter from '@/components/Footer/Footer.vue'
-//import CookieNotice from '@/components/CookieNotice/CookieNotice.vue'
+import SparcHeader from '@/components/Header/Header.vue'
+import SparcFooter from '@/components/Footer/Footer.vue'
+import CookieNotice from '@/components/CookieNotice/CookieNotice.vue'
 import { propOr } from 'ramda'
 import DOMPurify from 'isomorphic-dompurify'
 import { useMainStore } from '../store/index.js'
@@ -18,9 +18,9 @@ import { mapState } from 'pinia'
 
 export default {
   components: {
-    //CookieNotice,
-    //sparcHeader,
-    sparcFooter
+    CookieNotice,
+    SparcHeader,
+    SparcFooter
   },
   data() {
     return {

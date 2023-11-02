@@ -48,7 +48,7 @@
             </div>
             <div class="footer__info--re3data">
               <object type="image/svg+xml" data="/images/100013719.svg">
-                <img src="/images/100013719.svg" alt="re3data badge"/>
+                <img src="../../static/images/100013719.svg" alt="re3data badge"/>
               </object>
             </div>
           </div>
@@ -113,14 +113,14 @@
 <script>
 import { mapState } from 'pinia'
 import FooterLink from './FooterLink.vue'
-import SparcLogo from '@/components/SparcLogo/SparcLogo.vue'
+//import SparcLogo from '@/components/SparcLogo/SparcLogo.vue'
 import { useMainStore } from '../store/index.js'
 
 export default {
   name: 'SparcFooter',
   components: {
     FooterLink,
-    SparcLogo
+    //SparcLogo
   },
   computed: {
     ...mapState(useMainStore, ['footerData'])

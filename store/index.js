@@ -23,7 +23,45 @@ export const useMainStore = defineStore('main', {
     },
   }),
   getters: {
-
+    pennsieveUsername (state) {
+      const firstName = pathOr('', ['firstName'], state.pennsieveUser)
+      const lastName = pathOr('', ['lastName'], getters.pennsieveUser)
+      const abbrvLastName = lastName.length === 1 ? lastName[0] : `${lastName[0]}.`
+      return `${firstName} ${abbrvLastName}`
+    },
+    firstName (state) {
+      return pathOr('', ['firstName'], state.pennsieveUser)
+    },
+    lastName (state) {
+      return pathOr('', ['lastName'], state.pennsieveUser)
+    },
+    cognitoUsername (state) {
+      return pathOr('', ['username'], state.cognitoUser)
+    },
+    cognitoUserToken (state) {
+      return pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], state.cognitoUser)
+    },
+    cognitoUserAttributes (state) {
+      return pathOr({}, ['attributes'], state.cognitoUser)
+    },
+    pennsieveUserIntId (state) {
+      return pathOr('', ['intId'], state.pennsieveUser)
+    },
+    profileColor (state) {
+      return pathOr('', ['color'], state.pennsieveUser)
+    },
+    profileUrl (state) {
+      return pathOr('', ['url'], state.pennsieveUser)
+    },
+    profilePreferredOrganization (state) {
+      return pathOr('', ['preferredOrganization'], state.pennsieveUser)
+    },
+    profileEmail (state) {
+      return pathOr('', ['email'], state.pennsieveUser)
+    },
+    profileComplete (state) {
+      return helperMethods.isProfileComplete(state.pennsieveUser)
+    }
   },
   actions: {
     async init() {
@@ -105,9 +143,46 @@ export const useMainStore = defineStore('main', {
       } catch (e) {
         console.error(e)
       }
-    }
+    },
+    setCognitoUser(value) {
+      this.cognitoUser = value
+    },
+    setPennsieveUser(value) {
+      this.pennsieveUser = value
+    },
+    async login(providerName){
+      await auth.signIn(providerName)
+      await this.fetchUser()
+    },
+    async logout(){
+      //this.$cookies.set('user-token', null)
+      await auth.signOut()
+      await this.fetchUser()
+    },
+    async fetchUser(){
+      const user = await auth.user()
+      const profile = await auth.userProfile()
+      const token = pathOr(null, ['signInUserSession', 'accessToken', 'jwtToken'], user)
+      const unixExpirationDate = pathOr('', ['signInUserSession', 'accessToken', 'payload', 'exp'], user)
+      const expirationDate = unixExpirationDate ? new Date(unixExpirationDate * 1000) : null
+      //this.$cookies.set('profile-complete', helperMethods.isProfileComplete(profile), expirationDate)
+      //this.$cookies.set('user-token', token, expirationDate)
+      this.setCognitoUser(user)
+      this.setPennsieveUser(profile)
+    },
   },
   persist: {
     storage: persistedState.localStorage,
   }
 })
+
+const helperMethods = {
+  isProfileComplete(profile) {
+    if (profile) {
+      return profile.email.split("@")[1] !== "pennsieve-nonexistent.email" && 
+      profile.firstName.toLowerCase() !== "orcid" &&
+      profile.lastName.toLowerCase() !== "login"
+    }
+    return false
+  }
+}
