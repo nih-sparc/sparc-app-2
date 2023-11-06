@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
-    '@element-plus/nuxt',
+    'sparc-design-system-nuxt3-module',
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
@@ -86,5 +86,5 @@ export default defineNuxtConfig({
   /*
   ** Global CSS
   */
-  css: ['sparc-design-system-components/src/assets/styles.scss'],
+  css: [],
 })

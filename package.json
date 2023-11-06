@@ -1,6 +1,6 @@
 {
   "name": "nuxt-app",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -15,7 +15,6 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@element-plus/nuxt": "^1.0.6",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
     "algoliasearch": "^4.19.1",
@@ -25,7 +24,7 @@
     "isomorphic-dompurify": "^1.9.0",
     "marked": "^8.0.1",
     "ramda": "^0.29.0",
-    "sparc-design-system-components": "^0.0.2",
+    "sparc-design-system-nuxt3-module": "^0.1.0-alpha.4",
     "striptags": "^3.2.0",
     "vue-clipboard2": "^0.3.3"
   }

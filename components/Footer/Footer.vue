@@ -112,7 +112,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'sparc-design-system-components/src/assets/_variables.scss';
+@import '../../assets/_variables';
 
 .footer {
   display: flex;
@@ -198,5 +198,13 @@ export default {
       }
     }
   }
+}
+
+.footer__info--logo {
+  img {
+    height: 4rem;
+    width: 8rem;
+  }
+  
 }
 </style>

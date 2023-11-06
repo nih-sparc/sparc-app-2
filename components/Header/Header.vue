@@ -106,7 +106,6 @@
 </template>
 
 <script>
-import SparcLogo from '../SparcLogo/SparcLogo.vue'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { useMainStore } from '../../store/index.js'
 import { mapActions, mapState } from 'pinia'
@@ -148,7 +147,6 @@ const links = [
 export default {
   name: 'SparcHeader',
   components: {
-    SparcLogo,
     LoginModal
   },
   mounted: async function() {
@@ -265,7 +263,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import 'sparc-design-system-components/src/assets/_variables.scss';
+@import '../../assets/_variables';
 .social-media-icon {
   color: #606266;
   font-size: 2rem;

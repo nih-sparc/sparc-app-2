@@ -85,7 +85,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'sparc-design-system-components/src/assets/_variables.scss';
+@import '../../assets/_variables';
 .cookie-notice {
   background: #fff;
   bottom: 0;

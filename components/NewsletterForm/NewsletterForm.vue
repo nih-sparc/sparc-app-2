@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '../../assets/_variables.scss';
+@import '../../assets/_variables';
 
 form,
 .mc-field-group {

@@ -187,7 +187,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'sparc-design-system-components/src/assets/_variables.scss';
+@import '../assets/_variables';
 .page-data {
   background-color: #f8faff;
 }

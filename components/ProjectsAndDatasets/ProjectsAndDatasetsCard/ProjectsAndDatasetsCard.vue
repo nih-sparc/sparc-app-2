@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import 'sparc-design-system-components/src/assets/_variables.scss';
+@import '../../../assets/_variables';
 .card-container {
   background-color: white;
   height: 100%;
