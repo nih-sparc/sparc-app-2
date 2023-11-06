@@ -24,7 +24,7 @@
     "isomorphic-dompurify": "^1.9.0",
     "marked": "^8.0.1",
     "ramda": "^0.29.0",
-    "sparc-design-system-nuxt3-module": "^0.1.0-alpha.4",
+    "sparc-design-system-nuxt3-module": "^0.1.0-alpha.5",
     "striptags": "^3.2.0",
     "vue-clipboard2": "^0.3.3"
   }

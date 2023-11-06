@@ -47,11 +47,11 @@ label {
   font-size: 1.5rem;
 }
 .input-text {
-  //border: 1px solid $medium-gray;
+  border: 1px solid $lineColor1;
   border-radius: 4px;
   padding: 0.5rem 1rem;
   &:focus {
-    //border-color: $app-primary-color;
+    border-color: $purple;
   }
 }
 </style>

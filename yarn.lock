@@ -5064,7 +5064,7 @@ radix3@^1.1.0:
   resolved "https://registry.yarnpkg.com/radix3/-/radix3-1.1.0.tgz#9745df67a49c522e94a33d0a93cf743f104b6e0d"
   integrity sha512-pNsHDxbGORSvuSScqNJ+3Km6QAVqk8CfsCBIEoDgpqLrkD2f3QM4I7d1ozJJ172OmIcoUcerZaNWqtLkRXTV3A==
 
-ramda@^0.29.0:
+ramda@^0.29.0, ramda@^0.29.1:
   version "0.29.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.29.1.tgz#408a6165b9555b7ba2fc62555804b6c5a2eca196"
   integrity sha512-OfxIeWzd4xdUNxlWhgFazxsA/nl3mS4/jGZI5n00uWOoSSFRhC1b6gl6xvmzUamgmqELraWp0J/qqVlXYPDPyA==
@@ -5475,14 +5475,15 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-design-system-nuxt3-module@^0.1.0-alpha.4:
-  version "0.1.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-nuxt3-module/-/sparc-design-system-nuxt3-module-0.1.0-alpha.4.tgz#eeb54db18fdb9c144582911d80df511a19b56e3e"
-  integrity sha512-Kwo0SojFaV7miq340oGsUuqEgpx3dxZKPA8JAXs8evbu4iIPLcYWeceZSvtmona2LE9BXmiEipvkuQSRdM2MEw==
+sparc-design-system-nuxt3-module@^0.1.0-alpha.5:
+  version "0.1.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/sparc-design-system-nuxt3-module/-/sparc-design-system-nuxt3-module-0.1.0-alpha.5.tgz#17310dc7c088c3cc0a914a02f69e8a948479d2b1"
+  integrity sha512-pWUWmhJlMoBZ77BTKZBqATf7ru+yN4QeusEoYH3czSTNHkWVJF9vZKLDwetvAcmxVb4M/rrJ8z5+rwvXKL1n2A==
   dependencies:
     "@element-plus/nuxt" "^1.0.6"
     "@nuxt/kit" "^3.8.0"
     element-plus "^2.4.2"
+    ramda "^0.29.1"
 
 spdx-correct@^3.0.0:
   version "3.2.0"
