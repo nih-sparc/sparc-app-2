@@ -44,13 +44,13 @@ export default {
 <style lang="scss" scoped>
 $tablet-small: 48em;
 $tablet-large: 64em;
+.sparc-card--image-right {
+  :slotted(.sparc-card__image-container) {
+    order: 2;
+  }
+}
 .sparc-card {
   display: flex;
-  :slotted(.sparc-card--image-right) {
-    .sparc-card__image-container {
-      order: 2;
-    }
-  }
   :slotted(.sparc-card__image-container) {
     display: flex;
     visibility: visible;
@@ -87,9 +87,6 @@ $tablet-large: 64em;
         &:focus {
           text-decoration: underline;
         }
-      }
-      p {
-        max-width: 80%;
       }
       @media (min-width: $tablet-small) and (max-width: $tablet-large) {
         font-size: 1em;

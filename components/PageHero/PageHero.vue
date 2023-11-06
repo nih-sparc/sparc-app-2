@@ -2,7 +2,7 @@
   <div class="page-hero">
     <div class="container">
       <el-row class="hero-row">
-        <el-col class="text-container body2" :xs="0" :sm="24" :md="17" :lg="17" :xl="17">
+        <el-col class="text-container" :xs="0" :sm="24" :md="17" :lg="17" :xl="17">
           <slot />
         </el-col>
         <el-col :xs="0" :sm="0" :md="7" :lg="7" :xl="7">
