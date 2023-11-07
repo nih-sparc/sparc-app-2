@@ -1,6 +1,6 @@
 <template>
   <div class="featured-datasets container pt-32">
-    <h2 class="heading2">
+    <h2 class="heading2 title mt-0 mb-32">
       News &amp; Upcoming Events
     </h2>
     <sparc-card
@@ -39,14 +39,13 @@
       </template>
       <div>
         <h3>
-          <nuxt-link
+          <!--<nuxt-link
             v-if="item.fields.requiresADetailsPage"
             :to="nuxtLink(item)"
           >
             {{ item.fields.title }}
-          </nuxt-link>
+          </nuxt-link>-->
           <a
-            v-else
             :href="item.fields.url"
             :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
           >
@@ -55,15 +54,12 @@
         </h3>
         <div class="sparc-card__detail" v-if="eventDate(item) || item.fields.location">
           <template v-if="eventDate(item)">
-            <nuxt-icon name="icon-calendar" height="16" width="16" />
+            <svgo-icon-calendar class="body1"/>
             <p>{{ eventDate(item) }}</p>
           </template>
           <template v-if="item.fields.location">
-            <nuxt-icon
-              class="sparc-card__detail--location"
-              name="icon-map"
-              height="16"
-              width="16"
+            <svgo-icon-map
+              class="body1 sparc-card__detail--location"
             />
             <p>{{ item.fields.location }}</p>
           </template>
@@ -72,13 +68,12 @@
         <!-- marked will sanitize the HTML injected -->
         <div class="markdown-text" v-html="parseMarkdown(item.fields.summary)" />
       </div>
-      <nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
+      <!--<nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
         <el-button size="default" class="secondary">
           Learn More
         </el-button>
-      </nuxt-link>
+      </nuxt-link>-->
       <a
-        v-else
         :href="item.fields.url"
         :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
       >
@@ -226,9 +221,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '../../assets/_variables.scss';
 $tablet-small: 48em;
 $tablet-large: 64em;
+.title {
+  text-align: center;
+}
 .centered {
   display: flex;
   margin: auto;
@@ -237,14 +234,14 @@ h2 a:not(:hover) {
   color: #000;
   text-decoration: none;
 }
-div.sparc-card {
+:deep(div.sparc-card) {
   margin-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
     margin-bottom: 2.5rem;
   }
-  ::v-deep &__content-wrap {
+  .sparc-card__content-wrap {
     flex: 7 0 0rem;
-    &__content {
+    .sparc-card__content-wrap__content {
       @media (min-width: $tablet-small) {
         font-size: 0.9rem;
         line-height: 1.5rem;
@@ -265,7 +262,7 @@ div.sparc-card {
     line-height:1.33333333rem;
     margin:0 0 1rem;
   }
-  &__detail {
+  .sparc-card__detail {
     align-items: baseline;
     display: flex;
     margin-bottom: 1rem;
@@ -277,7 +274,7 @@ div.sparc-card {
       margin-bottom: 0rem;
       margin-right: 2rem;
     }
-    &--location {
+    .sparc-card__detail--location {
       margin-left: 1.25rem;
     }
   }
@@ -285,5 +282,8 @@ div.sparc-card {
 .view-all-link {
   margin-top: auto;
   text-decoration: underline !important;
+}
+svg {
+  color: white;
 }
 </style>

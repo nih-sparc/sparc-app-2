@@ -48,7 +48,12 @@ export default defineNuxtConfig({
     }
   },
   devtools: { enabled: true },
-  modules: ['nuxt-icons'],
+  modules: [
+    'sparc-design-system-nuxt3-module',
+    'nuxt-svgo',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt'
+  ],
   /*vite: {
     css: {
       preprocessorOptions: {
@@ -57,13 +62,13 @@ export default defineNuxtConfig({
         },
       },
     },
-  },
-  elementPlus: {
-    // example of custom options/styles: https://github.com/element-plus/element-plus-nuxt-starter/blob/main/assets/scss/index.scss
   },*/
   runtimeConfig: {
     public: {
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
+      ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
+      ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
+      ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
@@ -81,5 +86,5 @@ export default defineNuxtConfig({
   /*
   ** Global CSS
   */
-  css: ['sparc-design-system-components/src/assets/styles.scss'],
+  css: [],
 })

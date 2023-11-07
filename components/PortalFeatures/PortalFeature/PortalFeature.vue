@@ -62,9 +62,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import '../../../assets/_variables';
 .feature-container {
-  //border: 2px solid $grey;
+  border: 2px solid $grey;
   border-radius: .75rem;
   display: flex;
   flex-direction: column;

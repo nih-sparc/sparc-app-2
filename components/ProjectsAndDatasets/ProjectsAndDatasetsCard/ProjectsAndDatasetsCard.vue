@@ -42,7 +42,7 @@
           >
             <el-button class="secondary mt-16">
               {{ buttonText }}
-              <nuxt-icon name="icon-open" height="20" width="20" />
+              <svgo-icon-open class="tab1" />
             </el-button>
           </a>
         </template>
@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import '../../../assets/_variables';
 .card-container {
   background-color: white;
   height: 100%;
@@ -91,7 +91,7 @@ export default {
 .image-container {
   display: flex;
   aspect-ratio: 1;
-  //border: 1px solid $lineColor2;
+  border: 1px solid $lineColor2;
 }
 .banner-image {
   height: auto;

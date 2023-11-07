@@ -1,6 +1,6 @@
 <template>
   <div class="container py-32">
-    <h2 class="heading2 subheader mb-32">Stay Connected</h2>
+    <h2 class="heading2 subheader mb-32 mt-0">Stay Connected</h2>
     <div class="subpage py-16">
       <el-row :gutter="32">
         <el-col :xs="24" :sm="12" class="newsletter-wrap">
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import '../../assets/_variables';
 .newsletter-wrap {
   font-size: 1.125rem;
   line-height: 1.5rem;
@@ -43,7 +43,7 @@ export default {
     margin-bottom: 0;
   }
   p {
-    //color: $darkBlue
+    color: $darkBlue
   }
 }
 .subpage {
@@ -53,7 +53,7 @@ export default {
   text-align: center;
 }
 .office-hours-column {
-  //border-left: 2px solid $lineColor2;
+  border-left: 2px solid $lineColor2;
   @media screen and (max-width: 767px) {
     border-left: none;
   }

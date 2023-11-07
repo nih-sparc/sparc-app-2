@@ -19,7 +19,7 @@
               name="subscribe"
               class="secondary"
             >
-              Sign Up <nuxt-icon name="icon-open" height="16" width="16" />
+              Sign Up <svgo-icon-open class="tab1" />
             </el-button>
           </div>
         </div>
@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '../../assets/_variables.scss';
+@import '../../assets/_variables';
 
 form,
 .mc-field-group {
@@ -47,11 +47,11 @@ label {
   font-size: 1.5rem;
 }
 .input-text {
-  //border: 1px solid $medium-gray;
+  border: 1px solid $lineColor1;
   border-radius: 4px;
   padding: 0.5rem 1rem;
   &:focus {
-    //border-color: $app-primary-color;
+    border-color: $purple;
   }
 }
 </style>

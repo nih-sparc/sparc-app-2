@@ -22,7 +22,7 @@
     <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
-      <!--<projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />-->
+      <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     </div>
     <hr />
     <homepage-news :news="newsAndEvents" />
@@ -44,7 +44,8 @@ import StayConnected from '@/components/StayConnected/StayConnected.vue'
 //import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
-//import { mapGetters } from 'vuex'
+import { useMainStore } from '../store/index.js'
+import { mapState } from 'pinia'
 import { pathOr } from 'ramda'
 
 export default {
@@ -99,7 +100,7 @@ export default {
   },
 
   computed: {
-    //...mapGetters('user', ['cognitoUserToken', 'profileComplete']),
+    ...mapState(useMainStore, ['profileComplete', 'cognitoUserToken']),
   },
 
   beforeMount() {
@@ -186,23 +187,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//@import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+@import '../assets/_variables';
 .page-data {
   background-color: #f8faff;
 }
 .secondary-background {
-  //background-color: $background;
-}
-::v-deep h2 {
-  font-size: 1.5em;
-  font-weight: 500;
-  line-height: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-  @media (min-width: 768px) {
-    font-size: 1.5em;
-    margin-bottom: 2rem;
-  }
+  background-color: $background;
 }
 .page-hero-video {
   width: 406px;
@@ -212,6 +202,6 @@ hr {
   margin: 0;
   padding: 0;
   border-top: none;
-  //border-color: $lineColor1;
+  border-color: $lineColor1;
 }
 </style>

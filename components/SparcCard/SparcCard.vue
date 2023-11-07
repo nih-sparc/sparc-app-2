@@ -44,14 +44,14 @@ export default {
 <style lang="scss" scoped>
 $tablet-small: 48em;
 $tablet-large: 64em;
+.sparc-card--image-right {
+  :slotted(.sparc-card__image-container) {
+    order: 2;
+  }
+}
 .sparc-card {
   display: flex;
-  &--image-right {
-    .sparc-card__image-container {
-      order: 2;
-    }
-  }
-  &__image-container {
+  :slotted(.sparc-card__image-container) {
     display: flex;
     visibility: visible;
     background-color: white;
@@ -60,28 +60,34 @@ $tablet-large: 64em;
       display: none;
     }
   }
-  &__image {
+  :slotted(.sparc-card__image) {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  &__content-wrap {
+  .sparc-card__content-wrap {
     display: flex;
     flex: 1;
     background: #24245b;
   }
-  &__image,
-  &__content-wrap {
+  .sparc-card__image,.sparc-card__content-wrap {
     flex: 1 0 0em; // Unit required for IE11
-    &__content {
+    :deep(.sparc-card__content-wrap__content) {
       color: #fff;
       font-size: 0.75em;
       line-height: 1.3125rem;
       padding: 1em;
-
       display: flex;
       flex-direction: column;
-
+      a {
+        font-weight: 300;
+        color: #fff;
+        text-decoration: none;
+        &:hover,
+        &:focus {
+          text-decoration: underline;
+        }
+      }
       @media (min-width: $tablet-small) and (max-width: $tablet-large) {
         font-size: 1em;
         line-height: 2rem;
@@ -91,19 +97,6 @@ $tablet-large: 64em;
         font-size: 1.125em;
         line-height: 2rem;
         padding: 2rem 2.5rem;
-      }
-
-      a {
-        color: #fff;
-        text-decoration: none;
-        &:hover,
-        &:focus {
-          text-decoration: underline;
-        }
-      }
-
-      p {
-        max-width: 80%;
       }
     }
   }

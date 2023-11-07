@@ -1,6 +1,6 @@
 {
   "name": "nuxt-app",
-  "private": true,
+  "private": false,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -11,20 +11,21 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "nuxt": "^3.7.1",
+    "nuxt-svgo": "^3.5.6",
     "sass": "^1.66.1"
   },
   "dependencies": {
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
+    "@pinia/nuxt": "^0.5.1",
     "algoliasearch": "^4.19.1",
     "axios": "^1.5.0",
     "contentful": "^10.5.1",
     "date-fns": "^2.30.0",
-    "isomorphic-dompurify": "^1.8.0",
+    "isomorphic-dompurify": "^1.9.0",
     "marked": "^8.0.1",
-    "nuxt-icons": "^3.2.1",
     "ramda": "^0.29.0",
-    "sparc-design-system-components": "^0.0.0",
+    "sparc-design-system-nuxt3-module": "^0.1.0-alpha.5",
     "striptags": "^3.2.0",
-    "vue-clipboard2": "^0.3.3",
-    "vuex": "^4.1.0"
+    "vue-clipboard2": "^0.3.3"
   }
 }
