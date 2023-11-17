@@ -839,13 +839,11 @@ export default {
 .facet-menu {
   margin-top: 2em;
 }
-:deep {
-  .el-table td {
-    vertical-align: top;
-  }
-  .el-table .cell {
-    word-break: normal;
-  }
+:deep(.el-table td) {
+  vertical-align: top;
+}
+:deep(.el-table .cell) {
+  word-break: normal;
 }
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
