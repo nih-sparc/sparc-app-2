@@ -36,7 +36,7 @@
         />
       </div>
     </div>
-    <!--<div class="container">
+    <div class="container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -56,7 +56,7 @@
                   ref="datasetFacetMenu"
                 />
               </el-col>
-              <el-col
+              <!--<el-col
                 v-if="searchType.type === 'projects'"
                 class="facet-menu"
                 :sm="24"
@@ -70,7 +70,7 @@
                   @hook:mounted="facetMenuMounted"
                   ref="projectsFacetMenu"
                 />
-              </el-col>
+              </el-col>-->
               <el-col
                 :sm="searchColSpan('sm')"
                 :md="searchColSpan('md')"
@@ -79,26 +79,26 @@
                 <div class="search-heading">
                   <p v-show="!isLoadingSearch && searchData.items.length">
                     {{ searchData.total }} Results | Showing
-                    <pagination-menu
+                    <!--<pagination-menu
                       :page-size="searchData.limit"
                       @update-page-size="updateDataSearchLimit"
-                    />
+                    />-->
                   </p>
                   <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
                     Sort
-                    <sort-menu
+                    <!--<sort-menu
                       :options="algoliaSortOptions"
                       :selected-option="selectedAlgoliaSortOption"
                       @update-selected-option="onAlgoliaSortOptionChange"
-                    />
+                    />-->
                   </span>
                   <span v-else-if="searchType.type == 'projects'" class="label1">
                     Sort
-                    <sort-menu
+                    <!--<sort-menu
                       :options="projectsSortOptions"
                       :selected-option="selectedProjectsSortOption"
                       @update-selected-option="onProjectsSortOptionChange"
-                    />
+                    />-->
                   </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
@@ -106,14 +106,12 @@
                     Sorry, the search engine has encountered an unexpected
                     error, please try again later.
                   </p>
-                  <component
-                    v-else
-                    :is="searchResultsComponent"
-                    :table-data="tableData"
-                    :title-column-width="titleColumnWidth"
+                  <dataset-search-results
+                    v-else-if="searchType.type !== 'projects'"
+                    :tableData="tableData"
                   />
 
-                  <div v-if="searchHasAltResults" class="mt-24">
+                  <!--<div v-if="searchHasAltResults" class="mt-24">
                     <template v-if="searchData.total === 0">
                       No results were found for <strong>{{ searchType.label }}</strong>.
                     </template>
@@ -138,9 +136,9 @@
                         - {{ humanReadableDataTypesLookup[dataType] }}
                       </dd>
                     </template>
-                  </div>
+                  </div>-->
                 </div>
-                <div class="search-heading">
+                <!--<div class="search-heading">
                   <p v-if="!isLoadingSearch && searchData.items.length">
                     {{ searchHeading }} | Showing
                     <pagination-menu
@@ -155,13 +153,13 @@
                     :total-count="searchData.total"
                     @select-page="onPaginationPageChange"
                   />
-                </div>
+                </div>-->
               </el-col>
             </client-only>
           </el-row>
         </el-col>
       </el-row>
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -180,22 +178,24 @@ import {
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
-/*import SortMenu from '@/components/SortMenu/SortMenu.vue'
-import DatasetFacetMenu from '~/components/FacetMenu/DatasetFacetMenu.vue'
-import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-import { facetPropPathMapping, getAlgoliaFacets, HIGHLIGHT_HTML_TAG } from './utils'
+import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
+import { facetPropPathMapping, getAlgoliaFacets } from '../../utils/algolia'
+import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
+import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+//import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
-const ProjectSearchResults = () =>
-  import('@/components/SearchResults/ProjectSearchResults.vue')
-const DatasetSearchResults = () =>
-  import('@/components/SearchResults/DatasetSearchResults.vue')
+//import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
+
+
+/*const ProjectSearchResults = () =>
+  import('@/components/SearchResults/ProjectSearchResults.vue')*/
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  projects: ProjectSearchResults,
+  //projects: ProjectSearchResults,
   simulation: DatasetSearchResults,
   model: DatasetSearchResults
-}*/
+}
 
 const searchTypes = [
   {
@@ -220,29 +220,6 @@ const searchTypes = [
   }
 ]
 
-const algoliaSortOptions = [
-  {
-    label: 'Published (desc)',
-    id: 'newest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
-  },
-  {
-    label: 'Published (asc)',
-    id: 'oldest',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
-  },
-  {
-    label: 'A-Z',
-    id: 'alphabatical',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z
-  },
-  {
-    label: 'Z-A',
-    id: 'reverseAlphabatical',
-    algoliaIndexName: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A
-  },
-]
-
 const projectsSortOptions = [
   {
     label: 'A-Z',
@@ -256,12 +233,6 @@ const projectsSortOptions = [
   },
 ]
 
-const searchData = {
-  limit: 10,
-  skip: 0,
-  items: [],
-}
-
 export default {
   name: 'DataPage',
 
@@ -269,12 +240,47 @@ export default {
     Breadcrumb,
     PageHero,
     SearchControlsContentful,
-    /*DatasetFacetMenu,
-    ProjectsFacetMenu,
+    DatasetFacetMenu,
+    DatasetSearchResults
+    /*ProjectsFacetMenu,
     SortMenu*/
   },
 
   mixins: [],
+
+  setup() {
+    const config = useRuntimeConfig()
+    const { $algoliaClient } = useNuxtApp()
+    const algoliaSortOptions = [
+      {
+        label: 'Published (desc)',
+        id: 'newest',
+        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+      },
+      {
+        label: 'Published (asc)',
+        id: 'oldest',
+        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+      },
+      {
+        label: 'A-Z',
+        id: 'alphabatical',
+        algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_A_Z
+      },
+      {
+        label: 'Z-A',
+        id: 'reverseAlphabatical',
+        algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
+      },
+    ]
+    const selectedAlgoliaSortOption = algoliaSortOptions[0]
+    const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
+    return {
+      algoliaSortOptions,
+      selectedAlgoliaSortOption,
+      algoliaIndex
+    }
+  },
 
   async asyncData() {
     /*let projectsAnatomicalFocusFacets = []
@@ -335,12 +341,15 @@ export default {
 
   data: () => {
     return {
-      /*algoliaIndex: algoliaClient.initIndex(process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC),
-      selectedAlgoliaSortOption: algoliaSortOptions[0],
-      algoliaSortOptions,
       selectedProjectsSortOption: projectsSortOptions[0],
       projectsSortOptions,
       searchQuery: '',
+      searchData: {
+        limit: 10,
+        skip: 0,
+        items: [],
+        total: 0
+      },
       facets: [],
       dataTypes: ['dataset', 'simulation', 'model', 'projects'],
       humanReadableDataTypesLookup: {
@@ -355,11 +364,10 @@ export default {
       },
       searchHasAltResults: false,
       visibleFacets: {},
-      searchData: clone(searchData),
       isLoadingSearch: false,
       searchFailed: false,
       isSearchMapVisible: false,
-      latestSearchTerm: '',*/
+      latestSearchTerm: '',
       searchTypes,
       breadcrumb: [
         {
@@ -391,7 +399,7 @@ export default {
       return defaultTo(head(this.searchTypes), searchType)
     },
 
-    /*tableData: function() {
+    tableData: function() {
       return propOr([], 'items', this.searchData)
     },
 
@@ -422,16 +430,21 @@ export default {
 
     isMobile: function() {
       return this.windowWidth <= 500
-    }*/
+    }
   },
 
-  /*watch: {
+  watch: {
     '$route.query.type': function(val) {
       if (!this.$route.query.type) {
         const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
         this.$router.replace({ query: { type: firstTabType } })
       } else {
-        this.searchData = clone(searchData)
+        this.searchData = {
+          limit: 10,
+          skip: 0,
+          items: [],
+          total: 0
+        }
         this.fetchResults()
       }
     },
@@ -445,7 +458,7 @@ export default {
     },
 
     selectedAlgoliaSortOption: function(option) {
-      this.algoliaIndex = algoliaClient.initIndex(option.algoliaIndexName)
+      this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
     }
   },
 
@@ -458,8 +471,8 @@ export default {
       this.$router.replace({ query: { type: firstTabType } })
     } else {
       const queryParams = {
-        skip: Number(this.$route.query.skip || searchData.skip),
-        limit: Number(this.$route.query.limit || searchData.limit),
+        skip: Number(this.$route.query.skip || this.searchData.skip),
+        limit: Number(this.$route.query.limit || this.searchData.limit),
         search: this.$route.query.search || ''
       }
 
@@ -512,11 +525,11 @@ export default {
         searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
           : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
           : "item.types.name:Dataset"
-*/
+
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-        /*this.latestSearchTerm = query     
+        this.latestSearchTerm = query     
         this.algoliaIndex
           .search(query, {
             facets: ['*'],
@@ -560,7 +573,7 @@ export default {
                 this.isLoadingSearch = false
 
                 // Update alternative search results
-                this.alternativeSearchUpdate()
+                //this.alternativeSearchUpdate()
               })
               .catch(() => {
                 this.isLoadingSearch = false
@@ -571,7 +584,7 @@ export default {
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
     //    when a search returns 0 results
-    alternativeSearchUpdate: function() {
+    /*alternativeSearchUpdate: function() {
       const searchTypeInURL = pathOr('dataset', ['query', 'type'], this.$route) // Get current data type
 
       this.searchHasAltResults = false
@@ -660,7 +673,7 @@ export default {
             this.isLoadingSearch = false
           })
       }
-    },
+    },*/
 
     onPaginationPageChange: function(page) {
       const offset = (page - 1) * this.searchData.limit
@@ -720,15 +733,15 @@ export default {
       return viewports[viewport] || 24
     },
     
-    async onAlgoliaSortOptionChange(option) {
+    /*async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
       this.onPaginationPageChange(1)
     },
     async onProjectsSortOptionChange(option) {
       this.selectedProjectsSortOption = option
       this.onPaginationPageChange(1)
-    }
-  }*/
+    }*/
+  }
 }
 </script>
 
