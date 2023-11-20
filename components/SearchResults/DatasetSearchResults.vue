@@ -1,9 +1,5 @@
 <template>
-  <el-table
-    :data="tableData"
-    :show-header="false"
-    empty-text="No Results"
-  >
+  <el-table :data="tableData" :show-header="false" empty-text="No Results">
     <el-table-column prop="banner" label="Image" width="160">
       <template v-slot="scope">
         <div v-if="scope.row.pennsieve">

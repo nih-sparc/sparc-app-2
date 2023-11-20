@@ -98,7 +98,7 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-@import '../../assets/_variables';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .close-button-container {
   text-align: right;
 }

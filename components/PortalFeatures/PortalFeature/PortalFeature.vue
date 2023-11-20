@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../../assets/_variables';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .feature-container {
   border: 2px solid $grey;
   border-radius: .75rem;

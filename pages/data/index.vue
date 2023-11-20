@@ -6,7 +6,7 @@
         <div class="heading2 pl-8 mb-8">
           Browse categories
         </div>
-        <!--<ul class="search-tabs">
+        <ul class="search-tabs">
           <li v-for="type in searchTypes" :key="type.label">
             <nuxt-link
               class="search-tabs__button"
@@ -22,7 +22,7 @@
               {{ type.label }}
             </nuxt-link>
           </li>
-        </ul>-->
+        </ul>
       </div>
       <div class="search-bar__container">
         <div class="body1 mb-8">
@@ -56,8 +56,8 @@
                   ref="datasetFacetMenu"
                 />
               </el-col>
-              <!--<el-col
-                v-if="searchType.type === 'projects'"
+              <el-col
+                v-else-if="searchType.type === 'projects'"
                 class="facet-menu"
                 :sm="24"
                 :md="8"
@@ -70,7 +70,7 @@
                   @hook:mounted="facetMenuMounted"
                   ref="projectsFacetMenu"
                 />
-              </el-col>-->
+              </el-col>
               <el-col
                 :sm="searchColSpan('sm')"
                 :md="searchColSpan('md')"
@@ -94,11 +94,11 @@
                   </span>
                   <span v-else-if="searchType.type == 'projects'" class="label1">
                     Sort
-                    <!--<sort-menu
+                    <sort-menu
                       :options="projectsSortOptions"
                       :selected-option="selectedProjectsSortOption"
                       @update-selected-option="onProjectsSortOptionChange"
-                    />-->
+                    />
                   </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
@@ -108,6 +108,10 @@
                   </p>
                   <dataset-search-results
                     v-else-if="searchType.type !== 'projects'"
+                    :tableData="tableData"
+                  />
+                  <project-search-results
+                    v-else-if="searchType.type == 'projects'"
                     :tableData="tableData"
                   />
 
@@ -174,27 +178,22 @@ import {
   head,
   mergeLeft,
   pathOr,
-  propEq,
   propOr
 } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
+import ProjectsFacetMenu from '@/components/FacetMenu/ProjectsFacetMenu.vue'
 import { facetPropPathMapping, getAlgoliaFacets } from '../../utils/algolia'
 import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
-
-//import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
-
-
-/*const ProjectSearchResults = () =>
-  import('@/components/SearchResults/ProjectSearchResults.vue')*/
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  //projects: ProjectSearchResults,
+  projects: ProjectSearchResults,
   simulation: DatasetSearchResults,
   model: DatasetSearchResults
 }
@@ -245,14 +244,15 @@ export default {
     DatasetFacetMenu,
     DatasetSearchResults,
     SortMenu,
-    //ProjectsFacetMenu
+    ProjectsFacetMenu,
+    ProjectSearchResults
   },
 
   mixins: [],
 
-  setup() {
+  async setup() {
     const config = useRuntimeConfig()
-    const { $algoliaClient } = useNuxtApp()
+    const { $algoliaClient, $contentfulClient } = useNuxtApp()
     const algoliaSortOptions = [
       {
         label: 'Published (desc)',
@@ -276,18 +276,11 @@ export default {
       },
     ]
     const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
-    const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
-    return {
-      algoliaSortOptions,
-      selectedAlgoliaSortOption,
-      algoliaIndex
-    }
-  },
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
-  async asyncData() {
-    /*let projectsAnatomicalFocusFacets = []
+    let projectsAnatomicalFocusFacets = []
     let projectsFundingFacets = []
-    await client.getEntries({
+    await $contentfulClient.getEntries({
         content_type: 'awardSection',
       })
       .then(async response => {
@@ -302,25 +295,28 @@ export default {
         })
         projectsAnatomicalFocusFacets = facetData
       })
-      await client.getEntries({
-        content_type: 'program',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','name'], item)
-          facetData.push({
-            label: label,
-            id: label,
+      await $contentfulClient.getContentType('sparcAward').then(contentType => {
+      contentType.fields.forEach((field) => {
+        if (field.name === 'Funding') {
+          let fundingItems = field.items?.validations[0]['in']
+          let facetData = []
+          fundingItems.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
           })
-        })
-        projectsFundingFacets = facetData
+          projectsFundingFacets = facetData
+        }
       })
+    })
     return {
+      algoliaSortOptions,
+      selectedAlgoliaSortOption,
+      algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
-    }*/
+    }
   },
 
   head() {
@@ -370,7 +366,7 @@ export default {
       searchFailed: false,
       isSearchMapVisible: false,
       latestSearchTerm: '',
-      searchTypes,
+      searchTypes: searchTypes,
       breadcrumb: [
         {
           to: {
@@ -396,7 +392,9 @@ export default {
   computed: {
     searchType: function() {
       const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
-      const searchType = find(propEq('type', searchTypeQuery), this.searchTypes)
+      const searchType = this.searchTypes.find(searchType => {
+        return searchType.type == searchTypeQuery
+      })
 
       return defaultTo(head(this.searchTypes), searchType)
     },
@@ -416,10 +414,10 @@ export default {
     searchHeading: function() {
       const query = pathOr('', ['query', 'search'], this.$route)
 
-      const searchTypeLabel = compose(
-        propOr('', 'label'),
-        find(propEq('type', this.$route.query.type))
-      )(this.searchTypes)
+      const searchType = this.searchTypes.find(searchType => {
+        return searchType.type == this.$route.query.type
+      })
+      const searchTypeLabel = propOr('', 'label', searchType)
 
       let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
 
@@ -637,20 +635,18 @@ export default {
       var anatomicalFocus = undefined
       var funding = undefined
       var linkedEntriesTargetType = undefined
-      var linkedFundingProgramTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward',
         sortOrder = this.selectedProjectsSortOption.sortOrder,
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
-        linkedFundingProgramTargetType = funding ? 'program' : undefined
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false
       }
       else {
-        client
+        this.$contentfulClient
           .getEntries({
             content_type: contentType,
             query: this.$route.query.search,
@@ -660,8 +656,7 @@ export default {
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
             'fields.projectSection.fields.title[in]' : anatomicalFocus,
-            'fields.fundingProgram.sys.contentType.sys.id': linkedFundingProgramTargetType,
-            'fields.fundingProgram.fields.name[in]' : funding
+            'fields.program[in]': funding
           })
           .then(async response => {
             this.searchData = { ...response }
@@ -748,7 +743,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../assets/_variables.scss';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .alternative-links {
   text-decoration: underline;
   color: $purple;
@@ -801,6 +796,7 @@ export default {
   }
 }
 .search-tabs__button {
+  color: $purple;
   background: #f9f2fc;
   display: block;
   font-size: 0.75rem;

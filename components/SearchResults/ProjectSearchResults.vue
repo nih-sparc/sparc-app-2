@@ -1,7 +1,7 @@
 <template>
   <el-table :data="tableData" :show-header="false" empty-text="No Results">
     <el-table-column width="160">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <div class="image-container">
           <img
             v-if="scope.row.fields.institution"
@@ -14,12 +14,11 @@
     </el-table-column>
 
     <el-table-column min-width="400">
-      <template slot-scope="scope">
+      <template v-slot="scope">
         <nuxt-link
           :to="{
-            name: 'projects-projectId',
-            path: 'projects/:scope.row.sys.id',
-            params: { projectId: scope.row.sys.id }
+            name: 'projects-id',
+            params: { id: scope.row.sys.id }
           }"
           v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
         />
@@ -73,7 +72,7 @@
 <script>
 import Truncate from '@/mixins/truncate'
 import { isInternalLink } from '@/mixins/marked/index'
-import { highlightMatches } from '@/pages/data/utils'
+import { highlightMatches } from '@/utils/utils'
 
 export default {
   name: 'ProjectSearchResults',
@@ -145,7 +144,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import '@nih-sparc/sparc-design-system-components/src/assets/_variables.scss';
+  @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .el-table {
   width: 100%;

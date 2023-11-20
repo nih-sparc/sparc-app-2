@@ -274,7 +274,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables.scss';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .dataset-facet-menu > .sparc-design-system-component-dropdown-multiselect:not(:last-child) {
   border-bottom: none;
