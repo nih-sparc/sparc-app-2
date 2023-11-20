@@ -86,11 +86,11 @@
                   </p>
                   <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
                     Sort
-                    <!--<sort-menu
+                    <sort-menu
                       :options="algoliaSortOptions"
                       :selected-option="selectedAlgoliaSortOption"
                       @update-selected-option="onAlgoliaSortOptionChange"
-                    />-->
+                    />
                   </span>
                   <span v-else-if="searchType.type == 'projects'" class="label1">
                     Sort
@@ -111,7 +111,7 @@
                     :tableData="tableData"
                   />
 
-                  <!--<div v-if="searchHasAltResults" class="mt-24">
+                  <div v-if="searchHasAltResults" class="mt-24">
                     <template v-if="searchData.total === 0">
                       No results were found for <strong>{{ searchType.label }}</strong>.
                     </template>
@@ -121,6 +121,7 @@
                     <template v-for="dataType in dataTypes">
                       <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
                         <nuxt-link
+                          class="alternative-links"
                           :to="{
                             name: 'data',
                             query: {
@@ -136,7 +137,7 @@
                         - {{ humanReadableDataTypesLookup[dataType] }}
                       </dd>
                     </template>
-                  </div>-->
+                  </div>
                 </div>
                 <!--<div class="search-heading">
                   <p v-if="!isLoadingSearch && searchData.items.length">
@@ -164,6 +165,7 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import {
   clone,
   compose,
@@ -182,7 +184,7 @@ import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
 import { facetPropPathMapping, getAlgoliaFacets } from '../../utils/algolia'
 import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
-//import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 //import ProjectsFacetMenu from '~/components/FacetMenu/ProjectsFacetMenu.vue'
 
@@ -241,9 +243,9 @@ export default {
     PageHero,
     SearchControlsContentful,
     DatasetFacetMenu,
-    DatasetSearchResults
-    /*ProjectsFacetMenu,
-    SortMenu*/
+    DatasetSearchResults,
+    SortMenu,
+    //ProjectsFacetMenu
   },
 
   mixins: [],
@@ -273,7 +275,7 @@ export default {
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
-    const selectedAlgoliaSortOption = algoliaSortOptions[0]
+    const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
     const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
     return {
       algoliaSortOptions,
@@ -573,7 +575,7 @@ export default {
                 this.isLoadingSearch = false
 
                 // Update alternative search results
-                //this.alternativeSearchUpdate()
+                this.alternativeSearchUpdate()
               })
               .catch(() => {
                 this.isLoadingSearch = false
@@ -584,7 +586,7 @@ export default {
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
     //    when a search returns 0 results
-    /*alternativeSearchUpdate: function() {
+    alternativeSearchUpdate: function() {
       const searchTypeInURL = pathOr('dataset', ['query', 'type'], this.$route) // Get current data type
 
       this.searchHasAltResults = false
@@ -673,7 +675,7 @@ export default {
             this.isLoadingSearch = false
           })
       }
-    },*/
+    },
 
     onPaginationPageChange: function(page) {
       const offset = (page - 1) * this.searchData.limit
@@ -733,21 +735,24 @@ export default {
       return viewports[viewport] || 24
     },
     
-    /*async onAlgoliaSortOptionChange(option) {
+    async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
       this.onPaginationPageChange(1)
     },
     async onProjectsSortOptionChange(option) {
       this.selectedProjectsSortOption = option
       this.onPaginationPageChange(1)
-    }*/
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import '../../assets/_variables.scss';
-
+.alternative-links {
+  text-decoration: underline;
+  color: $purple;
+}
 .page-data {
   background-color: $background;
 }
