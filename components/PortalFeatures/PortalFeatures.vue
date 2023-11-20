@@ -49,7 +49,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .section-container {
   text-align: center;
 }

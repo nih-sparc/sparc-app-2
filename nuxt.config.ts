@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
-    'sparc-design-system-nuxt3-module',
+    '@element-plus/nuxt',
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
@@ -81,10 +81,11 @@ export default defineNuxtConfig({
       ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
+      SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
     }
   },
   /*
   ** Global CSS
   */
-  css: [],
+  css: ['sparc-design-system-components-2/dist/style.css'],
 })

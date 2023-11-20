@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../../assets/_variables';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .newsletter-wrap {
   font-size: 1.125rem;
   line-height: 1.5rem;

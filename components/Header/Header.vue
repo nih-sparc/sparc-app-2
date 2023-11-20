@@ -263,7 +263,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '../../assets/_variables';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .social-media-icon {
   color: #606266;
   font-size: 2rem;
