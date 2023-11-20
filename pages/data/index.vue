@@ -79,10 +79,10 @@
                 <div class="search-heading">
                   <p v-show="!isLoadingSearch && searchData.items.length">
                     {{ searchData.total }} Results | Showing
-                    <!--<pagination-menu
+                    <pagination-menu
                       :page-size="searchData.limit"
                       @update-page-size="updateDataSearchLimit"
-                    />-->
+                    />
                   </p>
                   <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
                     Sort
@@ -139,7 +139,7 @@
                     </template>
                   </div>
                 </div>
-                <!--<div class="search-heading">
+                <div class="search-heading">
                   <p v-if="!isLoadingSearch && searchData.items.length">
                     {{ searchHeading }} | Showing
                     <pagination-menu
@@ -154,7 +154,7 @@
                     :total-count="searchData.total"
                     @select-page="onPaginationPageChange"
                   />
-                </div>-->
+                </div>
               </el-col>
             </client-only>
           </el-row>

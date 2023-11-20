@@ -113,7 +113,6 @@ export default {
       if (menuType === 'simulation' || menuType === 'model') {
         return this.visibleModelsAndSimulationsFacetCategories
       }
-      console.log("VISIBLE CATS = ", this.visibleDatasetsFacetCategories)
       return this.visibleDatasetsFacetCategories
     },
     facetMenuVisibleFacets: function() {
