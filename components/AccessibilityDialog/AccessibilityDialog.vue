@@ -5,7 +5,7 @@
     :append-to-body="true"
     @close="closeDialog"
   >
-    <template v-slot:header>
+    <template #header>
       <div class="bf-dialog-header">
         <span class="bf-dialog-header-title">Accessibility Standards</span>
       </div>
@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <template v-slot:footer>
+    <template #footer>
       <div class="dialog-footer">
         <el-button class="secondary" @click="closeDialog">
           Close
