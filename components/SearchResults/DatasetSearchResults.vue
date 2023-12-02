@@ -5,8 +5,8 @@
         <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
-              name: 'datasets-id',
-              params: { id: scope.row.object_id },
+              name: 'datasets-datasetId',
+              params: { datasetId: scope.row.object_id },
               query: {
                 type: getSearchResultsType(scope.row.item)
               }
@@ -34,8 +34,8 @@
         <div v-if="scope.row.pennsieve">
           <nuxt-link
             :to="{
-              name: 'datasets-id',
-              params: {id: scope.row.object_id },
+              name: 'datasets-datasetId',
+              params: {datasetId: scope.row.object_id },
               query: {
                 type: getSearchResultsType(scope.row.item)
               }

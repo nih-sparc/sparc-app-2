@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'pathe'
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -63,8 +65,20 @@ export default defineNuxtConfig({
       },
     },
   },*/
+  hooks: {
+    'pages:extend'(pages) {
+      pages.push(
+        {
+            name: 'version',
+            path: '/datasets/:datasetId/version/:version',
+            file: resolve('./pages/datasets/[datasetId].vue')
+        }
+      )
+    }
+  },
   runtimeConfig: {
     public: {
+      discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
       ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',

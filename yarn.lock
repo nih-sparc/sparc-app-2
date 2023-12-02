@@ -5537,15 +5537,16 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-design-system-components-2@0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.18.tgz#73d73c14de025f456ed92d05791266dd6c017c12"
-  integrity sha512-56L4uuLBQSGTQHM2ERYH5oKOVJCdwa+RkNWQ624urhIkxXlrBuSAcWi6muvh4u3ka2ZYcxf78sjhGfH04iiCzA==
+sparc-design-system-components-2@0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.19.tgz#7adf03aa6e03df341b5f217511a1fcb4a49a9a1e"
+  integrity sha512-WLruTslGN6AGijhcz58t0ZkdRjSwV8TyiLR1nrTAUf0eklVdGqe3uRh4BfRes3dcru7U/q32ltnc1im3LzbF7Q==
   dependencies:
     "@carbon/grid" "^11.20.0"
     element-plus "^2.4.2"
     ramda "^0.29.1"
     vue "^3.3.4"
+    vue-router "^4.2.5"
 
 spdx-correct@^3.0.0:
   version "3.2.0"

@@ -59,7 +59,7 @@
             <td>
               <a :href="getNihReporterUrl(scope)" target="_blank">
                 {{ scope.row.fields.awardId }}
-                <svg-icon v-if="!isInternalLink(getNihReporterUrl(scope))" name="icon-open" height="20" width="20" />
+                <svgo-icon-open class="open-icon" v-if="!isInternalLink(getNihReporterUrl(scope))" />
               </a>
             </td>
           </tr>
@@ -182,5 +182,10 @@ table:not([class^='el-table__'])::before {
   border: 1px solid $lineColor2;
   background-color: white !important;
   padding: .25rem;
+}
+
+.open-icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 </style>

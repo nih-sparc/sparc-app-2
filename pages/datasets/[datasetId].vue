@@ -1,13 +1,13 @@
 <template>
   <div class="dataset-details pb-16">
-    <!--<client-only>
+    <client-only>
       <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
       <div v-if="showTombstone">
         <tombstone
           :dataset-details="datasetInfo"
         />
       </div>
-      <div v-else>
+      <!--<div v-else>
         <div class="bx--grid">
           <div class="bx--row">
             <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
@@ -86,22 +86,24 @@
         v-if="!isLatestVersion"
         :current-version="datasetInfo.version"
         :dataset-details="datasetInfo"
-      />
-    </client-only>-->
+      />-->
+    </client-only>
   </div>
 </template>
 
 <script>
-/*import marked from 'marked'
-import { mapState } from 'vuex'
+import Tombstone from '@/components/Tombstone/Tombstone.vue'
 import { clone, propOr, pathOr, head, compose } from 'ramda'
-import { getAlgoliaFacets, facetPropPathMapping } from '../../pages/data/utils'
+import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
+import { useMainStore } from '../store/index.js'
+import { mapState, mapActions } from 'pinia'
+/*import marked from 'marked'
+
 import createAlgoliaClient from '@/plugins/algolia.js'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
@@ -111,7 +113,6 @@ import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsI
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
-import Tombstone from '@/components/Tombstone/Tombstone.vue'
 
 import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
@@ -131,7 +132,83 @@ const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 marked.setOptions({
   sanitize: true
-})
+})*/
+
+/*const getAssociatedProjects = async (sparcAwardNumbers) => {
+  try {
+    const projects = await client.getEntries({
+      content_type: process.env.ctf_project_id,
+    })
+    const associatedProjects = projects.items?.filter((project) => {
+      return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
+    })
+    return associatedProjects || []
+  } catch (error) {
+    return []
+  }
+}
+*/
+
+const getDatasetDetails = async (config, datasetId, version, /*userToken, */datasetTypeName, $axios) => {
+  const url = `${config.public.discover_api_host}/datasets/${datasetId}`
+  var datasetUrl = version ? `${url}/versions/${version}` : url
+  /*if (userToken) {
+    datasetUrl += `?api_key=${userToken}`
+  }*/
+
+  const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
+
+  const datasetDetails =
+    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
+      ? await $axios.get(datasetUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
+      : await $axios.get(simulationUrl).catch((error) => { 
+          const status = pathOr('', ['data', 'status'], error.response)
+          if (status === 'UNPUBLISHED') {
+            const details = error.response.data
+            return {
+              isUnpublished: true,
+              ...details
+            }
+          }
+        })
+
+  return datasetDetails
+}
+
+const getDatasetVersions = async (config, datasetId, axios) => {
+  try {
+    const url = `${config.public.discover_api_host}/datasets/${datasetId}/versions`
+    return axios.get(url).then(({ data }) => {
+      return data.sort((a, b) => a.verson - b.version)
+    })
+  } catch (error) {
+    return []
+  }
+}
+
+const getDownloadsSummary = async (config, axios) => {
+  try {
+    const startDate = new Date('2000','1');
+    const currentDate = new Date()
+    const url = `${config.public.discover_api_host}/metrics/dataset/downloads/summary`
+    return axios.get(url, {
+        params: { startDate: startDate, endDate: currentDate }
+      }).then(({ data }) => {
+      return data
+    })
+  } catch (error) {
+    return 0
+  }
+}
 
 const tabs = [
   {
@@ -152,95 +229,13 @@ const tabs = [
   },
 ]
 
-const getDatasetFacetsData = async (route) => {
-  const objectId = route.params.datasetId
-  const filter = `objectID:${objectId}`
-  return await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
-    return data
-  })
-}
-
-const getAssociatedProjects = async (sparcAwardNumbers) => {
-  try {
-    const projects = await client.getEntries({
-      content_type: process.env.ctf_project_id,
-    })
-    const associatedProjects = projects.items?.filter((project) => {
-      return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
-    })
-    return associatedProjects || []
-  } catch (error) {
-    return []
-  }
-}
-
-const getDatasetDetails = async (datasetId, version, userToken, datasetTypeName, $axios) => {
-  const url = `${process.env.discover_api_host}/datasets/${datasetId}`
-  var datasetUrl = version ? `${url}/versions/${version}` : url
-  if (userToken) {
-    datasetUrl += `?api_key=${userToken}`
-  }
-
-  const simulationUrl = `${process.env.portal_api}/sim/dataset/${datasetId}`
-
-  const datasetDetails =
-    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
-      ? await $axios.$get(datasetUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
-      : await $axios.$get(simulationUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
-
-  return datasetDetails
-}
-
-const getDatasetVersions = async (datasetId, $axios) => {
-  try {
-    const url = `${process.env.discover_api_host}/datasets/${datasetId}/versions`
-    return $axios.$get(url).then(response => {
-      return response.sort((a, b) => a.verson - b.version)
-    })
-  } catch (error) {
-    return []
-  }
-}
-
-const getDownloadsSummary = async ($axios) => {
-  try {
-    const startDate = new Date('2000','1');
-    const currentDate = new Date()
-    const url = `${process.env.discover_api_host}/metrics/dataset/downloads/summary`
-    return $axios.$get(url, {
-        params: { startDate: startDate, endDate: currentDate }
-      }).then(response => {
-      return response
-    })
-  } catch (error) {
-    return 0
-  }
-}
-
 
 export default {
   name: 'DatasetDetails',
 
   components: {
-    Breadcrumb,
+    Tombstone,
+    /*Breadcrumb,
     DatasetHeader,
     DatasetActionBox,
     CitationDetails,
@@ -251,34 +246,40 @@ export default {
     ImagesGallery,
     VersionHistory,
     DatasetVersionMessage,
-    SimilarDatasetsInfoBox,
-    Tombstone
+    SimilarDatasetsInfoBox,*/
+    
   },
 
-  mixins: [Request, DateUtils, FormatStorage],
+  //mixins: [Request, DateUtils, FormatStorage],
 
-  async asyncData({ route, $axios, store, app, error }) {
+  async setup() {
+    const route = useRoute()
+    const config = useRuntimeConfig()
+    const { $algoliaClient, $contentfulClient, $axios } = useNuxtApp()
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
+
     let tabsData = clone(tabs)
+    const datasetId = route.params.datasetId
+    const filter = `objectID:${datasetId}`
+    const datasetFacetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
+      return data
+    })
 
-    const datasetId = pathOr('', ['params', 'datasetId'], route)
-
-    const datasetFacetsData = await getDatasetFacetsData(route)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-    const userToken = app.$cookies.get('user-token') || store.getters.cognitoUserToken
-
-    const errorMessages = []
+    //const userToken = app.$cookies.get('user-token') || store.getters.cognitoUserToken
 
     const [datasetDetails, versions, downloadsSummary] = await Promise.all([
       getDatasetDetails(
+        config,
         datasetId,
         route.params.version,
-        userToken,
+        //userToken,
         datasetTypeName,
         $axios
       ),
-      getDatasetVersions(datasetId, $axios),
-      getDownloadsSummary($axios),
+      getDatasetVersions(config, datasetId, $axios),
+      getDownloadsSummary(config, $axios),
     ])
     
     if (!datasetDetails) {
@@ -286,9 +287,10 @@ export default {
       error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
     }
 
-    store.dispatch('pages/datasets/datasetId/setDatasetInfo', datasetDetails)
-    store.dispatch('pages/datasets/datasetId/setDatasetFacetsData', datasetFacetsData)
-    store.dispatch('pages/datasets/datasetId/setDatasetTypeName', datasetTypeName)
+    const store = useMainStore()
+    store.setDatasetInfo(datasetDetails.data)
+    store.setDatasetFacetsData(datasetFacetsData)
+    store.setDatasetTypeName(datasetTypeName)
 
     return {
       tabs: tabsData,
@@ -296,22 +298,12 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: propOr(false, 'isUnpublished', datasetDetails),
-      errorMessages
-    }
+      errorMessages: []
+    } 
   },
 
   data() {
     return {
-      showCopySuccess: false,
-      isLoadingDataset: false,
-      errorLoading: false,
-      loadingMarkdown: false,
-      associatedProjects: [],
-      markdown: {},
-      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
-      datasetRecords: [],
-      sparcAwardNumbers: [],
-      tabs: [],
       breadcrumb: [
         {
           to: {
@@ -329,12 +321,22 @@ export default {
           label: 'Data & Models'
         }
       ],
+      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
+      /*showCopySuccess: false,
+      isLoadingDataset: false,
+      errorLoading: false,
+      loadingMarkdown: false,
+      associatedProjects: [],
+      markdown: {},
+      datasetRecords: [],
+      sparcAwardNumbers: [],
+      tabs: [],
       subtitles: [],
-      errorMessages: [],
+      errorMessages: [],*/
     }
   },
 
-  async fetch() {
+  /*async fetch() {
     const datasetOwnerId = propOr('', 'ownerId', this.datasetInfo)
     const datasetOwnerEmail = await this.$axios
       .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
@@ -347,10 +349,10 @@ export default {
 
     if (this.datasetInfo)
       this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', { ...this.datasetInfo, 'ownerEmail': datasetOwnerEmail })
-  },
+  },*/
 
   mounted() {
-    this.$gtm.push({
+    /*this.$gtm.push({
       event: "",
       category: "",
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
@@ -363,13 +365,11 @@ export default {
       file_name: "",
       file_path: "",
       file_type: "",
-    })
+    })*/
   },
 
   computed: {
-    ...mapState('pages/datasets/datasetId', 
-      ['datasetInfo', 'datasetFacetsData']
-    ),
+    ...mapState(useMainStore, ['datasetInfo', 'datasetFacetsData']),
     defaultTab() {
       return this.tabs[0].id
     },
@@ -400,13 +400,13 @@ export default {
       const date = version.revisedAt || version.versionPublishedAt
       return this.formatDate(date)
     },
-    licenseLink: function() {
+    /*licenseLink: function() {
       return getLicenseLink(this.datasetLicense)
     },
     datasetLicense: function() {
       const licenseKey = propOr('', 'license', this.datasetInfo)
       return getLicenseAbbr(licenseKey)
-    },
+    },*/
     datasetLicenseName: function() {
       return propOr('', 'license', this.datasetInfo)
     },
@@ -422,7 +422,7 @@ export default {
     datasetTitle: function() {
       return propOr('', 'name', this.datasetInfo)
     },
-    getRecordsUrl: function() {
+    /*getRecordsUrl: function() {
       return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
     },
     getProtocolRecordsUrl: function() {
@@ -505,10 +505,10 @@ export default {
     },
     canViewVersions: function() {
       return !this.embargoed
-    }
+    }*/
   },
 
-  watch: {
+  /*watch: {
     '$route.query': 'queryChanged',
     getProtocolRecordsUrl: {
       handler: function(val) {
@@ -576,11 +576,12 @@ export default {
       },
       immediate: true
     },
-  },
+  },*/
   methods: {
     tabChanged(newTab) {
       this.activeTabId = newTab.id
-    },*/
+    },
+    ...mapActions(useMainStore, ['setDatasetInfo', 'setDatasetFacetData', 'setDatasetTypeName']),
     /**
      * Returns protocol records in a dataset's model if they exist.
      * First, check if the dataset has external publications with type
@@ -673,10 +674,10 @@ export default {
             throw error
           })
       }
-    },
+    },*/
   },
 
-  head() {
+  /*head() {
     // Creator data
     const org = [
       {
@@ -818,8 +819,8 @@ export default {
         }
       ]
     }
-  }
-}*/
+  }*/
+}
 </script>
 
 <style lang="scss" scoped>
