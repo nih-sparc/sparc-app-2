@@ -83,6 +83,7 @@ export default defineNuxtConfig({
       ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
       ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
+      ctf_project_id: 'sparcAward',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
@@ -96,6 +97,7 @@ export default defineNuxtConfig({
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
+      METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
     }
   },
   /*

@@ -7,86 +7,84 @@
           :dataset-details="datasetInfo"
         />
       </div>
-      <!--<div v-else>
-        <div class="bx--grid">
-          <div class="bx--row">
-            <div class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
-              <dataset-action-box />
-              <similar-datasets-info-box
-                :associated-projects="associatedProjects"
-                :dataset-type-name="datasetTypeName"
+      <div class="pl-48 pr-48" v-else>
+        <el-row :gutter="32">
+          <el-col :xs="24" :sm="6" :md="6" :lg="5" class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
+            <dataset-action-box />
+            <similar-datasets-info-box
+              :associated-projects="associatedProjects"
+              :dataset-type-name="datasetTypeName"
+            />
+          </el-col>
+          <!--<div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
+            <dataset-header
+              class="dataset-header"
+              :latestVersionRevision="latestVersionRevision"
+              :latestVersionDate="latestVersionDate"
+              :numCitations="numCitations"
+              :numDownloads="numDownloads"
+            />
+            <content-tab-card
+              class="mt-32"
+              id="datasetDetailsTabsContainer"
+              :tabs="tabs"
+              :active-tab-id="activeTabId"
+              @tab-changed="tabChanged"
+              linkComponent="nuxt-link"
+              routeName="datasetDetailsTab"
+            >
+              <dataset-description-info
+                class="body1"
+                v-show="activeTabId === 'abstract'"
+                :markdown="markdown"
+                :dataset-records="datasetRecords"
+                :loading-markdown="loadingMarkdown"
+                :dataset-tags="datasetTags"
               />
-            </div>
-            <div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
-              <dataset-header
-                class="dataset-header"
+              <dataset-about-info
+                class="body1"
+                v-show="activeTabId === 'about'"
                 :latestVersionRevision="latestVersionRevision"
                 :latestVersionDate="latestVersionDate"
-                :numCitations="numCitations"
-                :numDownloads="numDownloads"
+                :associated-projects="associatedProjects"
               />
-              <content-tab-card
-                class="mt-32"
-                id="datasetDetailsTabsContainer"
-                :tabs="tabs"
-                :active-tab-id="activeTabId"
-                @tab-changed="tabChanged"
-                linkComponent="nuxt-link"
-                routeName="datasetDetailsTab"
-              >
-                <dataset-description-info
-                  class="body1"
-                  v-show="activeTabId === 'abstract'"
-                  :markdown="markdown"
-                  :dataset-records="datasetRecords"
-                  :loading-markdown="loadingMarkdown"
-                  :dataset-tags="datasetTags"
-                />
-                <dataset-about-info
-                  class="body1"
-                  v-show="activeTabId === 'about'"
-                  :latestVersionRevision="latestVersionRevision"
-                  :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects"
-                />
-                <citation-details
-                  class="body1"
-                  v-show="activeTabId === 'cite'"
-                  :doi-value="datasetInfo.doi"
-                />
-                <dataset-files-info
-                  class="body1"
-                  v-if="hasFiles"
-                  v-show="activeTabId === 'files'"
-                />
-                <images-gallery
-                  class="body1"
-                  :markdown="markdown.markdownTop"
-                  v-show="activeTabId === 'images'"
-                />
-                <dataset-references
-                  v-if="hasCitations"
-                  class="body1"
-                  v-show="activeTabId === 'references'"
-                  :primary-publications="primaryPublications"
-                  :associated-publications="associatedPublications"
-                />
-                <version-history
-                  v-if="canViewVersions"
-                  class="body1"
-                  v-show="activeTabId === 'versions'"
-                  :versions="versions"
-                />
-              </content-tab-card>
-            </div>
-          </div>
-        </div>
+              <citation-details
+                class="body1"
+                v-show="activeTabId === 'cite'"
+                :doi-value="datasetInfo.doi"
+              />
+              <dataset-files-info
+                class="body1"
+                v-if="hasFiles"
+                v-show="activeTabId === 'files'"
+              />
+              <images-gallery
+                class="body1"
+                :markdown="markdown.markdownTop"
+                v-show="activeTabId === 'images'"
+              />
+              <dataset-references
+                v-if="hasCitations"
+                class="body1"
+                v-show="activeTabId === 'references'"
+                :primary-publications="primaryPublications"
+                :associated-publications="associatedPublications"
+              />
+              <version-history
+                v-if="canViewVersions"
+                class="body1"
+                v-show="activeTabId === 'versions'"
+                :versions="versions"
+              />
+            </content-tab-card>
+          </div>-->
+        </el-row>
       </div>
       <dataset-version-message
         v-if="!isLatestVersion"
         :current-version="datasetInfo.version"
         :dataset-details="datasetInfo"
-      />-->
+      />
     </client-only>
   </div>
 </template>
@@ -97,22 +95,21 @@ import { clone, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
 import { useMainStore } from '../store/index.js'
 import { mapState, mapActions } from 'pinia'
+
+import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
+import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 /*import marked from 'marked'
 
-import createAlgoliaClient from '@/plugins/algolia.js'
-
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
-import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
-
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
-import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
-import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
+
 
 import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
@@ -122,32 +119,11 @@ import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import Scaffolds from '@/static/js/scaffolds.js'
 
-import createClient from '@/plugins/contentful.js'
-
 import { failMessage } from '@/utils/notification-messages'
-
-const client = createClient()
-const algoliaClient = createAlgoliaClient()
-const algoliaIndex = algoliaClient.initIndex(process.env.ALGOLIA_INDEX)
 
 marked.setOptions({
   sanitize: true
 })*/
-
-/*const getAssociatedProjects = async (sparcAwardNumbers) => {
-  try {
-    const projects = await client.getEntries({
-      content_type: process.env.ctf_project_id,
-    })
-    const associatedProjects = projects.items?.filter((project) => {
-      return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
-    })
-    return associatedProjects || []
-  } catch (error) {
-    return []
-  }
-}
-*/
 
 const getDatasetDetails = async (config, datasetId, version, /*userToken, */datasetTypeName, $axios) => {
   const url = `${config.public.discover_api_host}/datasets/${datasetId}`
@@ -235,19 +211,17 @@ export default {
 
   components: {
     Tombstone,
-    /*Breadcrumb,
-    DatasetHeader,
+    DatasetVersionMessage,
     DatasetActionBox,
+    SimilarDatasetsInfoBox,
+    /*DatasetHeader,
     CitationDetails,
     DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
     DatasetFilesInfo,
     ImagesGallery,
-    VersionHistory,
-    DatasetVersionMessage,
-    SimilarDatasetsInfoBox,*/
-    
+    VersionHistory,*/
   },
 
   //mixins: [Request, DateUtils, FormatStorage],
@@ -255,7 +229,7 @@ export default {
   async setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $algoliaClient, $contentfulClient, $axios } = useNuxtApp()
+    const { $algoliaClient, $axios } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -298,7 +272,8 @@ export default {
       datasetTypeName,
       downloadsSummary,
       showTombstone: propOr(false, 'isUnpublished', datasetDetails),
-      errorMessages: []
+      errorMessages: [],
+      algoliaIndex
     } 
   },
 
@@ -322,17 +297,15 @@ export default {
         }
       ],
       activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
-      /*showCopySuccess: false,
+      markdown: {},
+      associatedProjects: [],
+      loadingMarkdown: false,
       isLoadingDataset: false,
       errorLoading: false,
-      loadingMarkdown: false,
-      associatedProjects: [],
-      markdown: {},
       datasetRecords: [],
       sparcAwardNumbers: [],
-      tabs: [],
+      showCopySuccess: false,
       subtitles: [],
-      errorMessages: [],*/
     }
   },
 
@@ -422,13 +395,22 @@ export default {
     datasetTitle: function() {
       return propOr('', 'name', this.datasetInfo)
     },
-    /*getRecordsUrl: function() {
-      return `${process.env.discover_api_host}/search/records?datasetId=${this.datasetId}`
+    getRecordsUrl: function() {
+      return `${this.$config.public.discover_api_host}/search/records?datasetId=${this.datasetId}`
     },
     getProtocolRecordsUrl: function() {
       return `${this.getRecordsUrl}&model=protocol`
     },
-    originallyPublishedDate: function() {
+    datasetId: function() {
+      return pathOr('', ['params', 'datasetId'], this.$route)
+    },
+    hasFiles: function() {
+      return this.fileCount >= 1
+    },
+    fileCount: function() {
+      return propOr('0', 'fileCount', this.datasetInfo)
+    },
+    /*originallyPublishedDate: function() {
       const date = propOr('', 'firstPublishedAt', this.datasetInfo)
       return this.formatDate(date)
     },
@@ -453,9 +435,6 @@ export default {
     },
     getDatasetUrl: function() {
       return `${process.env.discover_api_host}/datasets/${this.datasetId}`
-    },
-    datasetId: function() {
-      return pathOr('', ['params', 'datasetId'], this.$route)
     },
     // This assumes that the subtitles are the organ types
     organType: function() {
@@ -494,12 +473,6 @@ export default {
       })
       return numDownloads
     },
-    hasFiles: function() {
-      return this.fileCount >= 1
-    },
-    fileCount: function() {
-      return propOr('0', 'fileCount', this.datasetInfo)
-    },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
     },
@@ -508,7 +481,7 @@ export default {
     }*/
   },
 
-  /*watch: {
+  watch: {
     '$route.query': 'queryChanged',
     getProtocolRecordsUrl: {
       handler: function(val) {
@@ -532,7 +505,7 @@ export default {
       },
       immediate: true
     },
-    errorMessages: {
+    /*errorMessages: {
       handler: function() {
         //Non critical error messages
         this.errorMessages.forEach(message => {
@@ -575,8 +548,8 @@ export default {
         }
       },
       immediate: true
-    },
-  },*/
+    },*/
+  },
   methods: {
     tabChanged(newTab) {
       this.activeTabId = newTab.id
@@ -593,7 +566,7 @@ export default {
      * This workflow allows datasets to be updated as a revision to update the protocols
      * on the portal instead of requiring the dataset to be fully republished.
      */
-    /*getProtocolRecords: function() {
+    getProtocolRecords: function() {
       if (
         this.datasetInfo.externalPublications &&
         this.datasetInfo.externalPublications.length !== 0
@@ -607,9 +580,9 @@ export default {
         })
       } else {
         this.$axios
-          .$get(this.getProtocolRecordsUrl)
-          .then(response => {
-            const records = propOr([], 'records', response)
+          .get(this.getProtocolRecordsUrl)
+          .then(({ data }) => {
+            const records = propOr([], 'records', data)
             if (records.length !== 0) {
               // that means protocol records exist
               const allProtocols = records.filter(protocol =>
@@ -628,7 +601,7 @@ export default {
     },
     getDatasetRecords: async function() {
       try {
-        algoliaIndex
+        this.algoliaIndex
           .getObject(this.datasetId, {
             attributesToRetrieve: 'supportingAwards',
           })
@@ -640,12 +613,25 @@ export default {
           }).finally(async () => {
             if (this.sparcAwardNumbers.length > 0)
             {
-              let projects = await getAssociatedProjects(this.sparcAwardNumbers)
+              let projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
               this.associatedProjects = projects.length > 0 ? projects : null
             }
           })
       } catch (e) {
         console.error(e)
+      }
+    },
+    getAssociatedProjects: async function(sparcAwardNumbers) {
+      try {
+        const projects = await this.$contentfulClient.getEntries({
+          content_type: this.$config.public.ctf_project_id,
+        })
+        const associatedProjects = projects.items?.filter((project) => {
+          return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
+        })
+        return associatedProjects || []
+      } catch (error) {
+        return []
       }
     },
     queryChanged: function() {
@@ -674,7 +660,7 @@ export default {
             throw error
           })
       }
-    },*/
+    }
   },
 
   /*head() {
