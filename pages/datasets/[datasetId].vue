@@ -99,6 +99,7 @@ import { mapState, mapActions } from 'pinia'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
+import Scaffolds from '@/static/js/scaffolds.js'
 /*import marked from 'marked'
 
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
@@ -110,14 +111,11 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
-
 import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
-
-import Scaffolds from '@/static/js/scaffolds.js'
 
 import { failMessage } from '@/utils/notification-messages'
 
@@ -410,7 +408,7 @@ export default {
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)
     },
-    /*originallyPublishedDate: function() {
+    originallyPublishedDate: function() {
       const date = propOr('', 'firstPublishedAt', this.datasetInfo)
       return this.formatDate(date)
     },
@@ -434,7 +432,7 @@ export default {
       return propOr('', 'organizationName', this.datasetInfo)
     },
     getDatasetUrl: function() {
-      return `${process.env.discover_api_host}/datasets/${this.datasetId}`
+      return `${this.$config.public.discover_api_host}/datasets/${this.datasetId}`
     },
     // This assumes that the subtitles are the organ types
     organType: function() {
@@ -478,7 +476,7 @@ export default {
     },
     canViewVersions: function() {
       return !this.embargoed
-    }*/
+    }
   },
 
   watch: {
@@ -515,7 +513,7 @@ export default {
         this.errorMessages.length = 0
       },
       immediate: true
-    },
+    },*/
     hasFiles: {
       handler: function(newValue) {
         if (newValue) {
@@ -548,7 +546,7 @@ export default {
         }
       },
       immediate: true
-    },*/
+    }
   },
   methods: {
     tabChanged(newTab) {
@@ -663,7 +661,7 @@ export default {
     }
   },
 
-  /*head() {
+  head() {
     // Creator data
     const org = [
       {
@@ -786,7 +784,7 @@ export default {
             description: this.datasetDescription,
             license: this.licenseLink,
             version: this.datasetInfo.version,
-            url: process.env.ROOT_URL,
+            url: this.$config.public.ROOT_URL,
             citation: this.citationText,
             identifier: this.doiLink,
             isAccessibleForFree: true
@@ -798,14 +796,14 @@ export default {
           json: {
             '@context': 'http://schema.org',
             '@type': 'WebSite',
-            url: process.env.ROOT_URL,
+            url: this.$config.public.ROOT_URL,
             name: 'Pennsieve Discover'
           },
           type: 'application/ld+json'
         }
       ]
     }
-  }*/
+  }
 }
 </script>
 
