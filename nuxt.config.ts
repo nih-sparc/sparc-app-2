@@ -98,6 +98,7 @@ export default defineNuxtConfig({
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
+      ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
     }
   },
   /*

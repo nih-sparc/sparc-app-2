@@ -7,16 +7,16 @@
           :dataset-details="datasetInfo"
         />
       </div>
-      <div class="pl-48 pr-48" v-else>
-        <el-row :gutter="32">
-          <el-col :xs="24" :sm="6" :md="6" :lg="5" class="bx--col-sm-4 bx--col-md-2 bx--col-lg-3 bx--col-xlg-3 left-column">
+      <div class="details-container" v-else>
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
             <dataset-action-box />
             <similar-datasets-info-box
               :associated-projects="associatedProjects"
               :dataset-type-name="datasetTypeName"
             />
           </el-col>
-          <!--<div class="bx--col-sm-4 bx--col-md-6 bx--col-lg-13 bx--col-xlg-13 right-column">
+          <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
             <dataset-header
               class="dataset-header"
               :latestVersionRevision="latestVersionRevision"
@@ -24,7 +24,7 @@
               :numCitations="numCitations"
               :numDownloads="numDownloads"
             />
-            <content-tab-card
+            <!--<content-tab-card
               class="mt-32"
               id="datasetDetailsTabsContainer"
               :tabs="tabs"
@@ -76,8 +76,8 @@
                 v-show="activeTabId === 'versions'"
                 :versions="versions"
               />
-            </content-tab-card>
-          </div>-->
+            </content-tab-card>-->
+          </el-col>
         </el-row>
       </div>
       <dataset-version-message
@@ -100,9 +100,12 @@ import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVer
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 import Scaffolds from '@/static/js/scaffolds.js'
+import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
+
+import DateUtils from '@/mixins/format-date'
+import FormatStorage from '@/mixins/bf-storage-metrics'
 /*import marked from 'marked'
 
-import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
@@ -212,8 +215,8 @@ export default {
     DatasetVersionMessage,
     DatasetActionBox,
     SimilarDatasetsInfoBox,
-    /*DatasetHeader,
-    CitationDetails,
+    DatasetHeader,
+    /*CitationDetails,
     DatasetReferences,
     DatasetAboutInfo,
     DatasetDescriptionInfo,
@@ -222,7 +225,7 @@ export default {
     VersionHistory,*/
   },
 
-  //mixins: [Request, DateUtils, FormatStorage],
+  mixins: [DateUtils, FormatStorage],
 
   async setup() {
     const route = useRoute()
@@ -810,11 +813,18 @@ export default {
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .left-column {
-  @media (max-width: 47rem) {
+  @media (max-width: 48rem) {
     order: 1;
     margin-top: 0;
   }
 }
+.details-container {
+  padding: 0 3rem;
+  @media (max-width: 62rem) {
+    padding: 0 1rem;
+  }
+}
+
 :deep(.details-tabs__container--data) {
   padding-top: 0;
 }
