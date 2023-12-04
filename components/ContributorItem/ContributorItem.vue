@@ -38,10 +38,10 @@
               {{ orcidId }}
             </template>
           </p>
-          <div v-if="lastEmploymentOrganizationName !== ''">
+          <div class="organization" v-if="lastEmploymentOrganizationName !== ''">
             <strong>Organization</strong>: {{ lastEmploymentOrganizationName }}
           </div>
-          <div class="title-text" v-if="lastEmploymentRole !== ''">
+          <div class="title" v-if="lastEmploymentRole !== ''">
             <strong>Title</strong>: {{ lastEmploymentRole }}
           </div>
         </template>
@@ -160,10 +160,6 @@ export default {
     getOrcidData: function() {
       this.isOrcidDataNotFound = false
       this.hasOrcidDataError = false
-      this.$nextTick(() => {
-        this.$refs.popper.updatePopper()
-      })
-
       if (this.hasOrcid && Object.keys(this.orcidData).length === 0) {
         this.$axios
           .get(`${this.$config.public.ORCID_API_URL}/${this.orcidId}`, {
@@ -183,7 +179,6 @@ export default {
           })
           .finally(() => {
             this.isLoadingOrcid = false
-            this.$refs.popper.updatePopper()
           })
       }
     }
@@ -197,7 +192,7 @@ export default {
   text-decoration: underline;
   color: $purple;
 }
-.title-text {
+.title, .organization {
   word-break: normal;
 }
 </style>

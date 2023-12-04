@@ -24,7 +24,7 @@
               :numCitations="numCitations"
               :numDownloads="numDownloads"
             />
-            <!--<content-tab-card
+            <content-tab-card
               class="mt-32"
               id="datasetDetailsTabsContainer"
               :tabs="tabs"
@@ -41,7 +41,7 @@
                 :loading-markdown="loadingMarkdown"
                 :dataset-tags="datasetTags"
               />
-              <dataset-about-info
+              <!--<dataset-about-info
                 class="body1"
                 v-show="activeTabId === 'about'"
                 :latestVersionRevision="latestVersionRevision"
@@ -75,8 +75,8 @@
                 class="body1"
                 v-show="activeTabId === 'versions'"
                 :versions="versions"
-              />
-            </content-tab-card>-->
+              />-->
+            </content-tab-card>
           </el-col>
         </el-row>
       </div>
@@ -104,12 +104,13 @@ import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
-/*import marked from 'marked'
+import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 
+/*import marked from 'marked'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
-import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
+
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
@@ -216,10 +217,10 @@ export default {
     DatasetActionBox,
     SimilarDatasetsInfoBox,
     DatasetHeader,
+    DatasetDescriptionInfo,
     /*CitationDetails,
     DatasetReferences,
     DatasetAboutInfo,
-    DatasetDescriptionInfo,
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,*/
@@ -825,8 +826,13 @@ export default {
   }
 }
 
-:deep(.details-tabs__container--data) {
-  padding-top: 0;
+:deep(.card-container) {
+  .content {
+      padding-top: 0;
+      a {
+        color: $purple;
+      }
+  }
 }
 .dataset-details {
   background-color: $background;
