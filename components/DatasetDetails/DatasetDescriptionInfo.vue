@@ -261,6 +261,9 @@ export default {
     margin-top: 1rem;
     border-top: none;
   }
+  :deep(p:first-of-type) {
+    margin-top: 0;
+  }
   .keywords {
     p {
       display: inline-block;

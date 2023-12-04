@@ -94,15 +94,13 @@ export default {
      * Handle copy citation to clipboard
      */
     handleCitationCopy: function() {
-      this.$copyText(this.citationText).then(() => {
-        this.$message(
-          successMessage(
-            `Successfully copied citation.`
-          )
+      navigator.clipboard.writeText(this.citationText).then(() => {
+        successMessage(
+          `Successfully copied citation.`
         )
       }),
         () => {
-          this.$message(failMessage('Failed to copy citation.'))
+          failMessage('Failed to copy citation.')
         }
     },
   },

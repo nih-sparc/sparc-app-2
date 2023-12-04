@@ -1,5 +1,5 @@
 <template>
-  <div class="dataset-about-info mt-16">
+  <div class="dataset-about-info">
     <div class="heading2 mb-8">
       About this dataset
     </div>

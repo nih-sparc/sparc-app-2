@@ -99,6 +99,7 @@ export default defineNuxtConfig({
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
+      crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
     }
   },
   /*

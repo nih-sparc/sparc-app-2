@@ -6,7 +6,7 @@ export default {
     contentfulError: {
       handler(value) {
         if (value)
-          this.$message(failMessage(ErrorMessages.methods.contentful()))
+          failMessage(ErrorMessages.methods.contentful())
       },
       immediate: true
     }

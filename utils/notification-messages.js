@@ -3,14 +3,14 @@
  * @param {String} message
  * @return {Object}
  */
+
 export const successMessage = message => {
-  return {
-    message: message,
+  ElMessage({
     showClose: true,
-    iconClass: 'el-icon-circle-check',
-    customClass: 'el-message--success',
+    message: message,
+    type: 'success',
     duration: 5000
-  }
+  })
 }
 /**
  * Failure notification message object
@@ -18,11 +18,10 @@ export const successMessage = message => {
  * @return {Object}
  */
 export const failMessage = message => {
-  return {
-    message: message,
+  ElMessage({
     showClose: true,
-    iconClass: 'el-icon-circle-close',
-    customClass: 'el-message--error',
+    message: message,
+    type: 'error',
     duration: 5000
-  }
+  })
 }

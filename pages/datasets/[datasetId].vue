@@ -47,12 +47,12 @@
                 :latestVersionDate="latestVersionDate"
                 :associated-projects="associatedProjects"
               />
-              <!--<citation-details
+              <citation-details
                 class="body1"
                 v-show="activeTabId === 'cite'"
                 :doi-value="datasetInfo.doi"
               />
-              <dataset-files-info
+              <!--<dataset-files-info
                 class="body1"
                 v-if="hasFiles"
                 v-show="activeTabId === 'files'"
@@ -105,25 +105,27 @@ import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
+import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 
 /*import marked from 'marked'
-import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
-import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
-import ErrorMessages from '@/mixins/error-messages'
+
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 
-import { failMessage } from '@/utils/notification-messages'
+
 
 marked.setOptions({
   sanitize: true
 })*/
+import ErrorMessages from '@/mixins/error-messages'
+import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
@@ -219,8 +221,8 @@ export default {
     DatasetHeader,
     DatasetDescriptionInfo,
     DatasetAboutInfo,
-    /*CitationDetails,
-    DatasetReferences,
+    CitationDetails,
+    /*DatasetReferences,
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,*/
@@ -507,17 +509,17 @@ export default {
       },
       immediate: true
     },
-    /*errorMessages: {
+    errorMessages: {
       handler: function() {
         //Non critical error messages
         this.errorMessages.forEach(message => {
-          this.$message(failMessage(message))
+          failMessage(message)
         })
         //Clean up the error messages
         this.errorMessages.length = 0
       },
       immediate: true
-    },*/
+    },
     hasFiles: {
       handler: function(newValue) {
         if (newValue) {
@@ -829,7 +831,6 @@ export default {
 
 :deep(.card-container) {
   .content {
-      padding-top: 0;
       a {
         color: $purple;
       }
