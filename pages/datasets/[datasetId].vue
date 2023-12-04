@@ -30,7 +30,6 @@
               :tabs="tabs"
               :active-tab-id="activeTabId"
               @tab-changed="tabChanged"
-              linkComponent="nuxt-link"
               routeName="datasetDetailsTab"
             >
               <dataset-description-info
@@ -41,14 +40,14 @@
                 :loading-markdown="loadingMarkdown"
                 :dataset-tags="datasetTags"
               />
-              <!--<dataset-about-info
+              <dataset-about-info
                 class="body1"
                 v-show="activeTabId === 'about'"
                 :latestVersionRevision="latestVersionRevision"
                 :latestVersionDate="latestVersionDate"
                 :associated-projects="associatedProjects"
               />
-              <citation-details
+              <!--<citation-details
                 class="body1"
                 v-show="activeTabId === 'cite'"
                 :doi-value="datasetInfo.doi"
@@ -105,10 +104,10 @@ import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
+import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 
 /*import marked from 'marked'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
-import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
@@ -119,13 +118,14 @@ import ErrorMessages from '@/mixins/error-messages'
 import Request from '@/mixins/request'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
-import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 import { failMessage } from '@/utils/notification-messages'
 
 marked.setOptions({
   sanitize: true
 })*/
+
+import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 const getDatasetDetails = async (config, datasetId, version, /*userToken, */datasetTypeName, $axios) => {
   const url = `${config.public.discover_api_host}/datasets/${datasetId}`
@@ -218,9 +218,9 @@ export default {
     SimilarDatasetsInfoBox,
     DatasetHeader,
     DatasetDescriptionInfo,
+    DatasetAboutInfo,
     /*CitationDetails,
     DatasetReferences,
-    DatasetAboutInfo,
     DatasetFilesInfo,
     ImagesGallery,
     VersionHistory,*/
@@ -311,20 +311,20 @@ export default {
     }
   },
 
-  /*async fetch() {
+  async created() {
     const datasetOwnerId = propOr('', 'ownerId', this.datasetInfo)
     const datasetOwnerEmail = await this.$axios
-      .$get(`${process.env.portal_api}/get_owner_email/${datasetOwnerId}`)
-      .then(resp => {
-        return resp.email
+      .get(`${this.$config.public.portal_api}/get_owner_email/${datasetOwnerId}`)
+      .then(({ data }) => {
+        return data.email
       })
       .catch(() => {
         return ''
       })
-
-    if (this.datasetInfo)
-      this.$store.dispatch('pages/datasets/datasetId/setDatasetInfo', { ...this.datasetInfo, 'ownerEmail': datasetOwnerEmail })
-  },*/
+    if (this.datasetInfo) {
+      this.setDatasetInfo({ ...this.datasetInfo, 'ownerEmail': datasetOwnerEmail })
+    }
+  },
 
   mounted() {
     /*this.$gtm.push({
@@ -375,13 +375,13 @@ export default {
       const date = version.revisedAt || version.versionPublishedAt
       return this.formatDate(date)
     },
-    /*licenseLink: function() {
+    licenseLink: function() {
       return getLicenseLink(this.datasetLicense)
     },
     datasetLicense: function() {
       const licenseKey = propOr('', 'license', this.datasetInfo)
       return getLicenseAbbr(licenseKey)
-    },*/
+    },
     datasetLicenseName: function() {
       return propOr('', 'license', this.datasetInfo)
     },
@@ -555,6 +555,7 @@ export default {
   methods: {
     tabChanged(newTab) {
       this.activeTabId = newTab.id
+      this.$router.replace({path: this.$route.path, query: {...this.$route.query, datasetDetailsTab: newTab.id}})
     },
     ...mapActions(useMainStore, ['setDatasetInfo', 'setDatasetFacetData', 'setDatasetTypeName']),
     /**
