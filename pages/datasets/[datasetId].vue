@@ -52,12 +52,12 @@
                 v-show="activeTabId === 'cite'"
                 :doi-value="datasetInfo.doi"
               />
-              <!--<dataset-files-info
+              <dataset-files-info
                 class="body1"
                 v-if="hasFiles"
                 v-show="activeTabId === 'files'"
               />
-              <images-gallery
+              <!--<images-gallery
                 class="body1"
                 :markdown="markdown.markdownTop"
                 v-show="activeTabId === 'images'"
@@ -106,20 +106,13 @@ import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
+import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 
 /*import marked from 'marked'
 
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
-import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
-
-
-import Request from '@/mixins/request'
-import DateUtils from '@/mixins/format-date'
-import FormatStorage from '@/mixins/bf-storage-metrics'
-
-
 
 marked.setOptions({
   sanitize: true
@@ -222,8 +215,8 @@ export default {
     DatasetDescriptionInfo,
     DatasetAboutInfo,
     CitationDetails,
-    /*DatasetReferences,
     DatasetFilesInfo,
+    /*DatasetReferences,
     ImagesGallery,
     VersionHistory,*/
   },

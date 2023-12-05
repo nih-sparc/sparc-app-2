@@ -79,6 +79,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
+      zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
       ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
@@ -97,9 +98,12 @@ export default defineNuxtConfig({
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
+      SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
       crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
+      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
+      osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
     }
   },
   /*

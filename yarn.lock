@@ -457,6 +457,11 @@
   resolved "https://registry.yarnpkg.com/@element-plus/icons-vue/-/icons-vue-2.1.0.tgz#7ad90d08a8c0d5fd3af31c4f73264ca89614397a"
   integrity sha512-PSBn3elNoanENc1vnCfh+3WA9fimRC7n+fWkf3rE5jvv+aBohNHABC/KAR5KWPecxWxDTVT1ERpRbOMRcOV/vA==
 
+"@element-plus/icons-vue@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@element-plus/icons-vue/-/icons-vue-2.3.1.tgz#1f635ad5fdd5c85ed936481525570e82b5a8307a"
+  integrity sha512-XxVUZv48RZAd87ucGS48jPf6pKu0yV5UCg9f4FFwtrYxXOwWuVJo6wOvSLKEoMQKjv8GsX/mhP6UsC1lRwbUWg==
+
 "@element-plus/nuxt@^1.0.6":
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/@element-plus/nuxt/-/nuxt-1.0.6.tgz#8ca657749cd043214e0bebfeca02d402c3f2c2fd"
@@ -2511,7 +2516,7 @@ data-urls@^4.0.0:
     whatwg-mimetype "^3.0.0"
     whatwg-url "^12.0.0"
 
-date-fns@^2.30.0:
+date-fns@^2.3.0, date-fns@^2.30.0:
   version "2.30.0"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
   integrity sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==
@@ -5511,12 +5516,14 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-design-system-components-2@0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.20.tgz#6fc6b7c5c01341d93d324fcf021d8bfe2dbc72b0"
-  integrity sha512-+O0VfSq2OTEy/yR2cyGhibhrzola/xiilqsViOXh5MoicAZ4bk7nR6/uupbu1F59NgTTttbiFBeA79cVhd9BtQ==
+sparc-design-system-components-2@0.0.22:
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.22.tgz#bafd99d199fbe7adfea6dd375bd6954886994998"
+  integrity sha512-A2D+hYQLMioKlc5FeoEynYTCkOYcwtlgcE5E4ChNgm22jVQ0SFRNUZHjabTCxQUG722UcM24RYJEPQ8svi2b7Q==
   dependencies:
     "@carbon/grid" "^11.20.0"
+    "@element-plus/icons-vue" "^2.3.1"
+    date-fns "^2.3.0"
     element-plus "^2.4.2"
     ramda "^0.29.1"
     vue "^3.3.4"
