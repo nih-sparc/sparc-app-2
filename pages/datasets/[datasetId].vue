@@ -62,14 +62,14 @@
                 :markdown="markdown.markdownTop"
                 v-show="activeTabId === 'images'"
               />
-              <!--<dataset-references
+              <dataset-references
                 v-if="hasCitations"
                 class="body1"
                 v-show="activeTabId === 'references'"
                 :primary-publications="primaryPublications"
                 :associated-publications="associatedPublications"
               />
-              <version-history
+              <!--<version-history
                 v-if="canViewVersions"
                 class="body1"
                 v-show="activeTabId === 'versions'"
@@ -108,10 +108,9 @@ import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
+import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 
 /*import marked from 'marked'
-
-import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
@@ -218,9 +217,8 @@ export default {
     CitationDetails,
     DatasetFilesInfo,
     ImagesGallery,
-    /*DatasetReferences,
-    
-    VersionHistory,*/
+    DatasetReferences,
+    /*VersionHistory,*/
   },
 
   mixins: [DateUtils, FormatStorage],
