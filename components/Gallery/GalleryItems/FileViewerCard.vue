@@ -5,36 +5,17 @@
         <img v-if="useDefaultImg" src="~/assets/logo-sparc-wave-primary.svg" svg-inline />
         <img v-else :src="thumbnail" alt="thumbnail loading ..." />
       </div>
-      <div v-if="false" class="image-overlay">
-        <div
-          class="triangle-right-corner"
-          :style="`border-left-width: ${triangleHeight * 1.2}rem; border-top-width: ${triangleHeight}rem;`"
-          @click="openLinkInNewTab"
-        />
-        <el-tooltip class="item" :content="`View ${data.type}`" placement="left">
-          <img
-            class="triangle-icon"
-            :style="`height: ${triangleHeight * 0.25}rem;top: ${triangleHeight * 0.15}rem;right: ${triangleHeight * 0.15}rem`"
-            :src="typeIcon"
-            @click="openLinkInNewTab"
-          />
-        </el-tooltip>
-      </div>
       <div v-if="showCardDetails" class="details">
         <p v-if="!data.hideType">
           <b>{{ data.type }}</b>
         </p>
-        <el-popover
-          ref="galleryPopover"
-          :disabled="disableTooltip"
-          :content="data.title"
-          placement="top"
-          trigger="hover"
-          popper-class="gallery-popper"
-        />
-        <p v-show="!data.hideTitle" ref="titleText" v-popover:galleryPopover class="title">
-          {{ data.title }}
-        </p>
+        <sparc-tooltip placement="top-center" :content="data.title" is-repeating-item-content>
+          <template #item>
+            <div class="title mb-16">
+              {{ data.title }}
+            </div>
+          </template>
+        </sparc-tooltip>
         <p v-show="data.hideTitle" class="title text-placeholder" />
         <el-button class="primary" @click.prevent="cardClicked"> View {{ data.type }}</el-button>
       </div>
@@ -89,26 +70,6 @@ export default {
       tooltipCalculated: false,
     }
   },
-  computed: {
-    isReady() {
-      return this.data.title && (this.thumbnail || this.useDefaultImg) && (this.data.link || this.data.userData)
-    },
-    imageHeight() {
-      return this.showCardDetails ? this.height * 0.525 : this.height
-    },
-    imageWidth() {
-      return this.width - 2 * this.marginDetails
-    },
-    triangleHeight() {
-      return this.height * 0.237
-    },
-    marginDetails() {
-      return this.height * 0.076
-    },
-    typeIcon() {
-      return undefined
-    },
-  },
   watch: {
     data: {
       deep: true,
@@ -127,19 +88,8 @@ export default {
         } else {
           this.useDefaultImg = true
         }
-        //Dynamically check title length to determine if popover should be shown
-        this.$nextTick(() => {
-          this.calculateShowTooltip()
-        })
       },
     },
-  },
-  updated: function () {
-    if (!this.tooltipCalculated) {
-      this.$nextTick(() => {
-        this.calculateShowTooltip()
-      })
-    }
   },
   methods: {
     /**
@@ -186,32 +136,17 @@ export default {
         }
       )
     },
-    //dynamically calculate if tooltip is required
-    calculateShowTooltip: function () {
-      if (this.data.hideTitle) {
-        this.disableTooltip = true
-        this.tooltipCalculated = true
-      } else {
-        const ele = this.$refs.titleText
-        //Check if title text is rendered yet
-        if (ele && ele.offsetParent) {
-          this.tooltipCalculated = true
-          if (ele.offsetWidth >= ele.scrollWidth) this.disableTooltip = true
-          else this.disableTooltip = false
-        } else {
-          //text not rendered yet
-          if (this.data.title.length > 20) this.disableTooltip = false
-          else this.disableTooltip = true
-        }
-      }
-    },
-  },
+  }
 }
 </script>
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
-
+.title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .card {
   position: relative;
 }

@@ -716,6 +716,7 @@ export default {
     getSegmentationThumbnail(items, segmentation_info) {
       biolucida
         .getNeurolucidaThumbnail(
+          this.$portalApiClient,
           segmentation_info.datasetId,
           segmentation_info.datasetVersion,
           segmentation_info.segmentationFilePath
@@ -782,11 +783,10 @@ export default {
       }
     },
     getThumbnailFromBiolucida(items, info) {
-      biolucida.getThumbnail(info.id).then(
+      biolucida.getThumbnail(this.$portalApiClient, info.id).then(
         response => {
-          let item = items.find(x => x.id === info.id)
-
-          this.item.thumbnail = 'data:image/png;base64,' + response.data
+          let item = ref(items.find(x => x.id === info.id))
+          item.value['thumbnail'] = 'data:image/png;base64,' + response.data
         },
         reason => {
           if (
@@ -805,12 +805,12 @@ export default {
       )
     },
     getImageInfoFromBiolucida(items, info) {
-      biolucida.getImageInfo(info.id).then(
+      biolucida.getImageInfo(this.$portalApiClient, info.id).then(
         response => {
-          let item = items.find(x => x.id === info.id)
+          let item = ref(items.find(x => x.id === info.id))
           const name = response.name
           if (name) {
-            item.title = name.substring(0, name.lastIndexOf('.'))
+            item.value['title'] = name.substring(0, name.lastIndexOf('.'))
           }
         },
         reason => {
