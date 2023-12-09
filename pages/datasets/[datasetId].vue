@@ -57,12 +57,12 @@
                 v-if="hasFiles"
                 v-show="activeTabId === 'files'"
               />
-              <!--<images-gallery
+              <images-gallery
                 class="body1"
                 :markdown="markdown.markdownTop"
                 v-show="activeTabId === 'images'"
               />
-              <dataset-references
+              <!--<dataset-references
                 v-if="hasCitations"
                 class="body1"
                 v-show="activeTabId === 'references'"
@@ -107,11 +107,12 @@ import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescripti
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 
 /*import marked from 'marked'
 
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
-import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
+
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
 marked.setOptions({
@@ -216,8 +217,9 @@ export default {
     DatasetAboutInfo,
     CitationDetails,
     DatasetFilesInfo,
-    /*DatasetReferences,
     ImagesGallery,
+    /*DatasetReferences,
+    
     VersionHistory,*/
   },
 

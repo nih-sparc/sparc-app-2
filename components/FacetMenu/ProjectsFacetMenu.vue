@@ -161,7 +161,6 @@ export default {
           }
         }).then(() => {
           this.$emit('projects-selections-changed')
-          console.log("REFAS = ", this.$refs)
           this.$refs.anatomicalFocusCategory.uncheckAll()
           this.$refs.fundingCategory.uncheckAll()
         })

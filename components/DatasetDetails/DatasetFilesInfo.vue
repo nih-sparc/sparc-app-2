@@ -186,15 +186,20 @@ export default {
 
   mixins: [DateUtils, FormatMetric],
 
-  async fetch() {
+  async setup() {
+    const config = useRuntimeConfig()
+    const { $axios } = useNuxtApp()
     // Get oSPARC file viewers
-    this.osparcViewers = 
-      await this.$axios
-        .get(`${this.$config.public.portal_api}/sim/file`)
+    const osparcViewers = 
+      await $axios
+        .get(`${config.public.portal_api}/sim/file`)
         .then(({ data }) => data['file_viewers'])
         .catch(() => {
           return {}
         })
+    return {
+      osparcViewers
+    }
   },
 
   computed: {
@@ -281,7 +286,6 @@ export default {
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
-      osparcViewers: {},
       agreementId: null
     }
   },

@@ -31,7 +31,6 @@
       <el-table
         v-else
         ref="table"
-        v-loading="isLoading"
         :data="data"
         @selection-change="handleSelectionChange"
       >
@@ -485,11 +484,11 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(scope) {
-      const fileType = scope.row.fileType.toLowerCase()
-      return (
-        this.isMicrosoftFileType(scope) ||
-        openableFileTypes.includes(fileType)
-      )
+        const fileType = scope.row.fileType
+        return (
+          this.isMicrosoftFileType(scope) ||
+          openableFileTypes.includes(fileType)
+        )
     },
 
     isFileTooLarge(file) {
@@ -556,9 +555,9 @@ export default {
      */
     isMicrosoftFileType: function(scope) {
       return (
-        scope.row.fileType === 'MSWord' ||
-        scope.row.fileType === 'MSExcel' ||
-        scope.row.fileType === 'PowerPoint'
+        scope.row.fileType == 'MSWord' ||
+        scope.row.fileType == 'MSExcel' ||
+        scope.row.fileType == 'PowerPoint'
       )
     },
     /**

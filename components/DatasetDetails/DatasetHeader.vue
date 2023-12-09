@@ -234,8 +234,11 @@ export default {
   border: solid 1px $lineColor1;
   background: white;
 
-  .publications-container {
+  :deep(.publications-container) {
     display: flex;
+    a {
+      color: $purple;
+    }
     @media (max-width: 48em) {
       flex-direction: column;
     }

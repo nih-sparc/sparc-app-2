@@ -153,7 +153,6 @@ export default {
         this.showReduceSize = this.downloadDisabled
         this.confirmDownloadVisible = true
       } else {
-        console.log()
         this.executeDownload()
       }
     },
