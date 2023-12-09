@@ -111,11 +111,6 @@ import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
-/*import marked from 'marked'
-
-marked.setOptions({
-  sanitize: true
-})*/
 import ErrorMessages from '@/mixins/error-messages'
 import { failMessage } from '@/utils/notification-messages'
 
