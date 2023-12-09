@@ -23,6 +23,7 @@
     "contentful": "^10.5.1",
     "date-fns": "^2.30.0",
     "isomorphic-dompurify": "^1.9.0",
+    "js-file-download": "^0.4.12",
     "lodash": "^4.17.21",
     "marked": "^8.0.1",
     "ramda": "^0.29.0",

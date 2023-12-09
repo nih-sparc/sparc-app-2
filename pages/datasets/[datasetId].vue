@@ -69,12 +69,12 @@
                 :primary-publications="primaryPublications"
                 :associated-publications="associatedPublications"
               />
-              <!--<version-history
+              <version-history
                 v-if="canViewVersions"
                 class="body1"
                 v-show="activeTabId === 'versions'"
                 :versions="versions"
-              />-->
+              />
             </content-tab-card>
           </el-col>
         </el-row>
@@ -109,10 +109,9 @@ import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
+import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
 /*import marked from 'marked'
-
-import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
 marked.setOptions({
   sanitize: true
@@ -218,7 +217,7 @@ export default {
     DatasetFilesInfo,
     ImagesGallery,
     DatasetReferences,
-    /*VersionHistory,*/
+    VersionHistory
   },
 
   mixins: [DateUtils, FormatStorage],
