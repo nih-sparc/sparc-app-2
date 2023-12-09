@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'pathe'
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -63,13 +65,28 @@ export default defineNuxtConfig({
       },
     },
   },*/
+  hooks: {
+    'pages:extend'(pages) {
+      pages.push(
+        {
+            name: 'version',
+            path: '/datasets/:datasetId/version/:version',
+            file: resolve('./pages/datasets/[datasetId].vue')
+        }
+      )
+    }
+  },
   runtimeConfig: {
     public: {
+      discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
+      zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
       ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
       ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
+      ctf_project_id: 'sparcAward',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
+      flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
       CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
@@ -82,6 +99,19 @@ export default defineNuxtConfig({
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
+      SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
+      SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
+      METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
+      ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
+      crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
+      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
+      osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
+      MBF_SPARC_API: process.env.MBF_SPARC_API || 'https://mbfsparcapi.com',
+      BL_API_URL: 'https://sparc.biolucida.net/api/v1/',
+      BL_SERVER_URL: 'https://sparc.biolucida.net',
+      BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
+      NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
+      ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
     }
   },
   /*

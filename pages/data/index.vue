@@ -180,7 +180,6 @@ import {
   pathOr,
   propOr
 } from 'ramda'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
@@ -238,7 +237,6 @@ export default {
   name: 'DataPage',
 
   components: {
-    Breadcrumb,
     PageHero,
     SearchControlsContentful,
     DatasetFacetMenu,
@@ -247,8 +245,6 @@ export default {
     ProjectsFacetMenu,
     ProjectSearchResults
   },
-
-  mixins: [],
 
   async setup() {
     const config = useRuntimeConfig()

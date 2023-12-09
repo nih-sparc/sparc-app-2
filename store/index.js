@@ -25,7 +25,7 @@ export const useMainStore = defineStore('main', {
   getters: {
     pennsieveUsername (state) {
       const firstName = pathOr('', ['firstName'], state.pennsieveUser)
-      const lastName = pathOr('', ['lastName'], getters.pennsieveUser)
+      const lastName = pathOr('', ['lastName'], state.pennsieveUser)
       const abbrvLastName = lastName.length === 1 ? lastName[0] : `${lastName[0]}.`
       return `${firstName} ${abbrvLastName}`
     },

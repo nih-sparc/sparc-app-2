@@ -31,8 +31,8 @@ export const actions = {
     const token = pathOr(null, ['signInUserSession', 'accessToken', 'jwtToken'], user)
     const unixExpirationDate = pathOr('', ['signInUserSession', 'accessToken', 'payload', 'exp'], user)
     const expirationDate = unixExpirationDate ? new Date(unixExpirationDate * 1000) : null
-    this.$cookies.set('profile-complete', helperMethods.isProfileComplete(profile), expirationDate)
-    this.$cookies.set('user-token', token, expirationDate)
+    //this.$cookies.set('profile-complete', helperMethods.isProfileComplete(profile), expirationDate)
+    //this.$cookies.set('user-token', token, expirationDate)
     await commit('SET_COGNITO_USER', user)
     await commit('SET_PENNSIEVE_USER', profile)
   },
