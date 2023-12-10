@@ -5836,6 +5836,11 @@ ufo@^1.1.2, ufo@^1.2.0, ufo@^1.3.0, ufo@^1.3.1:
   resolved "https://registry.yarnpkg.com/ufo/-/ufo-1.3.1.tgz#e085842f4627c41d4c1b60ebea1f75cdab4ce86b"
   integrity sha512-uY/99gMLIOlJPwATcMVYfqDSxUR9//AUcgZMzwfSTJPDKzA1S8mX4VLqa+fiAtveraQUBCz4FFcwVZBGbwBXIw==
 
+uint8array-extras@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/uint8array-extras/-/uint8array-extras-1.0.0.tgz#88bced99bc5067ee61f7b909605850cb306b96f1"
+  integrity sha512-0ygPQc4lTR+uhyqsH2F+/Yt6SESIHsHXRFq17QG3bIxpPJDwls9OU0SVITVlBNmTb9E7pVHA6fjfdj51ns6s0A==
+
 ultrahtml@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/ultrahtml/-/ultrahtml-1.5.2.tgz#77be18c531adc4cda198b8767eda27df9427cc7f"
