@@ -46,10 +46,10 @@ const fetchNeurolucida360Url = (mbfSparcApiClient, payload) => {
 
 const decodeViewParameter = encodedView => {
   const urlDecodedView = decodeURIComponent(encodedView)
-  const decodedView = stringToBase64(urlDecodedView)
+  const decodedString = atob(urlDecodedView);
+  const decodedView = decodedString.toString('utf-8')
   return decodedView.split('-')
 }
-
 
 export default {
   decodeViewParameter,

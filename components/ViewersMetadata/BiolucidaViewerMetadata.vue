@@ -134,7 +134,7 @@ export default {
         readme_markdown
       ] = await Promise.all([
         biolucida.getBLVLink($portalApiClient, image_identifier),
-        biolucida.decodeViewParameter($portalApiClient, viewId),
+        biolucida.decodeViewParameter(viewId),
         biolucida.getImageInfo($portalApiClient, image_identifier),
         biolucida.getXMPInfo($portalApiClient, image_identifier),
         fetch(props.datasetInfo.readme).then((response) => {
