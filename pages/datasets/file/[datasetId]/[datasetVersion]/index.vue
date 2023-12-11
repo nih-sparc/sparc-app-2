@@ -25,14 +25,14 @@
           :datasetInfo="datasetInfo"
           :file="file"
         />
-        <!--<plot-viewer
+        <plot-viewer
           v-if="hasPlotViewer"
           v-show="activeTabId === 'plotViewer'"
           :plotData="plotData"
           :datasetInfo="datasetInfo"
           :file="file"
         />
-        <video-viewer
+        <!--<video-viewer
           v-if="hasVideoViewer"
           v-show="activeTabId === 'videoViewer'"
           :videoData="videoData"
@@ -55,8 +55,8 @@
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
-/*import PlotViewer from '@/components/PlotViewer/PlotViewer'
-import VideoViewer from '@/components/VideoViewer/VideoViewer'
+import PlotViewer from '@/components/PlotViewer/PlotViewer'
+/*import VideoViewer from '@/components/VideoViewer/VideoViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'*/
 
@@ -74,8 +74,8 @@ export default {
   components: {
     BiolucidaViewer,
     SegmentationViewer,
-    /*PlotViewer,
-    VideoViewer,
+    PlotViewer,
+    /*VideoViewer,
     FileViewerMetadata,
     DetailTabs,*/
   },
