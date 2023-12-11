@@ -18,14 +18,14 @@
           :datasetInfo="datasetInfo"
           :file="file"
         />
-        <!--<segmentation-viewer
+        <segmentation-viewer
           v-if="hasSegmentationViewer"
           v-show="activeTabId === 'segmentationViewer'"
           :data="segmentationData"
           :datasetInfo="datasetInfo"
           :file="file"
         />
-        <plot-viewer
+        <!--<plot-viewer
           v-if="hasPlotViewer"
           v-show="activeTabId === 'plotViewer'"
           :plotData="plotData"
@@ -54,9 +54,9 @@
 <script>
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
+import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 /*import PlotViewer from '@/components/PlotViewer/PlotViewer'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
-import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'*/
 
@@ -73,9 +73,9 @@ export default {
 
   components: {
     BiolucidaViewer,
+    SegmentationViewer,
     /*PlotViewer,
     VideoViewer,
-    SegmentationViewer,
     FileViewerMetadata,
     DetailTabs,*/
   },
@@ -99,7 +99,6 @@ export default {
     let datasetInfo = {}
     await $axios.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
-      //error = e
     }).then(({ data }) => {
       datasetInfo = data
     })
@@ -121,7 +120,6 @@ export default {
       })
     } catch(e) {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
-      console.log(e)
     }
     const hasBiolucidaViewer = biolucidaData != {} && biolucidaData.status !== 'error'
     // We must remove the N: in order for scicrunch to realize the package

@@ -1,12 +1,4 @@
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: process.env.portal_api,
-  withCredentials: false,
-  timeout: 20000
-})
-
-const lookupOntoTerm = async term => {
+const lookupOntoTerm = async (apiClient, term) => {
   const config = {
     params: {
       term
