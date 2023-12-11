@@ -32,14 +32,14 @@
           :datasetInfo="datasetInfo"
           :file="file"
         />
-        <!--<video-viewer
+        <video-viewer
           v-if="hasVideoViewer"
           v-show="activeTabId === 'videoViewer'"
           :videoData="videoData"
           :videoSource="signedUrl"
           :datasetInfo="datasetInfo"
           :file="file"
-        />-->
+        />
       </content-tab-card>
       <!--<file-viewer-metadata
         v-if="!hasViewer"
@@ -56,8 +56,8 @@ import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import PlotViewer from '@/components/PlotViewer/PlotViewer'
-/*import VideoViewer from '@/components/VideoViewer/VideoViewer'
-import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
+import VideoViewer from '@/components/VideoViewer/VideoViewer'
+/*import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'*/
 
 import FormatDate from '@/mixins/format-date'
@@ -75,8 +75,8 @@ export default {
     BiolucidaViewer,
     SegmentationViewer,
     PlotViewer,
-    /*VideoViewer,
-    FileViewerMetadata,
+    VideoViewer,
+    /*FileViewerMetadata,
     DetailTabs,*/
   },
 
@@ -155,7 +155,7 @@ export default {
     const hasVideoViewer = !isEmpty(videoData)
     let signedUrl = ""
     if (hasVideoViewer) {
-      const config = {
+      const videoConfig = {
         params: {
           key: `${route.params.datasetId}/${route.params.datasetVersion}/${filePath}`,
           contentType: videoData.mimetype.name,
@@ -164,10 +164,10 @@ export default {
       }
       signedUrl = await $axios.get(
           `${config.public.portal_api}/download`,
-          config
+          videoConfig
         )
-        .then(response => {
-          return response
+        .then(({ data }) => {
+          return data
         })
     }
 
