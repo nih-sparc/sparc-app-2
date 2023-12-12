@@ -142,21 +142,31 @@ export default {
     }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
     // We must remove the N: in order for scicrunch to realize the package
-    const expectedScicrunchIdentifier = sourcePackageId.replace("N:", "")
+    const expectedScicrunchIdentifier = sourcePackageId != "" ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
-      const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier($portalApiClient, expectedScicrunchIdentifier)
-      const result = pathOr([], ['data', 'result'], scicrunchResponse)
-      scicrunchData = result?.length > 0 ? result[0] : []
+      if (expectedScicrunchIdentifier != "") {
+        const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier($portalApiClient, expectedScicrunchIdentifier)
+        const result = pathOr([], ['data', 'result'], scicrunchResponse)
+        scicrunchData = result?.length > 0 ? result[0] : []
+      }
     } catch(e) {
       console.log(`Error retrieving sci crunch data (possibly because there is none for this file): ${e}`)
     }
 
     let segmentationData = {}
-    const matchedSegmentationData = scicrunchData['mbf-segmentation']?.filter(function(el) {
-      return el.identifier == expectedScicrunchIdentifier
-    })
-    segmentationData = matchedSegmentationData?.length > 0 ? matchedSegmentationData[0] : {}
+    // We should just be able to just pull from scicrunch response as shown below, but due to discrepancies we pull from the sparc api endpoint
+    // const matchedSegmentationData = scicrunchData['mbf-segmentation']?.filter(function(el) {
+    //   return el.identifier == expectedScicrunchIdentifier
+    // })
+    // segmentationData = segmentationData?.length > 0 ? matchedSegmentationData[0] : {}*/
+    try {
+      await discover.getSegmentationInfo(route.params.datasetId, route.params.datasetVersion, filePath, s3Bucket).then(({ data }) => {
+        segmentationData = data
+      })
+    } catch(e) {
+      console.log(`Error retrieving segmentation data (possibly because there is none for this file): ${e}`)
+    }
     const hasSegmentationViewer = !isEmpty(segmentationData)
     
     let plotData = {}
