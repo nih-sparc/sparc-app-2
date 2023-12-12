@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
@@ -112,16 +113,34 @@ export default {
       route.params.datasetVersion
     )
 
-    const sourcePackageId = file.sourcePackageId
+    // We should just be able to do as below and pull the source package id from file, but there are sometimes discrepancies between the pennsieve file sourcePackageId and the biolucida image data sourcePackageId returned from sparc.biolucida.net
+    // const sourcePackageId = file.sourcePackageId
+    // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
+    let sourcePackageId = ""
+    const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
+    const imagesData = biolucidaSearchResults['dataset_images']
+    if (imagesData != undefined) {
+      await Promise.all(imagesData.map(async image => {
+        const imageInfo = await biolucida.getImageInfo(image.image_id)
+        if (imageInfo['name'] == file.name)
+        {
+          sourcePackageId = image['sourcepkg_id']
+          return
+        }
+      }))
+    }
+
     let biolucidaData = {}
     try {
-      await $axios.get(`${config.public.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`).then(({ data }) => {
-        biolucidaData = data
-      })
+      if (sourcePackageId != "") {
+        await $axios.get(`${config.public.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`).then(({ data }) => {
+          biolucidaData = data
+        })
+      }
     } catch(e) {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
     }
-    const hasBiolucidaViewer = biolucidaData != {} && biolucidaData.status !== 'error'
+    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
     // We must remove the N: in order for scicrunch to realize the package
     const expectedScicrunchIdentifier = sourcePackageId.replace("N:", "")
     let scicrunchData = {}
