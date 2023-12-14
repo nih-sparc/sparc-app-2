@@ -19,18 +19,18 @@
           :button-text="' What We Offer '"
           :button-link="aboutLink(whatWeOfferPageId)"
         />
-        <!-- <paper
+        <paper
           class="row-item"
           :text="parseMarkdown(teamLeadership)"
           :button-text="' Who We Are '"
           :button-link="aboutLink(teamAndLeadershipPageId)"
-        /> -->
-        <!-- <paper
+        />
+        <paper
           class="row-item"
           :text="parseMarkdown(getInvolved)"
           :button-text="' Help Us Grow '"
           :button-link="aboutLink(getInvolvedPageId)"
-        /> -->
+        />
       </div>
 
       <div class="gallery-items-container p-32 mt-32">
