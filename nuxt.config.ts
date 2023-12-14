@@ -80,16 +80,27 @@ export default defineNuxtConfig({
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
       zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
+      /**
+       * CONTENTFUL
+       */
+      CTF_SPACE_ID: process.env.CTF_SPACE_ID,
+      CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
+      CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
+      /** Page IDs */
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
       ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
       ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
       ctf_project_id: 'sparcAward',
+      ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
+      ctf_news_id: 'news',
+      ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
+      ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
+      ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
+      ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
+      /** */
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
-      CTF_SPACE_ID: process.env.CTF_SPACE_ID,
-      CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
-      CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
       ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
@@ -112,6 +123,7 @@ export default defineNuxtConfig({
       BL_SHARE_LINK_PREFIX: 'https://sparc.biolucida.net/image?c=',
       NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
+      METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science'
     }
   },
   /*
