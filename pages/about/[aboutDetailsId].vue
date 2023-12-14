@@ -123,12 +123,12 @@ export default {
      * @param {Object} scope
      */
     copyUrl() {
-      this.$copyText(window.location.href).then(
+      navigator.clipboard.writeText(this.pageUrl).then(
         () => {
-          this.$message(successMessage(`URL copied to clipboard.`))
+          successMessage('URL copied to clipboard.')
         },
         () => {
-          this.$message(failMessage(`Cannot copy to clipboard.`))
+          failMessage('Cannot copy to clipboard.')
         }
       )
     }
