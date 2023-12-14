@@ -21,10 +21,10 @@
         <h1 class="heading1 mb-16">Learn More</h1>
         <template v-for="(item, index) in aboutDetailsItem.fields.learnMore" :key="item + index">
           <div>
-            <!-- <learn-more-card
+            <learn-more-card
               :about-details-item="item"
               :parent-path="slug"
-            /> -->
+            />
             <hr v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
           </div>
         </template>
@@ -35,7 +35,7 @@
 
 <script>
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-// import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
 import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
@@ -49,7 +49,7 @@ export default {
   components: {
     Breadcrumb,
     PageHero,
-    // LearnMoreCard,
+    LearnMoreCard,
     ShareLinks
   },
 
