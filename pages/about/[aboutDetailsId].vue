@@ -41,8 +41,6 @@ import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
 import marked from '@/mixins/marked'
 
-import { successMessage, failMessage } from '@/utils/notification-messages'
-
 export default {
   name: 'AboutDetailsId',
 
