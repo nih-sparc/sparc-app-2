@@ -77,10 +77,7 @@ export default {
     const { $contentfulClient } = useNuxtApp()
     const { params } = useRoute()
     if (params.aboutDetailsId == 'metrics') {
-      // TODO redirect
-      // redirect({
-      //   name: `about-metrics`
-      // })
+      return navigateTo('/about/metrics')
     }
     const isSlug = params.aboutDetailsId.split('-').length > 1
     const promise = isSlug ?
@@ -95,10 +92,7 @@ export default {
       })
       .then(aboutDetailsItem => {
         if (aboutDetailsItem.fields.slug && params.entryId !== aboutDetailsItem.fields.slug) {
-          // TODO redirect
-          // redirect({
-          //   name: `about-${slug}`
-          // })
+          return navigateTo('/about/' + params.aboutDetailsId)
         }
         useSeoMeta({
           title: aboutDetailsItem.fields.title,
