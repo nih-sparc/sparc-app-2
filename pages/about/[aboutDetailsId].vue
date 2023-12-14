@@ -115,23 +115,6 @@ export default {
         return { aboutDetailsItem }
       })
       .catch(err => console.error('Could not retreive about details.', err))
-  },
-
-  methods: {
-    /**
-     * Copy file URL to clipboard
-     * @param {Object} scope
-     */
-    copyUrl() {
-      navigator.clipboard.writeText(this.pageUrl).then(
-        () => {
-          successMessage('URL copied to clipboard.')
-        },
-        () => {
-          failMessage('Cannot copy to clipboard.')
-        }
-      )
-    }
   }
 }
 </script>
