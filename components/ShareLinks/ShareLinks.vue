@@ -30,7 +30,7 @@
           placement="bottom-center"
           content="Copy Link"
         >
-          <svgo-icon-icon-permalink class="remove-outline" height="2rem" width="1.75rem"/>
+          <svgo-icon-permalink class="remove-outline" height="2rem" width="1.75rem"/>
         </sparc-tooltip>
       </button>
     </client-only>
