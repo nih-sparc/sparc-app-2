@@ -1,30 +1,30 @@
 <template>
   <div class="share-links">
     <client-only>
-      <share-network network="facebook" :url="pageUrl" :title="title">
+      <ShareNetwork network="facebook" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
           content="Share on Facebook"
         >
           <svgo-icon-share-facebook class="remove-outline" height="2rem" width="1.75rem"/>
         </sparc-tooltip>
-      </share-network>
-      <share-network network="twitter" :url="pageUrl" :title="title">
+      </ShareNetwork>
+      <ShareNetwork network="twitter" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
           content="Share on Twitter"
         >
           <svgo-icon-share-twitter class="remove-outline" height="2rem" width="1.75rem"/>
         </sparc-tooltip>
-      </share-network>
-      <share-network network="linkedin" :url="pageUrl" :title="title">
+      </ShareNetwork>
+      <ShareNetwork network="linkedin" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
           content="Share on LinkedIn"
         >
           <svgo-icon-share-linked class="remove-outline" height="2rem" width="1.75rem"/>
         </sparc-tooltip>
-      </share-network>
+      </ShareNetwork>
       <button class="btn-copy-permalink" @click="copyUrl">
         <sparc-tooltip
           placement="bottom-center"
@@ -84,9 +84,7 @@ export default {
 .btn-copy-permalink {
   border: none;
   background: none;
-  // TODO $median not defined
-  // color: $median;
-  color: #8300bf;
+  color: $purple;
   cursor: pointer;
   padding: 0;
   &:active {
