@@ -23,7 +23,7 @@
           <div>
             <learn-more-card
               :about-details-item="item"
-              :parent-path="slug"
+              :parent-path="aboutDetailsItem.fields.slug"
             />
             <hr v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
           </div>
@@ -76,14 +76,11 @@ export default {
   setup() {
     const { $contentfulClient } = useNuxtApp()
     const { params } = useRoute()
-    if (params.aboutDetailsId == 'metrics') {
-      return navigateTo('/about/metrics')
-    }
     const isSlug = params.aboutDetailsId.split('-').length > 1
     const promise = isSlug ?
       $contentfulClient.getEntries({
         content_type: process.env.ctf_about_details_content_type_id,
-        'fields.slug': id
+        'fields.slug': params.aboutDetailsId
       }) :
       $contentfulClient.getEntry(params.aboutDetailsId)
     return promise
@@ -91,9 +88,6 @@ export default {
         return isSlug ? response.items[0] : response
       })
       .then(aboutDetailsItem => {
-        if (aboutDetailsItem.fields.slug && params.entryId !== aboutDetailsItem.fields.slug) {
-          return navigateTo('/about/' + params.aboutDetailsId)
-        }
         useSeoMeta({
           title: aboutDetailsItem.fields.title,
           meta: [
