@@ -28,6 +28,7 @@
     "marked": "^8.0.1",
     "ramda": "^0.29.0",
     "sparc-design-system-components-2": "0.0.22",
-    "striptags": "^3.2.0"
+    "striptags": "^3.2.0",
+    "vue-social-sharing": "^4.0.0-alpha4"
   }
 }
