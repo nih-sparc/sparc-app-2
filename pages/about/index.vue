@@ -13,12 +13,12 @@
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap"
       />
       <div class="row mt-32">
-        <!-- <paper
+        <paper
           class="row-item"
           :text="parseMarkdown(whatWeOffer)"
           :button-text="' What We Offer '"
           :button-link="aboutLink(whatWeOfferPageId)"
-        /> -->
+        />
         <!-- <paper
           class="row-item"
           :text="parseMarkdown(teamLeadership)"
@@ -225,10 +225,9 @@ export default {
      * to the ID of the entry if not
      * @returns {Object}
      */
-    aboutLink(entryId) {
-      const route = 'about-aboutDetailsId'
-      const aboutDetailsId = entryId
-      return { name: route, params: { aboutDetailsId } }
+    aboutLink(aboutDetailsId) {
+      const name = 'about-aboutDetailsId'
+      return { name, params: { aboutDetailsId } }
     }
   }
 }
