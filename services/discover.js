@@ -11,7 +11,7 @@ const browse = async (id, version, path = undefined) => {
   return apiClient.get(`/${id}/versions/${version}/files/browse`, config)
 }
 
-const fetch = async (apiClient, id, version, path, encode_base_64, s3Bucket) => {
+const fetch = async (apiClient, id, path, encode_base_64, s3Bucket) => {
   const config = {
     params: {
       encodeBase64: encode_base_64
@@ -21,15 +21,15 @@ const fetch = async (apiClient, id, version, path, encode_base_64, s3Bucket) => 
     config.params.s3BucketName = s3Bucket
   }
   return await apiClient.get(
-    `/s3-resource/${id}/${version}/files/${path}`,
+    `/s3-resource/${id}/files/${path}`,
     config
   )
 }
 
-const fetchEmbeddedThumbnail = async (apiClient, id, version, path, s3Bucket) => {
+const fetchEmbeddedThumbnail = async (apiClient, id, path, s3Bucket) => {
   const config = {
     params: {
-      path: `${id}/${version}/files/${path}`
+      path: `${id}/files/${path}`
     }
   }
   if (s3Bucket) {
@@ -38,10 +38,10 @@ const fetchEmbeddedThumbnail = async (apiClient, id, version, path, s3Bucket) =>
   return await apiClient.get('/thumbnail/segmentation', config)
 }
 
-const getSegmentationInfo = async (apiClient, id, version, path, s3Bucket) => {
+const getSegmentationInfo = async (apiClient, id, path, s3Bucket) => {
   const config = {
     params: {
-      dataset_path: `${id}/${version}/${path}`
+      dataset_path: `${id}/${path}`
     }
   }
   if (s3Bucket) {

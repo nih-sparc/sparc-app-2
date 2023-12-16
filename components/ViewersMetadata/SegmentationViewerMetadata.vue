@@ -133,7 +133,6 @@ export default {
         discover.getSegmentationInfo(
           $portalApiClient,
           props.datasetInfo.id,
-          props.datasetInfo.version,
           props.file.path,
           s3Bucket
         ),

@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import discover from '@/services/discover'
 import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
@@ -117,11 +118,11 @@ export default {
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
-    const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
+    const biolucidaSearchResults = await biolucida.searchDataset($portalApiClient, route.params.datasetId)
     const imagesData = biolucidaSearchResults['dataset_images']
     if (imagesData != undefined) {
       await Promise.all(imagesData.map(async image => {
-        const imageInfo = await biolucida.getImageInfo(image.image_id)
+        const imageInfo = await biolucida.getImageInfo($portalApiClient, image.image_id)
         if (imageInfo['name'] == file.name)
         {
           sourcePackageId = image['sourcepkg_id']
@@ -141,7 +142,9 @@ export default {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
     }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
+
     // We must remove the N: in order for scicrunch to realize the package
+    sourcePackageId = file.sourcePackageId
     const expectedScicrunchIdentifier = sourcePackageId != "" ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
@@ -161,7 +164,7 @@ export default {
     // })
     // segmentationData = segmentationData?.length > 0 ? matchedSegmentationData[0] : {}*/
     try {
-      await discover.getSegmentationInfo(route.params.datasetId, route.params.datasetVersion, filePath, s3Bucket).then(({ data }) => {
+      await discover.getSegmentationInfo($portalApiClient, route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
         segmentationData = data
       })
     } catch(e) {
@@ -186,7 +189,7 @@ export default {
     if (hasVideoViewer) {
       const videoConfig = {
         params: {
-          key: `${route.params.datasetId}/${route.params.datasetVersion}/${filePath}`,
+          key: `${route.params.datasetId}/${filePath}`,
           contentType: videoData.mimetype.name,
           s3BucketName: s3Bucket
         }
@@ -357,7 +360,8 @@ export default {
 
   methods: {
     executeDownload(file) {
-      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      const version = this.$route.params.datasetVersion
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
       let params = file.uri.replace("s3://", "")
       let firstIndex = params.indexOf("/") + 1
       params = params.substr(firstIndex)
@@ -366,7 +370,7 @@ export default {
       const payload = {
         paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
-        version: matches.groups.version
+        version: version
       }
 
       this.zipData = JSON.stringify(payload, undefined)

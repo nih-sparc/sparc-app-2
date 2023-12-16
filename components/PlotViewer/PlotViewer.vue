@@ -61,7 +61,7 @@ export default {
       const s3Bucket = props.datasetInfo ? extractS3BucketName(props.datasetInfo.uri) : undefined
 
       const plot_annotation = props.plotData.datacite
-      const file_path = `${props.datasetInfo.id}/${props.datasetInfo.version}/files/${props.plotData.dataset.path}`
+      const file_path = `${props.datasetInfo.id}/files/${props.plotData.dataset.path}`
       const source_url_response = await discover.downloadLink($portalApiClient, file_path, s3Bucket)
       let source_url = source_url_response.data
 
@@ -77,7 +77,7 @@ export default {
           tmp_path = 'derivative/sub-1/sam-1/subject1_header.txt'
         }
 
-        const supplemental_file_path = `${props.datasetInfo.id}/${props.datasetInfo.version}/files/${tmp_path}`
+        const supplemental_file_path = `${props.datasetInfo.id}/files/${tmp_path}`
 
         const supplemental_url_response = await discover.downloadLink(
           $portalApiClient,
