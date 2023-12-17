@@ -94,7 +94,7 @@
                       <div class="truncated">
                         <nuxt-link
                           :to="{
-                            name: 'file-datasetId-datasetVersion',
+                            name: 'datasets-file-datasetId-datasetVersion',
                             params: {
                               datasetId: datasetInfo.id,
                               datasetVersion: datasetInfo.version

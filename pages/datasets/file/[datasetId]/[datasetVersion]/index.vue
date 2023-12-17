@@ -41,12 +41,12 @@
           :file="file"
         />
       </content-tab-card>
-      <!--<file-viewer-metadata
+      <file-viewer-metadata
         v-if="!hasViewer"
         :datasetInfo="datasetInfo"
         :file="file"
         @download-file="executeDownload"
-      />-->
+      />
     </div>
   </div>
 </template>
@@ -59,9 +59,7 @@ import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import PlotViewer from '@/components/PlotViewer/PlotViewer'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
-/*import DetailTabs from '@/components/DetailTabs/DetailTabs.vue'
-import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'*/
-
+import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
@@ -78,8 +76,7 @@ export default {
     SegmentationViewer,
     PlotViewer,
     VideoViewer,
-    /*FileViewerMetadata,
-    DetailTabs,*/
+    FileViewerMetadata
   },
 
   mixins: [
