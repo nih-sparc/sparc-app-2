@@ -71,9 +71,9 @@ export default {
     const url = pathOr("", ['fields', 'url'], props.item)
     if (url.includes('bit.ly')) {
       const bitlyId = url.replace("https://", "")
-      return $axios.post(config.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+      return $axios.post(config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
         headers: {
-          Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+          Authorization: `Bearer ${config.public.BITLY_ACCESS_TOKEN}`,
           'Content-Type': 'application/json',
         }
       })
