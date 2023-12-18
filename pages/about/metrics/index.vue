@@ -45,10 +45,19 @@ import {
   propOr
 } from 'ramda'
 import { getPreviousMonth } from '@/utils/common'
-import ErrorMessages from '@/mixins/error-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import ScientificContribution from '@/components/Metrics/ScientificContribution.vue'
 import UserBehaviors from '@/components/Metrics/UserBehaviors.vue'
+
+// const UserBehaviors = () =>
+//   import('@/components/Metrics/UserBehaviors.vue')
+// const ScientificContribution = () =>
+//   import('@/components/Metrics/ScientificContribution.vue')
+
+const metricsComponents = {
+  userBehaviors: UserBehaviors,
+  scientificContribution: ScientificContribution,
+}
 
 const metricsTypes = [
   {
@@ -202,7 +211,7 @@ export default {
      */
     metricsComponent: function() {
       const { query } = useRoute()
-      return query.metricsType === 'scientificContribution' ? ScientificContribution : UserBehaviors
+      return metricsComponents[query.metricsType]
     },
   },
   /**

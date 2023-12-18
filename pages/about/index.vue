@@ -151,8 +151,8 @@ export default {
        */
       $axios
         .get(config.public.METRICS_URL + `/pennsieve?year=${year}&month=${month}`)
-        .then(response => {
-          const metrics = response[0]
+        .then(({ data }) => {
+          const metrics = data[0]
           return {
             totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
             newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
@@ -163,8 +163,8 @@ export default {
           const lastMonthsDate = getPreviousMonth()
           return $axios
             .get(config.public.METRICS_URL + `/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`)
-            .then(response => {
-              const metrics = response[0]
+            .then(({ data }) => {
+              const metrics = data[0]
               return {
                 totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
                 newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
