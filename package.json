@@ -20,6 +20,8 @@
     "@pinia/nuxt": "^0.5.1",
     "algoliasearch": "^4.19.1",
     "axios": "^1.5.0",
+    "chart.js": "^2",
+    "chartjs-plugin-datalabels": "^1",
     "contentful": "^10.5.1",
     "date-fns": "^2.30.0",
     "isomorphic-dompurify": "^1.9.0",
@@ -29,6 +31,7 @@
     "ramda": "^0.29.0",
     "sparc-design-system-components-2": "0.0.22",
     "striptags": "^3.2.0",
+    "vue-chartjs": "^3",
     "vue-social-sharing": "^4.0.0-alpha4"
   }
 }

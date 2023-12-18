@@ -40,7 +40,7 @@
           :items="metricsItems"
         />
         <nuxt-link
-          to="about/metrics"
+          to="/about/metrics"
         >
           <el-button class="secondary mt-16">
             View All Metrics

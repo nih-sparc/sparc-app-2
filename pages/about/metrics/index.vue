@@ -47,16 +47,8 @@ import {
 import { getPreviousMonth } from '@/utils/common'
 import ErrorMessages from '@/mixins/error-messages'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-
-const UserBehaviorsMetrics = () =>
-  import('@/components/Metrics/UserBehaviors.vue')
-const ScientificContributionMetrics = () =>
-  import('@/components/Metrics/ScientificContribution.vue')
-
-const metricsComponents = {
-  userBehaviors: UserBehaviorsMetrics,
-  scientificContribution: ScientificContributionMetrics,
-}
+import ScientificContribution from '@/components/Metrics/ScientificContribution.vue'
+import UserBehaviors from '@/components/Metrics/UserBehaviors.vue'
 
 const metricsTypes = [
   {
@@ -209,7 +201,8 @@ export default {
      * @returns {Function}
      */
     metricsComponent: function() {
-      return defaultTo('', metricsComponents[this.$route.query.metricsType])
+      const { query } = useRoute()
+      return query.metricsType === 'scientificContribution' ? ScientificContribution : UserBehaviors
     },
   },
   /**
