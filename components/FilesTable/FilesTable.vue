@@ -94,7 +94,7 @@
                       <div class="truncated">
                         <nuxt-link
                           :to="{
-                            name: 'file-datasetId-datasetVersion',
+                            name: 'datasets-file-datasetId-datasetVersion',
                             params: {
                               datasetId: datasetInfo.id,
                               datasetVersion: datasetInfo.version
@@ -666,7 +666,7 @@ export default {
     },
 
     executeDownload(downloadInfo) {
-      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<version>\d*)\/(?<filePath>.*)/
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
       let params = downloadInfo.uri.replace("s3://", "")
       let firstIndex = params.indexOf("/") + 1
       params = params.substr(firstIndex)
@@ -675,7 +675,7 @@ export default {
       const payload = {
         paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
-        version: matches.groups.version
+        version: this.datasetVersion
       }
 
       this.zipData = JSON.stringify(payload, undefined)

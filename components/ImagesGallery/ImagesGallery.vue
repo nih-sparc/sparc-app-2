@@ -355,7 +355,6 @@ export default {
                     id,
                     fetchAttempts: 0,
                     datasetId,
-                    datasetVersion,
                     mimetype: thumbnail.mimetype.name,
                     file_path: thumbnail.dataset.path,
                     s3Bucket: s3Bucket
@@ -388,7 +387,7 @@ export default {
           scicrunchData.video.forEach(async videoFile => {
             let thumbnail = this.defaultVideoImg
             if (thumbnailPaths[videoFile.dataset.path]) {
-              const url = new URL(`${this.$config.public.portal_api}/s3-resource/${datasetId}/${datasetVersion}/files/${thumbnailPaths[videoFile.dataset.path]}`)
+              const url = new URL(`${this.$config.public.portal_api}/s3-resource/${datasetId}/files/${thumbnailPaths[videoFile.dataset.path]}`)
               url.searchParams.append('encodeBase64', true)
               const img = await fetch(url).then(resp => resp.ok ? resp.text() : null)
               if (img) {
@@ -480,7 +479,6 @@ export default {
                   id,
                   fetchAttempts: 0,
                   datasetId,
-                  datasetVersion,
                   mimetype: thumbnail.mimetype.name,
                   file_path: thumbnail.dataset.path,
                   s3Bucket: s3Bucket
@@ -653,7 +651,7 @@ export default {
     },
     retrieveThumbnailFromInfo(items, info, defaultImg) {
       discover
-        .fetch(this.$portalApiClient, info.datasetId, info.datasetVersion, info.file_path, true, info.s3Bucket)
+        .fetch(this.$portalApiClient, info.datasetId, info.file_path, true, info.s3Bucket)
         .then(
           response => {
             let item = items.find(x => x.id === info.id)
