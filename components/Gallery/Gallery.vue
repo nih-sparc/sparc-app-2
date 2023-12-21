@@ -4,7 +4,7 @@
       <div class="card-line">
         <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
           <template v-if="item">
-            <!--<component
+            <!-- <component
               v-if="galleryItemType === 'resources'"
               :is="galleryItemComponent"
               :width="cardWidth"
@@ -17,9 +17,9 @@
               :button-link="`/resources/${item.sys.id}`"
               :external-url="item.fields.url"
               @card-clicked="cardClicked"
-            />
+            /> -->
             <component
-              v-else-if="galleryItemType === 'metrics'"
+              v-if="galleryItemType === 'metrics'"
               :is="galleryItemComponent"
               :width="cardWidth"
               :key="item.title"
@@ -34,15 +34,15 @@
               :key="item.sys.id"
               :item="item"
             />
-            <component
+            <!-- <component
               v-else-if="galleryItemType === 'datasets'"
               :is="galleryItemComponent"
               :width="cardWidth"
               :key="item.objectID"
               :item="item"
-            />-->
+            /> -->
             <component
-              v-if="galleryItemType === 'fileViewer'"
+              v-else="galleryItemType === 'fileViewer'"
               :is="galleryItemComponent"
               :data="item"
               :width="cardWidth"
@@ -58,19 +58,19 @@
 </template>
 
 <script>
-/*import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
+// import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
-import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'*/
+// import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
 import FileViewerCard from '~/components/Gallery/GalleryItems/FileViewerCard.vue'
 import { defaultTo } from 'ramda'
 import { ref } from 'vue'
 
 const galleryItemComponents = {
-  /*resources: ResourceCard,  
+  // resources: ResourceCard,  
   metrics: MetricsCard,
   highlights: HighlightCard,
-  datasets: DatasetCard,*/
+  // datasets: DatasetCard,
   fileViewer: FileViewerCard
 }
 
