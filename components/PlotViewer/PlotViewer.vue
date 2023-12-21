@@ -1,6 +1,6 @@
 <template>
   <div class="plot-viewer-page">
-    <div class="page-wrap container">
+    <div class="container p-0">
       <div class="plotvuer-container">
         <plot-vuer
           v-if="source_url"
@@ -30,9 +30,7 @@ export default {
 
   components: {
     PlotViewerMetadata,
-    PlotVuer: process.client
-      ? () => import('@abi-software/plotvuer').then(m => m.PlotVuer)
-      : null
+    PlotVuer: import('@abi-software/plotvuer').then(m => m.PlotVuer)
   },
 
   props: {
@@ -135,5 +133,8 @@ export default {
 }
 .page-heading {
   margin-bottom: 1.375rem;
+}
+.container {
+  padding: 0;
 }
 </style>

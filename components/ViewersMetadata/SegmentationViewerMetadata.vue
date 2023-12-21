@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="pt-16">
-      <el-button @click="requestDownloadFile(file)">
+      <el-button @click="requestDownloadFile({...file, version: versionId})">
         Download file
       </el-button>
     </div>
@@ -188,7 +188,7 @@ export default {
     organ() {
       return pathOr("", ['atlas','organ'], this.segmentation_info)
     }
-  },
+  }
 }
 </script>
 

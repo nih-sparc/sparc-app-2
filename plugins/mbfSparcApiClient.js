@@ -4,7 +4,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const apiClient = axios.create({
     baseURL: config.public.MBF_SPARC_API,
     withCredentials: false,
-    timeout: 9988
+    timeout: 10000
   })
   return {
     provide: {

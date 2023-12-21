@@ -4,7 +4,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const apiClient = axios.create({
     baseURL: config.public.portal_api,
     withCredentials: false,
-    timeout: 25007
+    timeout: 30000
   })
   return {
     provide: {
