@@ -2,13 +2,13 @@ import axios from "axios";
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
   const apiClient = axios.create({
-    baseURL: config.public.portal_api,
+    baseURL: config.public.MBF_SPARC_API,
     withCredentials: false,
-    timeout: 30000
+    timeout: 10000
   })
   return {
     provide: {
-      portalApiClient: apiClient
+      mbfSparcApiClient: apiClient
     },
   }
 })

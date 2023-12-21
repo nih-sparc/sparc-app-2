@@ -1,6 +1,6 @@
 let uberonOrganPairs = undefined
 
-const search = query => {
+const search = async (apiClient, query) => {
   return apiClient.get('search/' + query)
 }
 

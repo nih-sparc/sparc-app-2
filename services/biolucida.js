@@ -1,10 +1,4 @@
-import axios from 'axios'
-
-const mbfSparcApiClient = axios.create({
-  baseURL: process.env.MBF_SPARC_API,
-  withCredentials: false,
-  timeout: 9988
-})
+import { stringToBase64 } from 'uint8array-extras';
 
 const searchDataset = async (apiClient, id) => {
   const response = await apiClient.get('image_search/' + id)
@@ -46,14 +40,15 @@ const getBLVLink = async (apiClient, id) => {
   return response.data
 }
 
-const decodeViewParameter = encodedView => {
-  const urlDecodedView = decodeURIComponent(encodedView)
-  const decodedView = Buffer.from(urlDecodedView, 'base64').toString('binary')
-  return decodedView.split('-')
+const fetchNeurolucida360Url = (mbfSparcApiClient, payload) => {
+  return mbfSparcApiClient.post('', payload)
 }
 
-const fetchNeurolucida360Url = payload => {
-  return mbfSparcApiClient.post('', payload)
+const decodeViewParameter = encodedView => {
+  const urlDecodedView = decodeURIComponent(encodedView)
+  const decodedString = atob(urlDecodedView);
+  const decodedView = decodedString.toString('utf-8')
+  return decodedView.split('-')
 }
 
 export default {
