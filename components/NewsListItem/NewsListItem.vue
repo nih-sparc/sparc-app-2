@@ -22,7 +22,7 @@
           :target="openInNewTab ? '_blank' : '_self'"
         >
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
-          <svg-icon v-if="openInNewTab" name="icon-open" height="30" width="30" />
+          <svgo-icon-open class="icon-open" v-if="openInNewTab" />
         </a>
       </h3>
       <p v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
@@ -153,5 +153,9 @@ p {
   position: absolute;
   right: .25rem;
   top: .25rem;
+}
+.icon-open {
+  height: 1.5rem;
+  width: 1.5rem
 }
 </style>

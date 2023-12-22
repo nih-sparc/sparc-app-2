@@ -1,11 +1,11 @@
 <template>
   <div class="about-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
-    <page-hero v-if="heroCopy">
+    <page-hero class="py-24" v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
-    <div class="page-wrap container">
+    <div class="container">
       <paper
         class="row mt-32"
         :text="parseMarkdown(sparcPortal)"
@@ -172,7 +172,7 @@ export default {
               }
             })
             .catch(err => {
-              console.error('Could not retreive metrics.', err)
+              console.error('Could not retreive metrics: ', err)
             })
         }),
       /**
@@ -184,7 +184,7 @@ export default {
           let totalDownloads = 0
           response.data.forEach(item => {
             if (item.origin === 'SPARC') {
-              totalDownloads += parseInt(item.downloads)
+              totalDownloads += parseInt(item['downloads'])
             }
           })
           return totalDownloads
@@ -199,7 +199,7 @@ export default {
         limit: '999',
         'fields.subject': 'Highlight'
       })
-        .then(({ items })=> items)
+        .then(({ items }) => items)
         .catch(err => {
           console.log('Could not retrieve highlights.', err)
         })
@@ -284,23 +284,4 @@ export default {
   background-color: white;
   border: 1px solid $lineColor1;
 }
-
-::v-deep h1 {
-  font-size:2rem;
-  font-weight:500;
-  line-height:2.75rem;
-}
-
-::v-deep h2 {
-  font-size:1.5rem;
-  font-weight:500;
-  line-height:2.25rem;
-}
-
-::v-deep h3 {
-  font-size:1rem;
-  font-weight:500;
-  line-height:1.875rem;
-}
-
 </style>
