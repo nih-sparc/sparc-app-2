@@ -26,8 +26,12 @@
       </div>
     </div>
     <div class="container mt-16">
-      <component
-        :is="metricsComponent"
+      <user-behaviors
+        v-if="$route.query.metricsType == 'userBehaviors'"
+        :metrics-data="metricsData"
+      />
+      <scientific-contribution
+        v-else
         :metrics-data="metricsData"
       />
     </div>
@@ -45,14 +49,8 @@ import {
   propOr
 } from 'ramda'
 import { getPreviousMonth } from '@/utils/common'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import ScientificContribution from '@/components/Metrics/ScientificContribution.vue'
 import UserBehaviors from '@/components/Metrics/UserBehaviors.vue'
-
-// const UserBehaviors = () =>
-//   import('@/components/Metrics/UserBehaviors.vue')
-// const ScientificContribution = () =>
-//   import('@/components/Metrics/ScientificContribution.vue')
+import ScientificContribution from '@/components/Metrics/ScientificContribution.vue'
 
 const metricsComponents = {
   userBehaviors: UserBehaviors,
@@ -73,11 +71,11 @@ const metricsTypes = [
 ]
 
 const fetchMetrics = async (axios, url, month, year) => {
-  let ga4MetricsData = await axios.get(url + `/ga4?year=${year}&month=${month}`)
+  let ga4MetricsData = await axios.get(`${url}/ga4?year=${year}&month=${month}`)
   ga4MetricsData = ga4MetricsData.data[0]
-  let pennsieveMetricsData = await axios.get(url + `/pennsieve?year=${year}&month=${month}`)
+  let pennsieveMetricsData = await axios.get(`${url}/pennsieve?year=${year}&month=${month}`)
   pennsieveMetricsData = pennsieveMetricsData.data[0]
-  let sparcMetricsData = await axios.get(url + `/sparc?year=${year}&month=${month}`)
+  let sparcMetricsData = await axios.get(`${url}/sparc?year=${year}&month=${month}`)
   sparcMetricsData = sparcMetricsData.data[0]
 
   const top5AnatomicalStructuresObject = sparcMetricsData['anatomical_structures_breakdown']['M']
@@ -138,28 +136,28 @@ const fetchMetrics = async (axios, url, month, year) => {
 
 export default {
   name: 'MetricsPage',
-
   components: {
-    Breadcrumb,
-    Error
+    UserBehaviors,
+    ScientificContribution
   },
-
-  setup() {
-    const date = new Date()
-    const month = date.getMonth()
-    const year = date.getFullYear()
-    const { $axios } = useNuxtApp()
+  async setup() {
     const config = useRuntimeConfig()
-    return fetchMetrics($axios, config.public.METRICS_URL, month, year)
-      .then(metricsData => ({ metricsData }))
-      .catch(() => {
-        const lastMonthsDate = getPreviousMonth()
-        return fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
-          .then(metricsData => ({ metricsData }))
-          .catch(err => {
-            console.error('Could not retreive metrics.', err)
-          })
+    const { $axios } = useNuxtApp()
+    const month = new Date().getMonth()
+    const year = new Date().getFullYear()
+    let metricsData = undefined
+    try {
+      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, month, year)
+    } catch (e) {
+      const lastMonthsDate = getPreviousMonth()
+      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
+      .catch(err => {
+        console.error('Could not retreive metrics.', err)
       })
+    }
+    return {
+      metricsData
+    }
   },
 
   data: () => {
@@ -210,8 +208,7 @@ export default {
      * @returns {Function}
      */
     metricsComponent: function() {
-      const { query } = useRoute()
-      return metricsComponents[query.metricsType]
+      return defaultTo('', metricsComponents[this.$route.query.metricsType])
     },
   },
   /**

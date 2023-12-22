@@ -4,7 +4,7 @@
       :breadcrumb="breadcrumb"
       :title="aboutDetailsItem.fields.title"
     />
-    <page-hero>
+    <page-hero class="py-24">
       <h1>{{ aboutDetailsItem.fields.title }}</h1>
       <p>{{ aboutDetailsItem.fields.summary }}</p>
     </page-hero>
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { pathOr, isEmpty } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 import PageHero from '@/components/PageHero/PageHero.vue'
@@ -73,34 +74,41 @@ export default {
     ]
   }),
 
-  setup() {
+  async setup() {
     const { $contentfulClient } = useNuxtApp()
+    const router = useRouter()
     const { params } = useRoute()
-    const isSlug = params.aboutDetailsId.split('-').length > 1
-    const promise = isSlug ?
-      $contentfulClient.getEntries({
-        content_type: process.env.ctf_about_details_content_type_id,
+    const config = useRuntimeConfig()
+    const aboutDetailsItem =
+      await $contentfulClient.getEntries({
+        content_type: config.public.ctf_about_details_content_type_id,
         'fields.slug': params.aboutDetailsId
-      }) :
-      $contentfulClient.getEntry(params.aboutDetailsId)
-    return promise
-      .then(response => {
-        return isSlug ? response.items[0] : response
+      }).then(async ({ items }) => {
+        if (items.length == 0) {
+          return await $contentfulClient.getEntry(params.aboutDetailsId).then(async (response) => {
+            const slug = pathOr("", ['fields', 'slug'], response)
+            if (!isEmpty(slug)) {
+              await navigateTo(`/about/${slug}`)
+            }
+            return response
+          })
+        }
+        else {
+          return items[0]
+        }
       })
-      .then(aboutDetailsItem => {
-        useSeoMeta({
-          title: aboutDetailsItem.fields.title,
-          meta: [
-            {
-              hid: 'og:title',
-              property: 'og:title',
-              content: aboutDetailsItem.fields.title,
-            },
-          ]
-        })
-        return { aboutDetailsItem }
+    
+      useSeoMeta({
+        title: aboutDetailsItem.fields.title,
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: aboutDetailsItem.fields.title,
+          },
+        ]
       })
-      .catch(err => console.error('Could not retreive about details.', err))
+      return { aboutDetailsItem }
   }
 }
 </script>

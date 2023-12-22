@@ -129,7 +129,7 @@ export default {
   margin-top: 1.5rem;
   height: 90vh;
   max-width: calc(100% - 48px);
-  @import '@abi-software/plotvuer/dist/plotvuer';
+  //@import '@abi-software/plotvuer/dist/plotvuer';
 }
 .page-heading {
   margin-bottom: 1.375rem;
