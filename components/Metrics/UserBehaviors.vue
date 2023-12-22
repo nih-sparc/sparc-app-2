@@ -116,42 +116,11 @@ export default {
       pageChartData: {},
       pageChartOptions: {
         responsive: true,
-        maintainAspectRatio: false,
         drawOnChartArea: false,
-        title: {
-          display: true,
-        },
-        legend: {
-          labels: {
-            boxWidth: 13
-          },
-          position: 'right',
-          align: 'start',
-        },
         scales: {
-          yAxes: [{
-            gridLines: {
-              drawTicks: true,
-              drawOnChartArea: false,
-              lineWidth: 2
-            },
-            ticks: {
-              display: true,
-              padding: 3,
-              callback: (value, index, values) => {
-                // we only want to show the greatest value tick
-                if (values[0] == value) {
-                  return value
-                }
-              }
-            },
-            scaleLabel: {
-              display: false,
-            }
-          }],
-          xAxes: [{
+          x: {
             barPercentage: 1.0,
-            gridLines: {
+            grid: {
               drawTicks: false,
               drawOnChartArea: false,
               lineWidth: 2
@@ -162,9 +131,36 @@ export default {
               fontSize: 16,
               fontStyle: 'bold'
             },
-          }]
+          },
+          y: {
+            grid: {
+              drawTicks: true,
+              drawOnChartArea: false,
+              lineWidth: 2
+            },
+            ticks: {
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[values.length-1].value == value) {
+                  return value
+                }
+              }
+            },
+            scaleLabel: {
+              display: false,
+            }
+          },
         },
         plugins: {
+          legend: {
+            labels: {
+              boxWidth: 13
+            },
+            position: 'right',
+            align: 'start',
+          },
           datalabels: {
             anchor: 'end',
             align: 'top',
@@ -178,22 +174,11 @@ export default {
       },
       usersChartData: {},
       usersChartOptions: {
-        responsive: false,
-        maintainAspectRatio: false,
+        responsive: true,
         drawOnChartArea: false,
-        title: {
-          display: true,
-        },
-        legend: {
-          labels: {
-            boxWidth: 13
-          },
-          position: 'right',
-          align: 'start',
-        },
         scales: {
-          yAxes: [{
-            gridLines: {
+          y: {
+            grid: {
               drawTicks: true,
               drawOnChartArea: false,
               lineWidth: 2
@@ -203,7 +188,7 @@ export default {
               padding: 3,
               callback: (value, index, values) => {
                 // we only want to show the greatest value tick
-                if (values[0] == value) {
+                if (values[values.length-1].value == value) {
                   return value
                 }
               }
@@ -211,10 +196,10 @@ export default {
             scaleLabel: {
               display: false
             }
-          }],
-          xAxes: [{
+          },
+          x: {
             barPercentage: 1.0,
-            gridLines: {
+            grid: {
               drawTicks: false,
               drawOnChartArea: false,
               lineWidth: 2
@@ -225,9 +210,16 @@ export default {
               fontSize: 16,
               fontStyle: 'bold'
             },
-          }]
+          }
         },
         plugins: {
+          legend: {
+            labels: {
+              boxWidth: 13
+            },
+            position: 'right',
+            align: 'start',
+          },
           datalabels: {
             anchor: 'end',
             align: 'top',

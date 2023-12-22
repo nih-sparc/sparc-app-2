@@ -24,7 +24,7 @@
     <div class="heading2 mb-0">
       Anatomical Structures
     </div>
-    <span class="col-data pl-32">
+    <span class="col-data pl-32 mr-4">
       {{ totalAnatomicalStructures }}
     </span><span>Different Anatomical Structures</span>
     <div class="heading3 chart-title">Top 5 Anatomical Structures</div>
@@ -49,7 +49,6 @@
 </template>
 
 <script>
-
 import { pathOr, propOr } from 'ramda'
 import BarChart from '@/components/Charts/BarChart.vue'
 
@@ -111,37 +110,10 @@ export default {
       dataChartData: {},
       dataChartOptions: {
         responsive: true,
-        maintainAspectRatio: false,
         drawOnChartArea: false,
-        title: {
-          display: true,
-        },
-        legend: {
-          display: false
-        },
         scales: {
-          yAxes: [{
-            gridLines: {
-              drawTicks: true,
-              drawOnChartArea: false,
-              lineWidth: 2
-            },
-            ticks: {
-              display: true,
-              padding: 3,
-              callback: (value, index, values) => {
-                // we only want to show the greatest value tick
-                if (values[0] == value) {
-                  return value
-                }
-              }
-            },
-            scaleLabel: {
-              display: false,
-            }
-          }],
-          xAxes: [{
-            gridLines: {
+          x: {
+            grid: {
               drawTicks: false,
               drawOnChartArea: false,
               lineWidth: 2
@@ -152,9 +124,27 @@ export default {
               fontSize: 16,
               fontStyle: 'bold'
             },
-          }]
+          },
+          y: {
+            grid: {
+              drawTicks: true,
+              drawOnChartArea: false,
+              lineWidth: 2
+            },
+            ticks: {
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[values.length-1].value == value) {
+                  return value
+                }
+              }
+            },
+          }
         },
         plugins: {
+          legend: false,
           datalabels: {
             anchor: 'end',
             align: 'top',
@@ -164,42 +154,15 @@ export default {
                 size: 16
             }
           }
-        }    
+        }
       },
       anatomicalStructuresChartData: {},
       anatomicalStructuresChartOptions: {
         responsive: true,
-        maintainAspectRatio: false,
         drawOnChartArea: false,
-        title: {
-          display: false,
-        },
-        legend: {
-          display: false
-        },
         scales: {
-          yAxes: [{
-            gridLines: {
-              drawTicks: true,
-              drawOnChartArea: false,
-              lineWidth: 2
-            },
-            ticks: {
-              display: true,
-              padding: 3,
-              callback: (value, index, values) => {
-                // we only want to show the greatest value tick
-                if (values[0] == value) {
-                  return value
-                }
-              }
-            },
-            scaleLabel: {
-              display: false,
-            }
-          }],
-          xAxes: [{
-            gridLines: {
+          x: {
+            grid: {
               drawTicks: false,
               drawOnChartArea: false,
               lineWidth: 2
@@ -210,9 +173,27 @@ export default {
               fontSize: 16,
               fontStyle: 'bold'
             },
-          }]
+          },
+          y: {
+            grid: {
+              drawTicks: true,
+              drawOnChartArea: false,
+              lineWidth: 2
+            },
+            ticks: {
+              display: true,
+              padding: 3,
+              callback: (value, index, values) => {
+                // we only want to show the greatest value tick
+                if (values[values.length-1].value == value) {
+                  return value
+                }
+              }
+            },
+          }
         },
         plugins: {
+          legend: false,
           datalabels: {
             anchor: 'end',
             align: 'top',

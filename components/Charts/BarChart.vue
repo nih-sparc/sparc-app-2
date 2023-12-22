@@ -1,11 +1,22 @@
+<template>
+  <Bar
+    class="bar-chart"
+    :options="chartOptions"
+    :data="chartData"
+  />
+</template>
+
 <script>
-import { Bar, mixins } from 'vue-chartjs'
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+ChartJS.register(ChartDataLabels)
+
 export default {
-  extends: Bar,
-  mixins: [mixins.reactiveProp],
   name: 'BarChart',
+  components: { Bar },
   props: {
     chartData: {
       type: Object,
@@ -16,9 +27,10 @@ export default {
       default: () => {}
     }
   },
-  mounted() {
-    this.addPlugin(ChartDataLabels)
-    this.renderChart(this.chartData, this.chartOptions)
-  }
 }
 </script>
+<style scoped lang="scss">
+  .bar-chart {
+    max-height: 400px;
+  }
+</style>
