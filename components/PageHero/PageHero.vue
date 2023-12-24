@@ -57,5 +57,8 @@ export default {
       font-weight: 500;
     }
   }
+  :deep(a) {
+    color: white !important;
+  }
 }
 </style>

@@ -747,9 +747,6 @@ export default {
 .page-data {
   background-color: $background;
 }
-.page-hero {
-  padding-bottom: 1.3125em;
-}
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;

@@ -118,7 +118,7 @@ export default {
     const config = useRuntimeConfig()
     const { $contentfulClient, $axios } = useNuxtApp()
     const today = new Date()
-    const day = today.getDay().toString().padStart(2, "0")
+    const day = today.getDate().toString().padStart(2, "0")
     const month = today.getMonth().toString().padStart(2, "0")
     const year = today.getFullYear()
     return Promise.all([
@@ -156,7 +156,7 @@ export default {
           return {
             totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
             newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-            downloadsLastMont: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+            downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
           }
         })
         .catch(() => {
@@ -168,7 +168,7 @@ export default {
               return {
                 totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
                 newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-                downloadsLastMont: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+                downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
               }
             })
             .catch(err => {
