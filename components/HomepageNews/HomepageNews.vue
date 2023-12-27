@@ -39,13 +39,14 @@
       </template>
       <div>
         <h3>
-          <!--<nuxt-link
+          <nuxt-link
             v-if="item.fields.requiresADetailsPage"
             :to="nuxtLink(item)"
           >
             {{ item.fields.title }}
-          </nuxt-link>-->
+          </nuxt-link>
           <a
+            v-else
             :href="item.fields.url"
             :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
           >
@@ -68,12 +69,13 @@
         <!-- marked will sanitize the HTML injected -->
         <div class="markdown-text" v-html="parseMarkdown(item.fields.summary)" />
       </div>
-      <!--<nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
+      <nuxt-link v-if="item.fields.requiresADetailsPage" :to="nuxtLink(item)">
         <el-button size="default" class="secondary">
           Learn More
         </el-button>
-      </nuxt-link>-->
+      </nuxt-link>
       <a
+        v-else
         :href="item.fields.url"
         :target="newsItemIsInternalLink[index] ? '_self' : '_blank'"
       >

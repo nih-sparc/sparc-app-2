@@ -147,8 +147,8 @@ export default {
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .content {
-  & ::v-deep img,
-  & ::v-deep video {
+  & :deep(img),
+  & :deep(video) {
     display: block;
     height: auto;
     margin: auto;
@@ -162,7 +162,7 @@ export default {
     color: #aaa;
   }
 }
-.details ::v-deep {
+:deep(.details)  {
   font-size: 0.875rem;
   h3 {
     font-size: 0.875rem;

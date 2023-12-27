@@ -1,7 +1,7 @@
 <template>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    <page-hero>
+    <page-hero class="py-24">
       <h1>{{ page.fields.page_title }}</h1>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
@@ -17,7 +17,7 @@
       </NuxtLink>
     </page-hero>
 
-    <!--<div class="pt-32 pb-16">
+    <div class="pt-32 pb-16">
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <div class="heading2 mb-16">Featured Event</div>
@@ -44,29 +44,23 @@
           </el-col>
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
-            
-              Server side rendering does not work with the following
-              combination of components
-            
-            <client-only>
-              <div class="upcoming-events">
-                <event-card
-                  v-for="event in upcomingEvents.items"
-                  :key="event.sys.id"
-                  :event="event"
-                />
-              </div>
-              <div class="mt-16">
-                <nuxt-link
-                  class="btn-load-more"
-                  :to="{
-                    name: 'news-and-events-events',
-                  }"
-                >
-                  View All Events
-                </nuxt-link>
-              </div>
-            </client-only>
+            <div class="upcoming-events">
+              <event-card
+                v-for="event in upcomingEvents.items"
+                :key="event.sys.id"
+                :event="event"
+              />
+            </div>
+            <div class="mt-16">
+              <nuxt-link
+                class="btn-load-more"
+                :to="{
+                  name: 'news-and-events-events',
+                }"
+              >
+                View All Events
+              </nuxt-link>
+            </div>
           </el-col>
         </el-row>
 
@@ -83,13 +77,10 @@
               <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
               <newsletter-form />
               <div class="newsletter-archive mt-16">
-                <style type="text/css">
-                  .campaign { margin-top: .5rem; }
-                </style>
                 <div class="heading2 mt-24">Current Newsletter</div>
-                <div id="newsletter-archive" />
+                <div ref="newsletterArchive" id="newsletter-archive" />
                 <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
-                  View all Newsletters<svg-icon icon="icon-open" height="20" width="20" />
+                  View all Newsletters<svgo-icon-open />
                 </a>
               </div>
               <div class="heading2 mt-24">Get Involved</div>
@@ -138,19 +129,16 @@
           </el-row>
         </div>
       </div>
-    </div>-->
+    </div>
   </div>
 </template>
 
 <script>
-/*import EventListItem from '@/components/EventListItem/EventListItem.vue';
+import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue';
 import EventCard from '@/components/EventCard/EventCard.vue';
-import PageHero from '@/components/PageHero/PageHero.vue';
-import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
+import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
-import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
-import CommunitySpotlightListings from '~/components/CommunitySpotlight/CommunitySpotlightListings.vue';*/
 
 import ErrorMessages from '@/mixins/error-messages'
 import MarkedMixin from '@/mixins/marked'
@@ -165,14 +153,11 @@ export default {
   ],
 
   components: {
-    /*EventCard,
-    EventListItem,
-    PageHero,
-    NewsListItem,
-    SearchControlsContentful,
-    NewsletterForm,
     FeaturedEvent,
-    CommunitySpotlightListings*/
+    NewsListItem,
+    EventCard,
+    CommunitySpotlightListings,
+    NewsletterForm
   },
 
   setup() {
@@ -185,6 +170,10 @@ export default {
       console.error("SETUP ERROR: ",e)
       const message = ErrorMessages.methods.contentful()
     }
+  },
+
+  mounted() {
+    this.$injectNewsletterArchive('#newsletter-archive')
   },
 
   watch: {
@@ -257,15 +246,11 @@ export default {
     currentMonth() {
       return new Date().getMonth()
     }
-  },
-
-  mounted() {
-    this.$injectNewsletterArchive('#newsletter-archive')
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss" >
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .page-data {
   background-color: $background;
@@ -347,5 +332,8 @@ export default {
 .get-involved-button {
   width: 100%;
   margin-left: 0 !important;
+}
+:deep(.campaign) {
+   margin-top: .5rem; 
 }
 </style>
