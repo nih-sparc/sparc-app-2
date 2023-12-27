@@ -221,9 +221,7 @@ export default {
 
   watch: {
     '$route.query': {
-      handler: function() {
-        this.$nextTick(async () => {
-          // we use next tick to wait for the facet menu to be mounted
+      handler: async function() {
           this.news = await fetchNews(
             this.$contentfulClient, 
             this.$route.query.search, 
@@ -235,7 +233,6 @@ export default {
             0
           )
           //this.$refs.altSearchResults?.retrieveAltTotals()
-        })
       },
       immediate: true
     },
@@ -264,10 +261,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Get more news for the new page
-     * @param {Number} page
-     */
     async onPaginationPageChange(page) {
       const { limit } = this.news
       const offset = (page - 1) * limit

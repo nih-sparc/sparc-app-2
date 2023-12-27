@@ -29,7 +29,7 @@ const showAllOption = 'show all'
 const dateOptions = ['Before', 'During', 'After']
 
 export default {
-  name: 'FacetRadioButtonCategory',
+  name: 'FacetRadioButtonDateCategory',
 
   components: { FacetLabel, RadioDateOption },
 

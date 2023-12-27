@@ -132,6 +132,7 @@ export default {
     },
     publicationDateOptionChanged(newValue) {
       if (this.publicationDateOption == newValue) {
+        this.$emit('news-selections-changed')
         return
       }
       this.publicationDateOption = newValue
