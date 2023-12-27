@@ -1,7 +1,6 @@
 <template>
-  <!-- Alternative search suggestions NNOTE that this is currently just copy and pasted from /data/index.vue -->
-  <div v-if="searchHasAltResults && this.$route.query.search" class="mt-24">
-    <br />
+  <div v-if="searchHasAltResults && this.$route.query.search">
+    <hr />
     <template v-if="!searchHadResults">
       No results were found for <strong><i>{{ this.$route.query.search }}</i></strong>.
     </template>
@@ -116,4 +115,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+hr {
+  border-top: none;
+}
+</style>

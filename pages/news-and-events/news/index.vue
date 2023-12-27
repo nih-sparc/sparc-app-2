@@ -1,24 +1,24 @@
 <template>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="News" />
-    <!--<div class="container">
+    <div class="container">
       <div class="search-tabs__container">
         <h3>
           Browse categories
         </h3>
         <ul class="search-tabs">
-          <li v-for="type in searchTypes" :key="type.label">
+          <li v-for="searchType in searchTypes" :key="searchType.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: type.path === 'news' }"
+              :class="{ active: searchType.path === 'news' }"
               :to="{
-                path: type.path,
+                path: searchType.path,
                 query: {
                   ...$route.query,
                 }
               }"
             >
-              {{ type.label }}
+              {{ searchType.label }}
             </nuxt-link>
           </li>
         </ul>
@@ -34,7 +34,7 @@
           showSearchText
         />
       </div>
-    </div>-->
+    </div>
     <div class="pb-16 container">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
@@ -73,16 +73,17 @@
                     />
                   </span>
                 </div>
-                <div ref="newsWrap" class="subpage">
-                  <news-list-item
-                    v-for="item in news.items"
-                    :key="item.sys.id"
-                    :item="item"
-                  />
-                  <!--<alternative-search-results-news
+                <div class="subpage">
+                  <template v-for="(item, index) in news.items" :key="index">
+                    <news-list-item
+                      :item="item"
+                    />
+                  </template>
+                  <alternative-search-results-news
                     ref="altSearchResults"
                     :search-had-results="news.items.length > 0"
-                  />-->
+                    @vue:mounted="altResultsMounted"
+                  />
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="news.items?.length">
@@ -232,7 +233,7 @@ export default {
             10, 
             0
           )
-          //this.$refs.altSearchResults?.retrieveAltTotals()
+          this.$refs.altSearchResults?.retrieveAltTotals()
       },
       immediate: true
     },
@@ -281,6 +282,9 @@ export default {
       const response = await fetchNews(this.$contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
       this.news = response
     },
+    altResultsMounted() {
+        this.$refs.altSearchResults?.retrieveAltTotals()
+    }
   }
 }
 </script>
