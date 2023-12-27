@@ -106,9 +106,9 @@
         </el-col>
       </el-row>
     </div>
-    <!--<div class="pb-16 pt-16 container">
+    <div class="pb-16 pt-16 container">
       <submit-news-section/>
-    </div>-->
+    </div>
   </div>
 </template>
 
@@ -119,7 +119,7 @@ import NewsFacetMenu from '@/components/FacetMenu/NewsFacetMenu.vue'
 import NewsListItem from '@/components/NewsListItem/NewsListItem.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue';
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
-//import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
+import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
 import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
 
 import { fetchNews } from '../model'
@@ -165,7 +165,7 @@ export default {
     NewsListItem,
     SearchControlsContentful,
     SortMenu,
-    //SubmitNewsSection,
+    SubmitNewsSection,
     AlternativeSearchResultsNews
   },
 

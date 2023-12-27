@@ -20,19 +20,16 @@ export default {
     Paper
   },
 
-  data() {
-    return {
-      searchPaperText: '',
-      searchPaperCSButton: ''
-    }
-  },
-
   async setup() {
     const config = useRuntimeConfig()
     const { $contentfulClient } = useNuxtApp()
     const response = await $contentfulClient.getEntry(config.public.ctf_news_and_events_page_id)
-    this.searchPaperCSButton = response.fields.searchPaperCsButton
-    this.searchPaperText = response.fields.searchPaperText
+    const searchPaperCSButton = response.fields.searchPaperCsButton
+    const searchPaperText = response.fields.searchPaperText
+    return {
+      searchPaperText,
+      searchPaperCSButton
+    }
   }
 }
 </script>
