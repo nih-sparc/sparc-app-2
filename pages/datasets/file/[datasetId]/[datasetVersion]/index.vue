@@ -237,6 +237,7 @@ export default {
   },
 
   data: () => {
+    const config = useRuntimeConfig()
     return {
       biolucidaData: {
         biolucida_image_id: '',
@@ -246,7 +247,7 @@ export default {
       tabs: [],
       file: {},
       zipData: '',
-      zipitUrl: process.env.zipit_api_host
+      zipitUrl: config.public.zipit_api_host
     }
   },
 

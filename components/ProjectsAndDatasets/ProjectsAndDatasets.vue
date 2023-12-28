@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     isProject() {
-      return pathOr('', ["sys","contentType","sys","id"], this.projectOrResource) == process.env.ctf_project_id
+      return pathOr('', ["sys","contentType","sys","id"], this.projectOrResource) == this.$config.public.ctf_project_id
     },
     datasetLink() {
       return {

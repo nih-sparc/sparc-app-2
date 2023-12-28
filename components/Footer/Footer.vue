@@ -32,9 +32,7 @@
               </a>
             </div>
             <div class="footer__info--re3data">
-              <object type="image/svg+xml" data="../../static/images/100013719.svg">
-                <img src="../../static/images/100013719.svg" alt="re3data badge"/>
-              </object>
+              <img src="../../static/images/100013719.svg" alt="re3data badge"/>
             </div>
           </div>
         </el-col>

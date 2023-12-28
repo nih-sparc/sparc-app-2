@@ -1,90 +1,88 @@
 <template>
   <div class="dataset-details pb-16">
-    <client-only>
-      <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-      <div v-if="showTombstone">
-        <tombstone
-          :dataset-details="datasetInfo"
-        />
-      </div>
-      <div class="details-container" v-else>
-        <el-row :gutter="16">
-          <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
-            <dataset-action-box />
-            <similar-datasets-info-box
-              :associated-projects="associatedProjects"
-              :dataset-type-name="datasetTypeName"
-            />
-          </el-col>
-          <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
-            <dataset-header
-              class="dataset-header"
-              :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate"
-              :numCitations="numCitations"
-              :numDownloads="numDownloads"
-            />
-            <content-tab-card
-              class="mt-32"
-              id="datasetDetailsTabsContainer"
-              :tabs="tabs"
-              :active-tab-id="activeTabId"
-              @tab-changed="tabChanged"
-              routeName="datasetDetailsTab"
-            >
-              <dataset-description-info
-                class="body1"
-                v-show="activeTabId === 'abstract'"
-                :markdown="markdown"
-                :dataset-records="datasetRecords"
-                :loading-markdown="loadingMarkdown"
-                :dataset-tags="datasetTags"
-              />
-              <dataset-about-info
-                class="body1"
-                v-show="activeTabId === 'about'"
-                :latestVersionRevision="latestVersionRevision"
-                :latestVersionDate="latestVersionDate"
-                :associated-projects="associatedProjects"
-              />
-              <citation-details
-                class="body1"
-                v-show="activeTabId === 'cite'"
-                :doi-value="datasetInfo.doi"
-              />
-              <dataset-files-info
-                class="body1"
-                v-if="hasFiles"
-                v-show="activeTabId === 'files'"
-              />
-              <images-gallery
-                class="body1"
-                :markdown="markdown.markdownTop"
-                v-show="activeTabId === 'images'"
-              />
-              <dataset-references
-                v-if="hasCitations"
-                class="body1"
-                v-show="activeTabId === 'references'"
-                :primary-publications="primaryPublications"
-                :associated-publications="associatedPublications"
-              />
-              <version-history
-                v-if="canViewVersions"
-                class="body1"
-                v-show="activeTabId === 'versions'"
-                :versions="versions"
-              />
-            </content-tab-card>
-          </el-col>
-        </el-row>
-      </div>
-      <dataset-version-message
-        v-if="!isLatestVersion"
-        :current-version="datasetInfo.version"
+    <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
+    <div v-if="showTombstone">
+      <tombstone
         :dataset-details="datasetInfo"
       />
-    </client-only>
+    </div>
+    <div class="details-container" v-else>
+      <el-row :gutter="16">
+        <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
+          <dataset-action-box />
+          <similar-datasets-info-box
+            :associated-projects="associatedProjects"
+            :dataset-type-name="datasetTypeName"
+          />
+        </el-col>
+        <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
+          <dataset-header
+            class="dataset-header"
+            :latestVersionRevision="latestVersionRevision"
+            :latestVersionDate="latestVersionDate"
+            :numCitations="numCitations"
+            :numDownloads="numDownloads"
+          />
+          <content-tab-card
+            class="mt-32"
+            id="datasetDetailsTabsContainer"
+            :tabs="tabs"
+            :active-tab-id="activeTabId"
+            @tab-changed="tabChanged"
+            routeName="datasetDetailsTab"
+          >
+            <dataset-description-info
+              class="body1"
+              v-show="activeTabId === 'abstract'"
+              :markdown="markdown"
+              :dataset-records="datasetRecords"
+              :loading-markdown="loadingMarkdown"
+              :dataset-tags="datasetTags"
+            />
+            <dataset-about-info
+              class="body1"
+              v-show="activeTabId === 'about'"
+              :latestVersionRevision="latestVersionRevision"
+              :latestVersionDate="latestVersionDate"
+              :associated-projects="associatedProjects"
+            />
+            <citation-details
+              class="body1"
+              v-show="activeTabId === 'cite'"
+              :doi-value="datasetInfo.doi"
+            />
+            <dataset-files-info
+              class="body1"
+              v-if="hasFiles"
+              v-show="activeTabId === 'files'"
+            />
+            <images-gallery
+              class="body1"
+              :markdown="markdown.markdownTop"
+              v-show="activeTabId === 'images'"
+            />
+            <dataset-references
+              v-if="hasCitations"
+              class="body1"
+              v-show="activeTabId === 'references'"
+              :primary-publications="primaryPublications"
+              :associated-publications="associatedPublications"
+            />
+            <version-history
+              v-if="canViewVersions"
+              class="body1"
+              v-show="activeTabId === 'versions'"
+              :versions="versions"
+            />
+          </content-tab-card>
+        </el-col>
+      </el-row>
+    </div>
+    <dataset-version-message
+      v-if="!isLatestVersion"
+      :current-version="datasetInfo.version"
+      :dataset-details="datasetInfo"
+    />
   </div>
 </template>
 
