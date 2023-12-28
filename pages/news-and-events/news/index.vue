@@ -309,9 +309,6 @@ export default {
   margin-bottom: .5rem;
   margin-top: .5rem;
 }
-.page-wrap {
-  margin-bottom: 2.5rem;
-}
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;

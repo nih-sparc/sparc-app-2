@@ -38,7 +38,7 @@
           v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"
         />
         <a v-else-if="story.fields.youtubeUrl" :href="story.fields.youtubeUrl" target="_blank">
-          <span v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"/><svgo-icon-open height="30" width="30" />
+          <span v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"/><svgo-icon-open class="icon-open" />
         </a>
       </div>
       <div class="body1">
@@ -140,5 +140,9 @@ table:not([class^='el-table__'])::before {
 .property-name-column {
   width: 180px;
   font-weight: bold;
+}
+.icon-open {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>

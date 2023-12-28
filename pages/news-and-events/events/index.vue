@@ -342,9 +342,6 @@ export default {
   margin-top: 1rem;
   padding-bottom: 1rem;
 }
-.page-wrap {
-  margin-bottom: 2.5rem;
-}
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;

@@ -1,6 +1,6 @@
 <template>
   <div class="file-detail-page">
-    <div class="page-wrap container">
+    <div class="container">
       <content-tab-card
         v-if="hasTimeseriesViewer"
         class="tabs p-32 pt-48"
