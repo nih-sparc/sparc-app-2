@@ -37,7 +37,6 @@
 import { pathOr, isEmpty } from 'ramda'
 import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
 import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
 import marked from '@/mixins/marked'
@@ -47,7 +46,6 @@ export default {
 
   components: {
     Breadcrumb,
-    PageHero,
     LearnMoreCard,
     ShareLinks
   },

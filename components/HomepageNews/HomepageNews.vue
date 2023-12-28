@@ -136,9 +136,9 @@ export default {
         if (url.includes('bit.ly')) {
           const bitlyId = url.replace("https://", "")
           try {
-            const response = await this.$axios.post(process.env.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+            const response = await this.$axios.post(this.$config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
               headers: {
-                Authorization: `Bearer ${process.env.BITLY_ACCESS_TOKEN}`,
+                Authorization: `Bearer ${this.$config.public.BITLY_ACCESS_TOKEN}`,
                 'Content-Type': 'application/json',
               }
             })

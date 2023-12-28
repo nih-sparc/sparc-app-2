@@ -1,16 +1,14 @@
 <template>
   <div class="page-wrap container">
-    <client-only placeholder="Loading video ...">
-      <div class="video-container">
-        <video ref="vid" class="video" controls crossorigin playsinline>
-          <source :src="videoSource" :type="mimetype" size="1080" @error="failedVideoHandler"/>
-          <p>
-            Your browser doesn't support HTML5 video. Here is a a
-            <a :href="videoSource">link to the video</a> instead.
-          </p>
-        </video>
-      </div>
-    </client-only>
+    <div class="video-container">
+      <video ref="vid" class="video" controls crossorigin playsinline>
+        <source :src="videoSource" :type="mimetype" size="1080" @error="failedVideoHandler"/>
+        <p>
+          Your browser doesn't support HTML5 video. Here is a a
+          <a :href="videoSource">link to the video</a> instead.
+        </p>
+      </video>
+    </div>
     <video-viewer-metadata
       :datasetInfo="datasetInfo"
       :file="file"

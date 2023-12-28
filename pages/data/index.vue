@@ -40,127 +40,125 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
-            <client-only>
-              <el-col
-                v-if="searchType.type === 'dataset' || searchType.type === 'model' || searchType.type === 'simulation'"
-                class="facet-menu"
-                :sm="24"
-                :md="8"
-                :lg="6"
-              >
-                <dataset-facet-menu
-                  :facets="facets"
-                  :visible-facets="visibleFacets"
-                  @selected-facets-changed="onPaginationPageChange(1)"
-                  @hook:mounted="facetMenuMounted"
-                  ref="datasetFacetMenu"
-                />
-              </el-col>
-              <el-col
-                v-else-if="searchType.type === 'projects'"
-                class="facet-menu"
-                :sm="24"
-                :md="8"
-                :lg="6"
-              >
-                <projects-facet-menu
-                  :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                  :fundingFacets="projectsFundingFacets"
-                  @projects-selections-changed="onPaginationPageChange(1)"
-                  @hook:mounted="facetMenuMounted"
-                  ref="projectsFacetMenu"
-                />
-              </el-col>
-              <el-col
-                :sm="searchColSpan('sm')"
-                :md="searchColSpan('md')"
-                :lg="searchColSpan('lg')"
-              >
-                <div class="search-heading">
-                  <p v-show="!isLoadingSearch && searchData.items.length">
-                    {{ searchData.total }} Results | Showing
-                    <pagination-menu
-                      :page-size="searchData.limit"
-                      @update-page-size="updateDataSearchLimit"
-                    />
-                  </p>
-                  <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
-                    Sort
-                    <sort-menu
-                      :options="algoliaSortOptions"
-                      :selected-option="selectedAlgoliaSortOption"
-                      @update-selected-option="onAlgoliaSortOptionChange"
-                    />
-                  </span>
-                  <span v-else-if="searchType.type == 'projects'" class="label1">
-                    Sort
-                    <sort-menu
-                      :options="projectsSortOptions"
-                      :selected-option="selectedProjectsSortOption"
-                      @update-selected-option="onProjectsSortOptionChange"
-                    />
-                  </span>
-                </div>
-                <div v-loading="isLoadingSearch" class="table-wrap">
-                  <p v-if="searchFailed" class="search-error">
-                    Sorry, the search engine has encountered an unexpected
-                    error, please try again later.
-                  </p>
-                  <dataset-search-results
-                    v-else-if="searchType.type !== 'projects'"
-                    :tableData="tableData"
-                  />
-                  <project-search-results
-                    v-else-if="searchType.type == 'projects'"
-                    :tableData="tableData"
-                  />
-
-                  <div v-if="searchHasAltResults" class="mt-24">
-                    <template v-if="searchData.total === 0">
-                      No results were found for <strong>{{ searchType.label }}</strong>.
-                    </template>
-                    The following results were discovered for the other categories:
-                    <br />
-                    <br />
-                    <template v-for="dataType in dataTypes">
-                      <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
-                        <nuxt-link
-                          class="alternative-links"
-                          :to="{
-                            name: 'data',
-                            query: {
-                              ...$route.query,
-                              type: dataType
-                            }
-                          }"
-                        >
-                          {{ resultCounts[dataType] }} result{{
-                            resultCounts[dataType] > 1 ? 's' : ''
-                          }}
-                        </nuxt-link>
-                        - {{ humanReadableDataTypesLookup[dataType] }}
-                      </dd>
-                    </template>
-                  </div>
-                </div>
-                <div class="search-heading">
-                  <p v-if="!isLoadingSearch && searchData.items.length">
-                    {{ searchHeading }} | Showing
-                    <pagination-menu
-                      :page-size="searchData.limit"
-                      @update-page-size="updateDataSearchLimit"
-                    />
-                  </p>
-                  <pagination
-                    v-if="searchData.limit < searchData.total"
-                    :selected="curSearchPage"
+            <el-col
+              v-if="searchType.type === 'dataset' || searchType.type === 'model' || searchType.type === 'simulation'"
+              class="facet-menu"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <dataset-facet-menu
+                :facets="facets"
+                :visible-facets="visibleFacets"
+                @selected-facets-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
+                ref="datasetFacetMenu"
+              />
+            </el-col>
+            <el-col
+              v-else-if="searchType.type === 'projects'"
+              class="facet-menu"
+              :sm="24"
+              :md="8"
+              :lg="6"
+            >
+              <projects-facet-menu
+                :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                :fundingFacets="projectsFundingFacets"
+                @projects-selections-changed="onPaginationPageChange(1)"
+                @hook:mounted="facetMenuMounted"
+                ref="projectsFacetMenu"
+              />
+            </el-col>
+            <el-col
+              :sm="searchColSpan('sm')"
+              :md="searchColSpan('md')"
+              :lg="searchColSpan('lg')"
+            >
+              <div class="search-heading">
+                <p v-show="!isLoadingSearch && searchData.items.length">
+                  {{ searchData.total }} Results | Showing
+                  <pagination-menu
                     :page-size="searchData.limit"
-                    :total-count="searchData.total"
-                    @select-page="onPaginationPageChange"
+                    @update-page-size="updateDataSearchLimit"
                   />
+                </p>
+                <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
+                  Sort
+                  <sort-menu
+                    :options="algoliaSortOptions"
+                    :selected-option="selectedAlgoliaSortOption"
+                    @update-selected-option="onAlgoliaSortOptionChange"
+                  />
+                </span>
+                <span v-else-if="searchType.type == 'projects'" class="label1">
+                  Sort
+                  <sort-menu
+                    :options="projectsSortOptions"
+                    :selected-option="selectedProjectsSortOption"
+                    @update-selected-option="onProjectsSortOptionChange"
+                  />
+                </span>
+              </div>
+              <div v-loading="isLoadingSearch" class="table-wrap">
+                <p v-if="searchFailed" class="search-error">
+                  Sorry, the search engine has encountered an unexpected
+                  error, please try again later.
+                </p>
+                <dataset-search-results
+                  v-else-if="searchType.type !== 'projects'"
+                  :tableData="tableData"
+                />
+                <project-search-results
+                  v-else-if="searchType.type == 'projects'"
+                  :tableData="tableData"
+                />
+
+                <div v-if="searchHasAltResults" class="mt-24">
+                  <template v-if="searchData.total === 0">
+                    No results were found for <strong>{{ searchType.label }}</strong>.
+                  </template>
+                  The following results were discovered for the other categories:
+                  <br />
+                  <br />
+                  <template v-for="dataType in dataTypes">
+                    <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
+                      <nuxt-link
+                        class="alternative-links"
+                        :to="{
+                          name: 'data',
+                          query: {
+                            ...$route.query,
+                            type: dataType
+                          }
+                        }"
+                      >
+                        {{ resultCounts[dataType] }} result{{
+                          resultCounts[dataType] > 1 ? 's' : ''
+                        }}
+                      </nuxt-link>
+                      - {{ humanReadableDataTypesLookup[dataType] }}
+                    </dd>
+                  </template>
                 </div>
-              </el-col>
-            </client-only>
+              </div>
+              <div class="search-heading">
+                <p v-if="!isLoadingSearch && searchData.items.length">
+                  {{ searchHeading }} | Showing
+                  <pagination-menu
+                    :page-size="searchData.limit"
+                    @update-page-size="updateDataSearchLimit"
+                  />
+                </p>
+                <pagination
+                  v-if="searchData.limit < searchData.total"
+                  :selected="curSearchPage"
+                  :page-size="searchData.limit"
+                  :total-count="searchData.total"
+                  @select-page="onPaginationPageChange"
+                />
+              </div>
+            </el-col>
           </el-row>
         </el-col>
       </el-row>
@@ -180,7 +178,6 @@ import {
   pathOr,
   propOr
 } from 'ramda'
-import PageHero from '@/components/PageHero/PageHero.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
 import ProjectsFacetMenu from '@/components/FacetMenu/ProjectsFacetMenu.vue'
@@ -237,7 +234,6 @@ export default {
   name: 'DataPage',
 
   components: {
-    PageHero,
     SearchControlsContentful,
     DatasetFacetMenu,
     DatasetSearchResults,

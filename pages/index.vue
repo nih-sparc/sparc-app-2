@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import PageHero from '@/components/PageHero/PageHero.vue'
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
@@ -52,7 +51,6 @@ export default {
   name: 'SparcHomepage',
 
   components: {
-    PageHero,
     FeaturedData,
     HomepageNews,
     PortalFeatures,

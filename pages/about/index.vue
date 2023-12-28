@@ -68,8 +68,6 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 
@@ -80,8 +78,6 @@ export default {
   name: 'AboutPage',
 
   components: {
-    Breadcrumb,
-    PageHero,
     Paper,
     Gallery
   },

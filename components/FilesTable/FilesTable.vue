@@ -493,7 +493,7 @@ export default {
 
     isFileTooLarge(file) {
       const fileSize = propOr(0, 'size', file)
-      return fileSize > process.env.max_download_size
+      return fileSize > this.$config.public.max_download_size
     },
 
     handleSelectionChange(val) {

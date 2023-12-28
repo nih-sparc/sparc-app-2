@@ -1,11 +1,11 @@
 <template>
   <div class="page">
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
-    <page-hero class="news-header">
+    <page-hero class="news-header py-24">
       <h1 v-html="parseMarkdown(heroTitle)"/>
       <div class="body2" v-html="parseMarkdown(heroSummary)"/>
     </page-hero>
-    <div class="page-wrap container">
+    <div class="container">
       <div class="subpage">
         <!-- eslint-disable vue/no-v-html -->
         <!-- marked will sanitize the HTML injected -->
@@ -34,7 +34,6 @@
 <script>
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
-import PageHero from '@/components/PageHero/PageHero'
 import ShareLinks from '@/components/ShareLinks/ShareLinks'
 
 import FirstCol from '@/mixins/first-col/index'
@@ -43,7 +42,6 @@ export default {
   name: 'NewsEventsResourcesPage',
 
   components: {
-    PageHero,
     ShareLinks
   },
 
@@ -98,7 +96,7 @@ export default {
      * @returns {String}
      */
     pageUrl: function() {
-      return `${process.env.ROOT_URL}${this.$route.fullPath}`
+      return `${this.$config.public.ROOT_URL}${this.$route.fullPath}`
     },
 
     /**

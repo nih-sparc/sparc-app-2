@@ -8,8 +8,12 @@
 </template>
 
 <script>
+import brokenImage from '@/static/images/icon-broken-image.svg'
 export default {
   name: 'EventBannerImage',
+  components: {
+    brokenImage
+  },
   props: {
     src: {
       type: String,
@@ -21,16 +25,6 @@ export default {
     return {
       bannerSrc: ''
       //   publicPath: process.env.BASE_URL || '/'
-    }
-  },
-
-  computed: {
-    /**
-     * Compute broken image path
-     * @return {String}
-     */
-    brokenImage: function() {
-      return `@/static/images/icon-broken-image.svg`
     }
   },
 

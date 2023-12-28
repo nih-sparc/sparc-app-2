@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import { propOr } from 'ramda'
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 
 const DEFAULT_ARCHIVE_NAME = 'sparc-portal-data'
@@ -139,7 +138,7 @@ export default {
      * @returns {Number}
      */
     maxDownloadSize() {
-      return this.formatMetric(process.env.max_download_size)
+      return this.formatMetric(this.$config.public.max_download_size)
     }
   },
 

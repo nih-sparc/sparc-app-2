@@ -91,6 +91,7 @@ export default defineNuxtConfig({
       ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
       ctf_about_details_content_type_id: 'aboutPageSecondLevel',
       ctf_news_id: 'news',
+      ctf_event_id: 'event',
       ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
       ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
