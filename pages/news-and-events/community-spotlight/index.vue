@@ -45,12 +45,12 @@
               :md="6"
               :lg="6"
             >
-              <!--<community-spotlight-facet-menu
+              <community-spotlight-facet-menu
                 ref="communitySpotlightFacetMenu"
                 class="community-spotlight-facet-menu"
                 :anatomical-structures="anatomicalStructures"
                 @community-spotlight-selections-changed="onPaginationPageChange(1)"
-              />-->
+              />
             </el-col>
             <el-col
               :sm='24'
@@ -124,7 +124,7 @@
 import { ref } from 'vue'
 import { pathOr, propOr } from 'ramda'
 import CommunitySpotlightItem from '@/components/CommunitySpotlight/CommunitySpotlightItem.vue'
-//import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlightFacetMenu.vue'
+import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlightFacetMenu.vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
@@ -181,7 +181,7 @@ export default {
 
   components: {
     CommunitySpotlightItem,
-    //CommunitySpotlightFacetMenu,
+    CommunitySpotlightFacetMenu,
     SearchControlsContentful,
     SortMenu,
     SubmitCommunitySection,
