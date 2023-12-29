@@ -11,7 +11,7 @@
       <dd v-if="resultCounts[dataType] > 0" :key="dataType">
         <nuxt-link
           :to="{
-            name: `news-and-events-${dataType}`,
+            name: `${dataType}`,
             query: {
               ...$route.query
             }
@@ -28,11 +28,7 @@
 </template>
 
 <script>
-import {
-  fetchNews,
-  fetchEvents,
-  fetchCommunitySpotlightItems
-} from '@/pages/news-and-events/model.js'
+import { fetchResources } from '@/pages/resources/utils'
 
 function getLastUrlSegment(path) {
   return path
@@ -42,7 +38,7 @@ function getLastUrlSegment(path) {
 }
 
 export default {
-  name: 'AlternativeSearchResultsNews',
+  name: 'AlternativeSearchResultsResources',
   props: {
     searchHadResults: {
       type: Boolean,
@@ -52,25 +48,27 @@ export default {
   data: function() {
     return {
       searchHasAltResults: false,
-      dataTypes: ['news', 'events', 'community-spotlight'],
+      dataTypes: [
+        'biological',
+        'databases',
+        'devices',
+        'information-services',
+        'software'
+      ],
       humanReadableDataTypesLookup: {
-        news: 'News',
-        events: 'Events',
-        'community-spotlight': 'Community Spotlight'
-      },
-      functionLookup: {
-        news: fetchNews,
-        events: fetchEvents,
-        'community-spotlight': fetchCommunitySpotlightItems
+        biological: 'Biologicals',
+        databases: 'Data and Models',
+        devices: 'Devices',
+        'information-services': 'Information Services',
+        software: 'Software'
       },
       resultCounts: {
-        news: 0,
-        events: 0,
-        'community-spotlight': 0
-      },
-      fetchNews: fetchNews,
-      fetchEvents: fetchEvents,
-      fetchCommunitySpotlightItems: fetchCommunitySpotlightItems
+        biological: 0,
+        databases: 0,
+        devices: 0,
+        'information-services': 0,
+        software: 0
+      }
     }
   },
   computed: {
@@ -95,11 +93,13 @@ export default {
       })
     },
     retrieveAltTotal: function(category) {
-      this.functionLookup[category](
+      fetchResources(
+        this.humanReadableDataTypesLookup[category], // needed as human readable is used for contentful
         this.$route.query.search,
         undefined,
         undefined,
-        undefined
+        10,
+        0
       )
         .then(resp => {
           this.resultCounts[category] = resp.total
@@ -113,7 +113,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 hr {
   border-top: none;

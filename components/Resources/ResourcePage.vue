@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Events" />
+    <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <div class="container">
       <div class="search-tabs__container">
         <h3>
@@ -10,7 +10,7 @@
           <li v-for="searchType in searchTypes" :key="searchType.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: searchType.path === 'events' }"
+              :class="{ active: searchType.path == path }"
               :to="{
                 path: searchType.path,
                 query: {
@@ -30,12 +30,12 @@
         <search-controls-contentful
           class="search-bar"
           placeholder="Enter search criteria"
-          path="/news-and-events/events"
+          :path=path
           showSearchText
         />
       </div>
     </div>
-    <div class="pb-16 container">
+    <div class="pb-16 container pt-32">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
@@ -45,10 +45,8 @@
               :md="6"
               :lg="6"
             >
-              <events-facet-menu
-                ref="eventsFacetMenu"
-                class="events-facet-menu"
-                @events-selections-changed="onPaginationPageChange(1)"
+              <tools-and-resources-facet-menu
+                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
               />
             </el-col>
             <el-col
@@ -56,49 +54,44 @@
               :md='18'
               :lg='18'
             >
-              <div class="search-heading mt-32 mb-16">
-                <div class="label1" v-show="events.items.length">
-                  {{ events.total }} Results | Showing
+              <div class="search-heading mb-16">
+                <div class="label1" v-show="resources.items.length">
+                  {{ resources.total }} Results | Showing
                   <pagination-menu
-                    :page-size="events.limit"
+                    :page-size="resources.limit"
                     @update-page-size="onPaginationLimitChange"
                   />
                 </div>
-                <span class="label1">
+                <span v-if="resources.items.length" class="label1">
                   Sort
-                  <sort-menu
+                  <sort-menu  
                     :options="sortOptions"
                     :selected-option="selectedSortOption"
                     @update-selected-option="onSortOptionChange"
                   />
                 </span>
               </div>
-              <div ref="eventsWrap" class="subpage">
-                <event-list-item
-                  v-for="item in events.items"
-                  :key="item.sys.id"
-                  :item="item"
-                  :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
-                />
-                <alternative-search-results-news
+              <div class="subpage">
+                <resources-search-results :table-data="resources.items" />
+                <alternative-search-results
                   ref="altSearchResults"
-                  :search-had-results="events.items.length > 0"
+                  :search-had-results="resources.items.length > 0"
                   @vue:mounted="altResultsMounted"
                 />
               </div>
               <div class="search-heading">
-                <div class="label1" v-if="events.items.length">
-                  {{ events.total }} Results | Showing
+                <div class="label1" v-if="resources.items.length">
+                  {{ resources.total }} Results | Showing
                   <pagination-menu
-                    :page-size="events.limit"
+                    :page-size="resources.limit"
                     @update-page-size="onPaginationLimitChange"
                   />
                 </div>
                 <pagination
-                  v-if="events.limit < events.total"
+                  v-if="resources.limit < resources.total"
                   :selected="curSearchPage"
-                  :page-size="events.limit"
-                  :total-count="events.total"
+                  :page-size="resources.limit"
+                  :total-count="resources.total"
                   @select-page="onPaginationPageChange"
                 />
               </div>
@@ -108,80 +101,44 @@
       </el-row>
     </div>
     <div class="pb-16 pt-16 container">
-      <submit-news-section/>
+      <submit-tool-section/>
     </div>
   </div>
 </template>
 
 <script>
 import { ref } from 'vue'
-import { pathOr, propOr } from 'ramda'
-import EventsFacetMenu from '@/components/FacetMenu/EventsFacetMenu.vue'
-import EventListItem from '@/components/EventListItem/EventListItem.vue'
+import { propOr } from 'ramda'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
-import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
-import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
-
-import { fetchEvents } from '../model'
-
-const searchTypes = [
-  {
-    label: 'News',
-    path: 'news'
-  },
-  {
-    label: 'Events',
-    path: 'events'
-  },
-  {
-    label: 'Community Spotlight',
-    path: 'community-spotlight'
-  }
-]
-
-const sortOptions = [
-  {
-    label: 'Upcoming',
-    id: 'upcoming',
-    sortOrder: '-fields.upcomingSortOrder'
-  },
-  {
-    label: 'Latest',
-    id: 'latest',
-    sortOrder: '-fields.startDate'
-  },
-  {
-    label: 'A-Z',
-    id: 'alphabatical',
-    sortOrder: 'fields.title'
-  },
-  {
-    label: 'Z-A',
-    id: 'reverseAlphabatical',
-    sortOrder: '-fields.title'
-  },
-]
+import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
+import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
+import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
+import { fetchResources, searchTypes, sortOptions } from '@/pages/resources/utils'
+import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
 export default {
-  name: 'EventsPage',
+  name: 'ResourcePage',
 
   components: {
-    AlternativeSearchResultsNews,
-    EventsFacetMenu,
-    EventListItem,
     SearchControlsContentful,
+    ResourcesSearchResults,
+    ToolsAndResourcesFacetMenu,
     SortMenu,
-    SubmitNewsSection
+    SubmitToolSection,
+    AlternativeSearchResults
   },
 
   async setup() {
     const route = useRoute()
-
-    const events = await fetchEvents(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
-
+    const searchType = searchTypes.find(searchType => searchType.path == route.path)
+    const title = searchType.label
+    const searchTypeContentfulId = propOr('', 'contentfulLabel', searchType)
+    const resources = await fetchResources(searchTypeContentfulId, route.query.search, undefined, undefined, 10, 0)
     return {
-      events: ref(events)
+      resources: ref(resources),
+      title,
+      searchTypeContentfulId
     }
   },
 
@@ -198,9 +155,9 @@ export default {
           }
         },
         {
-          label: 'News & Events',
+          label: 'Tools & Resources',
           to: {
-            name: 'news-and-events'
+            name: 'resources'
           }
         }
       ]
@@ -209,17 +166,17 @@ export default {
 
   head() {
     return {
-      title: this.searchTypes[1].label,
+      title: this.title,
       meta: [
         {
           hid: 'og:title',
           property: 'og:title',
-          content: this.searchTypes[1].label,
+          content: this.title,
         },
         {
           hid: 'description',
           name: 'description',
-          content: 'Browse events'
+          content: `Browse ${this.title}`
         },
       ]
     }
@@ -228,19 +185,11 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        this.events = await fetchEvents(
-          this.$route.query.search, 
-          this.$refs.eventsFacetMenu?.getStartLessThanDate(), 
-          this.$refs.eventsFacetMenu?.getStartGreaterThanOrEqualToDate(),
-          this.eventTypes, 
-          this.sortOrder, 
-          10, 
-          0
-        )
-        this.$refs.altSearchResults?.retrieveAltTotals()
+        this.resources = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, 10, 0)
+        this.$refs.alternativeSearchResults?.retrieveAltTotals()
       },
       immediate: true
-    },
+    }
   },
 
   computed: {
@@ -249,42 +198,17 @@ export default {
      * @returns {Number}
      */
     curSearchPage: function() {
-      return this.events.skip / this.events.limit + 1
-    },
-    startLessThanDate: function() {
-      return this.$refs.eventsFacetMenu?.getStartLessThanDate()
-    },
-    startGreaterThanOrEqualToDate: function() {
-      return this.$refs.eventsFacetMenu?.getStartGreaterThanOrEqualToDate()
-    },
-    eventTypes: function() {
-      return this.$route.query.selectedEventTypeOptions || undefined
+      return this.resources.skip / this.resources.limit + 1
     },
     sortOrder: function() {
-      return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
+      return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
     },
-    firstPastEventId: function() {
-      const events = propOr([], 'items', this.events)
-      for (let i = 0; i < events.length; i++) {
-        const event = events[i]
-        const upcomingSortOrder = pathOr("", ['fields','upcomingSortOrder'], event)
-        if (upcomingSortOrder < 0) {
-          return pathOr("", ['sys','id'], event)
-        }
-      }
-      return -1
+    type: function() {
+      return this.$route.query.type || undefined
     },
-    showPastEventsDivider: function() {
-      if (this.selectedSortOption.id != "upcoming") {
-        return false
-      }
-      const events = propOr([], 'items', this.events)
-      if (events.length == 0) {
-        return false
-      }
-      const firstEventId = pathOr(-1, ['sys', 'id'], events[0])
-      return this.firstPastEventId != firstEventId
-    }
+    path() {
+      return this.$route.path
+    },
   },
 
   methods: {
@@ -293,24 +217,24 @@ export default {
      * @param {Number} page
      */
     async onPaginationPageChange(page) {
-      const { limit } = this.events
+      const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
-      this.events = response
+      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, limit, offset)
+      this.resources = response
     },
     /**
      * Update limit based on pagination menu selection and get more events
      * @param {Number} limit
      */
     async onPaginationLimitChange(limit) {
-      const newLimit = limit === 'View All' ? this.events.total : limit
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
-      this.events = response
+      const newLimit = limit === 'View All' ? this.resources.total : limit
+      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
+      this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
-      this.events = response
+      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
+      this.resources = response
     },
     altResultsMounted() {
       this.$refs.altSearchResults?.retrieveAltTotals()
@@ -324,7 +248,7 @@ export default {
 .page-data {
   background-color: $background;
 }
-.event-list-item {
+:deep(.resources-search-results__items) {
   border-top: 1px solid $lineColor2;
   padding: 1rem 0;
   &:first-child {
@@ -335,14 +259,13 @@ export default {
     padding-bottom: 0;
   }
 }
-:deep(.past-events-divider) {
-  border-top: none;
-  padding-top: 0;
-}
 .subpage {
   margin-bottom: 1rem;
   margin-top: 1rem;
   padding-bottom: 1rem;
+}
+.page-wrap {
+  margin-bottom: 2.5rem;
 }
 .search-tabs__container {
   margin-top: 2rem;

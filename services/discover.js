@@ -1,4 +1,6 @@
 const browse = async (id, version, path = undefined) => {
+  const { $portalApiClient } = useNuxtApp()
+
   let config = {}
   if (path) {
     config = {
@@ -8,10 +10,12 @@ const browse = async (id, version, path = undefined) => {
       }
     }
   }
-  return apiClient.get(`/${id}/versions/${version}/files/browse`, config)
+  return $portalApiClient.get(`/${id}/versions/${version}/files/browse`, config)
 }
 
-const fetch = async (apiClient, id, path, encode_base_64, s3Bucket) => {
+const fetch = async (id, path, encode_base_64, s3Bucket) => {
+  const { $portalApiClient } = useNuxtApp()
+
   const config = {
     params: {
       encodeBase64: encode_base_64
@@ -20,13 +24,15 @@ const fetch = async (apiClient, id, path, encode_base_64, s3Bucket) => {
   if (s3Bucket) {
     config.params.s3BucketName = s3Bucket
   }
-  return await apiClient.get(
+  return await $portalApiClient.get(
     `/s3-resource/${id}/files/${path}`,
     config
   )
 }
 
-const fetchEmbeddedThumbnail = async (apiClient, id, path, s3Bucket) => {
+const fetchEmbeddedThumbnail = async (id, path, s3Bucket) => {
+  const { $portalApiClient } = useNuxtApp()
+
   const config = {
     params: {
       path: `${id}/files/${path}`
@@ -35,10 +41,12 @@ const fetchEmbeddedThumbnail = async (apiClient, id, path, s3Bucket) => {
   if (s3Bucket) {
     config.params.s3BucketName = s3Bucket
   }
-  return await apiClient.get('/thumbnail/segmentation', config)
+  return await $portalApiClient.get('/thumbnail/segmentation', config)
 }
 
-const getSegmentationInfo = async (apiClient, id, path, s3Bucket) => {
+const getSegmentationInfo = async (id, path, s3Bucket) => {
+  const { $portalApiClient } = useNuxtApp()
+
   const config = {
     params: {
       dataset_path: `${id}/${path}`
@@ -47,10 +55,12 @@ const getSegmentationInfo = async (apiClient, id, path, s3Bucket) => {
   if (s3Bucket) {
     config.params.s3BucketName = s3Bucket
   }
-  return apiClient.get('/segmentation_info', config)
+  return $portalApiClient.get('/segmentation_info', config)
 }
 
-const downloadLink = async (apiClient, file_path, s3Bucket) => {
+const downloadLink = async (file_path, s3Bucket) => {
+  const { $portalApiClient } = useNuxtApp()
+
   const config = {
     params: {
       key: file_path
@@ -59,16 +69,18 @@ const downloadLink = async (apiClient, file_path, s3Bucket) => {
   if (s3Bucket) {
     config.params.s3BucketName = s3Bucket
   }
-  return await apiClient.get('/download', config)
+  return await $portalApiClient.get('/download', config)
 }
 
-const getDiscoverPath = (apiClient, source_identifier) => {
+const getDiscoverPath = (source_identifier) => {
+  const { $portalApiClient } = useNuxtApp()
+  
   const config = {
     params: {
       uri: source_identifier
     }
   }
-  const response = apiClient.get('/s3-resource/discover_path', config)
+  const response = $portalApiClient.get('/s3-resource/discover_path', config)
   return response
 }
 

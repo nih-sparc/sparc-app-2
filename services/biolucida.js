@@ -1,20 +1,22 @@
-import { stringToBase64 } from 'uint8array-extras';
-
-const searchDataset = async (apiClient, id) => {
-  const response = await apiClient.get('image_search/' + id)
+const searchDataset = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  const response = await $portalApiClient.get('image_search/' + id)
   return response.data
 }
 
-const getXMPInfo = async (apiClient, id) => {
-  const response = await apiClient.get('image_xmp_info/' + id)
+const getXMPInfo = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  const response = await $portalApiClient.get('image_xmp_info/' + id)
   return response.data
 }
 
-const getThumbnail = async (apiClient, id) => {
-  return apiClient.get('thumbnail/' + id)
+const getThumbnail = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  return $portalApiClient.get('thumbnail/' + id)
 }
 
-const getNeurolucidaThumbnail = async (apiClient, id, version, path) => {
+const getNeurolucidaThumbnail = async (id, version, path) => {
+  const { $portalApiClient } = useNuxtApp()
   const config = {
     params: {
       datasetId: id,
@@ -22,26 +24,30 @@ const getNeurolucidaThumbnail = async (apiClient, id, version, path) => {
       path: `files/${path}`
     }
   }
-  const response = await apiClient.get('thumbnail/neurolucida', config)
+  const response = await $portalApiClient.get('thumbnail/neurolucida', config)
   return response.data
 }
 
-const getImageInfo = async (apiClient, id) => {
-  const response = await apiClient.get('image/' + id)
+const getImageInfo = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  const response = await $portalApiClient.get('image/' + id)
   return response.data
 }
 
-const getCollectionInfo = async (apiClient, id) => {
-  return apiClient.get('collections/' + id)
+const getCollectionInfo = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  return $portalApiClient.get('collections/' + id)
 }
 
-const getBLVLink = async (apiClient, id) => {
-  const response = await apiClient.get('image_blv_link/' + id)
+const getBLVLink = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  const response = await $portalApiClient.get('image_blv_link/' + id)
   return response.data
 }
 
-const fetchNeurolucida360Url = (mbfSparcApiClient, payload) => {
-  return mbfSparcApiClient.post('', payload)
+const fetchNeurolucida360Url = (payload) => {
+  const { $mbfSparcApiClient } = useNuxtApp()
+  return $mbfSparcApiClient.post('', payload)
 }
 
 const decodeViewParameter = encodedView => {

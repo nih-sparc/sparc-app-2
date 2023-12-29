@@ -9,14 +9,11 @@ export default {
   async setup() {
     const router = useRouter()
     const route = useRoute()
-    const { $portalApiClient } = useNuxtApp()
     const datasetId = route.query.dataset_id
     const versionId = route.query.dataset_version
 
     const identifier = route.query.identifier
-    console.log()
     const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(
-      $portalApiClient,
       identifier
     )
     const scicrunchData = scicrunchResponse.data.result[0]

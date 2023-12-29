@@ -1,4 +1,4 @@
-import { searchQueryReplacements } from '../../utils/utils'
+import { searchQueryReplacements } from '@/utils/utils'
 const CTF_EVENT_ID = 'event'
 const CTF_NEWS_ID = 'news'
 const CTF_COMMUNITY_SPOTLIGHT_ITEM_ID = 'communitySpotlight'
@@ -12,12 +12,13 @@ const replaceTerms = (terms) => {
   return result
 }
 
-export const fetchData = async (client, terms, limit) => {
+export const fetchData = async (terms, limit) => {
+  const { $contentfulClient } = useNuxtApp()
   const query = replaceTerms(terms)
   try {
     const todaysDate = new Date()
 
-    const upcomingEvents = await client.getEntries({
+    const upcomingEvents = await $contentfulClient.getEntries({
       content_type: CTF_EVENT_ID,
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
@@ -25,11 +26,11 @@ export const fetchData = async (client, terms, limit) => {
       limit
     })
 
-    const news = await fetchNews(client, query, undefined, undefined, undefined, undefined, limit)
+    const news = await fetchNews(query, undefined, undefined, undefined, undefined, limit)
 
-    const page = await client.getEntry(CTF_NEWS_AND_EVENTS_PAGE_ID ?? '')
+    const page = await $contentfulClient.getEntry(CTF_NEWS_AND_EVENTS_PAGE_ID ?? '')
 
-    const stories = await fetchCommunitySpotlightItems(client, query, undefined, undefined, undefined, 2, 0)
+    const stories = await fetchCommunitySpotlightItems(query, undefined, undefined, undefined, 2, 0)
 
     return {
       upcomingEvents,
@@ -48,10 +49,11 @@ export const fetchData = async (client, terms, limit) => {
   }
 }
 
-export const fetchEvents = async (client, terms, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes, sortOrder, limit, skip) => {
+export const fetchEvents = async (terms, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes, sortOrder, limit, skip) => {
+  const { $contentfulClient } = useNuxtApp()
   const query = replaceTerms(terms)
   try {
-    return await client.getEntries({
+    return await $contentfulClient.getEntries({
       content_type: CTF_EVENT_ID,
       order: '-fields.startDate',
       query,
@@ -67,10 +69,11 @@ export const fetchEvents = async (client, terms, eventStartLessThanDate, eventSt
   }
 }
 
-export const fetchNews = async (client, terms, publishedLessThanDate, publishedGreaterThanOrEqualToDate, subjects, sortOrder, limit, skip) => {
+export const fetchNews = async (terms, publishedLessThanDate, publishedGreaterThanOrEqualToDate, subjects, sortOrder, limit, skip) => {
+  const { $contentfulClient } = useNuxtApp()
   const query = replaceTerms(terms)
   try {
-    return await client.getEntries({
+    return await $contentfulClient.getEntries({
       content_type: CTF_NEWS_ID,
       order: sortOrder || '-fields.publishedDate',
       query,
@@ -86,10 +89,11 @@ export const fetchNews = async (client, terms, publishedLessThanDate, publishedG
   }
 }
 
-export const fetchCommunitySpotlightItems = async (client, terms, spotlightTypes, anatomicalStructures, sortOrder, limit, skip) => {
+export const fetchCommunitySpotlightItems = async (terms, spotlightTypes, anatomicalStructures, sortOrder, limit, skip) => {
+  const { $contentfulClient } = useNuxtApp()
   const query = replaceTerms(terms)
   try {
-    return await client.getEntries({
+    return await $contentfulClient.getEntries({
       content_type: CTF_COMMUNITY_SPOTLIGHT_ITEM_ID,
       order: sortOrder || '-fields.publishedDate',
       query,

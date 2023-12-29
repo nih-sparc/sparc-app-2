@@ -120,7 +120,6 @@ export default {
   async setup(props) {
     try {
       const config = useRuntimeConfig()
-      const { $portalApiClient } = useNuxtApp()
       const image_identifier = props.biolucidaData.biolucida_image_id
       const viewId = props.biolucidaData.share_link.replace(
         config.public.BL_SHARE_LINK_PREFIX,
@@ -133,10 +132,10 @@ export default {
         xmp_metadata,
         readme_markdown
       ] = await Promise.all([
-        biolucida.getBLVLink($portalApiClient, image_identifier),
+        biolucida.getBLVLink(image_identifier),
         biolucida.decodeViewParameter(viewId),
-        biolucida.getImageInfo($portalApiClient, image_identifier),
-        biolucida.getXMPInfo($portalApiClient, image_identifier),
+        biolucida.getImageInfo(image_identifier),
+        biolucida.getXMPInfo(image_identifier),
         fetch(props.datasetInfo.readme).then((response) => {
           return response.text()
         })

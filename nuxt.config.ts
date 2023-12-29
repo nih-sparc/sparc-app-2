@@ -72,7 +72,32 @@ export default defineNuxtConfig({
             name: 'version',
             path: '/datasets/:datasetId/version/:version',
             file: resolve('./pages/datasets/[datasetId].vue')
-        }
+        },
+        {
+          name: 'biological',
+          path: '/resources/biological',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'databases',
+          path: '/resources/databases',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'devices',
+          path: '/resources/devices',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'information-services',
+          path: '/resources/information-services',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'software',
+          path: '/resources/software',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
       )
     }
   },
@@ -92,11 +117,13 @@ export default defineNuxtConfig({
       ctf_about_details_content_type_id: 'aboutPageSecondLevel',
       ctf_news_id: 'news',
       ctf_event_id: 'event',
+      ctf_resource_id: 'sparcPartners',
       ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
       ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
+      ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',

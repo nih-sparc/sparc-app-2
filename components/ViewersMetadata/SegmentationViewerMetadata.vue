@@ -125,13 +125,11 @@ export default {
   mixins: [MarkedMixin, FileDetails, RequestDownloadFile],
 
   async setup(props) {
-    const { $portalApiClient } = useNuxtApp()
     try {
       const s3Bucket = props.datasetInfo ? extractS3BucketName(props.datasetInfo.uri) : undefined
 
       const [segmentation_info_response, readme_markdown] = await Promise.all([
         discover.getSegmentationInfo(
-          $portalApiClient,
           props.datasetInfo.id,
           props.file.path,
           s3Bucket
@@ -145,9 +143,7 @@ export default {
         name: baseName(props.file.path)
       }
 
-      const species_lookup_response = await general.lookupOntoTerm($portalApiClient,
-        segmentation_info.subject.species
-      )
+      const species_lookup_response = await general.lookupOntoTerm(segmentation_info.subject.species)
 
       const human_readable_species = species_lookup_response.label
 

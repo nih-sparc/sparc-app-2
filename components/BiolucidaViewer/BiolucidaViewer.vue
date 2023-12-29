@@ -100,7 +100,7 @@ export default {
     },
     launchNL360C() {
       biolucida
-        .fetchNeurolucida360Url(this.$mbfSparcApiClient, {
+        .fetchNeurolucida360Url({
           applicationRequest: 'NL360',
           userID: 'SPARCPortal',
           sessionContext: this.data.web_neurolucida_link

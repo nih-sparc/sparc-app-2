@@ -89,7 +89,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $axios, $portalApiClient } = useNuxtApp()
+    const { $axios } = useNuxtApp()
     const url = `${config.public.discover_api_host}/datasets/${route.params.datasetId}`
     var datasetUrl = route.params.datasetVersion ? `${url}/versions/${route.params.datasetVersion}` : url
     /*if (app.$cookies.get('user-token')) {
@@ -115,11 +115,11 @@ export default {
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
-    const biolucidaSearchResults = await biolucida.searchDataset($portalApiClient, route.params.datasetId)
+    const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
     const imagesData = biolucidaSearchResults['dataset_images']
     if (imagesData != undefined) {
       await Promise.all(imagesData.map(async image => {
-        const imageInfo = await biolucida.getImageInfo($portalApiClient, image.image_id)
+        const imageInfo = await biolucida.getImageInfo(image.image_id)
         if (imageInfo['name'] == file.name)
         {
           sourcePackageId = image['sourcepkg_id']
@@ -146,7 +146,7 @@ export default {
     let scicrunchData = {}
     try {
       if (expectedScicrunchIdentifier != "") {
-        const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier($portalApiClient, expectedScicrunchIdentifier)
+        const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(expectedScicrunchIdentifier)
         const result = pathOr([], ['data', 'result'], scicrunchResponse)
         scicrunchData = result?.length > 0 ? result[0] : []
       }
@@ -161,7 +161,7 @@ export default {
     // })
     // segmentationData = segmentationData?.length > 0 ? matchedSegmentationData[0] : {}*/
     try {
-      await discover.getSegmentationInfo($portalApiClient, route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
+      await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
         segmentationData = data
       })
     } catch(e) {
