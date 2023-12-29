@@ -1,5 +1,5 @@
 <template>
-  <div v-if="searchHasAltResults && this.$route.query.search">
+  <div v-if="searchHasAltResults && this.$route.query.search" class="mt-8">
     <hr />
     <template v-if="!searchHadResults">
       No results were found for <strong><i>{{ this.$route.query.search }}</i></strong>.
@@ -114,7 +114,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 hr {
   border-top: none;
 }

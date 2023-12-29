@@ -33,7 +33,7 @@
           v-if="story.fields.storyRoute"
           :to="{
             name: 'news-and-events-community-spotlight-success-stories-id',
-            params: { id: story.fields.storyRoute, contentfulId: story.sys.id }
+            params: { id: story.fields.storyRoute }
           }"
           v-html="highlightMatches(story.fields.storyTitle, $route.query.search)"
         />
