@@ -39,32 +39,32 @@ export const searchTypes =
   [
     {
       label: 'Databases',
-      path: 'databases',
+      path: '/resources/databases',
       contentfulLabel: 'Data and Models'
     },
     {
       label: 'Software',
-      path: 'software',
+      path: '/resources/software',
       contentfulLabel: 'Software'
     },
     {
       label: 'Information Services',
-      path: 'information-services',
+      path: '/resources/information-services',
       contentfulLabel: 'Information Services'
     },
     {
       label: 'Devices',
-      path: 'devices',
+      path: '/resources/devices',
       contentfulLabel: 'Devices'
     },
     {
       label: 'Biological',
-      path: 'biological',
+      path: '/resources/biological',
       contentfulLabel: 'Biologicals'
     },
     {
       label: 'o²S²PARC Services',
-      path: 'osparc-services'
+      path: '/resources/osparc-services'
     }
   ]
 

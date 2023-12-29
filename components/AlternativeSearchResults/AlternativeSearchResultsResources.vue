@@ -11,7 +11,7 @@
       <dd v-if="resultCounts[dataType] > 0" :key="dataType">
         <nuxt-link
           :to="{
-            name: `resources-${dataType}`,
+            name: `${dataType}`,
             query: {
               ...$route.query
             }

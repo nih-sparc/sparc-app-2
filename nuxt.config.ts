@@ -72,7 +72,32 @@ export default defineNuxtConfig({
             name: 'version',
             path: '/datasets/:datasetId/version/:version',
             file: resolve('./pages/datasets/[datasetId].vue')
-        }
+        },
+        {
+          name: 'biological',
+          path: '/resources/biological',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'databases',
+          path: '/resources/databases',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'devices',
+          path: '/resources/devices',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'information-services',
+          path: '/resources/information-services',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
+        {
+          name: 'software',
+          path: '/resources/software',
+          file: resolve('./components/Resources/ResourcePage.vue')
+        },
       )
     }
   },
