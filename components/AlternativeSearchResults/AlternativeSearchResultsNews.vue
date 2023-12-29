@@ -95,8 +95,7 @@ export default {
       })
     },
     retrieveAltTotal: function(category) {
-      this.functionLookup[category]( // dynamically call the function
-        this.$contentfulClient,
+      this.functionLookup[category](
         this.$route.query.search,
         undefined,
         undefined,

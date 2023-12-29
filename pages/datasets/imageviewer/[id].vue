@@ -91,7 +91,7 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const { $axios, $portalApiClient } = useNuxtApp()
+    const { $axios } = useNuxtApp()
     const config = useRuntimeConfig()
     const url = `${config.public.discover_api_host}/datasets/${route.params.dataset_id}`
     var datasetUrl = route.params.dataset_version ? `${url}/versions/${route.params.dataset_version}` : url
@@ -107,7 +107,6 @@ export default {
     const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
 
     const response = await discover.fetch(
-      $portalApiClient,
       route.query.dataset_id,
       route.query.dataset_version,
       route.query.file_path,

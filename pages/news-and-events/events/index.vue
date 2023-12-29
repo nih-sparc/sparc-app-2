@@ -83,6 +83,7 @@
                 <alternative-search-results-news
                   ref="altSearchResults"
                   :search-had-results="events.items.length > 0"
+                  @vue:mounted="altResultsMounted"
                 />
               </div>
               <div class="search-heading">
@@ -175,10 +176,9 @@ export default {
   },
 
   async setup() {
-    const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
 
-    const events = await fetchEvents($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
+    const events = await fetchEvents(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
 
     return {
       events: ref(events)
@@ -229,7 +229,6 @@ export default {
     '$route.query': {
       handler: async function() {
         this.events = await fetchEvents(
-          this.$contentfulClient, 
           this.$route.query.search, 
           this.$refs.eventsFacetMenu?.getStartLessThanDate(), 
           this.$refs.eventsFacetMenu?.getStartGreaterThanOrEqualToDate(),
@@ -296,7 +295,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.events
       const offset = (page - 1) * limit
-      const response = await fetchEvents(this.$contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
+      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
       this.events = response
     },
     /**
@@ -305,13 +304,16 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.events.total : limit
-      const response = await fetchEvents(this.$contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
+      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
       this.events = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchEvents(this.$contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
+      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
       this.events = response
+    },
+    altResultsMounted() {
+      this.$refs.altSearchResults?.retrieveAltTotals()
     }
   }
 }

@@ -32,9 +32,10 @@ const buildAnatomySqlStatement = function(taxo, anatomy) {
   return sql
 }
 
-const anatomyQuery = async (apiClient, taxo, anatomy) => {
+const anatomyQuery = async (taxo, anatomy) => {
+  const { $flatmapApiClient } = useNuxtApp()
   const sqlData = { sql: buildAnatomySqlStatement(taxo, anatomy) }
-  return apiClient.post('knowledge/query/', sqlData)
+  return $flatmapApiClient.post('knowledge/query/', sqlData)
 }
 
 export default {

@@ -51,16 +51,16 @@ import { failMessage } from '@/utils/notification-messages'
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
  */
-const getThumbnailData = async (portalApiClient, flatmapApiClient, datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
+const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let biolucidaImageData = {}
   let scicrunchData = {}
   let scicrunch_response = []
   let biolucida_response = []
   try {
-    await scicrunch.getDatasetInfoFromDOI(portalApiClient, datasetDoi).then(response => {
+    await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
     })
-    await biolucida.searchDataset(portalApiClient, datasetId).then(response => {
+    await biolucida.searchDataset(datasetId).then(response => {
       biolucida_response = response
     })
 
@@ -97,7 +97,7 @@ const getThumbnailData = async (portalApiClient, flatmapApiClient, datasetDoi, d
         if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
           // Send a requst to flatmap knowledgebase
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
-          const data = await flatmaps.anatomyQuery(flatmapApiClient, taxo, anatomy)
+          const data = await flatmaps.anatomyQuery(taxo, anatomy)
 
           // Check request was successful
           const anatomyResponse = data.data ? data.data.values : undefined
@@ -258,8 +258,6 @@ export default {
   async created() {
     this.loading = true
     const { biolucidaImageData, scicrunchData, hasError } = await getThumbnailData(
-      this.$portalApiClient,
-      this.$flatmapApiClient,
       this.datasetInfo.doi,
       this.datasetId,
       this.datasetInfo.version,
@@ -651,7 +649,7 @@ export default {
     },
     retrieveThumbnailFromInfo(items, info, defaultImg) {
       discover
-        .fetch(this.$portalApiClient, info.datasetId, info.file_path, true, info.s3Bucket)
+        .fetch(info.datasetId, info.file_path, true, info.s3Bucket)
         .then(
           response => {
             let item = items.find(x => x.id === info.id)
@@ -688,7 +686,7 @@ export default {
       }
     },
     getFilePath(items, data) {
-      const what = discover.getDiscoverPath(this.$portalApiClient, data.uri).then(
+      const what = discover.getDiscoverPath(data.uri).then(
         response => {
           return response.data
         },
@@ -714,7 +712,6 @@ export default {
     getSegmentationThumbnail(items, segmentation_info) {
       biolucida
         .getNeurolucidaThumbnail(
-          this.$portalApiClient,
           segmentation_info.datasetId,
           segmentation_info.datasetVersion,
           segmentation_info.segmentationFilePath
@@ -781,7 +778,7 @@ export default {
       }
     },
     getThumbnailFromBiolucida(items, info) {
-      biolucida.getThumbnail(this.$portalApiClient, info.id).then(
+      biolucida.getThumbnail(info.id).then(
         response => {
           let item = ref(items.find(x => x.id === info.id))
           item.value['thumbnail'] = 'data:image/png;base64,' + response.data
@@ -803,7 +800,7 @@ export default {
       )
     },
     getImageInfoFromBiolucida(items, info) {
-      biolucida.getImageInfo(this.$portalApiClient, info.id).then(
+      biolucida.getImageInfo(info.id).then(
         response => {
           let item = ref(items.find(x => x.id === info.id))
           const name = response.name

@@ -11,7 +11,6 @@ export default {
   async setup() {
     const router = useRouter()
     const route = useRoute()
-    const { $portalApiClient } = useNuxtApp()
     const image_identifier = route.params.id
     const datasetId = route.query.dataset_id
     const versionId = route.query.dataset_version
@@ -19,8 +18,8 @@ export default {
       image_info,
       dataset_response
     ] = await Promise.all([
-      biolucida.getImageInfo($portalApiClient, image_identifier),
-      scicrunch.getDatasetInfoFromPennsieveIdentifier($portalApiClient, datasetId)
+      biolucida.getImageInfo(image_identifier),
+      scicrunch.getDatasetInfoFromPennsieveIdentifier(datasetId)
     ])
     let dataset_info = dataset_response.data.result[0]
     if (dataset_info === undefined) {

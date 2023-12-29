@@ -170,10 +170,9 @@ export default {
   },
 
   async setup() {
-    const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
 
-    const news = await fetchNews($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
+    const news = await fetchNews(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
 
     return {
       news : ref(news)
@@ -224,7 +223,6 @@ export default {
     '$route.query': {
       handler: async function() {
           this.news = await fetchNews(
-            this.$contentfulClient, 
             this.$route.query.search, 
             this.$refs.newsFacetMenu?.getPublishedLessThanDate(), 
             this.$refs.newsFacetMenu?.getPublishedGreaterThanOrEqualToDate(),
@@ -265,7 +263,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.news
       const offset = (page - 1) * limit
-      const response = await fetchNews(this.$contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, limit, offset)
+      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, limit, offset)
       this.news = response
     },
     /**
@@ -274,12 +272,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.news.total : limit
-      const response = await fetchNews(this.$contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, newLimit, 0)
+      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, newLimit, 0)
       this.news = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchNews(this.$contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
+      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
       this.news = response
     },
     altResultsMounted() {

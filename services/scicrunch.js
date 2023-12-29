@@ -1,41 +1,46 @@
 let uberonOrganPairs = undefined
 
-const search = async (apiClient, query) => {
-  return apiClient.get('search/' + query)
+const search = async (query) => {
+  const { $portalApiClient } = useNuxtApp()
+  return $portalApiClient.get('search/' + query)
 }
 
-const getDatasetInfoFromObjectIdentifier = async (apiClient, identifier) => {
+const getDatasetInfoFromObjectIdentifier = async (identifier) => {
+  const { $portalApiClient } = useNuxtApp()
   const config = {
     params: {
       identifier
     }
   }
-  return apiClient.get('dataset_info/using_object_identifier', config)
+  return $portalApiClient.get('dataset_info/using_object_identifier', config)
 }
-const getDatasetInfoFromPennsieveIdentifier = async (apiClient, identifier) => {
+const getDatasetInfoFromPennsieveIdentifier = async (identifier) => {
+  const { $portalApiClient } = useNuxtApp()
   const config = {
     params: {
       identifier
     }
   }
-  return apiClient.get('dataset_info/using_pennsieve_identifier', config)
+  return $portalApiClient.get('dataset_info/using_pennsieve_identifier', config)
 }
 
-const getDatasetInfoFromDOI = async (apiClient, doi) => {
+const getDatasetInfoFromDOI = async (doi) => {
+  const { $portalApiClient } = useNuxtApp()
   const config = {
     params: {
       doi
     }
   }
-  return apiClient.get('/dataset_info/using_doi', config)
+  return $portalApiClient.get('/dataset_info/using_doi', config)
 }
 
-const getImageInfo = async (apiClient, id) => {
-  return apiClient.get('image/' + id)
+const getImageInfo = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  return $portalApiClient.get('image/' + id)
 }
 
-const getCollectionInfo = async (apiClient, id) => {
-  return apiClient.get('collections/' + id)
+const getCollectionInfo = async (id) => {
+  return $portalApiClient.get('collections/' + id)
 }
 
 /**
@@ -43,10 +48,11 @@ const getCollectionInfo = async (apiClient, id) => {
  *
  * @returns {String} Array containing organ, uberon id pair
  */
-const getUberonOrganPairs = async (apiClient) => {
+const getUberonOrganPairs = async () => {
+  const { $portalApiClient } = useNuxtApp()
   if (uberonOrganPairs) return uberonOrganPairs
   else {
-    return apiClient.get('get-organ-curies/').then(res => {
+    return $portalApiClient.get('get-organ-curies/').then(res => {
       uberonOrganPairs = res.data['uberon']['array']
       return uberonOrganPairs
     })
@@ -59,8 +65,9 @@ const getUberonOrganPairs = async (apiClient) => {
  * @param {id} The uberon id
  * @returns {String} the organ name
  */
-const getOrganFromUberonId = async (apiClient, id) => {
-  return getUberonOrganPairs(apiClient).then(pairs => {
+const getOrganFromUberonId = async (id) => {
+  const { $portalApiClient } = useNuxtApp()
+  return getUberonOrganPairs($portalApiClient).then(pairs => {
     if (pairs) {
       for (let i = 0; i < pairs.length; i++) {
         if (pairs[i]['id'] === id) {

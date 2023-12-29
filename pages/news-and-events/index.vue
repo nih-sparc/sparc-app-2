@@ -161,9 +161,8 @@ export default {
   },
 
   setup() {
-    const { $contentfulClient } = useNuxtApp()
     try {
-      return fetchData($contentfulClient, '', 2)
+      return fetchData('', 2)
     }
     catch(e) {
       //Handle uncaught error
@@ -179,7 +178,7 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        const { upcomingEvents, news, page, stories } = await fetchData(this.$contentfulClient, this.$route.query.search, 2)
+        const { upcomingEvents, news, page, stories } = await fetchData(this.$route.query.search, 2)
         this.upcomingEvents = upcomingEvents;
         this.news = news;
         this.page = page;
@@ -240,7 +239,7 @@ export default {
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(this.$contentfulClient, this.$route.query.search, undefined, undefined, undefined, undefined, this.news.total, 2)
+      const news = await fetchNews(this.$route.query.search, undefined, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     },
     currentMonth() {
