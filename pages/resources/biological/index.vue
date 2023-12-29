@@ -10,7 +10,7 @@
           <li v-for="searchType in searchTypes" :key="searchType.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: searchType.path === 'databases' }"
+              :class="{ active: searchType.path === 'biological' }"
               :to="{
                 path: searchType.path,
                 query: {
@@ -30,7 +30,7 @@
         <search-controls-contentful
           class="search-bar"
           placeholder="Enter search criteria"
-          path="/resources/databases"
+          path="/resources/biological"
           showSearchText
         />
       </div>
@@ -64,7 +64,7 @@
                 </div>
                 <span v-if="resources.items.length" class="label1">
                   Sort
-                  <sort-menu  
+                  <sort-menu
                     :options="sortOptions"
                     :selected-option="selectedSortOption"
                     @update-selected-option="onSortOptionChange"
@@ -101,24 +101,23 @@
       </el-row>
     </div>
     <div class="pb-16 pt-16 container">
-      <submit-tool-section/>
+      <submit-tool-section />
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
 import { propOr } from 'ramda'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
-import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 import { fetchResources, searchTypes, sortOptions } from '../utils'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
+import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 
 export default {
-  name: 'DatabasesPage',
+  name: 'BiologicalPage',
 
   components: {
     SearchControlsContentful,
@@ -131,7 +130,7 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const resources = await fetchResources('Data and Models', route.query.search, undefined, undefined, 10, 0)
+    const resources = await fetchResources('Biologicals', route.query.search, undefined, undefined, 10, 0)
     return {
       resources: ref(resources)
     }
@@ -139,7 +138,7 @@ export default {
 
   data() {
     return {
-      title: 'Databases',
+      title: 'Biological',
       searchTypes,
       selectedSortOption: sortOptions[0],
       sortOptions,
@@ -172,7 +171,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: 'Browse databases'
+          content: 'Browse biological'
         },
       ]
     }
@@ -181,7 +180,7 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        this.resources = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, 10, 0)
+        this.resources = await fetchResources('Biologicals', this.$route.query.search, this.sortOrder, this.type, 10, 0)
         this.$refs.alternativeSearchResults?.retrieveAltTotals()
       },
       immediate: true
@@ -212,7 +211,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, limit, offset)
+      const response = await fetchResources('Biologicals', this.$route.query.search, this.sortOrder, this.type, limit, offset)
       this.resources = response
     },
     /**
@@ -221,12 +220,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
+      const response = await fetchResources('Biologicals', this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
       this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources('Data and Models', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
+      const response = await fetchResources('Biologicals', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
       this.resources = response
     },
     altResultsMounted() {
