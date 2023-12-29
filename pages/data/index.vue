@@ -7,19 +7,19 @@
           Browse categories
         </div>
         <ul class="search-tabs">
-          <li v-for="type in searchTypes" :key="type.label">
+          <li v-for="search in searchTypes" :key="search.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: type.type === $route.query.type }"
+              :class="{ active: search.type === $route.query.type }"
               :to="{
                 name: 'data',
                 query: {
                   ...$route.query,
-                  type: type.type,
+                  type: search.type,
                 }
               }"
             >
-              {{ type.label }}
+              {{ search.label }}
             </nuxt-link>
           </li>
         </ul>

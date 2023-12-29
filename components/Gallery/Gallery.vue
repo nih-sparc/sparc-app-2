@@ -4,7 +4,7 @@
       <div class="card-line">
         <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
           <template v-if="item">
-            <!-- <component
+            <component
               v-if="galleryItemType === 'resources'"
               :is="galleryItemComponent"
               :width="cardWidth"
@@ -17,9 +17,9 @@
               :button-link="`/resources/${item.sys.id}`"
               :external-url="item.fields.url"
               @card-clicked="cardClicked"
-            /> -->
+            />
             <component
-              v-if="galleryItemType === 'metrics'"
+              v-else-if="galleryItemType === 'metrics'"
               :is="galleryItemComponent"
               :width="cardWidth"
               :key="item.title"
@@ -42,7 +42,7 @@
               :item="item"
             /> -->
             <component
-              v-else="galleryItemType === 'fileViewer'"
+              v-else-if="galleryItemType === 'fileViewer'"
               :is="galleryItemComponent"
               :data="item"
               :width="cardWidth"
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-// import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
+import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
 // import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
@@ -67,7 +67,7 @@ import { defaultTo } from 'ramda'
 import { ref } from 'vue'
 
 const galleryItemComponents = {
-  // resources: ResourceCard,  
+  resources: ResourceCard,  
   metrics: MetricsCard,
   highlights: HighlightCard,
   // datasets: DatasetCard,
@@ -83,7 +83,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: {/*DatasetCard, ResourceCard, MetricsCard, HighlightCard,*/ FileViewerCard },
+  components: {/*DatasetCard,*/ ResourceCard, MetricsCard, HighlightCard, FileViewerCard },
   props: {
     items: {
       type: Array,

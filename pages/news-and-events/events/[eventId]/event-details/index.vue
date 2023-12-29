@@ -166,7 +166,7 @@ export default {
   background-color: $background;
 }
 .content {
-  ::v-deep img {
+  :deep(img) {
     display: block;
     margin: auto;
     height: auto;
