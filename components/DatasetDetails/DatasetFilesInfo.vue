@@ -69,7 +69,7 @@
         <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
       </div>
       <el-row class="bx--row">
-        <el-col  :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
+        <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
