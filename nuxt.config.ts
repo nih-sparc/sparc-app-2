@@ -121,6 +121,7 @@ export default defineNuxtConfig({
       ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
       ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
+      ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
       ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',

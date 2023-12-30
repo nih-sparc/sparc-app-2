@@ -428,8 +428,7 @@ export default {
   watch: {
     '$route.query.type': function(val) {
       if (!this.$route.query.type) {
-        const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
-        this.$router.replace({ query: { type: firstTabType } })
+        return
       } else {
         this.searchData = {
           limit: 10,

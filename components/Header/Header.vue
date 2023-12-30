@@ -150,7 +150,7 @@ export default {
     LoginModal
   },
   mounted: async function() {
-    await this.fetchUser()
+    //await this.fetchUser()
   },
   data: () => {
     return {
