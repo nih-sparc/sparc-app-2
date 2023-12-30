@@ -17,8 +17,11 @@
       <template v-slot="scope">
         <nuxt-link
           :to="{
-            name: 'projects-id',
-            params: { id: scope.row.sys.id }
+            name: 'projects-projectId',
+            params: { projectId: scope.row.sys.id },
+            query: {
+              type: 'projects'
+            }
           }"
           v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
         />
