@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoadingOrganFacetIds" class="featured-data container py-32">
+  <div class="featured-data container py-32">
     <h2 class="heading2 mt-0">Find Data by Category</h2>
     <div class="data-wrap">
       <nuxt-link
@@ -42,7 +42,6 @@ export default {
   data: () => {
     return {
       organFacets: [],
-      isLoadingOrganFacetIds: true,
       viewMore: false
     }
   },
@@ -68,15 +67,11 @@ export default {
     },
     loadOrganFacets: function() {
       const algoliaIndex = this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX)
-      this.isLoadingOrganFacetIds = true
       getAlgoliaFacets(algoliaIndex, facetPropPathMapping)
         .then(data => {
           this.organFacets = data.find(
             facet => facet.key === 'anatomy.organ.category.name'
           ).children
-        })
-        .finally(() => {
-          this.isLoadingOrganFacetIds = false
         })
     },
     filterOrgans(contentfulFields) {
@@ -100,7 +95,7 @@ export default {
       return organs
     },
     getLink(contentfulFields) {
-      if (isEmpty(this.organFacetIds)) {
+      if (isEmpty(this.organFacets)) {
         return contentfulFields.link
       }
       var organIds = this.filterOrgans(contentfulFields).map(organ => organ.id)
