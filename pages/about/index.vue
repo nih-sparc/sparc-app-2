@@ -115,7 +115,8 @@ export default {
     const { $contentfulClient, $axios } = useNuxtApp()
     const today = new Date()
     const day = today.getDate().toString().padStart(2, "0")
-    const month = today.getMonth().toString().padStart(2, "0")
+    let month = today.getMonth() + 1
+    month = month.toString().padStart(2, "0")
     const year = today.getFullYear()
     return Promise.all([
       /**

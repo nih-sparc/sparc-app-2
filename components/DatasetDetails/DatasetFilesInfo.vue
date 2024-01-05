@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { mapActions,mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useMainStore } from '../../store'
 import { propOr } from 'ramda'
 

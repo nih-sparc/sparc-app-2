@@ -1,32 +1,78 @@
-/*import { Auth } from '@aws-amplify/auth'
-import { Hub } from '@aws-amplify/core';
-import { pathOr } from 'ramda'
-import axios from 'axios'
+import { Hub } from "aws-amplify/utils"
+import { signInWithRedirect, signOut, getCurrentUser } from "aws-amplify/auth"
+import { useMainStore } from "@/store"
 
-// There is a cognito issue with FederatedSignIn where the first time a user attemptes to sign in it throws an 'Already+found+an+entry+for+username' error.
-// It cannot be caught in a normal try catch because it gets thrown early on in the OAuth flow so we must import Hub to listen for it. 
-// This thread outlines the issue: https://stackoverflow.com/questions/47815161/cognito-auth-flow-fails-with-already-found-an-entry-for-username-facebook-10155
-
-let signInAttempts = 0;
-
-Hub.listen('auth', async (data) => {
-  switch (data.payload.event) {
-    case 'signIn_failure':
-      if (data.payload.data.message.includes("Already+found+an+entry+for+username") && signInAttempts < 1) {
-        signInAttempts ++;
-        // We simply attempt to sign in again since this error only happens for the first sign in
-        await signIn('ORCID')
+Hub.listen("auth", async ({ payload }) => {
+  switch (payload.event) {
+    case "signInWithRedirect":
+      const route = useRoute()
+      const path = route.fullPath
+      const token = extractAccessToken(path)
+      const expirationTime = extractTokenExpirationTime(path)
+      if (token) {
+        const config = useRuntimeConfig()
+        const { $axios } = useNuxtApp()
+        const request = `${config.public.LOGIN_API_URL}/user?api_key=${token}`
+        await $axios.get(request).then(({ data }) => {
+          const store = useMainStore()
+          const userProfile = { ...data, 'apiKey': token }
+          store.setUserProfile(userProfile)
+        })
+          .catch(err => {
+            console.log(`Error retrieving pennsieve user: ${err}`)
+            return null
+          })
       }
       break;
-    case 'signOut':
-    case 'signIn':
-      signInAttempts = 0;
-  }   
-});
+    case 'signedOut':
+      const store = useMainStore()
+      store.setUserProfile(null)
+      break;
+  }
+})
+
+const extractAccessToken = (path) => {
+  const ACCESS_TOKEN_TEXT = "access_token="
+  const firstIndex = path.indexOf(ACCESS_TOKEN_TEXT)
+  const lastIndex = path.indexOf("&", firstIndex + 1)
+  if (firstIndex == -1 || firstIndex >= lastIndex) {
+    return ''
+  }
+  return lastIndex == -1 ? path.substring(firstIndex + ACCESS_TOKEN_TEXT.length) : path.substring(firstIndex + ACCESS_TOKEN_TEXT.length, lastIndex)
+}
+
+const extractTokenExpirationTime = (path) => {
+  const EXPIRES_TEXT = "expires_in="
+  const firstIndex = path.indexOf(EXPIRES_TEXT)
+  const lastIndex = path.indexOf("&", firstIndex + 1)
+  if (firstIndex == -1 || firstIndex >= lastIndex) {
+    return ''
+  }
+  return lastIndex == -1 ? path.substring(firstIndex + EXPIRES_TEXT.length) : path.substring(firstIndex + EXPIRES_TEXT.length, lastIndex)
+}
+
+const login = async(providerName) => {
+  const provider = {
+    custom: providerName
+  }
+  try {
+    signInWithRedirect(provider)
+  } catch(err) {
+    console.log("Error signing in: ", err)
+  }
+}
+
+const logout = async() => {
+  try {
+    await signOut()
+  } catch (err) {
+    console.log("Error signing out: ", err)
+  }
+}
 
 const user = async() => {
   try {
-    const user = await Auth.currentAuthenticatedUser()
+    const user = await getCurrentUser()
     return user
   } catch (err) {
     console.log("Could not get user: ", err)
@@ -34,46 +80,8 @@ const user = async() => {
   }
 }
 
-// The Pennsieve user profile
-const userProfile = async() => {
-  const cognitoUser = await user()
-  if (cognitoUser) {
-    const userToken = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], cognitoUser)
-    if (userToken) {
-      const request = `${process.env.LOGIN_API_URL}/user?api_key=${userToken}`
-      return await axios.get(request).then(userProfile => {
-        return userProfile.data
-      })
-      .catch(err => {
-        console.log(`Error retrieving pennsieve user: ${err}`)
-        return null
-      })
-    }
-  } else {
-    return null
-  }
-}
-
-const signIn = async(providerName) => {
-  try {
-    await Auth.federatedSignIn({customProvider: providerName})
-  } catch (err) {
-    console.log("Error signing in: ", err)
-  }
-}
-
-const signOut = async() => {
-  try {
-    await Auth.signOut()
-  } catch (err) {
-    console.log("Error signing out: ", err)
-  }
-}
-
 export default {
-  user,
-  userProfile,
-  signIn,
-  signOut
+  login,
+  logout,
+  user
 }
-*/
