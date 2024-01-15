@@ -114,18 +114,15 @@ import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
-const getDatasetDetails = async (config, datasetId, version, /*userToken, */datasetTypeName, $axios) => {
+const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $axios, $pennsieveApiClient) => {
   const url = `${config.public.discover_api_host}/datasets/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
-  /*if (userToken) {
-    datasetUrl += `?api_key=${userToken}`
-  }*/
 
   const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
     (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
-      ? await $axios.get(datasetUrl).catch((error) => { 
+      ? await $pennsieveApiClient.get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
             const details = error.response.data
@@ -218,7 +215,7 @@ export default {
   async setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios } = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -237,9 +234,9 @@ export default {
         config,
         datasetId,
         route.params.version,
-        //userToken,
         datasetTypeName,
-        $axios
+        $axios,
+        $pennsieveApiClient
       ),
       getDatasetVersions(config, datasetId, $axios),
       getDownloadsSummary(config, $axios),

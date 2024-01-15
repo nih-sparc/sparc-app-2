@@ -56,15 +56,18 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
   ],
-  /*vite: {
-    css: {
+  vite: {
+    define: {
+      'window.global': {}
+    }
+    /*css: {
       preprocessorOptions: {
         scss: {
           additionalData: '@use "sparc-design-system-components-2/dist/style.css" as *;',
         },
       },
-    },
-  },*/
+    },*/
+  },
   hooks: {
     'pages:extend'(pages) {
       pages.push(
@@ -140,6 +143,8 @@ export default defineNuxtConfig({
       AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID || '',
       AWS_USER_AUTHENTICATION_FLOW_TYPE: process.env.AWS_USER_AUTHENTICATION_FLOW_TYPE || 'USER_PASSWORD_AUTH',
       AWS_OAUTH_DOMAIN: process.env.AWS_OAUTH_DOMAIN || 'pennsieve-dev-users2.auth.us-east-1.amazoncognito.com',
+      AWS_OAUTH_SCOPE: process.env.AWS_OAUTH_SCOPE || ["openid"],
+      AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
       AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
       AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',

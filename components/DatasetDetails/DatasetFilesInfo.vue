@@ -328,9 +328,9 @@ export default {
       this.showAgreementPopup = true
     },
     requestAccess() {
-      const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
+      const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
 
-      this.$axios
+      this.$pennsieveApiClient
         .post(url, {
           dataUseAgreementId: this.agreementId,
         })

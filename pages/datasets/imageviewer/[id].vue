@@ -91,15 +91,12 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const { $axios } = useNuxtApp()
+    const { $pennsieveApiClient } = useNuxtApp()
     const config = useRuntimeConfig()
     const url = `${config.public.discover_api_host}/datasets/${route.params.dataset_id}`
     var datasetUrl = route.params.dataset_version ? `${url}/versions/${route.params.dataset_version}` : url
-    /*if (app.$cookies.get('user-token')) {
-      datasetUrl += `?api_key=${userToken}`
-    }*/
     let datasetInfo = {}
-    await $axios.get(datasetUrl).catch(e => {
+    await $pennsieveApiClient.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
     }).then(({ data }) => {
       datasetInfo = data
@@ -124,7 +121,6 @@ export default {
 
     const filePath = imageInfo.location
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
-      $axios,
       filePath,
       route.query.dataset_id,
       route.query.dataset_version

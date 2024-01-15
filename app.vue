@@ -5,24 +5,22 @@
 </template>
 
 <script setup>
-  import { Amplify } from 'aws-amplify'
-  const config = useRuntimeConfig()
-  const awsConfig = {
-    Auth: {
-      Cognito: {
-        userPoolId: config.public.AWS_USER_POOL_ID,
-        userPoolClientId: config.public.AWS_USER_POOL_WEB_CLIENT_ID,
-        loginWith: {
-          oauth: {
-            domain: config.public.AWS_OAUTH_DOMAIN,
-            scopes: ['openid'],
-            redirectSignIn: [config.public.AWS_OAUTH_REDIRECT_SIGN_IN_URL],
-            redirectSignOut: [config.public.AWS_OAUTH_REDIRECT_SIGN_OUT_URL],
-            responseType: 'token'
-          }
-        }
-      }
+import { Amplify } from 'aws-amplify'
+const config = useRuntimeConfig()
+const awsConfig = {
+  Auth: {
+    region: config.public.AWS_REGION,
+    userPoolId: config.public.AWS_USER_POOL_ID,
+    userPoolWebClientId: config.public.AWS_USER_POOL_WEB_CLIENT_ID,
+    authenticationFlowType: config.public.AWS_USER_AUTHENTICATION_FLOW_TYPE,
+    oauth: {
+      domain: config.public.AWS_OAUTH_DOMAIN,
+      scope: [`${config.public.AWS_OAUTH_SCOPE}`],
+      redirectSignIn: config.public.AWS_OAUTH_REDIRECT_SIGN_IN_URL,
+      redirectSignOut: config.public.AWS_OAUTH_REDIRECT_SIGN_OUT_URL,
+      responseType: config.public.AWS_OAUTH_RESPONSE_TYPE
     }
   }
-  Amplify.configure(awsConfig)
+}
+Amplify.configure(awsConfig)
 </script>

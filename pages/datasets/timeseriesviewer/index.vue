@@ -86,22 +86,18 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const { $axios, $portalApiClient } = useNuxtApp()
+    const { $pennsieveApiClient } = useNuxtApp()
     const config = useRuntimeConfig()
     const url = `${config.public.discover_api_host}/datasets/${route.query.dataset_id}`
     var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    /*if (app.$cookies.get('user-token')) {
-      datasetUrl += `?api_key=${userToken}`
-    }*/
     let datasetInfo = {}
-    await $axios.get(datasetUrl).catch(e => {
+    await $pennsieveApiClient.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
     }).then(({ data }) => {
       datasetInfo = data
     })
 
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
-      $axios,
       route.query.file_path,
       route.query.dataset_id,
       route.query.dataset_version

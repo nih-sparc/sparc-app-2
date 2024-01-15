@@ -29,6 +29,9 @@ export const useMainStore = defineStore('main', {
       const abbrvLastName = lastName.length === 1 ? lastName[0] : `${lastName[0]}.`
       return `${firstName} ${abbrvLastName}`
     },
+    userIntId(state) {
+      return propOr('', 'intId', state.userProfile)
+    },
     userToken(state) {
       return propOr('', 'apiKey', state.userProfile)
     },
@@ -147,7 +150,7 @@ export const useMainStore = defineStore('main', {
     setUserProfile(value) {
       this.userProfile = value
     },
-    async login(providerName){
+    async login(providerName) {
       await auth.login(providerName)
     },
     async logout(){

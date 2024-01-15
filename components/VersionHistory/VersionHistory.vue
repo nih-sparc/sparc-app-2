@@ -153,9 +153,8 @@ export default {
     const changelogFileRequests = []
     this.versions.forEach(({ version }) => {
       var changelogEndpoint = `${this.$config.public.discover_api_host}/datasets/${this.datasetId}/versions/${version}/files?path=changelog.md`
-      if (this.userToken) { changelogEndpoint += `&api_key=${this.userToken}` }
       changelogFileRequests.push(
-        this.$axios.get(changelogEndpoint).then(({ data }) => {
+        this.$pennsieveApiClient.get(changelogEndpoint).then(({ data }) => {
           return {
             ...data,
             version: version
