@@ -19,7 +19,7 @@ export default {
       try {
         const fileLocationEndIndex = filePath.lastIndexOf('/')
         const filesLocation = filePath.substring(0, fileLocationEndIndex)
-        const filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
+        let filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
         if (this.userToken) { filesUrl += `&api_key=${this.userToken}` }
         const filesResponse = await axios.get(filesUrl)
         const files = filesResponse.data.files
