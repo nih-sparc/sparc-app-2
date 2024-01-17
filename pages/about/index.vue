@@ -115,7 +115,8 @@ export default {
     const { $contentfulClient, $axios } = useNuxtApp()
     const today = new Date()
     const day = today.getDate().toString().padStart(2, "0")
-    const month = today.getMonth().toString().padStart(2, "0")
+    let month = today.getMonth() + 1
+    month = month.toString().padStart(2, "0")
     const year = today.getFullYear()
     return Promise.all([
       /**
@@ -204,11 +205,11 @@ export default {
       highlights,
       metricsItems: [{
         title: 'Total Downloads',
-        data: totalDownloads,
+        data: totalDownloads.toString(),
         subData: `(${metrics.downloadsLastMonth} last month)`
       }, {
         title: 'Dataset Contributors',
-        data: metrics.totalContributors,
+        data: metrics.totalContributors.toString(),
         subData: `(${metrics.newContributors} new in the last month)`
       }]
     }))

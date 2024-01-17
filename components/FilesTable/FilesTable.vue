@@ -502,7 +502,7 @@ export default {
 
     isTimeseriesFile(file) {
       const type = propOr('', 'packageType', file)
-      return type === 'TimeSeries'
+      return type === 'TimeSeries' && this.$config.public.SHOW_TIMESERIES_VIEWER
     },
 
     /**
