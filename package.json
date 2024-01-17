@@ -6,6 +6,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
@@ -36,6 +37,9 @@
     "uint8array-extras": "^1.0.0",
     "vue-chartjs": "^5.3.0",
     "vue-social-sharing": "^4.0.0-alpha4"
+  },
+  "engines": {
+    "node": "18.17.1"
   },
   "type": "module"
 }

@@ -432,9 +432,6 @@ export default {
     scaffold: function() {
       return Scaffolds[this.organType.toLowerCase()]
     },
-    externalPublications: function() {
-      return propOr([], 'externalPublications', this.datasetInfo)
-    },
     primaryPublications: function() {
       const valObj = this.externalPublications.filter(function(elem) {
         return elem.relationshipType == 'IsDescribedBy'
