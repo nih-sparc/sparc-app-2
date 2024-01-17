@@ -7,7 +7,7 @@
         :active-tab-id="activeTabId"
       >
         <div class="simulation-vuer-container">
-          <SimulationVuer :apiLocation="apiLocation" :id="id" />
+          <!--<SimulationVuer :apiLocation="apiLocation" :id="id" />-->
         </div>
       </content-tab-card>
     </div>
@@ -19,7 +19,7 @@
 export default {
   name: "SimulationViewerPage",
   components: {
-    SimulationVuer: import("@abi-software/simulationvuer").then(m => m.SimulationVuer)
+    //SimulationVuer: import("@abi-software/simulationvuer").then(m => m.SimulationVuer)
   },
   setup: function () {
     const route = useRoute()
