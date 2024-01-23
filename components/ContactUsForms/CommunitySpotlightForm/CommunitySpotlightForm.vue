@@ -88,10 +88,10 @@ export default {
 
   data() {
     return {
-      recaptcha: '',
       allowVideos: true,
       hasError: false,
       form: {
+        recaptcha: '',
         title: '',
         summary: '',
         supportingLinks: [''],

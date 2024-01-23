@@ -105,9 +105,7 @@ export default {
 
   data() {
     const validateDoi = (rule, value, callback) => {
-      const form = this.$refs.submitForm
-      const publishedManuscriptField = form.fields.find(field => field.prop === 'publishedManuscript')
-      if (publishedManuscriptField && publishedManuscriptField.fieldValue === 'Yes' && value === '') {
+      if (this.form.publishedManuscript === 'Yes' && value === '') {
         callback(new Error('Please enter a DOI URL'))
       }
       callback()

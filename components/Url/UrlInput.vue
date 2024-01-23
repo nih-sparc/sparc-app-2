@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="url-input mr-16">
-      <el-input :disabled="disabled" :placeholder="placeholder" :modelValue="modelValue" @input="$emit('update:modelValue', $event.target.value)">
+      <el-input :disabled="disabled" :placeholder="placeholder" :modelValue="modelValue" @input="$emit('update:modelValue', $event)">
         <template #prepend>Http://</template>
       </el-input>
     </div>
