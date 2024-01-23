@@ -134,4 +134,7 @@ export default {
   font-weight: 500;
   margin-bottom: 0;
 }
+:deep(img) {
+  max-width: 100%;
+}
 </style>

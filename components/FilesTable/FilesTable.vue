@@ -426,7 +426,7 @@ export default {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       const url = `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
-      var filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
+      let filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
       if (this.userToken) { filesUrl += `&api_key=${this.userToken}`}
       return filesUrl
     },
@@ -502,7 +502,7 @@ export default {
 
     isTimeseriesFile(file) {
       const type = propOr('', 'packageType', file)
-      return type === 'TimeSeries'
+      return type === 'TimeSeries' && this.$config.public.SHOW_TIMESERIES_VIEWER
     },
 
     /**
