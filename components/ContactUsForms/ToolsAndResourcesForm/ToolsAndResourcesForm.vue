@@ -11,9 +11,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="resourceLinks" label="What is the webpage link for this tool/resource? *">
-      <url-list v-model="form.resourceLinks" @add-link="addResourceLink" placeholder="Enter URL">
-        <template slot="prepend">Http://</template>
-      </url-list>
+      <url-list v-model="form.resourceLinks" @add-link="addResourceLink" placeholder="Enter URL"/>
     </el-form-item>
 
     <el-form-item
@@ -95,9 +93,7 @@
     </el-form-item>
 
     <el-form-item class="mt-32" prop="linksToUsages" label="Please provide any links to datasets or publications using this tool/resource">
-      <url-list v-model="form.linksToUsages" @add-link="addUsageLink" placeholder="Enter URL">
-        <template slot="prepend">Http://</template>
-      </url-list>
+      <url-list v-model="form.linksToUsages" @add-link="addUsageLink" placeholder="Enter URL"/>
     </el-form-item>
 
     <el-form-item
@@ -117,9 +113,7 @@
           display="No"
         />
       </client-only>
-      <url-list class="mt-8" :disabled="!isTutorialAvailable" v-model="form.linksToTutorials" @add-link="addTutorialLink" placeholder="Enter URL">
-        <template slot="prepend">Http://</template>
-      </url-list>
+      <url-list class="mt-8" :disabled="!isTutorialAvailable" v-model="form.linksToTutorials" @add-link="addTutorialLink" placeholder="Enter URL"/>
     </el-form-item>
 
     <hr/>
@@ -131,7 +125,7 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha class="recaptcha my-16 pl-16"/>
+    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
 
     <hr/>
 
@@ -170,6 +164,7 @@ export default {
   data() {
     return {
       form: {
+        recaptcha: '',
         resourceName: '',
         resourceLinks: [''],
         resourceCategories: [],
@@ -351,6 +346,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
+      const config = useRuntimeConfig()
       this.isSubmitting = true
 
       const description = `
@@ -380,7 +376,7 @@ export default {
       saveForm(this.form)
 
       await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
+        .post(`${config.public.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)

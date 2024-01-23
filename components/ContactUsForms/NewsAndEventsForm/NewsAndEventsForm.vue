@@ -37,9 +37,7 @@
     </el-form-item>
 
     <el-form-item prop="supportingLinks" label="Supporting Information">
-      <url-list v-model="form.supportingLinks" @add-link="addSupportingLink" placeholder="Enter URL">
-        <template slot="prepend">Http://</template>
-      </url-list>
+      <url-list v-model="form.supportingLinks" @add-link="addSupportingLink" placeholder="Enter URL"/>
     </el-form-item>
 
     <hr/>
@@ -82,7 +80,7 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha class="recaptcha my-16 pl-16"/>
+    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
 
     <hr/>
 
@@ -122,6 +120,7 @@ export default {
   data() {
     return {
       form: {
+        recaptcha: '',
         title: '',
         summary: '',
         url: '',
@@ -224,6 +223,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
+      const config = useRuntimeConfig()
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const description = `
@@ -262,7 +262,7 @@ export default {
       saveForm(this.form)
 
       await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
+        .post(`${config.public.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)

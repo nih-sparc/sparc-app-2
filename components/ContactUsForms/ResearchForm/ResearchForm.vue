@@ -57,9 +57,7 @@
       prop="manuscriptDoi"
       :disabled="form.publishedManuscript !== 'Yes'"
     >
-      <url-input :disabled="form.publishedManuscript !== 'Yes'" v-model="form.manuscriptDoi" placeholder="Enter DOI URL">
-        <template slot="prepend">Http://</template>
-      </url-input>
+      <url-input :disabled="form.publishedManuscript !== 'Yes'" v-model="form.manuscriptDoi" placeholder="Enter DOI URL"/>
     </el-form-item>
 
     <hr/>
@@ -84,8 +82,6 @@
         An error has occurred, please try again.
       </p>
     </el-form-item>
-    {{ form.recaptcha }}
-    {{ form.user }}
   </el-form>
 </template>
 
@@ -224,6 +220,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
+      const config = useRuntimeConfig()
       this.isSubmitting = true
       const description = `
         <b>Short description:</b><br>${this.form.shortDescription}<br><br>
@@ -244,7 +241,7 @@ export default {
       saveForm(this.form)
 
       await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
+        .post(`${config.public.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)

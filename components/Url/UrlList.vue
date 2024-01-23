@@ -2,11 +2,9 @@
   <div>
     <url-input class="my-4" v-for="(val, index) in modelValue"
       :disabled="disabled" :modelValue="modelValue[index]" @update:modelValue="updateUrl(index, $event.target.value)"
-      :placeholder="placeholder" @add-link="addLink" :showAddLink="index === value.length-1"
+      :placeholder="placeholder" @add-link="addLink" :showAddLink="index === modelValue.length - 1"
       :key="index"
-    >
-      <template slot="prepend">Http://</template>
-    </url-input>
+    />
   </div>
 </template>
 

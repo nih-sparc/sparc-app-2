@@ -58,7 +58,7 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha class="recaptcha my-16 pl-16"/>
+    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
 
     <hr/>
 
@@ -92,6 +92,7 @@ export default {
   data() {
     return {
       form: {
+        recaptcha: '',
         description: '',
         pageUrl: '',
         pageOrResource: '',
@@ -203,6 +204,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
+      const config = useRuntimeConfig()
       this.isSubmitting = true
       const description = `
         <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}<br><br>
@@ -222,7 +224,7 @@ export default {
       saveForm(this.form)
 
       await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
+        .post(`${config.public.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)

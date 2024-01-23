@@ -8,7 +8,7 @@
   >
     <el-form-item prop="pageUrl" label="Please provide the specific page URL">
       <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
+        <template #prepend>Http://</template>
       </el-input>
     </el-form-item>
 
@@ -55,7 +55,7 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha class="recaptcha my-16 pl-16"/>
+    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
 
     <hr/>
 
@@ -91,7 +91,8 @@ export default {
   data() {
     return {
       form: {
-        pageUrl: '',
+        recaptcha: '',
+        pageUrl: 'asdf',
         shortDescription: '',
         detailedDescription: '',
         user: {
@@ -165,12 +166,13 @@ export default {
   },
 
   mounted() {
+    const config = useRuntimeConfig()
     // Reset form fields when showing the form
     this.$refs.submitForm.resetFields()
     this.hasError = false
 
     if (this.bugSourceUrl != undefined) {
-      const fullUrl = process.env.ROOT_URL + this.bugSourceUrl
+      const fullUrl = config.public.ROOT_URL + this.bugSourceUrl
       this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
     }
 
