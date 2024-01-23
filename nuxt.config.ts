@@ -54,7 +54,8 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     'nuxt-svgo',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    'vue-recaptcha/nuxt'
   ],
   /*vite: {
     css: {
@@ -125,6 +126,7 @@ export default defineNuxtConfig({
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
       ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
+      ctf_contact_us_form_type_id: 'contactUsForm',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
@@ -151,7 +153,12 @@ export default defineNuxtConfig({
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
-      bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand'
+      bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
+      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+      RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
+      recaptcha: {
+        v2SiteKey: process.env.RECAPTCHA_SITE_KEY,
+      }
     }
   },
   /*

@@ -224,7 +224,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .page-data {
   background-color: $background;
