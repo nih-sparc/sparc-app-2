@@ -1,7 +1,7 @@
 <template>
   <div>
     <url-input class="my-4" v-for="(val, index) in modelValue"
-      :disabled="disabled" :modelValue="modelValue[index]" @update:modelValue="updateUrl(index, $event.target.value)"
+      :disabled="disabled" :modelValue="modelValue[index]" @update:modelValue="updateUrl(index, $event)"
       :placeholder="placeholder" @add-link="addLink" :showAddLink="index === modelValue.length - 1"
       :key="index"
     />
@@ -33,9 +33,9 @@ export default {
     },
     updateUrl(index, value) {
       this.$emit('update:modelValue', [
-        this.modelValue.slice(0, index),
+        ...this.modelValue.slice(0, index),
         value,
-        this.modelValue.slice(index + 1)
+        ...this.modelValue.slice(index + 1)
       ])
     }
   }

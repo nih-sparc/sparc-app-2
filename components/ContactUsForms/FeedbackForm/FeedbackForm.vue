@@ -52,7 +52,10 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+
+    <el-form-item prop="recaptcha">
+      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+    </el-form-item>
 
     <hr/>
 
@@ -147,6 +150,13 @@ export default {
             trigger: 'change'
           }
         ],
+        recaptcha: [
+          {
+            required: true,
+            message: 'Please check the box',
+            trigger: 'change'
+          }
+        ]
       }
     }
   },

@@ -55,7 +55,10 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+
+    <el-form-item prop="recaptcha">
+      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+    </el-form-item>
 
     <hr/>
 
@@ -154,6 +157,14 @@ export default {
             trigger: 'change'
           }
         ],
+
+        recaptcha: [
+          {
+            required: true,
+            message: 'Please check the box',
+            trigger: 'change'
+          }
+        ]
       }
     }
   },
@@ -198,6 +209,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
+      const config = useRuntimeConfig()
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const description = `
@@ -223,7 +235,7 @@ export default {
       saveForm(this.form)
 
       await this.$axios
-        .post(`${process.env.portal_api}/tasks`, formData)
+        .post(`${config.public.portal_api}/tasks`, formData)
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)

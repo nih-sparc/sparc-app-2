@@ -70,7 +70,9 @@
       Please check the box to proceed
     </div>
 
-    <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+    <el-form-item prop="recaptcha">
+      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
+    </el-form-item>
 
     <hr/>
 
@@ -118,7 +120,7 @@ export default {
         publishedManuscript: '',
         manuscriptDoi: '',
         user: {
-          typeOfUser: '',
+          typeOfUser: null,
           firstName: this.firstName,
           lastName: this.lastName,
           email: this.profileEmail,
@@ -191,6 +193,14 @@ export default {
             validator: validateDoi
           }
         ],
+
+        recaptcha: [
+          {
+            required: true,
+            message: 'Please check the box',
+            trigger: 'change'
+          }
+        ]
       }
     }
   },
