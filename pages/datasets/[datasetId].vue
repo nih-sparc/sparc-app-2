@@ -314,7 +314,7 @@ export default {
   },
 
   mounted() {
-    /*this.$gtm.push({
+    this.$gtm.trackEvent({
       event: "",
       category: "",
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
@@ -327,7 +327,7 @@ export default {
       file_name: "",
       file_path: "",
       file_type: "",
-    })*/
+    })
   },
 
   computed: {

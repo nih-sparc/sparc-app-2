@@ -306,7 +306,7 @@ export default {
         }
     },
     onSdsButtonClick() {
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'sds_viewer_button_click',
         location: 'files_tab',
@@ -319,7 +319,7 @@ export default {
         file_name: "",
         file_path: "",
         file_type: "",
-      })*/
+      })
     },
     agreementLoaded(id) {
       this.agreementId = id
@@ -353,7 +353,7 @@ export default {
       this.setDatasetInfo(newDatasetInfo)
     },
     sendGtmEvent() {
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'download_full_dataset',
         dataset_id: this.datasetId,
@@ -366,7 +366,7 @@ export default {
         file_name: "",
         file_path: "",
         file_type: "",
-      })*/
+      })
     }
   }
 }
