@@ -92,9 +92,6 @@ export default {
     const { $axios } = useNuxtApp()
     const url = `${config.public.discover_api_host}/datasets/${route.params.datasetId}`
     var datasetUrl = route.params.datasetVersion ? `${url}/versions/${route.params.datasetVersion}` : url
-    /*if (app.$cookies.get('user-token')) {
-      datasetUrl += `?api_key=${userToken}`
-    }*/
     let datasetInfo = {}
     await $axios.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
