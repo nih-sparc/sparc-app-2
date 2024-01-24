@@ -1,7 +1,7 @@
 <template>
   <div v-if="modelValue">
     <el-form-item
-      prop="modelValue.typeOfUser"
+      prop="user.typeOfUser"
       label="What type of user are you? *"
     >
       <el-select
