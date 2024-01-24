@@ -247,14 +247,14 @@ export default {
     const { $algoliaClient, $contentfulClient } = useNuxtApp()
     const algoliaSortOptions = [
       {
-        label: 'Published (desc)',
+        label: 'Date (desc)',
         id: 'newest',
-        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+        algoliaIndexName: config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC
       },
       {
-        label: 'Published (asc)',
+        label: 'Date (asc)',
         id: 'oldest',
-        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+        algoliaIndexName: config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC
       },
       {
         label: 'A-Z',
@@ -268,7 +268,7 @@ export default {
       },
     ]
     const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
-    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     let projectsAnatomicalFocusFacets = []
     let projectsFundingFacets = []
