@@ -135,6 +135,21 @@ export default {
     const title = searchType.label
     const searchTypeContentfulId = propOr('', 'contentfulLabel', searchType)
     const resources = await fetchResources(searchTypeContentfulId, route.query.search, undefined, undefined, 10, 0)
+    useHead({
+      title: title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${title}`
+        },
+      ]
+    })
     return {
       resources: ref(resources),
       title,
@@ -160,24 +175,6 @@ export default {
             name: 'resources'
           }
         }
-      ]
-    }
-  },
-
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${this.title}`
-        },
       ]
     }
   },

@@ -63,6 +63,59 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $contentfulClient, $axios } = useNuxtApp()
+    useHead({
+      title: 'SPARC Portal',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+        {
+          name: 'og:type',
+          content: 'website'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'SPARC Portal'
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        {
+          hid: 'og:image:secure_url', property: 'og:image:secure_url',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        {
+          name: 'og:site_name',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          name: 'twitter:site',
+          content: '@sparc_science'
+        },
+        {
+          name: 'twitter:title',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:image',
+          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
+        },
+        {
+          name: 'twitter:description',
+          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        }
+      ]
+    })
     return Promise.all([
       $contentfulClient.getEntry(config.public.ctf_home_page_id)
     ]).then(async ([homepage]) => {
@@ -127,60 +180,6 @@ export default {
       heroImage: {}
     }
   },
-
-  head() {
-    return {
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content:
-            'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
-        {
-          name: 'og:type',
-          content: 'website'
-        },
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'SPARC Portal'
-        },
-        {
-          hid: 'og:image',
-          property: 'og:image',
-          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
-        },
-        { hid: 'og:image:secure_url', property: 'og:image:secure_url',
-          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
-        },
-        {
-          name: 'og:site_name',
-          content: 'SPARC Portal'
-        },
-        {
-          name: 'twitter:card',
-          content: 'summary'
-        },
-        {
-          name: 'twitter:site',
-          content: '@sparc_science'
-        },
-        {
-          name: 'twitter:title',
-          content: 'SPARC Portal'
-        },
-        {
-          name: 'twitter:image',
-          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
-        },
-        {
-          name: 'twitter:description',
-          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        }
-      ]
-    }
-  }
 }
 </script>
 

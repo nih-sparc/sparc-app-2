@@ -130,6 +130,21 @@ export default {
         include: 1,
         order: '-fields.publishedDate',
       })
+      useHead({
+        title: results.items[0].fields.storyTitle,
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: results.items[0].fields.storyTitle,
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: results.items[0].fields.summary ? results.items[0].fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
+      })
       return {
         entry: results.items[0].fields,
         slug: route.params.slug,
@@ -173,23 +188,6 @@ export default {
             name: 'news-and-events-community-spotlight-success-stories'
           }
         }
-      ]
-    }
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.entry.summary ? this.entry.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
       ]
     }
   },

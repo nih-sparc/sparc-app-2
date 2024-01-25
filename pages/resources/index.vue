@@ -51,16 +51,31 @@ export default {
     Gallery,
   },
 
-  setup() {
+  async setup() {
     const { $contentfulClient } = useNuxtApp()
     const config = useRuntimeConfig()
-    // Get page content
-    return $contentfulClient
+    const fields = await $contentfulClient
       .getEntry(config.public.ctf_tools_and_resources_page_id)
       .then(({ fields }) => ({ fields }))
-      .catch( e => {
+      .catch(e => {
         console.log(e)
       })
+    useHead({
+      title: fields.fields.title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: fields.fields.title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: fields.fields.summary ? fields.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+        },
+      ]
+    })
+    return fields
   },
 
   data() {
@@ -74,24 +89,6 @@ export default {
           label: 'Home',
         },
       ],
-    }
-  },
-
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.fields.summary ? this.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
-      ]
     }
   }
 }

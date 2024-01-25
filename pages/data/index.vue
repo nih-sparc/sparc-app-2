@@ -244,6 +244,7 @@ export default {
 
   async setup() {
     const config = useRuntimeConfig()
+    const route = useRoute()
     const { $algoliaClient, $contentfulClient } = useNuxtApp()
     const algoliaSortOptions = [
       {
@@ -301,6 +302,25 @@ export default {
           projectsFundingFacets = facetData
         }
       })
+      })
+    const searchType = searchTypes.find(searchType => {
+      return searchType.type == route.query.type
+    })
+    const title = propOr('', 'label', searchType)
+    useHead({
+      title: title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${title}`
+        },
+      ]
     })
     return {
       algoliaSortOptions,
@@ -308,24 +328,6 @@ export default {
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
-    }
-  },
-
-  head() {
-    return {
-      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse datasets'
-        },
-      ]
     }
   },
 

@@ -61,6 +61,21 @@ export default {
       if (isEmpty(eventDetailsItem)) {
         router.push(`/news-and-events/events/${route.params.eventId}`)
       }
+      useHead({
+        title: pathOr('', ['fields', 'title'], page),
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: pathOr('', ['fields', 'title'], page),
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: pathOr('', ['fields', 'summary'], page) ? pathOr('', ['fields', 'summary'], page) : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
+      })
       return { 
         page,
         eventDetailsItem 
@@ -72,24 +87,6 @@ export default {
           eventDetailsItem: null
         },
       }
-    }
-  },
-
-  head() {
-    return {
-      title: this.heroTitle,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.heroTitle,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.heroSummary ? this.heroSummary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
-      ]
     }
   },
 
