@@ -55,7 +55,7 @@ export const fetchEvents = async (terms, eventStartLessThanDate, eventStartGreat
   try {
     return await $contentfulClient.getEntries({
       content_type: CTF_EVENT_ID,
-      order: '-fields.startDate',
+      order: sortOrder || '-fields.startDate',
       query,
       limit,
       skip,

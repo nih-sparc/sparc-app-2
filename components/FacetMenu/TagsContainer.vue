@@ -1,6 +1,6 @@
 <template>
   <div class="tags-container">
-    <span class="flex">
+    <span class="flex mb-8">
       Filters applied
       <el-popover
           title="How do filters work?"

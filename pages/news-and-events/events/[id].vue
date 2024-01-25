@@ -70,6 +70,21 @@ export default {
       if (slug !== null && route.params.id !== slug) {
         router.push(`/news-and-events/events/${slug}`)
       }
+      useHead({
+        title: page.fields.title,
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: page.fields.title,
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: page.fields.summary ? page.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
+      })
       return { page }
     } catch (error) {
       return {
@@ -101,24 +116,6 @@ export default {
             name: 'news-and-events-events'
           }
         }
-      ]
-    }
-  },
-
-  head() {
-    return {
-      title: this.page.fields.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.page.fields.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.page.fields.summary ? this.page.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
       ]
     }
   },

@@ -218,6 +218,21 @@ export default {
         }
       })
     })
+    useHead({
+      title: searchTypes[2].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: searchTypes[2].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${searchTypes[2].label}`
+        },
+      ]
+    })
 
     return {
       communitySpotlightItems: ref(communitySpotlightItems),
@@ -242,23 +257,6 @@ export default {
             name: 'news-and-events'
           }
         }
-      ]
-    }
-  },
-  head() {
-    return {
-      title: this.searchTypes[2].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.searchTypes[2].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse community spotlight'
-        },
       ]
     }
   },

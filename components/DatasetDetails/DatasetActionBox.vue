@@ -169,7 +169,7 @@ export default {
       return document.getElementById('datasetDetailsTabsContainer')
     },
     onSdsButtonClick(){
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'sds_viewer_button_click',
         location: 'dataset_action_box',
@@ -182,7 +182,7 @@ export default {
         file_name: "",
         file_path: "",
         file_type: "",
-      })*/
+      })
     },
     /**
      * scroll to the dataset details tab area

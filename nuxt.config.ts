@@ -54,7 +54,8 @@ export default defineNuxtConfig({
     '@element-plus/nuxt',
     'nuxt-svgo',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    '@zadigetvoltaire/nuxt-gtm'
   ],
   /*vite: {
     css: {
@@ -131,6 +132,8 @@ export default defineNuxtConfig({
       ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
       ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev',
+      ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC || 'k-core_dev_version_published_time_desc',
+      ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC || 'k-core_dev_version_published_time_asc',
       ALGOLIA_INDEX_PUBLISHED_TIME_DESC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC || 'k-core_dev_published_time_desc',
       ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
@@ -151,7 +154,19 @@ export default defineNuxtConfig({
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
-      bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand'
+      bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
+      gtm: {
+        id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
+        defer: true,
+        compatibility: false,
+        source: 'https://www.googletagmanager.com/gtm.js',
+        enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+        debug: true,
+        loadScript: true,
+        enableRouterSync: true,
+        trackOnNextTick: false,
+        devtools: true,
+      }
     }
   },
   /*
