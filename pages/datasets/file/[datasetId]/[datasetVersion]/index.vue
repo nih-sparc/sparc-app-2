@@ -89,11 +89,11 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $axios } = useNuxtApp()
+    const { $axios, $pennsieveApiClient } = useNuxtApp()
     const url = `${config.public.discover_api_host}/datasets/${route.params.datasetId}`
     var datasetUrl = route.params.datasetVersion ? `${url}/versions/${route.params.datasetVersion}` : url
     let datasetInfo = {}
-    await $axios.get(datasetUrl).catch(e => {
+    await $pennsieveApiClient.value.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
     }).then(({ data }) => {
       datasetInfo = data
@@ -101,8 +101,6 @@ export default {
     const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
     const filePath = route.query.path   
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
-      $axios,
-      config,
       filePath,
       route.params.datasetId,
       route.params.datasetVersion

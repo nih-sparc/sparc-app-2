@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { mapActions,mapState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useMainStore } from '../../store'
 import { propOr } from 'ramda'
 
@@ -207,12 +207,9 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState(useMainStore, ['datasetInfo']),
+    ...mapState(useMainStore, ['datasetInfo', 'userToken']),
     datasetScicrunch() {
       return propOr({}, 'sciCrunch', this.datasetInfo)
-    },
-    userToken() {
-      return useMainStore().cognitoUserToken// || this.$cookies.get('user-token')
     },
     accessGranted: function() {
       return this.embargoAccess == EMBARGO_ACCESS.GRANTED
@@ -328,9 +325,9 @@ export default {
       this.showAgreementPopup = true
     },
     requestAccess() {
-      const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview?api_key=${this.userToken}`
+      const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
 
-      this.$axios
+      this.$pennsieveApiClient.value
         .post(url, {
           dataUseAgreementId: this.agreementId,
         })

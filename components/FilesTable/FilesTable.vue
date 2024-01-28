@@ -400,10 +400,7 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState(useMainStore, ['datasetInfo']),
-    userToken() {
-      return useMainStore().cognitoUserToken// || this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['datasetInfo', 'userToken']),
     /**
      * Compute the current path for the dataset's files.
      * @returns {String}

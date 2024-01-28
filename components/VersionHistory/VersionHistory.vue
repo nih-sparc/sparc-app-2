@@ -153,9 +153,8 @@ export default {
     const changelogFileRequests = []
     this.versions.forEach(({ version }) => {
       var changelogEndpoint = `${this.$config.public.discover_api_host}/datasets/${this.datasetId}/versions/${version}/files?path=changelog.md`
-      if (this.userToken) { changelogEndpoint += `&api_key=${this.userToken}` }
       changelogFileRequests.push(
-        this.$axios.get(changelogEndpoint).then(({ data }) => {
+        this.$pennsieveApiClient.value.get(changelogEndpoint).then(({ data }) => {
           return {
             ...data,
             version: version
@@ -174,9 +173,6 @@ export default {
      * @returns {Object}
      */
     ...mapState(useMainStore, ['datasetInfo']),
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
     /**
      * Gets dataset id
      * @returns {Number}

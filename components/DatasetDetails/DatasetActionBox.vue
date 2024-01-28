@@ -107,10 +107,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName']),
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName', 'userToken']),
     /**
      * Gets dataset version
      * @returns {Number}
