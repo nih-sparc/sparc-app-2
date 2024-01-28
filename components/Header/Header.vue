@@ -207,7 +207,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(useMainStore, ['fetchUser', 'updateDisabledScrolling', 'logout']),
+    ...mapActions(useMainStore, ['updateDisabledScrolling', 'logout']),
     verifyProfileComplete() {
       if (this.userProfile) {
         // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
