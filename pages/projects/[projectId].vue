@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import { ref } from 'vue'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
@@ -120,6 +119,21 @@ export default {
         associatedDatasets = data
       }).catch(() => {
         // No award ID found
+      })
+      useHead({
+        title: project.fields.title,
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: project.fields.title,
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: project.fields.description ? project.fields.description : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
       })
       return {
         fields: project.fields,
@@ -149,12 +163,6 @@ export default {
           label: 'Projects'
         }
       ]
-    }
-  },
-
-  head() {
-    return {
-      title: this.title
     }
   },
 

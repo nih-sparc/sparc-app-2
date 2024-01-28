@@ -43,6 +43,21 @@ export default {
     const route = useRoute()
     try {
       const page = await $contentfulClient.getEntry(route.params.id)
+      useHead({
+        title: page.fields.title,
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: page.fields.title,
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: page.fields.summary ? page.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
+      })
       return { page }
     } catch (error) {
       return {
@@ -71,25 +86,6 @@ export default {
       ]
     }
   },
-
-  head() {
-    return {
-      title: this.page.fields.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.page.fields.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.page.fields.summary ? this.page.fields.summary : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
-      ]
-    }
-  },
-
   computed: {
     /**
      * Get news and event image

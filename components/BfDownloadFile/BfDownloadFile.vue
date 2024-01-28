@@ -185,7 +185,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
       })
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
         files: propOr('', 'paths', payload),
@@ -198,7 +198,7 @@ export default {
         doi: "",
         citation_type: "",
         location: ""
-      })*/
+      })
       this.closeConfirmDownload()
     },
 

@@ -171,9 +171,22 @@ export default {
 
   async setup() {
     const route = useRoute()
-
     const news = await fetchNews(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
-
+    useHead({
+      title: searchTypes[0].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: searchTypes[0].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${searchTypes[0].label}`
+        },
+      ]
+    })
     return {
       news : ref(news)
     }
@@ -197,24 +210,6 @@ export default {
             name: 'news-and-events'
           }
         }
-      ]
-    }
-  },
-
-  head() {
-    return {
-      title: this.searchTypes[0].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.searchTypes[0].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse news'
-        },
       ]
     }
   },

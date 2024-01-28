@@ -18,7 +18,7 @@
     <div class="file-detail">
       <strong class="file-detail__column_1">Filename</strong>
       <div class="file-detail__column_2">
-        {{ segmentation_info.name }}
+        {{ segmentation_info?.name }}
       </div>
     </div>
     <div class="file-detail">
@@ -143,7 +143,7 @@ export default {
         name: baseName(props.file.path)
       }
 
-      const species_lookup_response = await general.lookupOntoTerm(segmentation_info.subject.species)
+      const species_lookup_response = await general.lookupOntoTerm(segmentation_info?.subject.species)
 
       const human_readable_species = species_lookup_response.label
 

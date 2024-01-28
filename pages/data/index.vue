@@ -244,17 +244,18 @@ export default {
 
   async setup() {
     const config = useRuntimeConfig()
+    const route = useRoute()
     const { $algoliaClient, $contentfulClient } = useNuxtApp()
     const algoliaSortOptions = [
       {
-        label: 'Published (desc)',
+        label: 'Date (desc)',
         id: 'newest',
-        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC
+        algoliaIndexName: config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC
       },
       {
-        label: 'Published (asc)',
+        label: 'Date (asc)',
         id: 'oldest',
-        algoliaIndexName: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_ASC
+        algoliaIndexName: config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC
       },
       {
         label: 'A-Z',
@@ -268,7 +269,7 @@ export default {
       },
     ]
     const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
-    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     let projectsAnatomicalFocusFacets = []
     let projectsFundingFacets = []
@@ -301,6 +302,25 @@ export default {
           projectsFundingFacets = facetData
         }
       })
+      })
+    const searchType = searchTypes.find(searchType => {
+      return searchType.type == route.query.type
+    })
+    const title = propOr('', 'label', searchType)
+    useHead({
+      title: title,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${title}`
+        },
+      ]
     })
     return {
       algoliaSortOptions,
@@ -308,24 +328,6 @@ export default {
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
-    }
-  },
-
-  head() {
-    return {
-      title: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: propOr("", "label", this.breadcrumb[this.breadcrumb.length - 1]),
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse datasets'
-        },
-      ]
     }
   },
 

@@ -1,7 +1,7 @@
 <template>
   <div :v-if="isDestinationLinkRetreived" class="news-list-item">
     <div v-if="item.fields.image" class="image">
-      <event-banner-image :src="item.fields.image.fields.file.url"/>
+      <event-banner-image :src="item.fields.image.fields.file?.url"/>
       <sparc-pill class="sparc-pill" v-if="fundingOpportunity">
         Funding
       </sparc-pill>
@@ -18,7 +18,7 @@
         />
         <a
           v-else
-          :href="item.fields.url"
+          :href="item.fields?.url"
           :target="openInNewTab ? '_blank' : '_self'"
         >
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>

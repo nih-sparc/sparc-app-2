@@ -205,11 +205,11 @@ export default {
       highlights,
       metricsItems: [{
         title: 'Total Downloads',
-        data: totalDownloads,
+        data: totalDownloads.toString(),
         subData: `(${metrics.downloadsLastMonth} last month)`
       }, {
         title: 'Dataset Contributors',
-        data: metrics.totalContributors,
+        data: metrics.totalContributors.toString(),
         subData: `(${metrics.newContributors} new in the last month)`
       }]
     }))
