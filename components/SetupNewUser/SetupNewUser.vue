@@ -208,7 +208,7 @@ import { useMainStore } from '../../store/index'
 import { pathOr } from "ramda";
 import { Auth } from "aws-amplify"
 import { failMessage } from '@/utils/notification-messages'
-import auth from '@/services/auth.js'
+
 export default {
   name: 'SetupNewUser',
   data() {
@@ -270,7 +270,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, ['userProfile', 'userToken', 'cognitoUserAttributes', 'username', 'userIntId', 'profileColor', 'profileUrl', 'profilePreferredOrganization']),
+    ...mapState(useMainStore, ['userProfile', 'userToken', 'cognitoUserAttributes', 'username', 'userProfileIntId', 'profileColor', 'profileUrl', 'profilePreferredOrganization']),
     askingForEmail: function() {
       return this.internalState == this.internalStates.askingForEmail
     },
@@ -319,7 +319,7 @@ export default {
     clearPasswordForm: function() {
       this.authenticatedUser = {
         emailAddress: '',
-        token: ''
+        token: '',
       }
       this.passwordForm.emailAddress = ''
       this.passwordForm.password = ''
@@ -358,12 +358,11 @@ export default {
     },
     lookupEmailAddress: function (email) {
       const url = `${this.getUserByEmailRequest}${email}`
-      this.$pennsieveApiClient.get(url)
+      this.$pennsieveApiClient.value.get(url)
         .then(() => {
           this.toAskForPassword()
         })
         .catch((error) => {
-          console.log("ERROR = ", error)
           if (error.response.status === 401) {
             this.$store.logout()
           }
@@ -399,28 +398,20 @@ export default {
           this.toAllDone()
         })
         .catch(error => {
-          this.logUserError("updateUserProfile()", "Error updating user profile", error)
+          this.logUserError("Error updating user profile", error)
           this.toAskForProfileInfo()
         })
       })
       .catch(error => {
-        this.logUserError("updateUserEmailAddress()", "Error updating email address", error)
+        this.logUserError("Error updating email address", error)
         this.toAskForEmailAddress()
       })
     },
     onSubmitAuthenticate: async function () {
       this.authenticatedUser.emailAddress = this.passwordForm.emailAddress
-      this.authenticatedUser.token = this.userToken
-      //this.toAskToConnectAccounts()
 
-      Auth.signIn(this.passwordForm.emailAddress, this.passwordForm.password
-        /*{
-          'username': this.passwordForm.emailAddress, 'password': this.passwordForm.password, options: {
-          authFlowType: 'USER_PASSWORD_AUTH'
-          }
-        }*/
-      )
-        .then(authenticatedUser => {
+      await Auth.signIn(this.passwordForm.emailAddress, this.passwordForm.password)
+        .then(async authenticatedUser => {
           this.authenticatedUser.token = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], authenticatedUser)
           this.toAskToConnectAccounts()
         })
@@ -429,20 +420,16 @@ export default {
           this.toAskForPassword()
         })
     },
-    onClickConnectAccounts: async function() {
-      const url = `${this.mergeUserAccountsUrl}/${this.userIntId}`
-      const user = await auth.user()
-      // include password in order to pass it on to new Cognito user so that a new one doesn't need to be requested
+    onClickConnectAccounts: async function () {
+      const url = `${this.mergeUserAccountsUrl}/${this.userProfile.intId}`
+      const headers = { 'Authorization': `bearer ${this.authenticatedUser.token}` }
       const body = {
         email: this.authenticatedUser.emailAddress,
-        cognitoId: user?.username,
+        cognitoId: this.userProfile.cognitoId,
         password: this.passwordForm.password
       }
-      const headers = { 'Authorization': `bearer ${this.userToken}` }
       await this.$axios.put(url, body, { headers }).then(async (response) => {
-        console.log("RESP = ", response)
-        //this.toAllDone()
-        //await this.$store.logout()
+        this.toAllDone()
       })
       .catch(error => {
         this.logUserError("Error connecting accounts", error)
@@ -452,8 +439,9 @@ export default {
     onClickEnterDifferentEmailAddress: function() {
       this.toAskForEmailAddress()
     },
-    onClickHome: async function() {
-      this.$router.push('/')
+    onClickHome: async function () {
+      await this.$store.logout()
+      await navigateTo('/')
     },
     logUserError: function(fn, message, error) {
       console.log(`${fn} [${message}] error: ${error}`)

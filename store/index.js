@@ -4,7 +4,6 @@ import { pathOr, propOr } from 'ramda'
 
 export const useMainStore = defineStore('main', {
   state: () => ({
-    counter: 0,
     disableScrolling: false,
     footerData: {},
     hasAcceptedGDPR: false,
@@ -29,11 +28,11 @@ export const useMainStore = defineStore('main', {
       const abbrvLastName = lastName.length === 1 ? lastName[0] : `${lastName[0]}.`
       return `${firstName} ${abbrvLastName}`
     },
-    userIntId(state) {
-      return propOr('', 'intId', state.userProfile)
-    },
     userToken(state) {
-      return propOr('', 'apiKey', state.userProfile)
+      return propOr('', 'token', state.userProfile)
+    },
+    tokenExp(state) {
+      return propOr('', 'tokenExp', state.userProfile)
     },
     firstName (state) {
       return pathOr('', ['firstName'], state.userProfile)
@@ -69,10 +68,6 @@ export const useMainStore = defineStore('main', {
   actions: {
     async init() {
       await Promise.all([this.fetchContactUsFormOptions(), this.fetchFooterData(), this.fetchPortalNotification()])
-      //await dispatch('user/fetchUser')
-    },
-    increment() {
-      this.counter++
     },
     updateDisabledScrolling(value) {
       this.disableScrolling = value
@@ -154,7 +149,6 @@ export const useMainStore = defineStore('main', {
       await auth.login(providerName)
     },
     async logout(){
-      //this.$cookies.set('user-token', null)
       await auth.logout()
     },
   },

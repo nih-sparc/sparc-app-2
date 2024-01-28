@@ -330,7 +330,7 @@ export default {
     requestAccess() {
       const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
 
-      this.$pennsieveApiClient
+      this.$pennsieveApiClient.value
         .post(url, {
           dataUseAgreementId: this.agreementId,
         })

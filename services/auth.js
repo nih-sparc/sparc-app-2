@@ -1,104 +1,79 @@
-import { Auth, Amplify, Hub } from "aws-amplify"
+import { Auth, Hub } from 'aws-amplify'
 import { useMainStore } from "@/store"
-import { pathOr, isEmpty } from 'ramda'
+import { pathOr, propOr } from 'ramda'
+import axios from 'axios'
 
-Hub.listen("auth", async ({ payload }) => {
-  console.log("AUTH EVENT = ", payload)
-  switch (payload.event) {
-    /*case "signInWithRedirect":
-      const route = useRoute()
-      const path = route.fullPath
-      const token = extractAccessToken(path)
-      const expirationAge = extractTokenExpirationAge(path)
-      const userCookie = useCookie('userToken', {
-        maxAge: expirationAge
+Hub.listen('auth', async (data) => {
+  switch (data.payload.event) {
+    case 'cognitoHostedUI':
+      const cognitoUser = await Auth.currentAuthenticatedUser()
+      const profile = await getPennsieveUserProfile(cognitoUser)
+      const cognitoId = propOr(null, 'username', cognitoUser)
+      const token = pathOr(null, ['signInUserSession', 'accessToken', 'jwtToken'], cognitoUser)
+      const unixExpirationDate = pathOr('', ['signInUserSession', 'accessToken', 'payload', 'exp'], cognitoUser)
+      const expirationDate = unixExpirationDate ? new Date(unixExpirationDate * 1000) : null
+      useMainStore().setUserProfile({ ...profile, 'cognitoId': cognitoId, 'token': token, 'tokenExp': expirationDate })
+      const { $updatePennsieveApiClient } = useNuxtApp()
+      $updatePennsieveApiClient(createClient(token))
+      break;
+  }
+})
+// The Pennsieve user profile
+async function getPennsieveUserProfile(cognitoUser) {
+  const { $axios } = useNuxtApp()
+  const config = useRuntimeConfig()
+  if (cognitoUser) {
+    const userToken = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], cognitoUser)
+    if (userToken) {
+      const url = `${config.public.LOGIN_API_URL}/user?api_key=${userToken}`
+      return await $axios.get(url).then(({ data }) => {
+        return data
       })
-      const currentTime = new Date().getTime()
-      const expirationTime = new Date(currentTime + expirationAge * 1000)
-      if (!isEmpty(token)) {
-        //userCookie.value = token
-        const config = useRuntimeConfig()
-        const { $axios } = useNuxtApp()
-        const request = `${config.public.LOGIN_API_URL}/user?api_key=${token}`
-        await $axios.get(request).then(({ data }) => {
-          const store = useMainStore()
-          const userProfile = { ...data, 'apiKey': token, 'tokenExp': expirationTime }
-          store.setUserProfile(userProfile)
-        })
         .catch(err => {
           console.log(`Error retrieving pennsieve user: ${err}`)
           return null
         })
-      }
-      break;*/
-    case 'signOut':
-      const store = useMainStore()
-      store.setUserProfile(null)
-      break;
+    }
+  } else {
+    return null
   }
-})
-
-const extractAccessToken = (path) => {
-  const ACCESS_TOKEN_TEXT = "access_token="
-  const firstIndex = path.indexOf(ACCESS_TOKEN_TEXT)
-  const lastIndex = path.indexOf("&", firstIndex + 1)
-  if (firstIndex == -1 || firstIndex >= lastIndex) {
-    return ''
+}
+function createClient(accessToken) {
+  let params = {}
+  if (accessToken && accessToken !== '') {
+    params.api_key = `${accessToken}`;
   }
-  return lastIndex == -1 ? path.substring(firstIndex + ACCESS_TOKEN_TEXT.length) : path.substring(firstIndex + ACCESS_TOKEN_TEXT.length, lastIndex)
+  return axios.create({
+    params: params
+  })
 }
 
-const extractTokenExpirationAge = (path) => {
-  const EXPIRES_TEXT = "expires_in="
-  const firstIndex = path.indexOf(EXPIRES_TEXT)
-  const lastIndex = path.indexOf("&", firstIndex + 1)
-  if (firstIndex == -1 || firstIndex >= lastIndex) {
-    return ''
-  }
-  return lastIndex == -1 ? parseInt(path.substring(firstIndex + EXPIRES_TEXT.length)) : parseInt(path.substring(firstIndex + EXPIRES_TEXT.length, lastIndex))
-}
-
-const user = async () => {
+const user = async() => {
   try {
     const user = await Auth.currentAuthenticatedUser()
     return user
   } catch (err) {
+    console.log("Could not get user: ", err)
     return null
   }
 }
 
-const login = async(providerName) => {
-  const provider = {
-    customProvider: providerName
-  }
-  try {
-    await Auth.federatedSignIn(provider)
-    //await signInWithRedirect(provider)
-  } catch (e) {
-    console.log("ERROR = ", e)
-    //await logout()
-  }
-}
-
-const isTokenExpired = async () => {
-  return false
-  /*const session = await fetchAuthSession()
-  const accessToken = pathOr(null, ['tokens', 'accessToken', 'payload'], session)
-  if (accessToken == null) {
-    return true
-  }
-  const expirationTime = accessToken.exp
-  const expirationDate = new Date(expirationTime * 1000) // Have to convert UNIX seconds to milliseconds
-  const currentDate = new Date()
-  return expirationDate <= currentDate.getTime()*/
+const login = async (providerName) => {
+  const signInCookie = useCookie('sign-in-redirect-url', { default: () => null })
+  await Auth.federatedSignIn({ customProvider: providerName }).then(() => {
+    signInCookie.value = useRoute().fullPath
+  }).catch((err) => {
+    signInCookie.value = null
+    console.log("Error signing in: ", err)
+  }) 
 }
 
 const logout = async() => {
   try {
-    console.log("LOGGING OUT")
-    await Auth.signOut().then(async (response) => {
-      console.log("USER = ", await user())
-    })
+    useMainStore().setUserProfile(null)
+    const signOutCookie = useCookie('sign-out-redirect-url', { default: () => null })
+    signOutCookie.value = useRoute().fullPath
+    await Auth.signOut()
   } catch (err) {
     console.log("Error signing out: ", err)
   }
@@ -107,6 +82,5 @@ const logout = async() => {
 export default {
   login,
   logout,
-  user,
-  isTokenExpired
+  user
 }

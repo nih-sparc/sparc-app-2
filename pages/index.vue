@@ -45,7 +45,7 @@ import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { useMainStore } from '../store/index.js'
 import { mapState } from 'pinia'
-import { pathOr } from 'ramda'
+import { clone, pathOr } from 'ramda'
 
 export default {
   name: 'SparcHomepage',
@@ -87,18 +87,18 @@ export default {
   },
   
   watch: {
-    cognitoUserToken: function (val) {
-      if (val != '') {
-        const profileComplete = this.$cookies.get('profile-complete') || this.profileComplete
-        if (!profileComplete) {
+    profileComplete: {
+      handler: function () {
+        if (this.userProfile && !this.profileComplete) {
           this.$router.push("/welcome")
         }
-      }
+      },
+      immediate: true
     },
   },
 
   computed: {
-    ...mapState(useMainStore, ['profileComplete', 'cognitoUserToken']),
+    ...mapState(useMainStore, ['profileComplete', 'userProfile']),
   },
 
   beforeMount() {
@@ -107,11 +107,12 @@ export default {
     // previous redirect. This issue was supposed to be addressed by https://github.com/aws-amplify/amplify-js/pull/3588, 
     // but attempting to handle dynamic routing after amplify federated sign in via a custom state hook as suggested 
     // here: https://github.com/aws-amplify/amplify-js/issues/3125#issuecomment-814265328 did not work
-    /*const authRedirectUrl = this.$cookies.get('sign-in-redirect-url')
-    if (authRedirectUrl) {
-      this.$cookies.set('sign-in-redirect-url', null)
-      this.$router.push(authRedirectUrl)
-    }*/
+    const signInRedirectCookie = useCookie('sign-in-redirect-url')
+    if (signInRedirectCookie.value != null) {
+      const signInRedirectUrl = clone(signInRedirectCookie.value)
+      signInRedirectCookie.value = null
+      return navigateTo(signInRedirectUrl)
+    }
   },
 
   data: () => {

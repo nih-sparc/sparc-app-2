@@ -122,7 +122,7 @@ const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $a
 
   const datasetDetails =
     (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
-      ? await $pennsieveApiClient.get(datasetUrl).catch((error) => { 
+      ? await $pennsieveApiClient.value.get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
             const details = error.response.data

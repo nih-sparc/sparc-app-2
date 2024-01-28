@@ -4,6 +4,12 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['auth-route']
+});
+</script>
+
 <script>
 import SetupNewUser from '@/components/SetupNewUser/SetupNewUser.vue'
 

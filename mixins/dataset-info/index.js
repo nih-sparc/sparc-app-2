@@ -7,7 +7,7 @@ export default {
       const url = `${this.$config.public.discover_api_host}/datasets/${datasetId}`
       var datasetUrl = datasetVersion ? `${url}/versions/${datasetVersion}` : url
       let datasetInfo = {}
-      await this.$pennsieveApiClient.get(datasetUrl).catch(error => {
+      await this.$pennsieveApiClient.value.get(datasetUrl).catch(error => {
         console.log(`Could not get the dataset's info: ${error}`)
       }).then(({ data }) => {
         datasetInfo = data

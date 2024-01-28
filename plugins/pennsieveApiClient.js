@@ -1,19 +1,28 @@
 import axios from "axios"
 import { useMainStore } from "@/store"
+import { ref } from 'vue'
 
-export default defineNuxtPlugin((nuxtApp) => {
+function createClient(nuxtApp) {
   const store = useMainStore(nuxtApp.$pinia)
   let params = {}
-  const accessToken = store.$state.userProfile?.apiKey//localStorage.getItem('apiKey');
+  const accessToken = store.$state.userProfile?.token
   if (accessToken && accessToken !== '') {
-    params.api_key = `${accessToken}`;
+    params.api_key = `${accessToken}`
   }
-  const apiClient = axios.create({
+  return axios.create({
     params: params
   })
+}
+
+export default defineNuxtPlugin((nuxtApp) => {
+  const apiClient = ref(createClient(nuxtApp))
+  const updateApiClient = (client) => {
+    apiClient.value = client
+  }
   return {
     provide: {
-      pennsieveApiClient: apiClient
+      pennsieveApiClient: apiClient,
+      updatePennsieveApiClient: updateApiClient
     },
   }
 })

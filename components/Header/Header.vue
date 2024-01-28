@@ -148,9 +148,6 @@ export default {
   components: {
     LoginModal
   },
-  mounted: async function() {
-    //await this.fetchUser()
-  },
   data: () => {
     return {
       links,
@@ -158,7 +155,6 @@ export default {
       showLoginDialog: false,
     }
   },
-
   computed: {
     ...mapState(useMainStore, ['cognitoUser', 'userProfile', 'profileComplete', 'userToken', 'username']),
     firstPath: function() {
@@ -213,7 +209,7 @@ export default {
   methods: {
     ...mapActions(useMainStore, ['fetchUser', 'updateDisabledScrolling', 'logout']),
     verifyProfileComplete() {
-      if (this.userToken != "") {
+      if (this.userProfile) {
         // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
         if (!this.profileComplete) {
           if (this.$route.name !== 'welcome') {
@@ -227,7 +223,6 @@ export default {
     },
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
-        //this.$cookies.set('sign-out-redirect-url', this.$nuxt.$route.fullPath)
         this.logout()
       }
       if (menuId === 'profile') {
