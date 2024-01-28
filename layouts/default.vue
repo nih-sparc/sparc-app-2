@@ -43,7 +43,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, ['disableScrolling', 'hasAcceptedGDPR', 'hasSeenPortalNotification', 'portalNotification']),
+    ...mapState(useMainStore, ['disableScrolling', 'hasAcceptedGDPR', 'portalNotification']),
   },
   mounted() {
     this.showPortalNotification()
@@ -59,10 +59,10 @@ export default {
       const messageType = propOr("", 'messageType', this.portalNotification)
       const onlyShowOnce = propOr(true, 'showOnce', this.portalNotification)
       const stopShowingDate = propOr(undefined, 'stopShowingDate', this.portalNotification)
-      // If the stop showing time is not set then always display message, therwise check if the date has passed
+      // If the stop showing time is not set then always display message, otherwise check if the date has passed
       const stopShowing = stopShowingDate === undefined ? false : new Date(stopShowingDate).getTime() < new Date().getTime()
       if (message != "" && !stopShowing) {
-        if (!onlyShowOnce || !this.hasSeenPortalNotification) {
+        if (!onlyShowOnce || !useCookie('PortalNotification:hasBeenSeen').value) {
           if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
             switch (messageType) {
               case 'Error': {
@@ -99,9 +99,10 @@ export default {
                 break
               }
             }
-            /*const today = new Date()
+            const today = new Date()
             const expirationDate = new Date(today.setDate(today.getDate() + 30))
-            this.$cookies.set('PortalNotification:hasBeenSeen', true, { expires: expirationDate })*/
+            const hasBeenSeenCookie = useCookie('PortalNotification:hasBeenSeen', { expires: expirationDate })
+            hasBeenSeenCookie.value = true
           }
         }
       }
