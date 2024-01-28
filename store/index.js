@@ -101,14 +101,6 @@ export const useMainStore = defineStore('main', {
     async fetchPortalNotification() {
       try {
         const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_portal_notification_entry_id)
-        const newNotificationMessage = pathOr('', ['fields', 'message'], response)
-        const notificationMessage = useCookie('PortalNotification:message', { default: () => "" })
-        const hasSeenNotification = useCookie('PortalNotification:hasBeenSeen', { default: () => false })
-        // If the message has changes then reset if the user has seen it to false
-        if (newNotificationMessage != notificationMessage.value) {
-          hasSeenNotification.value = false
-          notificationMessage.value = newNotificationMessage
-        }
         this.setPortalNotification(response.fields)
       } catch (e) {
         console.error(e)

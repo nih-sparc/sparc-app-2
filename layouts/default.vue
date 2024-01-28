@@ -65,7 +65,7 @@ export default {
       // If the stop showing time is not set then always display message, otherwise check if the date has passed
       const stopShowing = stopShowingDate === undefined ? false : new Date(stopShowingDate).getTime() < new Date().getTime()
       if (message != "" && !stopShowing) {
-        if (!onlyShowOnce || !useCookie('PortalNotification:hasBeenSeen').value) {
+        if (!onlyShowOnce || !useCookie('PortalNotification:hasBeenSeen').value || (useCookie('PortalNotification:message').value != this.portalNotification.message)) {
           if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
             switch (messageType) {
               case 'Error': {
@@ -106,6 +106,8 @@ export default {
             const expirationDate = new Date(today.setDate(today.getDate() + 30))
             const hasBeenSeenCookie = useCookie('PortalNotification:hasBeenSeen', { expires: expirationDate })
             hasBeenSeenCookie.value = true
+            const portalNotificationMessageCookie = useCookie('PortalNotification:message')
+            portalNotificationMessageCookie.value = this.portalNotification.message
           }
         }
       }
