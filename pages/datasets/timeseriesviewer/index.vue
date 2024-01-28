@@ -72,6 +72,7 @@
 
 <script>
 import { useMainStore } from '../../../store'
+import { mapState } from 'pinia'
 import { propOr } from 'ramda'
 
 import DatasetInfo from '@/mixins/dataset-info'
@@ -131,9 +132,7 @@ export default {
   },
 
   computed: {
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['userToken']),
     title: function() {
       return propOr(undefined, 'name', this.datasetInfo)
     },

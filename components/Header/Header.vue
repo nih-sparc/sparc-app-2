@@ -156,7 +156,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, ['cognitoUser', 'userProfile', 'profileComplete', 'userToken', 'username']),
+    ...mapState(useMainStore, ['userProfile', 'profileComplete', 'userToken', 'username']),
     firstPath: function() {
       const path = this.$route.path
       // ignore the first backslash

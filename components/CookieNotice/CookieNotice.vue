@@ -36,8 +36,6 @@
 
 <script>
 import AccessibilityDialog from '../AccessibilityDialog/AccessibilityDialog.vue'
-import { useMainStore } from '../store/index.js'
-import { mapActions, mapState } from 'pinia'
 
 export default {
   name: 'CookieNotice',
@@ -51,20 +49,15 @@ export default {
       accessibilityDialogVisible: false
     }
   },
-  computed: {
-    ...mapState(useMainStore, ['hasAcceptedGDPR']),
-  },
   methods: {
-    ...mapActions(useMainStore, ['setHasAcceptedGDPR']),
     /**
      * Close notice and accept the policy
      */
     closeNotice: function() {
       const today = new Date()
       const expirationDate = new Date(today.setDate(today.getDate() + 30))
-      //this.$cookies.set('GDPR:accepted', true, { expires: expirationDate })
-      //this.$store.dispatch('layouts/default/setHasAcceptedGDPR', true)
-      this.setHasAcceptedGDPR(true)
+      const gdprCookie = useCookie('GDPR:accepted', { expires: expirationDate })
+      gdprCookie.value = true
     },
 
     /**

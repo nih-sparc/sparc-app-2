@@ -270,7 +270,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, ['userProfile', 'userToken', 'cognitoUserAttributes', 'username', 'userProfileIntId', 'profileColor', 'profileUrl', 'profilePreferredOrganization']),
+    ...mapState(useMainStore, ['userProfile', 'userToken', 'username', 'userProfileIntId', 'profileColor', 'profileUrl', 'profilePreferredOrganization']),
     askingForEmail: function() {
       return this.internalState == this.internalStates.askingForEmail
     },

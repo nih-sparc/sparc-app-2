@@ -173,9 +173,6 @@ export default {
      * @returns {Object}
      */
     ...mapState(useMainStore, ['datasetInfo']),
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
     /**
      * Gets dataset id
      * @returns {Number}

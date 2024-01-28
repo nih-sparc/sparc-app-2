@@ -207,12 +207,9 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState(useMainStore, ['datasetInfo']),
+    ...mapState(useMainStore, ['datasetInfo', 'userToken']),
     datasetScicrunch() {
       return propOr({}, 'sciCrunch', this.datasetInfo)
-    },
-    userToken() {
-      return useMainStore().cognitoUserToken// || this.$cookies.get('user-token')
     },
     accessGranted: function() {
       return this.embargoAccess == EMBARGO_ACCESS.GRANTED

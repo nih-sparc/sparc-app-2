@@ -146,10 +146,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useMainStore, ['datasetFacetsData','datasetInfo']),
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['datasetFacetsData','datasetInfo', 'userToken']),
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
     },

@@ -43,7 +43,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, ['disableScrolling', 'hasAcceptedGDPR', 'portalNotification']),
+    ...mapState(useMainStore, ['disableScrolling', 'portalNotification']),
+    hasAcceptedGDPR() {
+      return useCookie('GDPR:accepted').value
+    }
   },
   mounted() {
     this.showPortalNotification()

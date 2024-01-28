@@ -6,10 +6,7 @@ export const useMainStore = defineStore('main', {
   state: () => ({
     disableScrolling: false,
     footerData: {},
-    hasAcceptedGDPR: false,
     portalNotification: {},
-    hasSeenPortalNotification: false,
-    cognitoUser: null,
     userProfile: null,
     datasetInfo: {},
     datasetTypeName: "",
@@ -40,12 +37,6 @@ export const useMainStore = defineStore('main', {
     lastName (state) {
       return pathOr('', ['lastName'], state.userProfile)
     },
-    cognitoUsername (state) {
-      return pathOr('', ['username'], state.cognitoUser)
-    },
-    cognitoUserAttributes (state) {
-      return pathOr({}, ['attributes'], state.cognitoUser)
-    },
     userProfileIntId (state) {
       return pathOr('', ['intId'], state.userProfile)
     },
@@ -75,14 +66,8 @@ export const useMainStore = defineStore('main', {
     setFooterData(value) {
       this.footerData = value
     },
-    setHasAcceptedGDPR(value) {
-      this.hasAcceptedGDPR = value
-    },
     setPortalNotification(value) {
       this.portalNotification = value
-    },
-    setHasSeenPortalNotification(value) {
-      this.hasSeenPortalNotification = value
     },
     setDatasetInfo(value) {
       this.datasetInfo = value
@@ -133,9 +118,6 @@ export const useMainStore = defineStore('main', {
       try {
         const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_footer_copy_id)
         this.setFooterData(response.fields)
-        // Load GDPR cookie info
-        //const hasAcceptedGDPR = await useNuxtApp().useCookie('GDPR:accepted', { default: () => false })
-        //this.setHasAcceptedGDPR(hasAcceptedGDPR)
       } catch (e) {
         console.error(e)
       }
