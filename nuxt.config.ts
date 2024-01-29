@@ -58,10 +58,10 @@ export default defineNuxtConfig({
     '@zadigetvoltaire/nuxt-gtm'
   ],
   vite: {
-    define: {
+    /*define: {
       'window.global': {}
     }
-    /*css: {
+    css: {
       preprocessorOptions: {
         scss: {
           additionalData: '@use "sparc-design-system-components-2/dist/style.css" as *;',

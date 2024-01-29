@@ -206,7 +206,7 @@
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store/index'
 import { pathOr } from "ramda";
-import { Auth } from "aws-amplify"
+//import { Auth } from "aws-amplify"
 import { failMessage } from '@/utils/notification-messages'
 
 export default {
@@ -364,7 +364,7 @@ export default {
         })
         .catch((error) => {
           if (error.response.status === 401) {
-            this.$store.logout()
+            //this.$store.logout()
           }
           else if (error.response.status === 404) {
             // email address does not exist, update the user's email address

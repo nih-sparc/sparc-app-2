@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<!--<script setup>
 import { Amplify } from 'aws-amplify'
 const config = useRuntimeConfig()
 const awsConfig = {
@@ -28,7 +28,7 @@ const awsConfig = {
   }
 }
 Amplify.configure(awsConfig)
-</script>
+</script>-->
 <script>
 import { ref } from 'vue'
 import sparcLogoFast from '@/assets/sparcLogoFast.gif'
