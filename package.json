@@ -17,8 +17,8 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@aws-amplify/auth": "4.5.8",
-    "@aws-amplify/core": "4.5.8",
+    "@aws-amplify/auth": "^4.4.4",
+    "@aws-amplify/core": "^4.4.2",
     "@element-plus/nuxt": "^1.0.6",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
@@ -42,8 +42,7 @@
     "vue-social-sharing": "^4.0.0-alpha4"
   },
   "engines": {
-    "node": "18.17.1",
-    "yarn": "1.22.19"
+    "node": "18.17.1"
   },
   "type": "module"
 }
