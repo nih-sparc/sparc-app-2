@@ -1,4 +1,4 @@
-import { Auth, Hub } from 'aws-amplify'
+/*import { Auth, Hub } from 'aws-amplify'
 import { useMainStore } from "@/store"
 import { pathOr, propOr } from 'ramda'
 import axios from 'axios'
@@ -84,3 +84,4 @@ export default {
   logout,
   user
 }
+*/

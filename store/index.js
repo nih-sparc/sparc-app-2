@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import auth from '@/services/auth.js'
+//import auth from '@/services/auth.js'
 import { pathOr, propOr } from 'ramda'
 
 export const useMainStore = defineStore('main', {
@@ -118,10 +118,10 @@ export const useMainStore = defineStore('main', {
       this.userProfile = value
     },
     async login(providerName) {
-      await auth.login(providerName)
+      //await auth.login(providerName)
     },
     async logout(){
-      await auth.logout()
+      //await auth.logout()
     },
   },
   persist: {

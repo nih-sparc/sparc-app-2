@@ -174,7 +174,7 @@ export default {
   watch: {
     profileComplete: {
       handler: function() {
-        this.verifyProfileComplete()
+        //this.verifyProfileComplete()
       },
       immediate: true
     },
@@ -187,7 +187,7 @@ export default {
         if (val) {
           this.menuOpen = false
         }
-        this.verifyProfileComplete()
+        //this.verifyProfileComplete()
       },
       immediate: true
     },
@@ -223,7 +223,7 @@ export default {
     },
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
-        this.logout()
+        //this.logout()
       }
       if (menuId === 'profile') {
         this.$router.push('/user/profile')
