@@ -94,8 +94,7 @@ export default {
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       this.dialogVisible = false
-      //this.$cookies.set('sign-in-redirect-url', this.redirectUrl || this.$nuxt.$route.fullPath)
-      //await this.login('ORCID')
+      await this.login('ORCID')
     },
   }
 }
