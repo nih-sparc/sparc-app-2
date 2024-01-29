@@ -1,4 +1,5 @@
-/*import { Auth, Hub } from 'aws-amplify'
+import { Auth } from '@aws-amplify/auth'
+import { Hub } from '@aws-amplify/core'
 import { useMainStore } from "@/store"
 import { pathOr, propOr } from 'ramda'
 import axios from 'axios'
@@ -20,13 +21,12 @@ Hub.listen('auth', async (data) => {
 })
 // The Pennsieve user profile
 async function getPennsieveUserProfile(cognitoUser) {
-  const { $axios } = useNuxtApp()
   const config = useRuntimeConfig()
   if (cognitoUser) {
     const userToken = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], cognitoUser)
     if (userToken) {
       const url = `${config.public.LOGIN_API_URL}/user?api_key=${userToken}`
-      return await $axios.get(url).then(({ data }) => {
+      return await axios.get(url).then(({ data }) => {
         return data
       })
         .catch(err => {
@@ -84,4 +84,3 @@ export default {
   logout,
   user
 }
-*/
