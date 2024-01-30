@@ -1,8 +1,8 @@
-//import { Amplify } from '@aws-amplify/core';
-//import { Auth } from '@aws-amplify/auth';
+import { Amplify } from '@aws-amplify/core';
+import { Auth } from '@aws-amplify/auth';
 
 export default defineNuxtPlugin((nuxtApp) => {
-  /*const config = useRuntimeConfig()
+  const config = useRuntimeConfig()
   const awsConfig = {
     Auth: {
       region: config.public.AWS_REGION,
@@ -25,5 +25,5 @@ export default defineNuxtPlugin((nuxtApp) => {
     provide: {
       auth: Auth
     }
-  }*/
+  }
 })
