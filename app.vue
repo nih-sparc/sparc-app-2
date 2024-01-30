@@ -1,12 +1,10 @@
 <template>
-  <div>
+  <NuxtLayout>
     <div class="loading-container" v-if="loading">
       <img class="logo" :src="logo" />
     </div>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <script>
