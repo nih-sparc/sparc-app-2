@@ -107,10 +107,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName']),
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName', 'userToken']),
     /**
      * Gets dataset version
      * @returns {Number}
@@ -169,7 +166,7 @@ export default {
       return document.getElementById('datasetDetailsTabsContainer')
     },
     onSdsButtonClick(){
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'sds_viewer_button_click',
         location: 'dataset_action_box',
@@ -182,7 +179,7 @@ export default {
         file_name: "",
         file_path: "",
         file_type: "",
-      })*/
+      })
     },
     /**
      * scroll to the dataset details tab area

@@ -114,18 +114,15 @@ import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
-const getDatasetDetails = async (config, datasetId, version, /*userToken, */datasetTypeName, $axios) => {
+const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $axios, $pennsieveApiClient) => {
   const url = `${config.public.discover_api_host}/datasets/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
-  /*if (userToken) {
-    datasetUrl += `?api_key=${userToken}`
-  }*/
 
   const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
     (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
-      ? await $axios.get(datasetUrl).catch((error) => { 
+      ? await $pennsieveApiClient.value.get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
             const details = error.response.data
@@ -218,7 +215,7 @@ export default {
   async setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios } = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -230,30 +227,178 @@ export default {
 
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-    //const userToken = app.$cookies.get('user-token') || store.getters.cognitoUserToken
 
-    const [datasetDetails, versions, downloadsSummary] = await Promise.all([
+    let [datasetDetails, versions, downloadsSummary] = await Promise.all([
       getDatasetDetails(
         config,
         datasetId,
         route.params.version,
-        //userToken,
         datasetTypeName,
-        $axios
+        $axios,
+        $pennsieveApiClient
       ),
       getDatasetVersions(config, datasetId, $axios),
       getDownloadsSummary(config, $axios),
     ])
-    
+
+    datasetDetails = datasetDetails.data
+
     if (!datasetDetails) {
       //critical error messages
-      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true})
+      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true })
     }
 
     const store = useMainStore()
-    store.setDatasetInfo(datasetDetails.data)
+    store.setDatasetInfo(datasetDetails)
     store.setDatasetFacetsData(datasetFacetsData)
     store.setDatasetTypeName(datasetTypeName)
+    // Creator data
+    const org = [
+      {
+        '@type': 'Organization',
+        name: propOr('', 'organizationName', datasetDetails)
+      }
+    ]
+    const contributors = datasetDetails?.contributors?.map(contributor => {
+      const sameAs = contributor.orcid
+        ? `http://orcid.org/${contributor.orcid}`
+        : null
+
+      return {
+        '@type': 'Person',
+        sameAs,
+        givenName: contributor.firstName,
+        familyName: contributor.lastName,
+        name: `${contributor.firstName} ${contributor.lastName}`
+      }
+    })
+
+    const creators = contributors?.concat(org)
+    const title = propOr('', 'name', datasetDetails)
+    const description = propOr('', 'description', datasetDetails)
+    const doi = propOr('', 'doi', datasetDetails)
+    const doiLink = doi ? `https://doi.org/${doi}` : ''
+    const licenseKey = propOr('', 'license', datasetDetails)
+    const datasetLicense = getLicenseAbbr(licenseKey)
+    const licenseLink = getLicenseLink(datasetLicense)
+    let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
+    useHead({
+      title: title,
+      meta: [
+        {
+          name: 'DC.type',
+          content: 'Dataset'
+        },
+        {
+          name: 'DC.title',
+          content: title
+        },
+        {
+          name: 'DC.description',
+          content: description
+        },
+        {
+          name: 'DCTERMS.license',
+          content: licenseLink
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: title
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: description
+        },
+        {
+          property: 'og:image',
+          content: datasetDetails?.banner
+        },
+        {
+          property: 'og:image:alt',
+          content: `${title} Banner Image`
+        },
+        {
+          property: 'og:site_name',
+          content: 'SPARC Portal'
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          name: 'twitter:site',
+          content: '@sparc_science'
+        },
+        {
+          name: 'twitter:description',
+          content: description
+        },
+        {
+          name: 'twitter:image',
+          content: datasetDetails?.banner
+        },
+        {
+          name: 'DC.creator',
+          content: JSON.stringify(creators)
+        },
+        {
+          name: 'DC.identifier',
+          content: doiLink,
+          scheme: 'DCTERMS.URI'
+        },
+        {
+          name: 'DC.publisher',
+          content: 'Pennsieve Discover'
+        },
+        {
+          name: 'DC.date',
+          content: originallyPublishedDate,
+          scheme: 'DCTERMS.W3CDTF'
+        },
+        {
+          name: 'DC.version',
+          content: datasetDetails?.version
+        }
+      ],
+      script: [
+        {
+          vmid: 'ldjson-schema',
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'Dataset',
+            '@id': doiLink,
+            sameAs: `${config.public.discover_api_host}/datasets/${datasetId}`,
+            name: title,
+            creator: creators,
+            datePublished: datasetDetails?.createdAt,
+            dateModified: datasetDetails?.revisedAt,
+            description: description,
+            license: licenseLink,
+            version: datasetDetails?.version,
+            url: config.public.ROOT_URL,
+            identifier: doiLink,
+            isAccessibleForFree: true
+          },
+          type: 'application/ld+json'
+        },
+        {
+          vmid: 'ldjson-schema',
+          json: {
+            '@context': 'http://schema.org',
+            '@type': 'WebSite',
+            url: config.public.ROOT_URL,
+            name: 'Pennsieve Discover'
+          },
+          type: 'application/ld+json'
+        }
+      ]
+    })
 
     return {
       tabs: tabsData,
@@ -263,7 +408,7 @@ export default {
       showTombstone: propOr(false, 'isUnpublished', datasetDetails),
       errorMessages: [],
       algoliaIndex
-    } 
+    }
   },
 
   data() {
@@ -314,7 +459,7 @@ export default {
   },
 
   mounted() {
-    /*this.$gtm.push({
+    this.$gtm.trackEvent({
       event: "",
       category: "",
       dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
@@ -327,7 +472,7 @@ export default {
       file_name: "",
       file_path: "",
       file_type: "",
-    })*/
+    })
   },
 
   computed: {
@@ -362,107 +507,97 @@ export default {
       const date = version.revisedAt || version.versionPublishedAt
       return this.formatDate(date)
     },
-    licenseLink: function() {
+    licenseLink: function () {
       return getLicenseLink(this.datasetLicense)
     },
-    datasetLicense: function() {
+    datasetLicense: function () {
       const licenseKey = propOr('', 'license', this.datasetInfo)
       return getLicenseAbbr(licenseKey)
     },
-    datasetLicenseName: function() {
-      return propOr('', 'license', this.datasetInfo)
-    },
-     getDatasetImage: function() {
+    getDatasetImage: function () {
       return propOr('', 'banner', this.datasetInfo)
     },
-    datasetContributors: function() {
+    datasetContributors: function () {
       return propOr([], 'contributors', this.datasetInfo)
     },
-    datasetOwnerEmail: function() {
+    datasetOwnerEmail: function () {
       return this.datasetInfo.ownerEmail || ''
     },
-    datasetTitle: function() {
+    datasetTitle: function () {
       return propOr('', 'name', this.datasetInfo)
     },
-    getRecordsUrl: function() {
+    getRecordsUrl: function () {
       return `${this.$config.public.discover_api_host}/search/records?datasetId=${this.datasetId}`
     },
-    getProtocolRecordsUrl: function() {
+    getProtocolRecordsUrl: function () {
       return `${this.getRecordsUrl}&model=protocol`
     },
-    datasetId: function() {
+    datasetId: function () {
       return pathOr('', ['params', 'datasetId'], this.$route)
     },
-    hasFiles: function() {
+    hasFiles: function () {
       return this.fileCount >= 1
     },
-    fileCount: function() {
+    fileCount: function () {
       return propOr('0', 'fileCount', this.datasetInfo)
     },
-    originallyPublishedDate: function() {
-      const date = propOr('', 'firstPublishedAt', this.datasetInfo)
-      return this.formatDate(date)
-    },
-    datasetTags: function() {
+    datasetTags: function () {
       return propOr([], 'tags', this.datasetInfo)
     },
-    externalPublications: function() {
+    externalPublications: function () {
       return propOr([], 'externalPublications', this.datasetInfo)
     },
-    doiLink: function() {
+    doiLink: function () {
       const doi = propOr('', 'doi', this.datasetInfo)
       return doi ? `https://doi.org/${doi}` : ''
     },
-    datasetDescription: function() {
+    datasetDescription: function () {
       return propOr('', 'description', this.datasetInfo)
     },
-    datasetName: function() {
+    datasetName: function () {
       return propOr('', 'name', this.datasetInfo)
     },
-    organizationName: function() {
+    organizationName: function () {
       return propOr('', 'organizationName', this.datasetInfo)
     },
-    getDatasetUrl: function() {
-      return `${this.$config.public.discover_api_host}/datasets/${this.datasetId}`
-    },
     // This assumes that the subtitles are the organ types
-    organType: function() {
+    organType: function () {
       return this.subtitles[0] || ''
     },
-    scaffold: function() {
+    scaffold: function () {
       return Scaffolds[this.organType.toLowerCase()]
     },
-    primaryPublications: function() {
-      const valObj = this.externalPublications.filter(function(elem) {
+    primaryPublications: function () {
+      const valObj = this.externalPublications.filter(function (elem) {
         return elem.relationshipType == 'IsDescribedBy'
       })
       return valObj.length > 0 ? valObj : null
     },
-    associatedPublications: function() {
-      const valObj = this.externalPublications.filter(function(elem) {
+    associatedPublications: function () {
+      const valObj = this.externalPublications.filter(function (elem) {
         return elem.relationshipType == 'IsReferencedBy' || elem.relationshipType == 'IsSupplementedBy'
       })
       return valObj.length > 0 ? valObj : null
     },
-    hasCitations: function() {
+    hasCitations: function () {
       return (this.primaryPublications || this.associatedPublications) !== null
     },
-    numCitations: function() {
+    numCitations: function () {
       let numPrimary = this.primaryPublications ? this.primaryPublications.length : 0;
       let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
       return numPrimary + numAssociated;
     },
-    numDownloads: function() {
+    numDownloads: function () {
       let numDownloads = 0;
       this.downloadsSummary.filter(download => download.datasetId == this.datasetId).forEach(item => {
         numDownloads += item.downloads;
       })
       return numDownloads
     },
-    embargoed: function() {
+    embargoed: function () {
       return propOr(false, 'embargo', this.datasetInfo)
     },
-    canViewVersions: function() {
+    canViewVersions: function () {
       return !this.embargoed
     }
   },
@@ -470,7 +605,7 @@ export default {
   watch: {
     '$route.query': 'queryChanged',
     getProtocolRecordsUrl: {
-      handler: function(val) {
+      handler: function (val) {
         if (val) {
           this.getProtocolRecords()
         }
@@ -478,7 +613,7 @@ export default {
       immediate: true
     },
     getRecordsUrl: {
-      handler: function(val) {
+      handler: function (val) {
         if (val) {
           this.getDatasetRecords()
         }
@@ -486,13 +621,13 @@ export default {
       immediate: true
     },
     datasetInfo: {
-      handler: function() {
+      handler: function () {
         this.getMarkdown()
       },
       immediate: true
     },
     errorMessages: {
-      handler: function() {
+      handler: function () {
         //Non critical error messages
         this.errorMessages.forEach(message => {
           failMessage(message)
@@ -503,7 +638,7 @@ export default {
       immediate: true
     },
     hasFiles: {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (newValue) {
           const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
           if (!hasFilesTab) {
@@ -514,7 +649,7 @@ export default {
       immediate: true
     },
     hasCitations: {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (newValue) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
@@ -525,7 +660,7 @@ export default {
       immediate: true
     },
     canViewVersions: {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (newValue) {
           const hasVersionsTab = this.tabs.find(tab => tab.id === 'versions') !== undefined
           if (!hasVersionsTab) {
@@ -539,7 +674,7 @@ export default {
   methods: {
     tabChanged(newTab) {
       this.activeTabId = newTab.id
-      this.$router.replace({path: this.$route.path, query: {...this.$route.query, datasetDetailsTab: newTab.id}})
+      this.$router.replace({ path: this.$route.path, query: { ...this.$route.query, datasetDetailsTab: newTab.id } })
     },
     ...mapActions(useMainStore, ['setDatasetInfo', 'setDatasetFacetData', 'setDatasetTypeName']),
     /**
@@ -553,7 +688,7 @@ export default {
      * This workflow allows datasets to be updated as a revision to update the protocols
      * on the portal instead of requiring the dataset to be fully republished.
      */
-    getProtocolRecords: function() {
+    getProtocolRecords: function () {
       if (
         this.datasetInfo.externalPublications &&
         this.datasetInfo.externalPublications.length !== 0
@@ -586,20 +721,19 @@ export default {
           })
       }
     },
-    getDatasetRecords: async function() {
+    getDatasetRecords: async function () {
       try {
         this.algoliaIndex
           .getObject(this.datasetId, {
             attributesToRetrieve: 'supportingAwards',
           })
-          .then(( { supportingAwards } ) => {
+          .then(({ supportingAwards }) => {
             supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
             supportingAwards.forEach(award => {
               this.sparcAwardNumbers.push(`${award.identifier}`)
             })
           }).finally(async () => {
-            if (this.sparcAwardNumbers.length > 0)
-            {
+            if (this.sparcAwardNumbers.length > 0) {
               let projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
               this.associatedProjects = projects.length > 0 ? projects : null
             }
@@ -608,25 +742,25 @@ export default {
         console.error(e)
       }
     },
-    getAssociatedProjects: async function(sparcAwardNumbers) {
+    getAssociatedProjects: async function (sparcAwardNumbers) {
       try {
         const projects = await this.$contentfulClient.getEntries({
           content_type: this.$config.public.ctf_project_id,
         })
         const associatedProjects = projects.items?.filter((project) => {
-          return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project) ) 
+          return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project))
         })
         return associatedProjects || []
       } catch (error) {
         return []
       }
     },
-    queryChanged: function() {
+    queryChanged: function () {
       this.activeTabId = this.$route.query.datasetDetailsTab
         ? this.$route.query.datasetDetailsTab
         : this.defaultTab
     },
-    getMarkdown: function() {
+    getMarkdown: function () {
       this.loadingMarkdown = true
       const readme = propOr('', 'readme', this.datasetInfo)
       if (readme !== '') {
@@ -647,150 +781,6 @@ export default {
             throw error
           })
       }
-    }
-  },
-
-  head() {
-    // Creator data
-    const org = [
-      {
-        '@type': 'Organization',
-        name: this.organizationName
-      }
-    ]
-    const contributors = this.datasetContributors.map(contributor => {
-      const sameAs = contributor.orcid
-        ? `http://orcid.org/${contributor.orcid}`
-        : null
-
-      return {
-        '@type': 'Person',
-        sameAs,
-        givenName: contributor.firstName,
-        familyName: contributor.lastName,
-        name: `${contributor.firstName} ${contributor.lastName}`
-      }
-    })
-
-    const creators = contributors.concat(org)
-
-    return {
-      title: this.datasetTitle,
-      meta: [
-        {
-          name: 'DC.type',
-          content: 'Dataset'
-        },
-        {
-          name: 'DC.title',
-          content: this.datasetTitle
-        },
-        {
-          name: 'DC.description',
-          content: this.datasetDescription
-        },
-        {
-          name: 'DCTERMS.license',
-          content: this.licenseLink
-        },
-        {
-          property: 'og:type',
-          content: 'website'
-        },
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.datasetTitle
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.datasetDescription
-        },
-        {
-          property: 'og:image',
-          content: this.getDatasetImage
-        },
-        {
-          property: 'og:image:alt',
-          content: `${this.datasetTitle} Banner Image`
-        },
-        {
-          property: 'og:site_name',
-          content: 'SPARC Portal'
-        },
-        {
-          name: 'twitter:card',
-          content: 'summary'
-        },
-        {
-          name: 'twitter:site',
-          content: '@sparc_science'
-        },
-        {
-          name: 'twitter:description',
-          content: this.datasetDescription
-        },
-        {
-          name: 'twitter:image',
-          content: this.getDatasetImage
-        },
-        {
-          name: 'DC.creator',
-          content: JSON.stringify(creators)
-        },
-        {
-          name: 'DC.identifier',
-          content: this.doiLink,
-          scheme: 'DCTERMS.URI'
-        },
-        {
-          name: 'DC.publisher',
-          content: 'Pennsieve Discover'
-        },
-        {
-          name: 'DC.date',
-          content: this.originallyPublishedDate,
-          scheme: 'DCTERMS.W3CDTF'
-        },
-        {
-          name: 'DC.version',
-          content: this.datasetInfo.version
-        }
-      ],
-      script: [
-        {
-          vmid: 'ldjson-schema',
-          json: {
-            '@context': 'http://schema.org',
-            '@type': 'Dataset',
-            '@id': this.doiLink,
-            sameAs: this.getDatasetUrl,
-            name: this.datasetName,
-            creator: creators,
-            datePublished: this.datasetInfo.createdAt,
-            dateModified: this.datasetInfo.revisedAt,
-            description: this.datasetDescription,
-            license: this.licenseLink,
-            version: this.datasetInfo.version,
-            url: this.$config.public.ROOT_URL,
-            citation: this.citationText,
-            identifier: this.doiLink,
-            isAccessibleForFree: true
-          },
-          type: 'application/ld+json'
-        },
-        {
-          vmid: 'ldjson-schema',
-          json: {
-            '@context': 'http://schema.org',
-            '@type': 'WebSite',
-            url: this.$config.public.ROOT_URL,
-            name: 'Pennsieve Discover'
-          },
-          type: 'application/ld+json'
-        }
-      ]
     }
   }
 }

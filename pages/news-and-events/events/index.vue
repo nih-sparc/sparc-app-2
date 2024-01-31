@@ -177,9 +177,22 @@ export default {
 
   async setup() {
     const route = useRoute()
-
     const events = await fetchEvents(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
-
+    useHead({
+      title: searchTypes[1].label,
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: searchTypes[1].label,
+        },
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Browse ${searchTypes[1].label}`
+        },
+      ]
+    })
     return {
       events: ref(events)
     }
@@ -203,24 +216,6 @@ export default {
             name: 'news-and-events'
           }
         }
-      ]
-    }
-  },
-
-  head() {
-    return {
-      title: this.searchTypes[1].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.searchTypes[1].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse events'
-        },
       ]
     }
   },

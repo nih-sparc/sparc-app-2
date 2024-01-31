@@ -160,13 +160,27 @@ export default {
     NewsletterForm
   },
 
-  setup() {
+  async setup() {
     try {
-      return fetchData('', 2)
-    }
-    catch(e) {
+      const data = await fetchData('', 2)
+      useHead({
+        title: 'News & Events',
+        meta: [
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: 'News & Events',
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: data?.page.fields.heroCopy ? data?.page.fields.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          },
+        ]
+      })
+      return data
+    } catch(e) {
       //Handle uncaught error
-      console.error("SETUP ERROR: ",e)
       const message = ErrorMessages.methods.contentful()
     }
   },
@@ -203,24 +217,6 @@ export default {
       news: {},
       page: {},
       stories: {}
-    }
-  },
-
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.page.fields.heroCopy ? this.page.fields.heroCopy : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
-        },
-      ]
     }
   },
 

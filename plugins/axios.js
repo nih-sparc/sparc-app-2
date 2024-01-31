@@ -1,5 +1,5 @@
 import axios from "axios";
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
   return {
     provide: {
       axios: axios.create({}),

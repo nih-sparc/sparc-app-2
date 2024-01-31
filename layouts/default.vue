@@ -24,27 +24,32 @@ export default {
     SparcHeader,
     SparcFooter
   },
+  setup() {
+    const config = useRuntimeConfig()
+    const route = useRoute()
+    useHead({
+      meta: [
+        {
+          hid: 'og:url',
+          property: 'og:url',
+          content: `${config.public.ROOT_URL}${route.fullPath}`,
+        },
+      ]
+    })
+  },
   data() {
     return {
       store: useMainStore()
     }
   },
   computed: {
-    ...mapState(useMainStore, ['disableScrolling', 'hasAcceptedGDPR', 'hasSeenPortalNotification', 'portalNotification']),
+    ...mapState(useMainStore, ['disableScrolling', 'portalNotification']),
+    hasAcceptedGDPR() {
+      return useCookie('GDPR:accepted').value
+    }
   },
   mounted() {
     this.showPortalNotification()
-  },
-  head() {
-    return {
-      meta: [
-        { 
-          hid: 'og:url',
-          property: 'og:url',
-          content: `${this.$config.public.ROOT_URL}${this.$route.fullPath}`,
-        },
-      ]
-    }
   },
   methods: {
     showPortalNotification() {
@@ -57,10 +62,10 @@ export default {
       const messageType = propOr("", 'messageType', this.portalNotification)
       const onlyShowOnce = propOr(true, 'showOnce', this.portalNotification)
       const stopShowingDate = propOr(undefined, 'stopShowingDate', this.portalNotification)
-      // If the stop showing time is not set then always display message, therwise check if the date has passed
+      // If the stop showing time is not set then always display message, otherwise check if the date has passed
       const stopShowing = stopShowingDate === undefined ? false : new Date(stopShowingDate).getTime() < new Date().getTime()
       if (message != "" && !stopShowing) {
-        if (!onlyShowOnce || !this.hasSeenPortalNotification) {
+        if (!onlyShowOnce || !useCookie('PortalNotification:hasBeenSeen').value || (useCookie('PortalNotification:message').value != this.portalNotification.message)) {
           if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
             switch (messageType) {
               case 'Error': {
@@ -97,9 +102,12 @@ export default {
                 break
               }
             }
-            /*const today = new Date()
+            const today = new Date()
             const expirationDate = new Date(today.setDate(today.getDate() + 30))
-            this.$cookies.set('PortalNotification:hasBeenSeen', true, { expires: expirationDate })*/
+            const hasBeenSeenCookie = useCookie('PortalNotification:hasBeenSeen', { expires: expirationDate })
+            hasBeenSeenCookie.value = true
+            const portalNotificationMessageCookie = useCookie('PortalNotification:message')
+            portalNotificationMessageCookie.value = this.portalNotification.message
           }
         }
       }

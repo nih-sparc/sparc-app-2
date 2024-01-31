@@ -55,17 +55,21 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'vue-recaptcha/nuxt'
+    'vue-recaptcha/nuxt',
+    '@zadigetvoltaire/nuxt-gtm'
   ],
-  /*vite: {
-    css: {
+  vite: {
+    define: {
+      'window.global': {}
+    }
+    /*css: {
       preprocessorOptions: {
         scss: {
           additionalData: '@use "sparc-design-system-components-2/dist/style.css" as *;',
         },
       },
-    },
-  },*/
+    },*/
+  },
   hooks: {
     'pages:extend'(pages) {
       pages.push(
@@ -133,10 +137,22 @@ export default defineNuxtConfig({
       ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
       ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || 'k-core_dev',
+      ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC || 'k-core_dev_version_published_time_desc',
+      ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_ASC || 'k-core_dev_version_published_time_asc',
       ALGOLIA_INDEX_PUBLISHED_TIME_DESC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_DESC || 'k-core_dev_published_time_desc',
       ALGOLIA_INDEX_PUBLISHED_TIME_ASC: process.env.ALGOLIA_INDEX_PUBLISHED_TIME_ASC || 'k-core_dev_published_time_asc',
       ALGOLIA_INDEX_ALPHABETICAL_A_Z: process.env.ALGOLIA_INDEX_ALPHABETICAL_A_Z || 'k-core_dev_alphabetical_a_z',
       ALGOLIA_INDEX_ALPHABETICAL_Z_A: process.env.ALGOLIA_INDEX_ALPHABETICAL_Z_A || 'k-core_dev_alphabetical_z_a',
+      AWS_REGION: process.env.AWS_REGION || 'us-east-1',
+      AWS_USER_POOL_ID: process.env.AWS_USER_POOL_ID || 'us-east-1_FVLhJ7CQA',
+      AWS_USER_POOL_WEB_CLIENT_ID: process.env.AWS_USER_POOL_WEB_CLIENT_ID || '',
+      AWS_USER_AUTHENTICATION_FLOW_TYPE: process.env.AWS_USER_AUTHENTICATION_FLOW_TYPE || 'USER_PASSWORD_AUTH',
+      AWS_OAUTH_DOMAIN: process.env.AWS_OAUTH_DOMAIN || 'pennsieve-dev-users2.auth.us-east-1.amazoncognito.com',
+      AWS_OAUTH_SCOPE: process.env.AWS_OAUTH_SCOPE || "openid",
+      AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
+      AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
+      AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+      LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
       SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
       SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
@@ -154,10 +170,20 @@ export default defineNuxtConfig({
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
-      RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
-      RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY,
       recaptcha: {
-        v2SiteKey: process.env.RECAPTCHA_SITE_KEY,
+        v2SiteKey: process.env.RECAPTCHA_SITE_KEY
+      },
+      gtm: {
+        id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
+        defer: true,
+        compatibility: false,
+        source: 'https://www.googletagmanager.com/gtm.js',
+        enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+        debug: true,
+        loadScript: true,
+        enableRouterSync: true,
+        trackOnNextTick: false,
+        devtools: true,
       }
     }
   },

@@ -1,11 +1,6 @@
 import ErrorMessages from '@/mixins/error-messages'
 
 export default {
-  computed: {
-    userToken: function() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
-  },
   methods: {
     /**
      * Workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
@@ -15,13 +10,14 @@ export default {
      * errorReporting is the nuxt error callable object which will be called when the method encounter an error
      * or no file can be found and cause the error page to render 
      */
-    fetchPennsieveFile: async function(axios, config, filePath, datasetId, datasetVersion, errorReporting) {
+    fetchPennsieveFile: async function(filePath, datasetId, datasetVersion, errorReporting) {
       try {
+        const config = useRuntimeConfig()
+        const {  $pennsieveApiClient } = useNuxtApp()
         const fileLocationEndIndex = filePath.lastIndexOf('/')
         const filesLocation = filePath.substring(0, fileLocationEndIndex)
-        let filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
-        if (this.userToken) { filesUrl += `&api_key=${this.userToken}` }
-        const filesResponse = await axios.get(filesUrl)
+        const filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
+        const filesResponse = await $pennsieveApiClient.value.get(filesUrl)
         const files = filesResponse.data.files
         if (files.length === 0) {
           console.warn(`

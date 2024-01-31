@@ -11,12 +11,12 @@
           Help
         </a>
         <svgo-icon-sign-in class="tab3 mt-4"/>
-        <a class="sign-in-link" v-if="!pennsieveUser" @click="showLoginDialog = true">
+        <a class="sign-in-link" v-if="!userProfile" @click="showLoginDialog = true">
           Sign in
         </a>
-        <el-menu class="mr-16 user-menu" v-else popper-class="user-popper" background-color="#24245b" mode="horizontal" @select="handleUserMenuSelect">
-          <el-sub-menu index="user">
-            <template :v-slot="title">{{pennsieveUsername}}</template>
+        <el-menu ref="userMenu" class="mr-16 user-menu" v-else :ellipsis="false" background-color="#24245b" @select="handleUserMenuSelect" @mouseleave="closeMenu" @mouseenter="openMenu">
+          <el-sub-menu index="user" class="submenu">
+            <template #title>{{username}}</template>
             <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
             <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
           </el-sub-menu>
@@ -69,7 +69,7 @@
                 </li>
                 <li>
                   <svgo-icon-sign-in class="tab2"/>
-                  <a v-if="!pennsieveUser" class="sign-in-link" @click="showLoginDialog = true">
+                  <a v-if="!userProfile" class="sign-in-link" @click="showLoginDialog = true">
                     Sign in
                   </a>
                   <span v-else>
@@ -109,7 +109,6 @@
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { useMainStore } from '../../store/index.js'
 import { mapActions, mapState } from 'pinia'
-import isThisHour from 'date-fns/isThisHour'
 
 const links = [
   {
@@ -139,7 +138,7 @@ const links = [
   },
   {
     title: 'share-data',
-    displayTitle: 'Share with SPARC',
+    displayTitle: 'Submit to SPARC',
     href: '/share-data'
   }
 ]
@@ -149,9 +148,6 @@ export default {
   components: {
     LoginModal
   },
-  mounted: async function() {
-    //await this.fetchUser()
-  },
   data: () => {
     return {
       links,
@@ -159,12 +155,8 @@ export default {
       showLoginDialog: false,
     }
   },
-
   computed: {
-    ...mapState(useMainStore, ['cognitoUser', 'pennsieveUser', 'profileComplete', 'cognitoUserToken']),
-    pennsieveUsername() {
-      return useMainStore().pennsieveUsername
-    },
+    ...mapState(useMainStore, ['userProfile', 'profileComplete', 'userToken', 'username']),
     firstPath: function() {
       const path = this.$route.path
       // ignore the first backslash
@@ -215,9 +207,9 @@ export default {
   },
 
   methods: {
-    ...mapActions(useMainStore, ['fetchUser', 'updateDisabledScrolling', 'logout']),
+    ...mapActions(useMainStore, ['updateDisabledScrolling', 'logout']),
     verifyProfileComplete() {
-      if (this.cognitoUserToken != "") {
+      if (this.userProfile) {
         // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
         if (!this.profileComplete) {
           if (this.$route.name !== 'welcome') {
@@ -231,7 +223,6 @@ export default {
     },
     handleUserMenuSelect(menuId, menuIdPath) {
       if (menuId === 'logout') {
-        //this.$cookies.set('sign-out-redirect-url', isThisHour.$route.fullPath)
         this.logout()
       }
       if (menuId === 'profile') {
@@ -261,6 +252,12 @@ export default {
         this.updateDisabledScrolling(false)
       }
     },
+    openMenu() {
+      this.$refs.userMenu.open('user')
+    },
+    closeMenu() {
+      this.$refs.userMenu.close('user')
+    }
   }
 }
 </script>
@@ -550,15 +547,12 @@ export default {
 .sign-in-link:hover {
   cursor: pointer;
 }
-:deep(.el-sub-menu__title:hover) {
-  background-color: inherit !important;
-}
 :deep(.el-sub-menu__title) {
   line-height: inherit !important;
   height: fit-content !important;
   color: white !important;
   border: none !important;
-  padding: 0;
+  padding-left: 0 !important;
   i {
     color: white;
   }
@@ -578,10 +572,14 @@ export default {
 .user-submenu:hover {
   color: #8300bf !important;
 }
-.login-logo {
-  margin-top: .2rem;
+:deep(.submenu > ul.el-menu) {
+  position: absolute;
+  margin-top: .5rem;
+  margin-left: .5rem;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
 }
-.login-menu-logo {
-  margin-left: .2rem;
+:deep(.user-submenu) {
+  padding-left: .5rem !important;
+  padding-right: .5rem !important;
 }
 </style>

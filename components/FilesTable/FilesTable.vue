@@ -400,10 +400,7 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState(useMainStore, ['datasetInfo']),
-    userToken() {
-      return useMainStore().cognitoUserToken// || this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['datasetInfo', 'userToken']),
     /**
      * Compute the current path for the dataset's files.
      * @returns {String}
@@ -646,7 +643,7 @@ export default {
      * @param {Object} scope
      */
     openFile: function(scope) {
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'view_file_in_web_browser',
         file_name: pathOr('', ['row','name'], scope),
@@ -659,7 +656,7 @@ export default {
         doi: "",
         citation_type: "",
         files: ""
-      })*/
+      })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
       })
@@ -682,7 +679,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
       })
-      /*this.$gtm.push({
+      this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
         files: propOr('', 'paths', payload),
@@ -695,7 +692,7 @@ export default {
         version_id: "",
         doi: "",
         citation_type: ""
-      })*/
+      })
     },
 
     /**

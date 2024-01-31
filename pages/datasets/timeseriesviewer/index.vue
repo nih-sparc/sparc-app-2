@@ -72,6 +72,7 @@
 
 <script>
 import { useMainStore } from '../../../store'
+import { mapState } from 'pinia'
 import { propOr } from 'ramda'
 
 import DatasetInfo from '@/mixins/dataset-info'
@@ -86,22 +87,18 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const { $axios, $portalApiClient } = useNuxtApp()
+    const { $pennsieveApiClient } = useNuxtApp()
     const config = useRuntimeConfig()
     const url = `${config.public.discover_api_host}/datasets/${route.query.dataset_id}`
     var datasetUrl = route.query.dataset_version ? `${url}/versions/${route.query.dataset_version}` : url
-    /*if (app.$cookies.get('user-token')) {
-      datasetUrl += `?api_key=${userToken}`
-    }*/
     let datasetInfo = {}
-    await $axios.get(datasetUrl).catch(e => {
+    await $pennsieveApiClient.value.get(datasetUrl).catch(e => {
       console.log(`Could not get the dataset's info: ${e}`)
     }).then(({ data }) => {
       datasetInfo = data
     })
 
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
-      $axios,
       route.query.file_path,
       route.query.dataset_id,
       route.query.dataset_version
@@ -135,9 +132,7 @@ export default {
   },
 
   computed: {
-    userToken() {
-      return useMainStore().cognitoUserToken //|| this.$cookies.get('user-token')
-    },
+    ...mapState(useMainStore, ['userToken']),
     title: function() {
       return propOr(undefined, 'name', this.datasetInfo)
     },

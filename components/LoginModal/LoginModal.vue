@@ -49,6 +49,8 @@
 
 <script>
 import marked from '@/mixins/marked/index'
+import { mapActions } from 'pinia'
+import { useMainStore } from '../../store'
 
 export default {
   name: 'LoginModal',
@@ -88,10 +90,10 @@ export default {
   },
 
   methods: {
+    ...mapActions(useMainStore, ['login']),
     onLoginWithORCID: async function(x) {
       x.preventDefault()
       this.dialogVisible = false
-      //this.$cookies.set('sign-in-redirect-url', this.redirectUrl || this.$nuxt.$route.fullPath)
       await this.login('ORCID')
     },
   }
