@@ -151,7 +151,7 @@ import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
 // import { mapState, mapGetters } from 'vuex'
-import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
+import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
   name: 'ToolsAndResourcesForm',

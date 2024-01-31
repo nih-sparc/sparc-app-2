@@ -80,7 +80,7 @@ import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { propOr } from 'ramda'
 // import { mapGetters } from 'vuex'
-import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
+import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
   name: 'BugForm',

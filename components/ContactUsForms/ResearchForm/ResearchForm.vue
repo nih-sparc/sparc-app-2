@@ -92,7 +92,7 @@
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
-import { saveForm, loadForm, populateFormWithUserData } from '~/pages/data/utils'
+import { saveForm, loadForm, populateFormWithUserData } from '~/utils/utils'
 import UrlInput from '@/components/Url/UrlInput.vue'
 
 export default {

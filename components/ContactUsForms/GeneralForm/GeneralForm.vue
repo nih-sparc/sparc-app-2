@@ -81,7 +81,7 @@ import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 // import { mapState, mapGetters } from 'vuex'
-import { loadForm, populateFormWithUserData, saveForm } from '~/pages/data/utils'
+import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
   name: 'GeneralForm',
