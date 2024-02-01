@@ -64,7 +64,8 @@ import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { isEmpty } from 'ramda'
-// import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
@@ -84,9 +85,9 @@ export default {
         additionalInfo:'',
         user: {
           typeOfUser: '',
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.profileEmail,
+          firstName: useMainStore().firstName,
+          lastName: useMainStore().lastName,
+          email: useMainStore().profileEmail,
           sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
@@ -144,10 +145,9 @@ export default {
   },
 
   computed: {
-    // ...mapState('pages/contact-us', {
-    //   services: state => state.formOptions.services
-    // }),
-    // ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
+    ...mapState(useMainStore, {
+      services: state => state.formOptions.services
+    })
   },
 
   mounted() {

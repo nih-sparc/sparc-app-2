@@ -88,10 +88,10 @@
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
-import NewsletterMixin from '../NewsletterMixin'
+import { useMainStore } from '@/store/index'
+import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import UserContactFormItem from '../UserContactFormItem.vue'
+import UserContactFormItem from '@/components/ContactUsForms/UserContactFormItem.vue'
 import { saveForm, loadForm, populateFormWithUserData } from '~/utils/utils'
 import UrlInput from '@/components/Url/UrlInput.vue'
 
@@ -121,9 +121,9 @@ export default {
         manuscriptDoi: '',
         user: {
           typeOfUser: null,
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.profileEmail,
+          firstName: useMainStore().firstName,
+          lastName: useMainStore().lastName,
+          email: useMainStore().profileEmail,
           sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false
@@ -203,10 +203,6 @@ export default {
         ]
       }
     }
-  },
-
-  computed: {
-    // ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
 
   mounted() {

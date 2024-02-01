@@ -150,7 +150,8 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { isEmpty } from 'ramda'
-// import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
@@ -179,9 +180,9 @@ export default {
         linksToTutorials: [''],
         user: {
           typeOfUser: '',
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.profileEmail,
+          firstName: useMainStore().firstName,
+          lastName: useMainStore().lastName,
+          email: useMainStore().profileEmail,
           sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
@@ -274,9 +275,9 @@ export default {
   },
 
   computed: {
-    // ...mapState('pages/contact-us', {
-    //   resourceCategoryOptions: state => state.formOptions.resourceCategories
-    // }),
+    ...mapState(useMainStore, {
+      resourceCategoryOptions: state => state.formOptions.resourceCategories
+    }),
     isOtherSelected: function() {
       return this.form?.resourceCategories.includes('Other')
     },

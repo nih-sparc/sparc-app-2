@@ -79,7 +79,7 @@ import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { propOr } from 'ramda'
-// import { mapGetters } from 'vuex'
+import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
@@ -100,9 +100,9 @@ export default {
         detailedDescription: '',
         user: {
           typeOfUser: '',
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.profileEmail,
+          firstName: useMainStore().firstName,
+          lastName: useMainStore().lastName,
+          email: useMainStore().profileEmail,
           sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
@@ -170,7 +170,6 @@ export default {
   },
 
   computed: {
-    // ...mapGetters('user', ['firstName', 'lastName', 'profileEmail']),
     bugSourceUrl() {
       return this.$route.query.source_url
     },

@@ -75,7 +75,7 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import UrlList from '@/components/Url/UrlList.vue'
 import { propOr, isEmpty } from 'ramda'
-// import { mapGetters } from 'vuex'
+import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 
 export default {
@@ -99,9 +99,9 @@ export default {
         supportingLinks: [''],
         user: {
           typeOfUser: '',
-          firstName: this.firstName,
-          lastName: this.lastName,
-          email: this.profileEmail,
+          firstName: useMainStore().firstName,
+          lastName: useMainStore().lastName,
+          email: useMainStore().profileEmail,
           sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
@@ -180,8 +180,7 @@ export default {
           message += `${link}<br>`
       })
       return isEmpty(message) ? 'N/A<br>' : message
-    },
-    // ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
+    }
   },
 
   methods: {

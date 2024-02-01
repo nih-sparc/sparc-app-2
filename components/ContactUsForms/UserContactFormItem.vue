@@ -51,7 +51,8 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { useMainStore } from '@/store/index'
 import { typeOfUser } from '@/components/ContactUsForms/questions'
 
 export default {
@@ -68,10 +69,10 @@ export default {
   data: () => ({
     userTypes: typeOfUser
   }),
-  // computed: {
-  //   ...mapState('pages/contact-us', {
-  //     userTypes: state => state.formOptions.userTypes,
-  //   })
-  // },
+  computed: {
+    ...mapState(useMainStore, {
+      userTypes: state => state.formOptions.userTypes,
+    })
+  }
 }
 </script>
