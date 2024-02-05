@@ -3,13 +3,13 @@
     Profile page
   </div>
 </template>
+
 <script setup>
 definePageMeta({
-  middleware: [
-    'auth-route'
-  ]
-});
+  middleware: ['auth-route']
+})
 </script>
+
 <script>
 export default {
   name: 'profile',
