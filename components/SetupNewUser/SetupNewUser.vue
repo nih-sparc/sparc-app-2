@@ -206,7 +206,7 @@
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store/index'
 import { pathOr } from "ramda";
-//import { Auth } from "@aws-amplify/auth"
+import { Auth } from "@aws-amplify/auth"
 import { failMessage } from '@/utils/notification-messages'
 
 export default {
@@ -410,7 +410,7 @@ export default {
     onSubmitAuthenticate: async function () {
       this.authenticatedUser.emailAddress = this.passwordForm.emailAddress
 
-      /*await Auth.signIn(this.passwordForm.emailAddress, this.passwordForm.password)
+      await Auth.signIn(this.passwordForm.emailAddress, this.passwordForm.password)
         .then(async authenticatedUser => {
           this.authenticatedUser.token = pathOr('', ['signInUserSession', 'accessToken', 'jwtToken'], authenticatedUser)
           this.toAskToConnectAccounts()
@@ -418,7 +418,7 @@ export default {
         .catch(error => {
           this.logUserError("Error authenticating user: ", error)
           this.toAskForPassword()
-        })*/
+        })
     },
     onClickConnectAccounts: async function () {
       const url = `${this.mergeUserAccountsUrl}/${this.userProfile.intId}`
@@ -441,7 +441,6 @@ export default {
     },
     onClickHome: async function () {
       await this.$store.logout()
-      await navigateTo('/')
     },
     logUserError: function(fn, message, error) {
       console.log(`${fn} [${message}] error: ${error}`)
