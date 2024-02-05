@@ -23,7 +23,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      auth: Auth
+      auth: awsConfig
     }
   }
 })
