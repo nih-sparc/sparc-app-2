@@ -555,6 +555,8 @@ export default {
 <style lang="scss">
 //@import 'sparc-design-system-components-2/src/assets/_variables.scss';
 @import '@abi-software/mapintegratedvuer/dist/style.css';
+@import '@abi-software/mapintegratedvuer/src/assets/mapicon-species-style.css';
+
 
 .mapClass {
   position: relative;
@@ -600,7 +602,3 @@ export default {
   }
 }
 </style>
-
-<style
-  src="@abi-software/mapintegratedvuer/src/assets/mapicon-species-style.css"
-></style>
