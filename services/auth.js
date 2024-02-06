@@ -1,10 +1,10 @@
-//import { Auth } from '@aws-amplify/auth'
-//import { Hub } from '@aws-amplify/core'
+import { Auth } from '@aws-amplify/auth'
+import { Hub } from '@aws-amplify/core'
 import { useMainStore } from "@/store"
 import { pathOr, propOr } from 'ramda'
 import axios from 'axios'
 
-/*Hub.listen('auth', async (data) => {
+Hub.listen('auth', async (data) => {
   switch (data.payload.event) {
     case 'cognitoHostedUI':
       const cognitoUser = await Auth.currentAuthenticatedUser()
@@ -18,7 +18,7 @@ import axios from 'axios'
       $updatePennsieveApiClient(createClient(token))
       break;
   }
-})*/
+})
 // The Pennsieve user profile
 async function getPennsieveUserProfile(cognitoUser) {
   const config = useRuntimeConfig()
@@ -49,23 +49,23 @@ function createClient(accessToken) {
 }
 
 const user = async() => {
-  /*try {
+  try {
     const user = await Auth.currentAuthenticatedUser()
     return user
   } catch (err) {
     console.log("Could not get user: ", err)
     return null
-  }*/
+  }
 }
 
 const login = async (providerName) => {
   const signInCookie = useCookie('sign-in-redirect-url', { default: () => null })
-  /*await Auth.federatedSignIn({ customProvider: providerName }).then(() => {
+  await Auth.federatedSignIn({ customProvider: providerName }).then(() => {
     signInCookie.value = useRoute().fullPath
   }).catch((err) => {
     signInCookie.value = null
     console.log("Error signing in: ", err)
-  })*/
+  })
 }
 
 const logout = async() => {
@@ -73,7 +73,7 @@ const logout = async() => {
     useMainStore().setUserProfile(null)
     const signOutCookie = useCookie('sign-out-redirect-url', { default: () => null })
     signOutCookie.value = useRoute().fullPath
-    //await Auth.signOut()
+    await Auth.signOut()
   } catch (err) {
     console.log("Error signing out: ", err)
   }
