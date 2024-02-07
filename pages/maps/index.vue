@@ -162,12 +162,13 @@ const updateFacets = async (algoliaIndex, dataset_id) => {
   const facets = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
     return data
   });
+  const processed = []
   facets.forEach(facet => {
     if (facet.key && facet.key === 'anatomy.organ.name' ||
     facet.key === 'organisms.primary.species.name') {
       let term = formatLabel(facet.label);
       facet.children.forEach(child => {
-        facets.push({
+        processed.push({
           facet: formatLabel(child.label),
           term: term,
           facetPropPath: facet.key,
@@ -176,7 +177,7 @@ const updateFacets = async (algoliaIndex, dataset_id) => {
     }
   });
 
-  return facets ? facets : []
+  return processed
 }
 
 //Process any taxon or anatomy parameters if they are available
@@ -504,6 +505,7 @@ export default {
       })
     },
     facetsUpdated: function () {
+      console.log(this.facets)
       if (this.facets.length > 0 && this.$refs.map) this.$refs.map.openSearch(this.facets, "")
     },
     currentEntryUpdated: function () {
