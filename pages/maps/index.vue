@@ -315,13 +315,6 @@ export default {
   name: 'MapsPage',
   components: {
     PortalFeatures,
-    /*
-    MapContent: import.meta.client
-      ? () =>
-          import('@abi-software/mapintegratedvuer').then((m) => m.MapContent)
-      : null
-    //
-    */
   },
   async setup() {
     const config = useRuntimeConfig()
