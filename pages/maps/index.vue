@@ -162,12 +162,13 @@ const updateFacets = async (algoliaIndex, dataset_id) => {
   const facets = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
     return data
   });
+  const processed = []
   facets.forEach(facet => {
     if (facet.key && facet.key === 'anatomy.organ.name' ||
     facet.key === 'organisms.primary.species.name') {
       let term = formatLabel(facet.label);
       facet.children.forEach(child => {
-        facets.push({
+        processed.push({
           facet: formatLabel(child.label),
           term: term,
           facetPropPath: facet.key,
@@ -176,7 +177,7 @@ const updateFacets = async (algoliaIndex, dataset_id) => {
     }
   });
 
-  return facets ? facets : []
+  return processed
 }
 
 //Process any taxon or anatomy parameters if they are available
@@ -248,7 +249,6 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
         uuid: uuid,
       })
       .then((response) => {
-        console.log(uuid, response)
         if (response && response.data && response.data.state) {
           state = response.data.state
           successMessage = 
@@ -314,13 +314,6 @@ export default {
   name: 'MapsPage',
   components: {
     PortalFeatures,
-    /*
-    MapContent: import.meta.client
-      ? () =>
-          import('@abi-software/mapintegratedvuer').then((m) => m.MapContent)
-      : null
-    //
-    */
   },
   async setup() {
     const config = useRuntimeConfig()
@@ -467,7 +460,7 @@ export default {
       this.$message(successMessage(this.successMessage))
     }
     if (this.failMessage) {
-      this.$message(successMessage(this.failMessage))
+      this.$message(failMessage(this.failMessage))
     }
   },
   created: function() {
@@ -567,6 +560,12 @@ export default {
   
   .map-icon {
     color: #8300bf!important;
+  }
+
+  .background-popper.el-popover.el-popper,
+  .open-map-popper.el-popover.el-popper{
+    background: #fff!important;
+    width: unset!important;
   }
 
   .pathway-container {
