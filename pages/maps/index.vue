@@ -249,7 +249,6 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
         uuid: uuid,
       })
       .then((response) => {
-        console.log(uuid, response)
         if (response && response.data && response.data.state) {
           state = response.data.state
           successMessage = 
@@ -461,7 +460,7 @@ export default {
       this.$message(successMessage(this.successMessage))
     }
     if (this.failMessage) {
-      this.$message(successMessage(this.failMessage))
+      this.$message(failMessage(this.failMessage))
     }
   },
   created: function() {
@@ -498,7 +497,6 @@ export default {
       })
     },
     facetsUpdated: function () {
-      console.log(this.facets)
       if (this.facets.length > 0 && this.$refs.map) this.$refs.map.openSearch(this.facets, "")
     },
     currentEntryUpdated: function () {
@@ -562,6 +560,12 @@ export default {
   
   .map-icon {
     color: #8300bf!important;
+  }
+
+  .background-popper.el-popover.el-popper,
+  .open-map-popper.el-popover.el-popper{
+    background: #fff!important;
+    width: unset!important;
   }
 
   .pathway-container {
