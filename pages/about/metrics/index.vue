@@ -37,8 +37,8 @@
     </div>
   </div>
 </template>
-<script>
 
+<script>
 import {
   compose,
   defaultTo,

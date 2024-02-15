@@ -54,6 +54,9 @@ export const useMainStore = defineStore('main', {
     },
     profileComplete (state) {
       return helperMethods.isProfileComplete(state.userProfile)
+    },
+    userTypes(state) {
+      return pathOr('', ['userTypes'], state.formOptions)
     }
   },
   actions: {
