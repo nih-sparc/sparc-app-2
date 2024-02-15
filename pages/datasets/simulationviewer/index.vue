@@ -6,9 +6,11 @@
         :tabs="tabs"
         :active-tab-id="activeTabId"
       >
-        <div class="simulation-vuer-container">
-          <!--<SimulationVuer :apiLocation="apiLocation" :id="id" />-->
-        </div>
+        <client-only placeholder="Loading simulation ...">
+          <div class="simulation-vuer-container">
+            <simulation-vuer :apiLocation="apiLocation" :id="id" />
+          </div>
+        </client-only>
       </content-tab-card>
     </div>
   </div>
@@ -18,10 +20,7 @@
 
 export default {
   name: "SimulationViewerPage",
-  components: {
-    //SimulationVuer: import("@abi-software/simulationvuer").then(m => m.SimulationVuer)
-  },
-  setup: function () {
+  setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
     return {
@@ -40,8 +39,9 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@abi-software/simulationvuer/dist/style.css';
 .simulation-vuer-container {
-  //@import '~@abi-software/simulationvuer/dist/simulationvuer';
   min-height: 24px;
+  overflow: hidden;
 }
 </style>

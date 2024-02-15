@@ -34,13 +34,13 @@
               :key="item.sys.id"
               :item="item"
             />
-            <!-- <component
+            <component
               v-else-if="galleryItemType === 'datasets'"
               :is="galleryItemComponent"
               :width="cardWidth"
               :key="item.objectID"
               :item="item"
-            /> -->
+            />
             <component
               v-else-if="galleryItemType === 'fileViewer'"
               :is="galleryItemComponent"
@@ -61,7 +61,7 @@
 import ResourceCard from '~/components/Gallery/GalleryItems/ResourceCard.vue'
 import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
-// import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
+import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
 import FileViewerCard from '~/components/Gallery/GalleryItems/FileViewerCard.vue'
 import { defaultTo } from 'ramda'
 import { ref } from 'vue'
@@ -70,7 +70,7 @@ const galleryItemComponents = {
   resources: ResourceCard,  
   metrics: MetricsCard,
   highlights: HighlightCard,
-  // datasets: DatasetCard,
+  datasets: DatasetCard,
   fileViewer: FileViewerCard
 }
 
@@ -83,7 +83,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: {/*DatasetCard,*/ ResourceCard, MetricsCard, HighlightCard, FileViewerCard },
+  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard, FileViewerCard },
   props: {
     items: {
       type: Array,

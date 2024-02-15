@@ -12,11 +12,10 @@ export default {
      * Subscribe to Newsletter
      */
     subscribeToNewsletter(email, firstName, lastName) {
-      const config = useRuntimeConfig()
       this.isSubmitting = true
 
       this.$axios
-        .post(`${config.public.portal_api}/mailchimp_subscribe`, {
+        .post(`${this.$config.public.portal_api}/mailchimp_subscribe`, {
           email_address: email,
           first_name: firstName,
           last_name: lastName
@@ -39,12 +38,10 @@ export default {
     },
 
     unsubscribeFromNewsletter(email) {
-      const config = useRuntimeConfig()
-
       this.isSubmitting = true
 
       this.$axios
-        .post(`${config.public.portal_api}/mailchimp_unsubscribe`, {
+        .post(`${this.$config.public.portal_api}/mailchimp_unsubscribe`, {
           email_address: email,
         })
         .then(response => {
@@ -63,10 +60,9 @@ export default {
     },
 
     getMemberInfo(email) {
-      const config = useRuntimeConfig()
       this.isSubmitting = true
       this.$axios
-        .get(`${config.public.portal_api}/mailchimp_member_info/${email}`)
+        .get(`${this.$config.public.portal_api}/mailchimp_member_info/${email}`)
         .then(response => {
           if (response.data.status > 200) {
             this.hasError = true
