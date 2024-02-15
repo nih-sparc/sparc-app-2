@@ -7,7 +7,6 @@
       <el-select
         v-model="modelValue.typeOfUser"
         placeholder="Select one"
-        :popper-append-to-body="false"
       >
         <el-option
           v-for="userType in userTypes"

@@ -40,7 +40,6 @@
               v-model="formType"
               class="input-reason"
               placeholder="Select a reason"
-              :popper-append-to-body="false"
             >
               <el-option
                 v-for="option in feedbackFormTypeOptions"

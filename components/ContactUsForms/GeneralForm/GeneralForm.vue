@@ -13,7 +13,6 @@
       <el-select
         v-model="form.pageOrResource"
         placeholder="Select one"
-        :popper-append-to-body="false"
       >
         <el-option
           v-for="area in areasOfSparc"
