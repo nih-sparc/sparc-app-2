@@ -26,7 +26,7 @@
 
     <el-form-item prop="pageUrl" label="Please provide the specific page URL">
       <el-input v-model="form.pageUrl" placeholder="URL">
-        <template slot="prepend">Http://</template>
+        <template #prepend>Http://</template>
       </el-input>
     </el-form-item>
 
@@ -286,7 +286,7 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .file-upload {
+:deep(.file-upload) {
   .el-form-item__label {
     margin-bottom: .3rem;
   }

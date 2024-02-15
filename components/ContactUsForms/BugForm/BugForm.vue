@@ -41,8 +41,12 @@
         :on-change="onUploadChange"
         :on-remove="onRemove"
         :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+        <template #trigger>
+          <el-button class="secondary">Select file</el-button>
+        </template>
+        <template #tip>
+          <span class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+        </template>
       </el-upload>
     </el-form-item>
 
@@ -286,9 +290,12 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .file-upload {
+:deep(.file-upload) {
   .el-form-item__label {
     margin-bottom: .3rem;
+  }
+  .el-form-item__content {
+    display: block;
   }
 }
 </style>

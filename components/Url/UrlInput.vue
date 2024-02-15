@@ -50,7 +50,7 @@ export default {
 .add-link-button:hover {
   cursor: pointer;
 }
-::v-deep .is-disabled .el-input-group__prepend
+:deep(.is-disabled .el-input-group__prepend)
 {
   border-color: $lineColor1 !important;
   color: #c0c4cc !important;

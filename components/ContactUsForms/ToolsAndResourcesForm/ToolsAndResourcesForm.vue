@@ -20,15 +20,13 @@
       label="Which category, or categories, would you place this tool/resource? *"
     >
       <div class="body4 mb-4"><i>Select all that apply.</i></div>
-      <client-only>
-        <sparc-checkbox
-          v-for="resourceCategory in resourceCategoryOptions"
-          v-model="form.resourceCategories"
-          :key="resourceCategory"
-          :label="resourceCategory"
-          :display="resourceCategory"
-        />
-      </client-only> 
+      <sparc-checkbox
+        v-for="resourceCategory in resourceCategoryOptions"
+        v-model="form.resourceCategories"
+        :key="resourceCategory"
+        :label="resourceCategory"
+        :display="resourceCategory"
+      />
     </el-form-item>
 
     <el-form-item prop="otherCategoryDescription" label="If you answered 'Other', please describe the category for this tool/resource.">
@@ -40,18 +38,16 @@
       prop="isFree"
       label="Is it free and/or open-source? *"
     >
-      <client-only>
-        <sparc-radio
-          v-model="form.isFree"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          v-model="form.isFree"
-          label="No"
-          display="No"
-        />
-      </client-only>
+      <sparc-radio
+        v-model="form.isFree"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        v-model="form.isFree"
+        label="No"
+        display="No"
+      />
     </el-form-item>
 
     <el-form-item
@@ -59,18 +55,16 @@
       prop="hasSpecificApplications"
       label="Does it have specific applications to the peripheral nervous system or the neural control of organs? *"
     >
-      <client-only>
-        <sparc-radio
-          v-model="form.hasSpecificApplications"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          v-model="form.hasSpecificApplications"
-          label="No"
-          display="No"
-        />
-      </client-only>
+      <sparc-radio
+        v-model="form.hasSpecificApplications"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        v-model="form.hasSpecificApplications"
+        label="No"
+        display="No"
+      />
     </el-form-item>
 
     <el-form-item
@@ -78,18 +72,16 @@
       prop="isCreator"
       label="Are you the tool/resource creator? *"
     >
-      <client-only>
-        <sparc-radio
-          v-model="form.isCreator"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          v-model="form.isCreator"
-          label="No"
-          display="No"
-        />
-      </client-only>
+      <sparc-radio
+        v-model="form.isCreator"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        v-model="form.isCreator"
+        label="No"
+        display="No"
+      />
     </el-form-item>
 
     <el-form-item class="mt-32" prop="linksToUsages" label="Please provide any links to datasets or publications using this tool/resource">
@@ -101,18 +93,16 @@
       prop="tutorialsAvailable"
       label="Do you have any tutorials/user guides available?"
     >
-      <client-only>
-        <sparc-radio
-          v-model="form.tutorialsAvailable"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          v-model="form.tutorialsAvailable"
-          label="No"
-          display="No"
-        />
-      </client-only>
+      <sparc-radio
+        v-model="form.tutorialsAvailable"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        v-model="form.tutorialsAvailable"
+        label="No"
+        display="No"
+      />
       <url-list class="mt-8" :disabled="!isTutorialAvailable" v-model="form.linksToTutorials" @add-link="addTutorialLink" placeholder="Enter URL"/>
     </el-form-item>
 
@@ -437,17 +427,15 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .vertical-content {
+:deep(.vertical-content) {
   .el-form-item__content {
-    display: flex;
-    flex-direction: column;
     .el-radio {
       line-height: 25px;
       padding-left: 2rem;
     }
   }
 }
-::v-deep .resource-categories {
+:deep(.resource-categories) {
   .el-form-item__content {
     .el-checkbox {
       padding-left: 2rem;
@@ -458,5 +446,8 @@ hr {
   .el-form-item__label {
     margin-bottom: .3rem;
   }
+}
+:deep(.el-form-item__content) {
+  display: block;
 }
 </style>

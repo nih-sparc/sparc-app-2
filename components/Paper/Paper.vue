@@ -25,7 +25,7 @@
     </div>
     <img
       v-if="imgSrc"
-      slot="image"
+      :v-slot="image"
       class="portal-image midnightblue-background"
       :src="imgSrc"
     />

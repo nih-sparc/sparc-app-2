@@ -10,7 +10,7 @@
           <li v-for="type in formTypes" :key="type.label">
             <nuxt-link
               class="tabs__button"
-              @click.native="resetForms"
+              @click="resetForms"
               :class="{ active: type.type === $route.query.type || (type.subtypes != undefined && type.subtypes.includes($route.query.type)) || ($route.query.type === undefined && type.type === 'research') }"
               :to="{
                 name: 'contact-us',
@@ -26,12 +26,12 @@
         </ul>
       </div>
     </div>
-    <div class="page-wrap container">
+    <div class="container">
       <div class="subpage">
         <div v-if="formTypeObject" class="body1" v-html="formTypeObject.description"></div>
       </div>
     </div>
-    <div class="page-wrap container">
+    <div class="container">
       <div class="subpage mb-0">
         <template v-if="isFeedbackForm">
           <template v-if="!isSubmitted">
@@ -382,7 +382,7 @@ hr {
   }
 }
 .contact-us-page {
-  ::v-deep .el-form-item__label {
+  :deep(.el-form-item__label) {
     color: $grey;
     font-size: 1.5rem;
     line-height: 2.25rem;
@@ -390,25 +390,25 @@ hr {
     margin-bottom: .5rem;
     padding-bottom: 0;
   }
-  ::v-deep .el-select {
+  :deep(.el-select) {
     max-width: 20rem;
     width: 100%;
   }
-  ::v-deep .el-input,
-  .el-textarea,
-  ::v-deep .el-select-dropdown__item {
+  :deep(.el-input,
+  .el-textarea)
+  :deep(.el-select-dropdown__item) {
     ::placeholder {
       color: $lightGrey;
     }
   }
-  ::v-deep .el-textarea__inner {
+  :deep(.el-textarea__inner) {
     border-color: $lightGrey;
     border-radius: 4px;
     padding-top: .75rem;
     padding-bottom: .75rem;
     font-family: inherit;
   }
-  ::v-deep .el-textarea {
+  :deep(.el-textarea) {
     ::placeholder {
       color: $lightGrey;
     }

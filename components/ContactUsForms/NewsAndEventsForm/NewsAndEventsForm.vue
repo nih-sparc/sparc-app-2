@@ -30,9 +30,13 @@
         :auto-upload="false"
         :on-change="onUploadChange"
         :on-remove="onRemove"
-        :before-remove="beforeRemove" >
-        <el-button slot="trigger" class="secondary">Select file</el-button>
-        <span slot="tip" class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+        :before-remove="beforeRemove">
+        <template #trigger>
+          <el-button class="secondary">Select file</el-button>
+        </template>
+        <template #tip>
+          <span class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+        </template>
       </el-upload>
     </el-form-item>
 
@@ -45,14 +49,14 @@
     <div class="heading1 mb-16">Event specific details</div>
 
     <el-form-item prop="location" label="Location">
-      <el-input class="location-input mr-16" :disabled="isVirtual" v-model="form.location" placeholder="Enter the location of the event" />
-      <span><client-only>
+      <span class="location-input mr-12"><el-input class="mr-16" :disabled="isVirtual" v-model="form.location" placeholder="Enter the location of the event" /></span>
+      <span>
         <sparc-checkbox
           v-model="form.locationCategories"
           label="Virtual"
           display="Virtual"
         />
-      </client-only></span>
+      </span>
     </el-form-item>
 
     <el-form-item prop="startDate" label="Start Date">
@@ -324,12 +328,13 @@ hr {
 }
 .location-input {
   display: inline-block;
-  min-width: 75%;
-  width: unset;
 }
-::v-deep .file-upload {
+:deep(.file-upload) {
   .el-form-item__label {
     margin-bottom: .3rem;
   }
+}
+:deep(.el-form-item__content) {
+  display: block;
 }
 </style>

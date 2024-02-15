@@ -53,7 +53,6 @@
 <script>
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
-import { typeOfUser } from '@/components/ContactUsForms/questions'
 
 export default {
   name: 'UserContactFormItem',
@@ -66,13 +65,8 @@ export default {
       type: Object
     }
   },
-  data: () => ({
-    userTypes: typeOfUser
-  }),
   computed: {
-    ...mapState(useMainStore, {
-      userTypes: state => state.formOptions.userTypes,
-    })
+    ...mapState(useMainStore, ['userTypes'])
   }
 }
 </script>

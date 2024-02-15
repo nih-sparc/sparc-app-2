@@ -12,15 +12,13 @@
       label="What service(s) are you interested in? *"
     >
       <div class="body4 mb-4"><i>Select all that apply.</i></div>
-      <client-only>
-        <sparc-checkbox
-          v-for="service in services"
-          v-model="form.serviceCategories"
-          :key="service"
-          :label="service"
-          :display="service"
-        />
-      </client-only> 
+      <sparc-checkbox
+        v-for="service in services"
+        v-model="form.serviceCategories"
+        :key="service"
+        :label="service"
+        :display="service"
+      />
     </el-form-item>
 
     <el-form-item prop="additionalInfo" label="Additional Information">
@@ -238,17 +236,16 @@ hr {
   display: flex;
   justify-content: left;
 }
-::v-deep .vertical-content {
+:deep(.vertical-content) {
   .el-form-item__content {
-    display: flex;
-    flex-direction: column;
+    display: block;
     .el-radio {
       line-height: 25px;
       padding-left: 2rem;
     }
   }
 }
-::v-deep .service-categories {
+:deep(.service-categories) {
   .el-form-item__content {
     .el-checkbox {
       padding-left: 2rem;

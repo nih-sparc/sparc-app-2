@@ -26,30 +26,28 @@
     </el-form-item>
 
     <el-form-item
-      class="mt-32 vertical-content"
+      class="mt-32"
       prop="publishedManuscript"
       label="Has data been published in a manuscript? *"
     >
-      <client-only>
-        <sparc-radio
-          :value="form.publishedManuscript"
-          @input="form.publishedManuscript = $event.target.value"
-          label="Yes"
-          display="Yes"
-        />
-        <sparc-radio
-          :value="form.publishedManuscript"
-          @input="form.publishedManuscript = $event.target.value"
-          label="No"
-          display="No"
-        />
-        <sparc-radio
-          :value="form.publishedManuscript"
-          @input="form.publishedManuscript = $event.target.value"
-          label="Pending"
-          display="Pending"
-        />
-      </client-only>
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="No"
+        display="No"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Pending"
+        display="Pending"
+      />
     </el-form-item>
 
     <el-form-item
@@ -292,5 +290,8 @@ hr {
 .recaptcha {
   display: flex;
   justify-content: left;
+}
+:deep(.el-form-item__content) {
+  display: block;
 }
 </style>
