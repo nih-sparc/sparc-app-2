@@ -144,7 +144,7 @@ export default {
   setup() {
     const { $contentfulClient } = useNuxtApp()
     const config = useRuntimeConfig()
-    useRecaptchaProvider()
+    //useRecaptchaProvider()
     return $contentfulClient
       .getEntries({
         content_type: config.public.ctf_contact_us_form_type_id,

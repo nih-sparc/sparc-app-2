@@ -55,7 +55,7 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'vue-recaptcha/nuxt',
+    //'vue-recaptcha/nuxt',
     '@zadigetvoltaire/nuxt-gtm'
   ],
   vite: {
@@ -172,9 +172,9 @@ export default defineNuxtConfig({
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
-      recaptcha: {
+      /*recaptcha: {
         v2SiteKey: process.env.RECAPTCHA_SITE_KEY
-      },
+      },*/
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
