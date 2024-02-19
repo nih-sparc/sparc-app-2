@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "0.7.0-vue3.7",
-    "@abi-software/plotvuer": "^0.4.0-vue-3-alpha.7",
+    "@abi-software/plotvuer": "0.4.0-vue-3-alpha.9",
     "@abi-software/simulationvuer": "0.7.0-vue-3-alpha.4",
     "@element-plus/nuxt": "^1.0.6",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
