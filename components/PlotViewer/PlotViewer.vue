@@ -2,12 +2,12 @@
   <div class="plot-viewer-page">
     <div class="container p-0">
       <div class="plotvuer-container">
-        <!--<plot-vuer
+        <plot-vuer
           v-if="source_url"
           :data-source="{ url: source_url }"
           :metadata="metadata"
           :supplemental-data="supplemental_data"
-        />-->
+        />
       </div>
       <plot-viewer-metadata
         :plotType="plotType"
@@ -30,7 +30,6 @@ export default {
 
   components: {
     PlotViewerMetadata,
-    //PlotVuer: import('@abi-software/plotvuer').then(m => m.PlotVuer)
   },
 
   props: {
@@ -123,11 +122,11 @@ export default {
 </script>
 
 <style lang="scss">
+@import '@abi-software/plotvuer/dist/style.css';
 .plotvuer-container {
   margin-top: 1.5rem;
   height: 90vh;
   max-width: calc(100% - 48px);
-  //@import '@abi-software/plotvuer/dist/plotvuer';
 }
 .page-heading {
   margin-bottom: 1.375rem;
