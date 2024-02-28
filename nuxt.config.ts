@@ -11,7 +11,7 @@ export default defineNuxtConfig({
         {
           hid: 'description',
           name: 'description',
-          content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)',
+          content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.',
         },
         {
           hid: 'keywords',
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
         // default social cards information for site sharing url's
         { hid: 'og:type', property: 'og:type', content: 'website' },
         { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
-        { hid: 'og:description', property: 'og:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' },
+        { hid: 'og:description', property: 'og:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' },
         { hid: 'og:image', property: 'og:image',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
         { name: 'twitter:site', content: '@sparc_science' },
         { name: 'twitter:title', content: 'SPARC Portal' },
         { name: 'twitter:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
-        { name: 'twitter:description', content: 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)' }
+        { name: 'twitter:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' }
       ],
       link: [
         {
