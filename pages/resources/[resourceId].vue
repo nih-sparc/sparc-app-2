@@ -97,7 +97,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: resource.fields.description ? resource.fields.description : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+          content: resource.fields.description ? resource.fields.description : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
         },
       ]
     })

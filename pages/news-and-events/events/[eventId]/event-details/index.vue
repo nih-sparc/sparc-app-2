@@ -72,7 +72,7 @@ export default {
           {
             hid: 'description',
             name: 'description',
-            content: pathOr('', ['fields', 'summary'], page) ? pathOr('', ['fields', 'summary'], page) : 'Stimulating Peripheral Activity to Relieve Conditions (SPARC)'
+            content: pathOr('', ['fields', 'summary'], page) ? pathOr('', ['fields', 'summary'], page) : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
           },
         ]
       })
