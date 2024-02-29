@@ -103,7 +103,7 @@ import { useMainStore } from '../store/index.js'
 export default {
   name: 'SparcFooter',
   components: {
-    FooterLink
+    FooterLink,
   },
   computed: {
     ...mapState(useMainStore, ['footerData'])
