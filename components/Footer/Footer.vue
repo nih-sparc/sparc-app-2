@@ -33,7 +33,7 @@
             </div>
             <div class="footer__info--re3data">
               <a href="https://doi.org/10.17616/R31NJN2V" target="_blank">
-                <img src="../../static/images/100013719.svg" alt="re3data badge"/>
+                <img src="/100013719.svg" alt="re3data badge"/>
               </a>
             </div>
           </div>
@@ -103,7 +103,7 @@ import { useMainStore } from '../store/index.js'
 export default {
   name: 'SparcFooter',
   components: {
-    FooterLink,
+    FooterLink
   },
   computed: {
     ...mapState(useMainStore, ['footerData'])

@@ -18,7 +18,7 @@ export default {
           await this.sendForm()
         }
       })*/
-      return
+      await this.sendForm()
     }
   }
 }
