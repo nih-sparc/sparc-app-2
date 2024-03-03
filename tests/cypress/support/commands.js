@@ -23,3 +23,55 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+    // returning false here prevents Cypress from
+    // failing the test
+    if (err.message.includes('Avoided redundant navigation to current location'))
+      return false
+    if (err.message.includes('Maximum iterations reached.'))
+      return false
+    if (err.message.includes('ResizeObserver loop limit exceeded'))
+      return false
+    if (err.message.includes('config is not defined'))
+      return false
+    // // For legacy dataset
+    // if (err.message.includes('ObjectID does not exist'))
+    //   return false
+    return true
+  })
+  
+  Cypress.Commands.add('findGalleryCard', (text, dir) => {
+    let direction = '.btn-next'
+    const clickNextPageButton = () => {
+      cy.get('.el-card > .el-card__body').then(($card) => {
+        if (!$card.text().includes(text)) {
+          cy.get(direction).then(($button) => {
+            if ($button.is(":disabled")) {
+              return
+            } else {
+              cy.wrap($button).click()
+              clickNextPageButton()
+            }
+          })
+        }
+      })
+    }
+    if (dir === 'prev') {
+      cy.get('.el-pager > .number').last().click()
+      direction = '.btn-prev'
+    }
+    clickNextPageButton()
+  })
+  
+  Cypress.Commands.add('goBackToBrowser', (category) => {
+    const goBack = () => {
+      cy.url().then(($url) => {
+        if (!$url.includes(`data?type=${category}`)) {
+          cy.go('back')
+          goBack()
+        }
+      })
+    }
+    goBack()
+  })
