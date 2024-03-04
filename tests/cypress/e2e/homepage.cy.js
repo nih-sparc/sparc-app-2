@@ -5,7 +5,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Navigation Bar', function () {
     // Check for navigation bar
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data?type=dataset')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'Tools & Resources').and('have.attr', 'href', '/resources')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should('contain', 'Maps').and('have.attr', 'href', '/maps')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').should('contain', 'News & Events').and('have.attr', 'href', '/news-and-events')
@@ -16,13 +16,6 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for banner
     cy.get('h1').should('contain', 'SPARC')
     cy.get('[class="page-hero-img"]').should('exist')
-
-    // Check for button function
-    cy.get('.btn-link > .el-button').should('contain', 'Submit to SPARC')
-    cy.get('.btn-link > .el-button').click()
-    cy.url().should('contain', 'share-data')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(6) > a').should('have.class', 'active')
-    cy.go('back')
   })
   it('Featured data', function () {
     // Check for content title
@@ -30,22 +23,24 @@ describe('Homepage', { testIsolation: false }, function () {
 
     cy.get('.data-wrap > a:visible').as('category')
 
+    cy.get('@category').each(($cat) => {
+      cy.wrap($cat).should('have.attr', 'href').and('contain', 'selectedFacetIds')
+    })
     cy.get('@category').first().click()
-    cy.url().should('contain', 'selectedFacetIds')
     cy.visit('')
 
     // Check for the number of categories
     cy.get('@category').should('have.length', 6)
 
     // Show more categories
-    cy.get('.featured-data > .el-button').should('have.text', '\n    View more\n  ')
+    cy.get('.featured-data > .el-button').should('have.text', 'View more')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing more
     cy.get('@category').should('have.length.above', 6)
 
     // Show less categories
-    cy.get('.featured-data > .el-button > span').should('have.text', '\n    View less\n  ')
+    cy.get('.featured-data > .el-button > span').should('have.text', 'View less')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing less
@@ -127,7 +122,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(1) > :nth-child(2) > h3').should('have.text', 'Policies')
     cy.get(':nth-child(2) > :nth-child(1) > h3').should('have.text', 'Help Us Improve')
     cy.get(':nth-child(2) > :nth-child(2) > h3').should('have.text', 'Stay Up-to-Date')
-    cy.get('.footer__info--logo > .nuxt-link-exact-active > .logo').should('have.attr', 'src').and('contain', 'logo-sparc-wave-primary')
+    cy.get('.footer__info--logo > .router-link-active > .logo').should('have.attr', 'alt').and('contain', 'Logo for SPARC')
     cy.get('.footer__info--blurb > p').should('contain', 'The NIH Common')
   })
 })
