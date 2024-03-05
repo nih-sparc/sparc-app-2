@@ -99,7 +99,7 @@ export default {
     return {
       form: {
         recaptcha: '',
-        pageUrl: 'asdf',
+        pageUrl: '',
         shortDescription: '',
         detailedDescription: '',
         user: {
