@@ -60,9 +60,9 @@
       Please check the box to proceed
     </div>
 
-    <!--<el-form-item prop="recaptcha">
-      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
-    </el-form-item>-->
+    <el-form-item prop="captchaToken">
+      <NuxtTurnstile v-model="form.captchaToken"/>
+    </el-form-item>
 
     <hr/>
 
@@ -98,7 +98,7 @@ export default {
   data() {
     return {
       form: {
-        recaptcha: '',
+        captchaToken: '',
         pageUrl: '',
         shortDescription: '',
         detailedDescription: '',
@@ -162,7 +162,7 @@ export default {
           }
         ],
 
-        recaptcha: [
+        captchaToken: [
           {
             required: true,
             message: 'Please check the box',
@@ -231,6 +231,7 @@ export default {
       formData.append("title", `SPARC Bug Submission: ${this.form.shortDescription}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != ''){
         formData.append("attachment", this.file, this.file.name)
       }
