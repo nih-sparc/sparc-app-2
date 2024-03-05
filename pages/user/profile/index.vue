@@ -4,7 +4,9 @@
     <page-hero class="py-24">
       <h1>{{ title }}</h1>
       <p>
-        The SPARC Portal account allows you to fully utilize portal functionality. <a href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features require login and find out more details about why a Pennsieve account is created for you in the process.
+        The SPARC Portal account allows you to fully utilize portal functionality. <a
+          href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features
+        require login and find out more details about why a Pennsieve account is created for you in the process.
       </p>
     </page-hero>
     <div class="background-container">
@@ -20,7 +22,7 @@
               <div class="body1">E-mail: <span class="heading3"><b>{{profileEmail}}</b></span></div>
             </el-col>
             <el-col :span=12>
-              <div v-if="orcid" class="body1">ORCID: 
+              <div v-if="orcid" class="body1">ORCID:
                 <span>
                   <a :href="orcidUri" target="_blank">{{ orcid }}</a>
                 </span>
@@ -31,11 +33,14 @@
         <div class="section heading2 p-16 mt-16">
           Available Resources
           <div class="resource-container body1">
-            SPARC Newsletter: 
+            SPARC Newsletter:
             <template v-if="!isSubscribed">
               <span class="label4"><b>You are not subscribed.</b></span>
               <div class="body4">
-                Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our newsletter. View all past newsletters <a href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">here</a>.
+                Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
+                newsletter. View all past newsletters <a
+                  href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                  target="_blank">here</a>.
               </div>
               <div class="mt-8">
                 <el-button class='secondary' @click="handleSubscribeButtonClicked">Subscribe to newsletter</el-button>
@@ -47,23 +52,23 @@
                 View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
               </div>
               <div class="mt-8">
-                <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from newsletter</el-button>
+                <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from
+                  newsletter</el-button>
               </div>
             </template>
           </div>
           <div class="resource-container body1">
-            Pennsieve: 
+            Pennsieve:
             <span class="label4"><b>You are registered.</b></span>
-            <div class="body4">
-              The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing, and sharing scientific datasets.
+            <div class="body4 mb-8">
+              The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing,
+              and sharing scientific datasets.
             </div>
-            <div class="mt-8">
-              <a href="https://app.pennsieve.io/#" target="_blank">
-                <el-button class='secondary'>
-                  Launch Pennsieve <svgo-icon-open class="icon-open" />
-                </el-button>
-              </a>
-            </div>
+            <template v-for="organization in organizations" :key="organization.id">
+              <repository-card :thumbnailUrl="organization.logo"
+                :description="getOrganizationDescription(organization)" :status="organization.status"
+                buttonLink="https://pennsieve.io" />
+            </template>
           </div>
         </div>
 
@@ -71,42 +76,32 @@
           <div class="datasets-container-title">
             <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
             <span>
-              <el-popover
-                width="fit-content"
-                trigger="hover"
-                :append-to-body=false
-                popper-class="popover"
-              >
+              <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
                 <template v-slot:reference>
-                  <svgo-icon-help class="icon-help"/>
+                  <svgo-icon-help class="icon-help" />
                 </template>
                 <div>
-                  My published Datasets relates to all Datasets, Computational and Anatomical models where you have been associated to the dataset using your ORCID number. If there are datasets that you feel should be linked to you please contact curation@sparc.science
+                  My published Datasets relates to all Datasets, Computational and Anatomical models where you have been
+                  associated to the dataset using your ORCID number. If there are datasets that you feel should be
+                  linked to you please contact curation@sparc.science
                 </div>
               </el-popover>
             </span>
           </div>
-          <gallery
-            v-loading="datasetsLoading"
-            galleryItemType="datasets"
-            :items="datasets"
-          />
+          <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
         </div>
         <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
           <div class="datasets-container-title">
             <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
             <span>
-              <el-popover
-                width="fit-content"
-                trigger="hover"
-                :append-to-body=false
-                popper-class="popover"
-              >
+              <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
                 <template v-slot:reference>
-                  <svgo-icon-help class="icon-help"/>
+                  <svgo-icon-help class="icon-help" />
                 </template>
                 <div>
-                  In order to publish a dataset on the SPARC Portal your submission must first be approved by the curation team. If there are dataset requests that you think are missing please contact curation@sparc.science
+                  In order to publish a dataset on the SPARC Portal your submission must first be approved by the
+                  curation team. If there are dataset requests that you think are missing please contact
+                  curation@sparc.science
                 </div>
               </el-popover>
             </span>
@@ -115,7 +110,8 @@
             <template v-for="datasetSubmission in datasetSubmissions" :key="datasetSubmission.id">
               <div class="resource-container row">
                 <span class="body1 left-col mr-16">
-                  <div class="link1 submission-name" v-on:click="submissionNameClicked(datasetSubmission)">{{ datasetSubmission.name }}</div>
+                  <div class="link1 submission-name" v-on:click="submissionNameClicked(datasetSubmission)">{{
+                    datasetSubmission.name }}</div>
                   <div v-if="isDraft(datasetSubmission)" class="body4">
                     Updated: {{ getUpdatedDate(datasetSubmission) }}
                   </div>
@@ -128,17 +124,19 @@
                 </span>
                 <span class="right-col">
                   <template v-if="isDraft(datasetSubmission)">
-                    <el-button @click="submitDraft(datasetSubmission.nodeId)"  class="secondary submit-button">
+                    <el-button @click="submitDraft(datasetSubmission.nodeId)" class="secondary submit-button">
                       Submit Draft
                     </el-button>
                     <el-button @click="deleteClicked(datasetSubmission)" class="danger">
                       Delete Draft
                     </el-button>
                   </template>
-                  <el-button v-else-if="isSubmitted(datasetSubmission)" @click="retractClicked(datasetSubmission)" class="secondary">
+                  <el-button v-else-if="isSubmitted(datasetSubmission)" @click="retractClicked(datasetSubmission)"
+                    class="secondary">
                     Retract Request
                   </el-button>
-                  <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)" @click="deleteClicked(datasetSubmission)" class="danger">
+                  <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)"
+                    @click="deleteClicked(datasetSubmission)" class="danger">
                     Delete Request
                   </el-button>
                 </span>
@@ -149,20 +147,12 @@
         </div>
       </div>
     </div>
-    <dataset-submission-modal
-      :show-modal="showDatasetSubmissionModal"
-      :questions="questions"
-      :default-form="defaultForm"
-      :disabled="datasetSubmissionDisabled"
-      @modal-closed="showDatasetSubmissionModal = false"
-      @proposal-submitted="fetchDatasetSubmissions"
-    />
-    <confirmation-modal
-      :show-modal="showDeleteConfirmationModal"
-      @confirmed="deleteSubmission"
+    <dataset-submission-modal :show-modal="showDatasetSubmissionModal" :questions="questions"
+      :default-form="defaultForm" :disabled="datasetSubmissionDisabled"
+      @modal-closed="showDatasetSubmissionModal = false" @proposal-submitted="fetchDatasetSubmissions" />
+    <confirmation-modal :show-modal="showDeleteConfirmationModal" @confirmed="deleteSubmission"
       @cancelled="showDeleteConfirmationModal = false"
-      @modal-closed="showDeleteConfirmationModal = false; submissionToDelete = ''"
-    >
+      @modal-closed="showDeleteConfirmationModal = false; submissionToDelete = ''">
       <template #confirmationBody>
         <div class="confirmation-body">
           <p class="label4">
@@ -174,12 +164,9 @@
         </div>
       </template>
     </confirmation-modal>
-    <confirmation-modal
-      :show-modal="showRetractConfirmationModal"
-      @confirmed="retractSubmission"
+    <confirmation-modal :show-modal="showRetractConfirmationModal" @confirmed="retractSubmission"
       @cancelled="showRetractConfirmationModal = false"
-      @modal-closed="showDeleteConfirmationModal = false; submissionToRetract = ''"
-    >
+      @modal-closed="showDeleteConfirmationModal = false; submissionToRetract = ''">
       <template #confirmationBody>
         <div class="confirmation-body">
           <p class="label4">
@@ -209,12 +196,15 @@ import Gallery from '@/components/Gallery/Gallery.vue'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal.vue'
+import RepositoryCard from '@/components/RepositoryCard/RepositoryCard.vue'
+import { getOrganizationInfo, getOrganizationStatus } from '@/static/js/organizations'
 export default {
   name: 'profile',
   components: {
     ConfirmationModal,
     DatasetSubmissionModal,
     Gallery,
+    RepositoryCard
   },
   mixins: [NewsletterMixin],
   data: () => {
@@ -240,6 +230,7 @@ export default {
       showDeleteConfirmationModal: false,
       submissionToRetract: '',
       showRetractConfirmationModal: false,
+      organizations: [],
     }
   },
   head() {
@@ -289,6 +280,7 @@ export default {
           this.fetchPublishedDatasets(newValue)
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
+          this.fetchOrganizations()
         }
       },
       immediate: true
@@ -358,6 +350,28 @@ export default {
       } catch (error) {
         return 0
       }
+    },
+    async fetchOrganizations() {
+      const headers = { 'Authorization': `Bearer ${this.userToken}` }
+      const url = `${this.$config.public.LOGIN_API_URL}/organizations?includeAdmins=false`
+      this.organizations = await this.$axios.get(url, { headers }).then(({ data }) => {
+        const orgsResponse = propOr([], 'organizations', data)
+        let orgs = []
+        orgsResponse.forEach(org => {
+          const organization = propOr({}, 'organization', org)
+          const organizationInfo = getOrganizationInfo(organization.id)
+          if (organizationInfo != null) {
+            orgs.push({ ...organizationInfo, status: getOrganizationStatus(org) })
+          }
+        })
+        return orgs
+      }).catch(() => {
+        this.hasError = true
+        return []
+      })
+    },
+    getOrganizationDescription(org) {
+      return `Open the ${org.name} workspace in Pennsieve`
     },
     getDownloadsCount(id) {
       let numDownloads = 0

@@ -280,7 +280,7 @@ export default {
     this.setDatasetInfo(newDatasetInfo)
 
     // Get all timeseries files (those with an '.edf' extension)
-    const timeseriesData = this.$config.public.SHOW_TIMESERIES_VIEWER
+    const timeseriesData = this.$config.public.SHOW_TIMESERIES_VIEWER == 'true'
     ? await this.$axios.get(`${this.$config.public.discover_api_host}/search/files?fileType=edf&datasetId=${this.datasetId}`)
         .then(({ data }) => {
           let timeseriesData = []

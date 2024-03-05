@@ -200,7 +200,7 @@ export default {
       packageType = file.packageType
     }
     const hasTimeseriesViewer = packageType === 'TimeSeries'
-    if (hasTimeseriesViewer && config.public.SHOW_TIMESERIES_VIEWER) {
+    if (hasTimeseriesViewer && config.public.SHOW_TIMESERIES_VIEWER == 'true') {
       router.push(`/datasets/timeseriesviewer?dataset_id=${route.params.datasetId}&dataset_version=${route.params.datasetVersion}&file_path=${filePath}`)
     }
 
