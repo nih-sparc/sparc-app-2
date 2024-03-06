@@ -55,9 +55,12 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    //'vue-recaptcha/nuxt',
-    '@zadigetvoltaire/nuxt-gtm'
+    '@zadigetvoltaire/nuxt-gtm',
+    '@nuxtjs/turnstile'
   ],
+  turnstile: {
+    siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
+  },
   vite: {
     define: {
       'window.global': {}
@@ -172,9 +175,7 @@ export default defineNuxtConfig({
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
-      /*recaptcha: {
-        v2SiteKey: process.env.RECAPTCHA_SITE_KEY
-      },*/
+      
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
@@ -187,6 +188,9 @@ export default defineNuxtConfig({
         trackOnNextTick: false,
         devtools: true,
       }
+    },
+    turnstile: {
+      secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY
     }
   },
   /*
