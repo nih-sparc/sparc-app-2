@@ -14574,10 +14574,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-design-system-components-2@0.0.23:
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.23.tgz#cb5353f82beee34ca381d9cff70f55dfb76f49fd"
-  integrity sha512-g0oPufePEzgh0Po8RECVrRm7DJ0GBNvyi5bTnOuO//7aqS/hq6jiVxqjRij6CL/g0b4d2b6cTZ8ZGUOAQ+1OCw==
+sparc-design-system-components-2@0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.25.tgz#71802da40061e8d38805eb1492c3ad924c25742a"
+  integrity sha512-9dDbkp7boiOApWwbGsPf78737a/uFApCrnBqQiJH1HKrrKqYvwoMaJyuu0RcpEnbJY4umTyc/Ozlju2ChV24uw==
   dependencies:
     "@carbon/grid" "^11.20.0"
     "@element-plus/icons-vue" "^2.3.1"
