@@ -18,7 +18,7 @@
 </template>
 <script>
 export default {
-  name: 'RespositoryCard',
+  name: 'RepositoryCard',
   props: {
     width: {
       type: Number,
@@ -51,7 +51,9 @@ export default {
   max-width: 75%;
   margin: auto;
   img {
+    height: 5rem;
     width: 100%;
+    aspect-ratio: 1;
   }
 }
 .open-icon {
