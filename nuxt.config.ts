@@ -175,7 +175,8 @@ export default defineNuxtConfig({
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
-      
+      INTERNAL_TRAFFIC_KEY: process.env.INTERNAL_TRAFFIC_KEY || 'internal_traffic',
+      INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,

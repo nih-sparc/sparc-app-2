@@ -10,7 +10,8 @@
 <script>
 import { ref } from 'vue'
 import sparcLogoFast from '@/assets/sparcLogoFast.gif'
-import { Amplify } from '@aws-amplify/core';
+import { Amplify } from '@aws-amplify/core'
+import { successMessage } from './utils/notification-messages'
 
 export default {
   async setup() {
@@ -50,6 +51,19 @@ export default {
     return {
       logo,
       loading
+    }
+  },
+  mounted() {
+    const internalTrafficCookie = useCookie(this.$config.public.INTERNAL_TRAFFIC_KEY, { default: () => 'false' })
+    const internalTrafficCookieIsSet = internalTrafficCookie.value == this.$config.public.INTERNAL_TRAFFIC_VALUE
+    const internalTrafficNotificationShown = useCookie('InternalTrafficNotificationShown', { default: () => false })
+    if (internalTrafficCookieIsSet) {
+      if (!internalTrafficNotificationShown.value) {
+        this.$message(successMessage('You are now recognized as an internal user and your metrics are not being tracked!'))
+        internalTrafficNotificationShown.value = true
+      }
+    } else {
+      internalTrafficNotificationShown.value = false
     }
   }
 }
