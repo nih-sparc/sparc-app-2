@@ -241,11 +241,10 @@ export default {
       getDownloadsSummary(config, $axios),
     ])
 
-    datasetDetails = datasetDetails.data
+    datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
 
     if (!datasetDetails) {
-      //critical error messages
-      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true })
+      console.log(ErrorMessages.methods.discover())
     }
 
     const store = useMainStore()
