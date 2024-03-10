@@ -27,10 +27,13 @@
         ref="fileUploader"
         action=""
         :limit="limit"
-        :auto-upload="false"
         :on-change="onUploadChange"
         :on-remove="onRemove"
-        :before-remove="beforeRemove" >
+        :before-remove="beforeRemove"
+        :on-success="onSuccess"
+        :on-error="onError"
+        :before-upload="beforeUpload"
+      >
         <template #trigger>
           <el-button class="secondary">Select file</el-button>
         </template>

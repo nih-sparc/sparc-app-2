@@ -2,6 +2,7 @@ const kB_IN_MB = 1024;
 const MAX_FILE_SIZE_IN_MB = 5;
 const MAX_FILE_SIZE = kB_IN_MB * MAX_FILE_SIZE_IN_MB;
 import { failMessage } from '@/utils/notification-messages'
+import { isEmpty } from 'ramda'
 
 export default {
   data() {
@@ -9,6 +10,7 @@ export default {
       limit: 1,
       allowVideos: false,
       file: {},
+      uploadingFile: false
     }
   },
   computed: {
@@ -21,7 +23,7 @@ export default {
       return ( file.size / kB_IN_MB ) >= MAX_FILE_SIZE
     },
     handleExceed(files, fileList) {
-      this.$message(failMessage(`The limit is ${this.limit}, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`))
+      failMessage(`The limit is ${this.limit}, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`)
     },
     onUploadChange(file)
     {
@@ -32,17 +34,17 @@ export default {
       const isVideo = (file.raw.type === 'video/mp4')
       const isFileSizeTooLarge = this.isFileSizeTooLarge(file)
       if (!isImage && !this.allowVideos) {
-        this.$message(failMessage('Upload file must be an image!'));
+        failMessage('Upload file must be an image!')
         this.$refs.fileUploader.clearFiles()
         return false
       }
-      if (!isImage && !isVideo && this.allowVideos) {
-        this.$message(failMessage('Upload file must be an image or video!'))
+      else if (!isImage && !isVideo && this.allowVideos) {
+        failMessage('Upload file must be an image or video!')
         this.$refs.fileUploader.clearFiles()
         return false
       }
       if (isFileSizeTooLarge) {
-        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`))
+        failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`)
         this.$refs.fileUploader.clearFiles()
         return false
       }
@@ -58,13 +60,16 @@ export default {
     onRemove() {
       this.file = {}
     },
-    beforeUpload(file)
+    beforeUpload()
     {
-      const isFileSizeTooLarge = this.isFileSizeTooLarge(file)
-      if (isFileSizeTooLarge) {
-        this.$message(failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`))
-      }
-      return !isFileSizeTooLarge
+      if (!isEmpty(this.file))
+        this.uploadingFile = true
+    },
+    onSuccess() {
+      this.uploadingFile = false
+    },
+    onError() {
+      this.uploadingFile = false
     }
   }
 }

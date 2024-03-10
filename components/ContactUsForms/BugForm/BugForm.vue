@@ -37,10 +37,13 @@
         ref="fileUploader"
         action=""
         :limit="limit"
-        :auto-upload="false"
         :on-change="onUploadChange"
         :on-remove="onRemove"
-        :before-remove="beforeRemove" >
+        :before-remove="beforeRemove"
+        :on-success="onSuccess"
+        :on-error="onError"
+        :before-upload="beforeUpload"
+      >
         <template #trigger>
           <el-button class="secondary">Select file</el-button>
         </template>
@@ -67,7 +70,7 @@
     <hr/>
 
     <el-form-item>
-      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
+      <el-button class="primary" :disabled="isSubmitting || uploadingFile" @click="onSubmit">
         Submit
       </el-button>
       <p v-if="hasError" class="error">
@@ -112,6 +115,7 @@ export default {
           shouldSubscribe: false,
         }
       },
+      isUploading: false,
       isSubmitting: false,
       formRules: {
         user: {

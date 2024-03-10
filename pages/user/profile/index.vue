@@ -438,7 +438,7 @@ export default {
       this.$axios
         .post(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${nodeId}`, {}, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to submit draft.'))
+          failMessage('Failed to submit draft.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
         })
@@ -452,7 +452,7 @@ export default {
       this.$axios
         .delete(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal?proposal_node_id=${this.submissionToDelete.nodeId}`, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to delete.'))
+          failMessage('Failed to delete.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
           this.showDeleteConfirmationModal = false
@@ -467,7 +467,7 @@ export default {
       this.$axios
         .post(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal/withdraw?node_id=${this.submissionToRetract.nodeId}`, {}, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to retract request.'))
+          failMessage('Failed to retract request.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
           this.showRetractConfirmationModal = false

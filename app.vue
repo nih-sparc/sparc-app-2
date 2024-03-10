@@ -59,7 +59,7 @@ export default {
     const internalTrafficNotificationShown = useCookie('InternalTrafficNotificationShown', { default: () => false })
     if (internalTrafficCookieIsSet) {
       if (!internalTrafficNotificationShown.value) {
-        this.$message(successMessage('You are now recognized as an internal user and your metrics are not being tracked!'))
+        successMessage('You are now recognized as an internal user and your metrics are not being tracked!')
         internalTrafficNotificationShown.value = true
       }
     } else {
