@@ -12,11 +12,13 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(1) > :nth-child(5) > a').should('contain', 'About').and('have.attr', 'href', '/about')
     cy.get(':nth-child(1) > :nth-child(6) > a').should('contain', 'Submit to SPARC').and('have.attr', 'href', '/share-data')
   })
+  
   it('Page hero', function () {
     // Check for banner
     cy.get('h1').should('contain', 'SPARC')
     cy.get('[class="page-hero-img"]').should('exist')
   })
+
   it('Featured data', function () {
     // Check for content title
     cy.get('.featured-data > h2').should('have.text', 'Find Data by Category')
@@ -46,6 +48,7 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for the number of categories after showing less
     cy.get('@category').should('have.length', 6)
   })
+
   it('Portal features', function () {
     // Check for the number of features
     cy.get('.feature-container').should('have.length', 4)
@@ -64,6 +67,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('have.class', 'active')
     cy.go('back')
   })
+
   it('Projects and datasets', function () {
     // Check for content title
     cy.get(':nth-child(6) > .section-container > .heading2').should('contain', 'Resources & Datasets')
@@ -92,6 +96,7 @@ describe('Homepage', { testIsolation: false }, function () {
     })
     cy.visit('')
   })
+
   it('Homepage news', function () {
     // Check for content title
     cy.get('.featured-datasets > .heading2').should('contain', 'News & Upcoming Events')
@@ -109,6 +114,7 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for card 'view all' link
     cy.get('.sparc-card__content-wrap__content > .view-all-link').should('exist')
   })
+  
   it('Stay connected', function () {
     // Check for content title
     cy.get('.subheader').should('have.text', 'Stay Connected')
@@ -117,12 +123,13 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.newsletter-wrap > .heading2').should('have.text', 'Sign up for the SPARC Newsletter')
     cy.get('.office-hours-column > .heading2').should('have.text', 'Open Office Hours')
   })
+
   it('Footer', function () {
     cy.get('.footer__links > :nth-child(1) > :nth-child(1) > h3').should('have.text', 'Learn More')
     cy.get(':nth-child(1) > :nth-child(2) > h3').should('have.text', 'Policies')
     cy.get(':nth-child(2) > :nth-child(1) > h3').should('have.text', 'Help Us Improve')
     cy.get(':nth-child(2) > :nth-child(2) > h3').should('have.text', 'Stay Up-to-Date')
     cy.get('.footer__info--logo > .router-link-active > .logo').should('have.attr', 'alt').and('contain', 'Logo for SPARC')
-    cy.get('.footer__info--blurb > p').should('contain', 'The NIH Common')
+    cy.get('.footer__info--blurb > p').should('contain', 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.')
   })
 })
