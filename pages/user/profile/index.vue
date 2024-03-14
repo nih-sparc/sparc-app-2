@@ -66,9 +66,12 @@
             </div>
             <div class="org-container">
               <template v-for="organization in organizations" :key="organization.id">
-                <repository-card :thumbnailUrl="organization.logo"
-                  :description="getOrganizationDescription(organization)" :status="organization.status"
-                  buttonLink="https://pennsieve.io" />
+                <repository-card 
+                  :thumbnailUrl="organization.logo"
+                  :description="getOrganizationDescription(organization)" 
+                  :status="organization.status"
+                  :buttonLink="getButtonLink(organization)" 
+                />
               </template>
             </div>
           </div>
@@ -375,6 +378,9 @@ export default {
     getOrganizationDescription(org) {
       return `Open the ${org.name} workspace in Pennsieve`
     },
+    getButtonLink(org) {
+      return `${this.$config.public.PENNSIEVE_URL}/${org.id}/datasets`
+    },
     getDownloadsCount(id) {
       let numDownloads = 0
       this.downloadsSummary.filter(download => download.datasetId == id).forEach(item => {
@@ -560,6 +566,9 @@ a {
 }
 .org-container {
   display: flex;
+  @media (max-width: 49em) {
+    flex-direction: column;
+  }
 }
 :deep(.popover) {
   background-color: #f9f2fc;
