@@ -1,19 +1,32 @@
 <template>
-  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card centered">
-    <div class="image-container">
-      <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
+  <el-card 
+    class="mr-8"
+    :style="{ border: 'none', maxWidth: width + 'rem', minWidth: width + 'rem' }"
+    :body-style="{ 
+      'height': '90%',
+      'display': 'flex',
+      'flex-direction': 'column',
+      'justify-content': 'space-between',
+      'text-align': 'center' }" 
+  >
+    <div>
+      <div class="image-container">
+        <img class="thumbnail" :src="thumbnailUrl" alt="thumbnail loading ..." />
+      </div>
+      <div class="body1">
+        {{description}}
+      </div>
     </div>
-    <div class="body1 mb-16">
-      {{description}}
+    <div>
+      <div class="body1 mb-16">
+        Status: <b>{{ status }}</b>
+      </div>
+      <a :href="buttonLink" target="_blank">
+        <el-button class='secondary'>
+          Launch Pennsieve <svgo-icon-open class="open-icon" />
+        </el-button>
+      </a>
     </div>
-    <div class="body1 mb-16">
-      Status: <b>{{ status }}</b>
-    </div>
-    <a :href="buttonLink" target="_blank">
-      <el-button class='secondary'>
-        Launch Pennsieve <svgo-icon-open class="open-icon" />
-      </el-button>
-    </a>
   </el-card>
 </template>
 <script>
@@ -44,16 +57,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.centered {
-  text-align: center;
-}
 .image-container {
-  max-width: 75%;
   margin: auto;
   img {
     height: 5rem;
     width: 100%;
     aspect-ratio: 1;
+    object-fit: contain;
   }
 }
 .open-icon {

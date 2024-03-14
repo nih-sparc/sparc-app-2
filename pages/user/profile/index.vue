@@ -566,6 +566,9 @@ a {
 }
 .org-container {
   display: flex;
+  @media (max-width: 49em) {
+    flex-direction: column;
+  }
 }
 :deep(.popover) {
   background-color: #f9f2fc;

@@ -12,7 +12,7 @@ const organizationsData = [
   {
     name: 'HEAL PRECISION',
     id: 'N:organization:98d6e84c-9a27-48f8-974f-93c0cca15aae',
-    logo: new URL('@/assets/precision.jpg', import.meta.url).href
+    logo: new URL('@/assets/heal.png', import.meta.url).href
   }
 ]
 
@@ -23,11 +23,11 @@ export const getOrganizationInfo = id => {
 
 export const getOrganizationStatus = org => {
   if (org.isOwner)
-    return 'Owner Access'
+    return 'Owner'
   else if (org.isAdmin)
-    return 'Admin Access'
+    return 'Admin'
   else if (org.isGuest)
-    return 'Guest Access'
+    return 'Guest'
   else
-    return 'Read Access'
+    return 'Collaborator'
 }
