@@ -88,7 +88,7 @@
 
 <script>
 import Tombstone from '@/components/Tombstone/Tombstone.vue'
-import { clone, propOr, pathOr, head, compose } from 'ramda'
+import { clone, isEmpty, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
 import { useMainStore } from '../store/index.js'
 import { mapState, mapActions } from 'pinia'
@@ -121,7 +121,7 @@ const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $a
   const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
 
   const datasetDetails =
-    (datasetTypeName === 'dataset' || datasetTypeName === 'scaffold')
+    (datasetTypeName == 'dataset' || datasetTypeName == 'scaffold' || datasetTypeName == 'computational model')
       ? await $pennsieveApiClient.value.get(datasetUrl).catch((error) => { 
           const status = pathOr('', ['data', 'status'], error.response)
           if (status === 'UNPUBLISHED') {
@@ -606,6 +606,8 @@ export default {
     '$route.query': 'queryChanged',
     getProtocolRecordsUrl: {
       handler: function (val) {
+        if (isEmpty(this.datasetId))
+          return
         if (val) {
           this.getProtocolRecords()
         }
@@ -614,6 +616,8 @@ export default {
     },
     getRecordsUrl: {
       handler: function (val) {
+        if (isEmpty(this.datasetId))
+          return
         if (val) {
           this.getDatasetRecords()
         }
