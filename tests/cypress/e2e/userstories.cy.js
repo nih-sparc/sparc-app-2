@@ -1,8 +1,7 @@
 // To check the segmentation card
 // should use datasets which have segmentation data
 const segmentationDatasetIds = [226, 77]
-const scaffoldDatasetCategories = ['heart', 'stomach']
-const scaffoldUseFlowSearchInput = 'scaffold'
+const scaffoldDatasetCategories = ['stomach', 'heart']
 const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
@@ -17,6 +16,7 @@ describe('User stories', function () {
     })
 
     segmentationDatasetIds.forEach((id) => {
+
       it(`Access dataset ${id}`, function () {
         // Search for segmentation related dataset
         cy.get('.el-input__inner').clear();
@@ -40,10 +40,11 @@ describe('User stories', function () {
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > :nth-child(1) > b').should('contain', 'Segmentation');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').should('contain', ' View Segmentation');
 
-        cy.goBackToBrowser('dataset');
+        cy.visit(`${Cypress.config().baseUrl}/data?type=dataset`);
       })
     })
   })
+
   describe('Should open scaffold through the gallery', { testIsolation: false }, function () {
     before('Loading Anatomical Models', function () {
       cy.intercept('**/query?**').as('query');
@@ -59,6 +60,7 @@ describe('User stories', function () {
     })
 
     scaffoldDatasetCategories.forEach((category) => {
+
       it(`Access scaffold ${category}`, function () {
         // Search for scaffold related dataset
         cy.get('.el-input__inner').clear();
@@ -97,8 +99,8 @@ describe('User stories', function () {
             cy.wait('@query', { timeout: 20000 });
 
             // Search dataset id
-            cy.get('.search-input > .el-input__inner').clear();
-            cy.get('.search-input > .el-input__inner').type(datasetId);
+            cy.get('.search-input > .el-input__wrapper').clear();
+            cy.get('.search-input > .el-input__wrapper').type(datasetId);
             cy.get('.header > .el-button').click();
 
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 });
@@ -120,7 +122,7 @@ describe('User stories', function () {
             cy.get('.context-image').should('have.attr', 'src').and('contain', datasetId);
             cy.get('[style="margin-right: 8px;"] > .title').should('have.class', 'title');
 
-            cy.get('.open-tab > .el-icon-arrow-left').click();
+            cy.get('.open-tab > .el-icon').click();
 
             cy.get('@datasetCards').contains(/All/i).click();
 
@@ -129,15 +131,18 @@ describe('User stories', function () {
             cy.visit(`/datasets/${datasetId}?type=dataset`);
           })
         })
-        cy.goBackToBrowser('model');
+        cy.visit(`${Cypress.config().baseUrl}/data?type=model&search=${category}`);
       })
     })
   })
+
   describe('Should find data by category', { testIsolation: false }, function () {
-    before('Visit homepage', function () {
+    beforeEach('Visit homepage', function () {
       cy.visit('');
     })
+    
     categories.forEach((category) => {
+
       it(`Filter datasets by ${category}`, function () {
         cy.intercept('**/query?**').as('query');
 
@@ -147,8 +152,9 @@ describe('User stories', function () {
 
         // Check for category exist
         const regex = new RegExp(category, 'i')
-        cy.get('.data-wrap > a > p').contains(regex).as('facetsCategory');
-        cy.get('@facetsCategory').should('be.visible');
+        // Wait for 'href' ready for click
+        cy.wait(5000)
+        cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
@@ -158,8 +164,6 @@ describe('User stories', function () {
         cy.get('.el-table__row', { timeout: 30000 }).first().as('dataset');
         cy.get('@dataset').find('.cell > :nth-child(1) > a').last().click();
         cy.contains(regex).should('have.length.above', 0);
-        cy.goBackToBrowser('dataset');
-        cy.go('back');
       })
     })
   })
