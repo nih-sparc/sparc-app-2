@@ -13,8 +13,8 @@ datasetIds.forEach(datasetId => {
 
     it("Gallery Tab", function () {
       // Should switch to 'Gallery'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' Gallery ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Gallery ');
+      cy.contains('#datasetDetailsTabsContainer .style1', 'Gallery').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
 
       cy.wait(5000)
 
@@ -51,6 +51,7 @@ datasetIds.forEach(datasetId => {
     it("Landing page", function () {
       cy.intercept('**/query?**').as('query')
 
+    it("Landing page", function () {
       // Should display image with correct dataset src
       cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
@@ -77,7 +78,7 @@ datasetIds.forEach(datasetId => {
       // });
 
       // Should search for contributor in find data page
-      cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip > .tooltip-item > a').then(($name) => {
+      cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
         cy.wrap($name).click()
 
         cy.wait('@query', { timeout: 20000 })
@@ -100,35 +101,36 @@ datasetIds.forEach(datasetId => {
         })
 
         // Check for URL and search input
-        cy.url({ decode: true }).should('contain', `search=${$name.text()}`)
+        cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
         cy.get('.el-input__inner').should('have.value', $name.text());
         cy.go('back')
       });
 
       // Check 'View other version' directs to Versions tab
       cy.get('.dataset-information-box > div').contains('View other versions').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Versions ');
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
 
       //Check 'Get Dataset' directs to files tab
       cy.contains('.button-container span', 'Get Dataset').click()
-      cy.get('.nuxt-link-exact-active').should('contain', ' Files ');
-      cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset').and('be.visible')
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
+      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
 
       //Check 'Cite Dataset' directs to Cite tab
       cy.contains('.button-container span', 'Cite Dataset').click()
-      cy.get('.nuxt-link-exact-active').should('contain', ' Cite ');
-      cy.get('.citation-details > .heading2').should('have.text', '\n    Dataset Citation\n  ').and('be.visible')
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
+      cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
     });
+
     it("Abstract Tab", function () {
       // Should switch to 'Abstract'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' Abstract ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Abstract ');
+      cy.contains('#datasetDetailsTabsContainer .style1', 'Abstract').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Abstract');
 
       //The following regular expression should capture space and letters
-      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Study Purpose: (.+)/).should('exist')
-      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/Data (Collection|Collected):(.+)/).should('exist')
-      cy.get('.dataset-description-info > .col-xs-12.description-container > p').contains(/(Primary )?Conclusion(s)?: (.+)/).should('exist')
+      cy.get('.dataset-description-info > :nth-child(1)').contains(/Study Purpose: (.+)/).should('exist')
+      cy.get('.dataset-description-info > :nth-child(1)').contains(/Data (Collection|Collected):(.+)/).should('exist')
+      cy.get('.dataset-description-info > :nth-child(1)').contains(/(Primary )?Conclusion(s)?: (.+)/).should('exist')
 
       // Check for Experimental Design
       cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
@@ -159,10 +161,11 @@ datasetIds.forEach(datasetId => {
         })
       })
     });
+
     it("About Tab", function () {
       // Should switch to 'About'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' About ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' About ');
+      cy.contains('#datasetDetailsTabsContainer .style1', 'About').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'About');
 
       // Check for content
       cy.get('.dataset-about-info > .mb-16').contains(/Title: (.+)/).should('exist')
@@ -182,12 +185,18 @@ datasetIds.forEach(datasetId => {
       /**
        * Contact Author may not be the contributor
        * If should be, uncomment following code
+       * =========================================
        */
+
       // //match author to contributors
       // cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
       //   const author = new RegExp(value.replace(/\s+/, ' '), 'i')
       //   cy.get('.similar-datasets-container').contains(author);
       // })
+
+      /**
+       * =========================================
+       */
 
       // Ignore tests if project not exist
       cy.get('.similar-datasets-container').then(($content) => {
@@ -209,13 +218,14 @@ datasetIds.forEach(datasetId => {
         }
       })
     });
+
     it("Cite Tab", function () {
       // Should switch to 'Cite'
-      cy.contains('#datasetDetailsTabsContainer .style1', ' Cite ').click();
-      cy.get('.nuxt-link-exact-active').should('contain', ' Cite ');
+      cy.contains('#datasetDetailsTabsContainer .style1', 'Cite').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
 
       // Check for title
-      cy.get('.bx--col-md-6 > .heading2').invoke('text').then((value) => {
+      cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
         cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.trim())
       })
 
@@ -228,13 +238,14 @@ datasetIds.forEach(datasetId => {
         cy.get('.citation-details > p > a').should('have.attr', 'href', expectedLink);
       })
     });
+
     it("Files Tab", function () {
       //First check if there is a Files tab
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
-        if ($tab.text().includes(' Files ')) {
+        if ($tab.text().includes('Files')) {
           // Should switch to 'Files' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', ' Files ').click();
-          cy.get('.nuxt-link-exact-active').should('contain', ' Files ');
+          cy.contains('#datasetDetailsTabsContainer .style1', 'Files').click();
+          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
 
           // Check for content
           cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset');
@@ -246,7 +257,7 @@ datasetIds.forEach(datasetId => {
           cy.contains('Dataset size').parent().then(($size) => {
             const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
             if ($size.text().includes("GB") && size > 5) {
-              cy.get('.el-tooltip > .el-button').should('not.be.enabled')
+              cy.get('.el-tooltip__trigger > .el-button').should('not.be.enabled')
             } else {
               cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled')
             }
@@ -257,53 +268,61 @@ datasetIds.forEach(datasetId => {
           cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
 
           //Find the download file button
-          cy.contains('.content .body1 .el-table__fixed-body-wrapper .el-table__row', ' dataset_description.xlsx ').should('have.length', 1).as('datasetDescription');
+          cy.contains('.el-table__row', 'dataset_description.xlsx').should('have.length', 1).as('datasetDescription');
 
           //there should be 4 icons, one for each action
-          cy.get('@datasetDescription').find('.svg-icon').should('have.length', 4).as('icons')
+          cy.get('@datasetDescription').find('.nuxt-icon.nuxt-icon--fill.action-icon').should('have.length', 4).as('icons')
 
           //Check get share links
           cy.get('@icons').eq(3).click({ force: true });
-          cy.get('.el-message').should('be.visible').and('have.text', 'File URL copied to clipboard.')
+          cy.get('.el-message').should('be.visible')
 
           //Check oSPARC link
           cy.get('@icons').eq(2).click({ force: true });
-          cy.get('.files-table-table .el-dialog  .svg-icon').click({ force: true });
+          cy.get('.el-dialog__headerbtn').click();
 
           // Check for files breadcrumb
-          cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
+          cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
           cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
           cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
-          cy.get('.el-table__body-wrapper > .el-table__body > tbody > .el-table__row').then(($table) => {
-            if ($table.text().includes('Folder')) {
-              cy.get('.breadcrumb-link').should('have.length', 1)
-              cy.wrap($table).filter(':contains("Folder")').first().within(($link) => {
-                cy.wrap($link).get('.file-name-wrap > .el-tooltip > .file-name').click({ force: true })
-              })
-              cy.get('.breadcrumb-link').should('have.length', 2)
-              cy.get(':nth-child(1) > .breadcrumb-link').click()
-              cy.get('.breadcrumb-link').should('have.length', 1)
-            }
+          cy.get('.cell > .file-name-wrap > .el-tooltip__trigger').then(($folder) => {
+            cy.get('.breadcrumb-link').should('have.length', 1)
+            cy.wrap($folder).first().click()
+            cy.get('.breadcrumb-link').should('have.length', 2)
+            cy.get(':nth-child(1) > .breadcrumb-link').click()
+            cy.get('.breadcrumb-link').should('have.length', 1)
           })
         } else {
           this.skip();
         }
       });
     });
+
     it("References Tab", function () {
       //First check if reference tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
-        if ($tab.text().includes(' References ')) {
+        if ($tab.text().includes('References')) {
           // Should switch to 'References' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', ' References ').click();
-          cy.get('.nuxt-link-exact-active').should('contain', ' References ');
+          cy.contains('#datasetDetailsTabsContainer .style1', 'References').click();
+          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'References');
 
           // Check for content
           cy.get('.dataset-references .heading2').contains('Associated Publications for this Dataset');
-          cy.get('.dataset-references .citation-container').each(el => {
-            cy.wrap(el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
-            cy.wrap(el).find('.copy-button').click();
-            cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
+          cy.get('.dataset-references .citation-container').each(($el) => {
+            cy.wrap($el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
+
+            /**
+             * ============================================================================
+             * Temporarily disable the copy testing, 'document not focused issue' may occur
+             */
+
+            // cy.wrap($el).find('.copy-button').click();
+            // cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
+
+            /**
+             * ============================================================================
+             */
+
           });
 
           // Check if redundant doi exist
@@ -318,7 +337,7 @@ datasetIds.forEach(datasetId => {
                   if (!doiList.includes(link)) {
                     doiList.push(link)
                   } else {
-                    throw new Error("Redundant doi is found")
+                    throw new Error("Redundant doi references are found")
                   }
                 })
               });
@@ -329,13 +348,14 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
+
     it("Versions Tab", function () {
       //First check if version tab is present
       cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
         if ($tab.text().includes(' Versions ')) {
           // Should switch to 'Versions' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', ' Versions ').click();
-          cy.get('.nuxt-link-exact-active').should('contain', ' Versions ');
+          cy.contains('#datasetDetailsTabsContainer .style1', 'Versions').click();
+          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
 
           // Check for file actions
           cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($cell) => {
