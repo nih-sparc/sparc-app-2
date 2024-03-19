@@ -24,6 +24,11 @@ categories.forEach((category) => {
       cy.visit(`/data?type=${category}`)
     })
 
+    beforeEach(function () {
+      cy.intercept('**/query?**').as('query')
+      cy.intercept('**/entries?**').as('entries')
+    })
+
     it('Dataset card', function () {
       if (category === 'projects') {
         cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > .image-container > .img-project').should('have.attr', 'src').and('contain', '//images.ctfassets.net/');
@@ -100,8 +105,6 @@ categories.forEach((category) => {
     keywords.forEach((keyword) => {
 
       it(`Keyword Search - ${keyword}`, function () {
-        cy.intercept('**/query?**').as('query')
-
         cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
 
         // Type keyword
@@ -153,9 +156,6 @@ categories.forEach((category) => {
     facets.forEach((facetList) => {
 
       it(`Faceted Browse Search - ${facetList}`, function () {
-        cy.intercept('**/query?**').as('query')
-        cy.intercept('**/entries?**').as('entries')
-
         // Check for filters applied box
         cy.get('.no-facets').should('contain', 'No filters applied')
 

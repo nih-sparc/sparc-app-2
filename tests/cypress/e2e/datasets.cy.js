@@ -6,10 +6,14 @@ datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
     before(function () {
-      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
-      cy.intercept('**/knowledge/query/**').as('flatmap')
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
+    
+    beforeEach(function () {
+      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+      cy.intercept('**/knowledge/query/**').as('flatmap')
+      cy.intercept('**/query?**').as('query')
+    })
 
     it("Gallery Tab", function () {
       // Should switch to 'Gallery'
@@ -51,8 +55,6 @@ datasetIds.forEach(datasetId => {
         }
       });
     });
-    it("Landing page", function () {
-      cy.intercept('**/query?**').as('query')
 
     it("Landing page", function () {
       // Should display image with correct dataset src

@@ -140,24 +140,23 @@ describe('User stories', function () {
 
   describe('Should find data by category', { testIsolation: false }, function () {
     beforeEach('Visit homepage', function () {
+      cy.intercept('**/query?**').as('query');
       cy.visit('');
+
+      // Wait for 'href' ready for click
+      cy.wait(5000)
+
     })
     
     categories.forEach((category) => {
 
       it(`Filter datasets by ${category}`, function () {
-        cy.intercept('**/query?**').as('query');
-
         // Expand all cateories
         cy.get('.featured-data > .el-button > span').click();
         cy.get('.data-wrap').should('be.visible');
 
         // Check for category exist
         const regex = new RegExp(category, 'i')
-
-        // Wait for 'href' ready for click
-        cy.wait(5000)
-
         cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 

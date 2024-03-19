@@ -19,11 +19,18 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.visit('/maps?type=ac')
   })
 
+  beforeEach(function () {
+    cy.intercept('**/flatmap/**').as('flatmap')
+    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
+    cy.intercept('**/s3-resource/**').as('s3-resource')
+    cy.intercept('**/query?**').as('query')
+    cy.intercept('**/dataset_info/**').as('dataset_info')
+    cy.intercept('**/datasets/**').as('datasets')
+  })
+
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      cy.intercept('**/flatmap/**').as('flatmap')
-
       // Loading mask should not exist after the new flatmap is loaded
       cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
@@ -95,10 +102,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    cy.intercept('**/flatmap/**').as('flatmap')
-    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
-    cy.intercept('**/s3-resource/**').as('s3-resource')
-
     // Loading mask should not exist after the default flatmap is loaded
     cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
@@ -148,9 +151,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   datasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-      cy.intercept('**/query?**').as('query')
-      cy.intercept('**/dataset_info/**').as('dataset_info')
-      cy.intercept('**/datasets/**').as('datasets')
 
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
