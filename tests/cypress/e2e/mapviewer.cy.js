@@ -55,7 +55,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
          * Can be removed if the popup logic updated
          */
         cy.get('@canvas').click(coorX, coorY)
+
         cy.wait(5000)
+
         cy.get('body').then(($body) => {
           if ($body.find('.maplibregl-popup-close-button').length > 0) {
             // Close the provenance card
@@ -167,6 +169,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           cy.get('.error-feedback').should('exist')
           cy.get('.error-feedback').contains(/No results found/i).should('exist')
         } else {
+          
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
           // Check for search result and the tag 'Scaffold'

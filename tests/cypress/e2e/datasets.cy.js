@@ -33,9 +33,12 @@ datasetIds.forEach(datasetId => {
           });
 
           // Only check for dataset when it has valid flatmap data
-          cy.wait('@dataset_info').then((intercept) => {
+          cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
+
             if (intercept.response.body.result[0].organs) {
-              cy.wait('@flatmap').then((intercept) => {
+
+              cy.wait('@flatmap', { timeout: 20000 }).then((intercept) => {
+
                 if (intercept.response.body.values.length > 0) {
                   cy.findGalleryCard('flatmap', 'prev');
                   cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
@@ -77,6 +80,9 @@ datasetIds.forEach(datasetId => {
       //   })
       // });
 
+      // Wait for the link in the clicked name
+      cy.wait(5000)
+      
       // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
         cy.wrap($name).click()

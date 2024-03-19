@@ -9,6 +9,7 @@ describe('User stories', function () {
     before('Loading Datasets', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
+
       cy.wait('@query', { timeout: 20000 });
 
       // Navigate to 'Data&Models' page
@@ -49,6 +50,7 @@ describe('User stories', function () {
     before('Loading Anatomical Models', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
+
       cy.wait('@query', { timeout: 20000 });
 
       // Navigate to 'Data&Models' page
@@ -152,12 +154,15 @@ describe('User stories', function () {
 
         // Check for category exist
         const regex = new RegExp(category, 'i')
+
         // Wait for 'href' ready for click
         cy.wait(5000)
+
         cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
+        
         cy.get('.cell > :nth-child(1) > .property-table > :nth-child(1) > :nth-child(2)', { timeout: 30000 }).first().contains(regex).should('exist');
 
         // Check for detail page

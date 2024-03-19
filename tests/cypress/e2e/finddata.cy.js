@@ -204,10 +204,14 @@ categories.forEach((category) => {
             // Check for URL
             if (category === 'projects') {
               cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
+
               cy.wait('@entries', { timeout: 20000 })
+
             } else {
               cy.url().should('contain', 'selectedFacetIds')
+
               cy.wait('@query', { timeout: 20000 })
+              
             }
 
             cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
