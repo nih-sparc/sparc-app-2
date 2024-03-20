@@ -1,196 +1,200 @@
 <template>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" :title=title />
-    <page-hero class="py-24">
-      <h1>{{ title }}</h1>
-      <p>
-        The SPARC Portal account allows you to fully utilize portal functionality. <a
-          href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which features
-        require login and find out more details about why a Pennsieve account is created for you in the process.
-      </p>
-    </page-hero>
-    <div class="background-container">
-      <div class="container py-24">
-        <div class="section p-16 mt-16">
-          <div class="heading2">
-            My Information
-          </div>
-          <el-row>
-            <el-col :span=12>
-              <div class="body1">First name: <span class="heading3"><b>{{firstName}}</b></span></div>
-              <div class="body1">Last name: <span class="heading3"><b>{{lastName}}</b></span></div>
-              <div class="body1">E-mail: <span class="heading3"><b>{{profileEmail}}</b></span></div>
-            </el-col>
-            <el-col :span=12>
-              <div v-if="orcid" class="body1">ORCID:
-                <span>
-                  <a :href="orcidUri" target="_blank">{{ orcid }}</a>
-                </span>
-              </div>
-            </el-col>
-          </el-row>
-        </div>
-        <div class="section heading2 p-16 mt-16">
-          Available Resources
-          <div class="resource-container body1">
-            SPARC Newsletter:
-            <template v-if="!isSubscribed">
-              <span class="label4"><b>You are not subscribed.</b></span>
-              <div class="body4">
-                Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
-                newsletter. View all past newsletters <a
-                  href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
-                  target="_blank">here</a>.
-              </div>
-              <div class="mt-8">
-                <el-button class='secondary' @click="handleSubscribeButtonClicked">Subscribe to newsletter</el-button>
-              </div>
-            </template>
-            <template v-else>
-              <span class="label4"><b>You are currently subscribed.</b></span>
-              <div class="body1">
-                View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
-              </div>
-              <div class="mt-8">
-                <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from
-                  newsletter</el-button>
-              </div>
-            </template>
-          </div>
-          <div class="resource-container body1">
-            Pennsieve:
-            <span class="label4"><b>You are registered.</b></span>
-            <div class="body4 mb-8">
-              The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing,
-              and sharing scientific datasets.
+    <template v-if="!userToken">
+      <login-modal 
+        :show-dialog=true 
+        @dialog-closed="dialogClosed" 
+      />
+    </template>
+    <template v-else>
+      <breadcrumb :breadcrumb="breadcrumb" :title=title />
+      <page-hero class="py-24">
+        <h1>{{ title }}</h1>
+        <p>
+          The SPARC Portal account allows you to fully utilize portal functionality. <a
+            href="https://docs.sparc.science/docs/sparc-portal-login" target="_blank">Learn more</a> about which
+          features
+          require login and find out more details about why a Pennsieve account is created for you in the process.
+        </p>
+      </page-hero>
+      <div class="background-container">
+        <div class="container py-24">
+          <div class="section p-16 mt-16">
+            <div class="heading2">
+              My Information
             </div>
-            <div class="org-container">
-              <template v-for="organization in organizations" :key="organization.id">
-                <repository-card 
-                  :thumbnailUrl="organization.logo"
-                  :description="getOrganizationDescription(organization)" 
-                  :status="organization.status"
-                  :buttonLink="getButtonLink(organization)" 
-                />
+            <el-row>
+              <el-col :span=12>
+                <div class="body1">First name: <span class="heading3"><b>{{firstName}}</b></span></div>
+                <div class="body1">Last name: <span class="heading3"><b>{{lastName}}</b></span></div>
+                <div class="body1">E-mail: <span class="heading3"><b>{{profileEmail}}</b></span></div>
+              </el-col>
+              <el-col :span=12>
+                <div v-if="orcid" class="body1">ORCID:
+                  <span>
+                    <a :href="orcidUri" target="_blank">{{ orcid }}</a>
+                  </span>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="section heading2 p-16 mt-16">
+            Available Resources
+            <div class="resource-container body1">
+              SPARC Newsletter:
+              <template v-if="!isSubscribed">
+                <span class="label4"><b>You are not subscribed.</b></span>
+                <div class="body4">
+                  Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
+                  newsletter. View all past newsletters <a
+                    href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                    target="_blank">here</a>.
+                </div>
+                <div class="mt-8">
+                  <el-button class='secondary' @click="handleSubscribeButtonClicked">Subscribe to newsletter</el-button>
+                </div>
+              </template>
+              <template v-else>
+                <span class="label4"><b>You are currently subscribed.</b></span>
+                <div class="body1">
+                  View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
+                </div>
+                <div class="mt-8">
+                  <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from
+                    newsletter</el-button>
+                </div>
               </template>
             </div>
-          </div>
-        </div>
-
-        <div class="section heading2 p-16 mt-16">
-          <div class="datasets-container-title">
-            <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
-            <span>
-              <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
-                <template v-slot:reference>
-                  <svgo-icon-help class="icon-help" />
-                </template>
-                <div>
-                  My published Datasets relates to all Datasets, Computational and Anatomical models where you have been
-                  associated to the dataset using your ORCID number. If there are datasets that you feel should be
-                  linked to you please contact curation@sparc.science
-                </div>
-              </el-popover>
-            </span>
-          </div>
-          <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
-        </div>
-        <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
-          <div class="datasets-container-title">
-            <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
-            <span>
-              <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
-                <template v-slot:reference>
-                  <svgo-icon-help class="icon-help" />
-                </template>
-                <div>
-                  In order to publish a dataset on the SPARC Portal your submission must first be approved by the
-                  curation team. If there are dataset requests that you think are missing please contact
-                  curation@sparc.science
-                </div>
-              </el-popover>
-            </span>
-          </div>
-          <div v-loading="submissionsLoading">
-            <template v-for="datasetSubmission in datasetSubmissions" :key="datasetSubmission.id">
-              <div class="resource-container row">
-                <span class="body1 left-col mr-16">
-                  <div class="link1 submission-name" v-on:click="submissionNameClicked(datasetSubmission)">{{
-                    datasetSubmission.name }}</div>
-                  <div v-if="isDraft(datasetSubmission)" class="body4">
-                    Updated: {{ getUpdatedDate(datasetSubmission) }}
-                  </div>
-                  <div v-else class="body4">
-                    Submitted: {{ getSubmittedDate(datasetSubmission) }}
-                  </div>
-                  <div class="label1">
-                    Status: {{ getStatus(datasetSubmission) }}
-                  </div>
-                </span>
-                <span class="right-col">
-                  <template v-if="isDraft(datasetSubmission)">
-                    <el-button @click="submitDraft(datasetSubmission.nodeId)" class="secondary submit-button">
-                      Submit Draft
-                    </el-button>
-                    <el-button @click="deleteClicked(datasetSubmission)" class="danger">
-                      Delete Draft
-                    </el-button>
-                  </template>
-                  <el-button v-else-if="isSubmitted(datasetSubmission)" @click="retractClicked(datasetSubmission)"
-                    class="secondary">
-                    Retract Request
-                  </el-button>
-                  <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)"
-                    @click="deleteClicked(datasetSubmission)" class="danger">
-                    Delete Request
-                  </el-button>
-                </span>
+            <div class="resource-container body1">
+              Pennsieve:
+              <span class="label4"><b>You are registered.</b></span>
+              <div class="body4 mb-8">
+                The Pennsieve Data Management Platform provides a scalable cloud-based solution for managing, analyzing,
+                and sharing scientific datasets.
               </div>
-            </template>
+              <div class="org-container">
+                <template v-for="organization in organizations" :key="organization.id">
+                  <repository-card 
+                    :thumbnailUrl="organization.logo"
+                    :description="getOrganizationDescription(organization)" 
+                    :status="organization.status"
+                    :buttonLink="getButtonLink(organization)" 
+                />
+                </template>
+              </div>
+            </div>
           </div>
-          <el-button class='secondary mt-16' @click="newRequestClicked">Submit new request</el-button>
+
+          <div class="section heading2 p-16 mt-16">
+            <div class="datasets-container-title">
+              <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
+              <span>
+                <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                  <template v-slot:reference>
+                    <svgo-icon-help class="icon-help" />
+                  </template>
+                  <div>
+                    My published Datasets relates to all Datasets, Computational and Anatomical models where you have
+                    been
+                    associated to the dataset using your ORCID number. If there are datasets that you feel should be
+                    linked to you please contact curation@sparc.science
+                  </div>
+                </el-popover>
+              </span>
+            </div>
+            <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
+          </div>
+          <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
+            <div class="datasets-container-title">
+              <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
+              <span>
+                <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                  <template v-slot:reference>
+                    <svgo-icon-help class="icon-help" />
+                  </template>
+                  <div>
+                    In order to publish a dataset on the SPARC Portal your submission must first be approved by the
+                    curation team. If there are dataset requests that you think are missing please contact
+                    curation@sparc.science
+                  </div>
+                </el-popover>
+              </span>
+            </div>
+            <div v-loading="submissionsLoading">
+              <template v-for="datasetSubmission in datasetSubmissions" :key="datasetSubmission.id">
+                <div class="resource-container row">
+                  <span class="body1 left-col mr-16">
+                    <div class="link1 submission-name" v-on:click="submissionNameClicked(datasetSubmission)">{{
+                      datasetSubmission.name }}</div>
+                    <div v-if="isDraft(datasetSubmission)" class="body4">
+                      Updated: {{ getUpdatedDate(datasetSubmission) }}
+                    </div>
+                    <div v-else class="body4">
+                      Submitted: {{ getSubmittedDate(datasetSubmission) }}
+                    </div>
+                    <div class="label1">
+                      Status: {{ getStatus(datasetSubmission) }}
+                    </div>
+                  </span>
+                  <span class="right-col">
+                    <template v-if="isDraft(datasetSubmission)">
+                      <el-button @click="submitDraft(datasetSubmission.nodeId)" class="secondary submit-button">
+                        Submit Draft
+                      </el-button>
+                      <el-button @click="deleteClicked(datasetSubmission)" class="danger">
+                        Delete Draft
+                      </el-button>
+                    </template>
+                    <el-button v-else-if="isSubmitted(datasetSubmission)" @click="retractClicked(datasetSubmission)"
+                      class="secondary">
+                      Retract Request
+                    </el-button>
+                    <el-button v-else-if="isWithdrawn(datasetSubmission) || isRejected(datasetSubmission)"
+                      @click="deleteClicked(datasetSubmission)" class="danger">
+                      Delete Request
+                    </el-button>
+                  </span>
+                </div>
+              </template>
+            </div>
+            <el-button class='secondary mt-16' @click="newRequestClicked">Submit new request</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <dataset-submission-modal :show-modal="showDatasetSubmissionModal" :questions="questions"
-      :default-form="defaultForm" :disabled="datasetSubmissionDisabled"
-      @modal-closed="showDatasetSubmissionModal = false" @proposal-submitted="fetchDatasetSubmissions" />
-    <confirmation-modal :show-modal="showDeleteConfirmationModal" @confirmed="deleteSubmission"
-      @cancelled="showDeleteConfirmationModal = false"
-      @modal-closed="showDeleteConfirmationModal = false; submissionToDelete = ''">
-      <template #confirmationBody>
-        <div class="confirmation-body">
-          <p class="label4">
-            Delete Dataset Proposal: "{{submissionToDelete.name}}"?
-          </p>
-          <p class="body4 danger-text">
-            This will permanently delete the dataset proposal.
-          </p>
-        </div>
-      </template>
-    </confirmation-modal>
-    <confirmation-modal :show-modal="showRetractConfirmationModal" @confirmed="retractSubmission"
-      @cancelled="showRetractConfirmationModal = false"
-      @modal-closed="showDeleteConfirmationModal = false; submissionToRetract = ''">
-      <template #confirmationBody>
-        <div class="confirmation-body">
-          <p class="label4">
-            Withdraw Dataset Proposal: "{{submissionToRetract.name}}"?
-          </p>
-          <p class="body4 danger-text">
-            This will withdraw the request to review and consider the dataset proposal from SPARC.
-          </p>
-        </div>
-      </template>
-    </confirmation-modal>
+      <dataset-submission-modal :show-modal="showDatasetSubmissionModal" :questions="questions"
+        :default-form="defaultForm" :disabled="datasetSubmissionDisabled"
+        @modal-closed="showDatasetSubmissionModal = false" @proposal-submitted="fetchDatasetSubmissions" />
+      <confirmation-modal :show-modal="showDeleteConfirmationModal" @confirmed="deleteSubmission"
+        @cancelled="showDeleteConfirmationModal = false"
+        @modal-closed="showDeleteConfirmationModal = false; submissionToDelete = ''">
+        <template #confirmationBody>
+          <div class="confirmation-body">
+            <p class="label4">
+              Delete Dataset Proposal: "{{submissionToDelete.name}}"?
+            </p>
+            <p class="body4 danger-text">
+              This will permanently delete the dataset proposal.
+            </p>
+          </div>
+        </template>
+      </confirmation-modal>
+      <confirmation-modal :show-modal="showRetractConfirmationModal" @confirmed="retractSubmission"
+        @cancelled="showRetractConfirmationModal = false"
+        @modal-closed="showDeleteConfirmationModal = false; submissionToRetract = ''">
+        <template #confirmationBody>
+          <div class="confirmation-body">
+            <p class="label4">
+              Withdraw Dataset Proposal: "{{submissionToRetract.name}}"?
+            </p>
+            <p class="body4 danger-text">
+              This will withdraw the request to review and consider the dataset proposal from SPARC.
+            </p>
+          </div>
+        </template>
+      </confirmation-modal>
+    </template>
   </div>
 </template>
-
-<script setup>
-definePageMeta({
-  middleware: ['auth-route']
-})
-</script>
 
 <script>
 import { failMessage } from '@/utils/notification-messages'
@@ -202,6 +206,7 @@ import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal.vue'
 import RepositoryCard from '@/components/RepositoryCard/RepositoryCard.vue'
+import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { getOrganizationInfo, getOrganizationStatus } from '@/static/js/organizations'
 export default {
   name: 'profile',
@@ -209,7 +214,8 @@ export default {
     ConfirmationModal,
     DatasetSubmissionModal,
     Gallery,
-    RepositoryCard
+    RepositoryCard,
+    LoginModal
   },
   mixins: [NewsletterMixin],
   data: () => {
@@ -438,7 +444,7 @@ export default {
       this.$axios
         .post(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${nodeId}`, {}, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to submit draft.'))
+          failMessage('Failed to submit draft.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
         })
@@ -452,7 +458,7 @@ export default {
       this.$axios
         .delete(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal?proposal_node_id=${this.submissionToDelete.nodeId}`, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to delete.'))
+          failMessage('Failed to delete.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
           this.showDeleteConfirmationModal = false
@@ -467,7 +473,7 @@ export default {
       this.$axios
         .post(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal/withdraw?node_id=${this.submissionToRetract.nodeId}`, {}, { headers })
         .catch(() => {
-          this.$message(failMessage('Failed to retract request.'))
+          failMessage('Failed to retract request.')
         }).finally(() => {
           this.fetchDatasetSubmissions()
           this.showRetractConfirmationModal = false
@@ -476,6 +482,9 @@ export default {
     handleSubscribeButtonClicked() {
       this.sendGtmEvent()
       this.subscribeToNewsletter(this.profileEmail, this.firstName, this.lastName)
+    },
+    dialogClosed() {
+      this.$router.push("/")
     },
     sendGtmEvent() {
       this.$gtm.trackEvent({

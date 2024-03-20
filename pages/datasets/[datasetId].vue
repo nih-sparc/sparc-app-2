@@ -114,35 +114,29 @@ import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
-const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $axios, $pennsieveApiClient) => {
-  const url = `${config.public.discover_api_host}/datasets/${datasetId}`
+const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
+  const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
-
-  const datasetDetails =
-    (datasetTypeName == 'dataset' || datasetTypeName == 'scaffold' || datasetTypeName == 'computational model')
-      ? await $pennsieveApiClient.value.get(datasetUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
+  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => { 
+    const status = propOr('', 'status', error.response)
+    // If not found, then try accessing it directly from Pennsieve in case it has been unpublished
+    if (status == 404) {
+      const pennsieveUrl = `${config.public.discover_api_host}/datasets/${datasetId}`
+      var pennsieveDatasetUrl = version ? `${pennsieveUrl}/versions/${version}` : pennsieveUrl
+      return await $pennsieveApiClient.value.get(pennsieveDatasetUrl).catch((error) => {
+        console.log("EEE = ", error)
+        const status = pathOr('', ['data', 'status'], error.response)
+        if (status === 'UNPUBLISHED') {
+          const details = error.response.data
+          return {
+            isUnpublished: true,
+            ...details
           }
-        })
-      : await $axios.get(simulationUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
-
+        }
+      })
+    }
+  })
   return datasetDetails
 }
 
@@ -233,7 +227,6 @@ export default {
         config,
         datasetId,
         route.params.version,
-        datasetTypeName,
         $axios,
         $pennsieveApiClient
       ),
@@ -241,11 +234,10 @@ export default {
       getDownloadsSummary(config, $axios),
     ])
 
-    datasetDetails = datasetDetails.data
+    datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
 
     if (!datasetDetails) {
-      //critical error messages
-      error({ statusCode: 400, message: ErrorMessages.methods.discover(), display: true })
+      console.log(ErrorMessages.methods.discover())
     }
 
     const store = useMainStore()

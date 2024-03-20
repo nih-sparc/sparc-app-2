@@ -190,7 +190,7 @@ export default {
                 .post(`${this.$config.public.PENNSIEVE_API_VERSION_2}/publishing/proposal/submit?node_id=${data.nodeId}`, {}, { headers })
                 .catch(() => {
                   this.hasError = true
-                  this.$message(failMessage('Failed to submit proposal.'))
+                  failMessage('Failed to submit proposal.')
                 }).finally(() => {
                   this.$emit('proposal-submitted', data.nodeId)
                   this.isSubmitting = false

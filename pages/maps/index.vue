@@ -457,10 +457,10 @@ export default {
   },
   mounted: function() {
     if (this.successMessage) {
-      this.$message(successMessage(this.successMessage))
+      successMessage(this.successMessage)
     }
     if (this.failMessage) {
-      this.$message(failMessage(this.failMessage))
+      failMessage(this.failMessage)
     }
   },
   created: function() {
