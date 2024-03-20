@@ -114,21 +114,29 @@ import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
-const getDatasetDetails = async (config, datasetId, version, $axios) => {
+const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const datasetDetails = await $axios.get(datasetUrl).catch((error) => { 
-    const status = pathOr('', ['data', 'status'], error.response)
-    if (status === 'UNPUBLISHED') {
-      const details = error.response.data
-      return {
-        isUnpublished: true,
-        ...details
-      }
+  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => { 
+    const status = propOr('', 'status', error.response)
+    // If not found, then try accessing it directly from Pennsieve in case it has been unpublished
+    if (status == 404) {
+      const pennsieveUrl = `${config.public.discover_api_host}/datasets/${datasetId}`
+      var pennsieveDatasetUrl = version ? `${pennsieveUrl}/versions/${version}` : pennsieveUrl
+      return await $pennsieveApiClient.value.get(pennsieveDatasetUrl).catch((error) => {
+        console.log("EEE = ", error)
+        const status = pathOr('', ['data', 'status'], error.response)
+        if (status === 'UNPUBLISHED') {
+          const details = error.response.data
+          return {
+            isUnpublished: true,
+            ...details
+          }
+        }
+      })
     }
   })
-
   return datasetDetails
 }
 
@@ -201,7 +209,7 @@ export default {
   async setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios } = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -219,7 +227,8 @@ export default {
         config,
         datasetId,
         route.params.version,
-        $axios
+        $axios,
+        $pennsieveApiClient
       ),
       getDatasetVersions(config, datasetId, $axios),
       getDownloadsSummary(config, $axios),
