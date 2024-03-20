@@ -114,34 +114,20 @@ import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
-const getDatasetDetails = async (config, datasetId, version, datasetTypeName, $axios, $pennsieveApiClient) => {
-  const url = `${config.public.discover_api_host}/datasets/${datasetId}`
+const getDatasetDetails = async (config, datasetId, version, $axios) => {
+  const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const simulationUrl = `${config.public.portal_api}/sim/dataset/${datasetId}`
-
-  const datasetDetails =
-    (datasetTypeName == 'dataset' || datasetTypeName == 'scaffold' || datasetTypeName == 'computational model')
-      ? await $pennsieveApiClient.value.get(datasetUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
-      : await $axios.get(simulationUrl).catch((error) => { 
-          const status = pathOr('', ['data', 'status'], error.response)
-          if (status === 'UNPUBLISHED') {
-            const details = error.response.data
-            return {
-              isUnpublished: true,
-              ...details
-            }
-          }
-        })
+  const datasetDetails = await $axios.get(datasetUrl).catch((error) => { 
+    const status = pathOr('', ['data', 'status'], error.response)
+    if (status === 'UNPUBLISHED') {
+      const details = error.response.data
+      return {
+        isUnpublished: true,
+        ...details
+      }
+    }
+  })
 
   return datasetDetails
 }
@@ -215,7 +201,7 @@ export default {
   async setup() {
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const { $algoliaClient, $axios } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -233,9 +219,7 @@ export default {
         config,
         datasetId,
         route.params.version,
-        datasetTypeName,
-        $axios,
-        $pennsieveApiClient
+        $axios
       ),
       getDatasetVersions(config, datasetId, $axios),
       getDownloadsSummary(config, $axios),
