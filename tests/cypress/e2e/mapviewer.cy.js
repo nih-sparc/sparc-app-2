@@ -51,53 +51,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true });
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
-      let coorX = coordinate.x
-      let coorY = coordinate.y
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
       // Open a provenance card
-      const clickNeuron = () => {
-        /**
-         * ==================================================================
-         * Below is used to avoid the tooltip not display for the first click
-         * Can be removed if the popup logic updated
-         */
-        cy.get('@canvas').click(coorX, coorY)
-
-        cy.wait(5000)
-
-        cy.get('body').then(($body) => {
-          if ($body.find('.maplibregl-popup-close-button').length > 0) {
-            // Close the provenance card
-            cy.get('.maplibregl-popup-close-button').click({ force: true })
-          }
-        })
-        /**
-         * ==================================================================
-         */
-        
-        cy.get('@canvas').click(coorX, coorY)
-        
-        cy.wait(5000)
-
-        cy.get('body').then(($body) => {
-          if ($body.find('.maplibregl-popup-close-button').length > 0) {
-            cy.wrap($body).find('.maplibregl-popup-content > .tooltip-container > .main', { timeout: 30000 }).within(() => {
-
-              // Check for the popover provenance card content
-              cy.get('.title').should('exist')
-              cy.get('.subtitle').should('exist')
-              cy.get('.attribute-title').should('exist')
-              cy.get('.attribute-content').should('exist')
-            })
-            // Close the provenance card
-            cy.get('.maplibregl-popup-close-button').click({ force: true })
-          } else {
-            coorX -= pixelChange
-            clickNeuron()
-          }
-        })
-      }
-      clickNeuron()
+      cy.clickNeuron(coordinate, pixelChange)
     })
   })
 
