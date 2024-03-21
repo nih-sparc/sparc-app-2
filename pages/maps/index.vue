@@ -51,6 +51,8 @@ import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import { getAlgoliaFacets, facetPropPathMapping } from '@/utils/algolia'
 
+import { useMainStore } from '@/store/index.js'
+
 const formatLabel = (text) => {
   if (text && (typeof text === 'string' || text instanceof String))
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
@@ -336,6 +338,7 @@ export default {
       flatmapAPI: config.public.flatmap_api,
       nlLinkPrefix: config.public.NL_LINK_PREFIX,
       rootUrl: config.public.ROOT_URL,
+      userToken: useMainStore().userToken
     }
     let lastChar = options.sparcApi.substr(-1)
     if (lastChar != '/') {
