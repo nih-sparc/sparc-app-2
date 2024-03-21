@@ -18,7 +18,7 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.7.0-vue3.9",
+    "@abi-software/mapintegratedvuer": "0.7.1-auth.1",
     "@abi-software/plotvuer": "0.4.0-vue-3-alpha.10",
     "@abi-software/simulationvuer": "0.7.0-vue-3-alpha.5",
     "@element-plus/nuxt": "^1.0.6",

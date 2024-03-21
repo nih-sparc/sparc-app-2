@@ -69,7 +69,7 @@
     vue "^3.3.13"
     vue3-component-svg-sprite "^0.0.1"
 
-"@abi-software/flatmapvuer@^0.6.1-vue3.8":
+"@abi-software/flatmapvuer@^0.6.1-auth.2":
   version "0.6.1-vue3.8"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-0.6.1-vue3.8.tgz#aecf1aa80fe26c55fb4f711c561d593844e6c503"
   integrity sha512-shanbbXLVGcInx64Ym2zjLCLxnLIHtYKaYoKXWuFfAZpmS187HQJSoO44SMDL4rRzSEyoO9MygN7hKwW2CrGCg==
@@ -115,12 +115,12 @@
     vue "^3.3.13"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@^0.7.0-vue3.9":
-  version "0.7.0-vue3.9"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.7.0-vue3.9.tgz#1cdc657e3b40d171ee9e4e4dc3e5102008e159c9"
-  integrity sha512-wg8gs/F6RR2Pxpwcfvc4JJz2xhWKS70GMFfMacDE3SQtyYOD6XoOklTdVVaVDf8jhYA/8zg13O1SeYHx5AieUw==
+"@abi-software/mapintegratedvuer@0.7.1-auth.1":
+  version "0.7.1-auth.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-0.7.1-auth.1.tgz#5cd8461b54f2648b71338e8996a4a6999a38e34c"
+  integrity sha512-dfDQAcqtIT4hhFtJB9MXVNXNom1u1cwjs7HCq8q67yAZm8hzz7/iNKdPrttf8Tkti9hp7K5YY8Tr6wAIQXx2xQ==
   dependencies:
-    "@abi-software/flatmapvuer" "^0.6.1-vue3.8"
+    "@abi-software/flatmapvuer" "^0.6.1-auth.2"
     "@abi-software/map-side-bar" "^1.7.0-vue3.4"
     "@abi-software/plotvuer" "^0.4.0-vue-3-alpha.10"
     "@abi-software/scaffoldvuer" "^0.4.0-vue3.6"
