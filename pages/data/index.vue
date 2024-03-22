@@ -50,7 +50,7 @@
               <dataset-facet-menu
                 :facets="facets"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="onPaginationPageChange(1)"
+                @selected-facets-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted"
                 ref="datasetFacetMenu"
               />
@@ -65,7 +65,7 @@
               <projects-facet-menu
                 :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
                 :fundingFacets="projectsFundingFacets"
-                @projects-selections-changed="onPaginationPageChange(1)"
+                @projects-selections-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted"
                 ref="projectsFacetMenu"
               />
@@ -515,64 +515,64 @@ export default {
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
-        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
-          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
           : "item.types.name:Dataset"
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-        this.latestSearchTerm = query     
-        this.algoliaIndex
-          .search(query, {
-            facets: ['*'],
-            filters: `${datasetsFilter}`
-          })
-          .then(response => {
-            this.visibleFacets = response.facets
-          })
-          .catch(() => {
-            this.isLoadingSearch = false
-            this.searchFailed = true
-          })
-          .finally(() => {
-            var filters =  this.$refs.datasetFacetMenu?.getFilters()
-            filters = filters === undefined ? 
-              `${datasetsFilter}` : 
-              filters + ` AND ${datasetsFilter}`
+      this.latestSearchTerm = query
+      this.algoliaIndex
+        .search(query, {
+          facets: ['*'],
+          filters: `${datasetsFilter}`
+        })
+        .then(response => {
+          this.visibleFacets = response.facets
+        })
+        .catch(() => {
+          this.isLoadingSearch = false
+          this.searchFailed = true
+        })
+        .finally(() => {
+          var filters = this.$refs.datasetFacetMenu?.getFilters()
+          filters = filters === undefined ?
+            `${datasetsFilter}` :
+            filters + ` AND ${datasetsFilter}`
 
-            this.algoliaIndex
-              .search(query, {
-                facets: ['*'],
-                hitsPerPage: this.searchData.limit,
-                page: this.curSearchPage - 1,
-                filters: filters,
-                attributesToHighlight: [
-                  'item.name',
-                  'item.description',
-                  'item.modalities',
-                  'anatomy.organ',
-                  'organisms.primary.species.name'
-                ],
-                highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
-                highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
-              })
-              .then(response => {
-                const searchData = {
-                  items: response.hits,
-                  total: response.nbHits
-                }
-                this.searchData = mergeLeft(searchData, this.searchData)
-                this.isLoadingSearch = false
+          this.algoliaIndex
+            .search(query, {
+              facets: ['*'],
+              hitsPerPage: this.searchData.limit,
+              page: this.curSearchPage - 1,
+              filters: filters,
+              attributesToHighlight: [
+                'item.name',
+                'item.description',
+                'item.modalities',
+                'anatomy.organ',
+                'organisms.primary.species.name'
+              ],
+              highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
+              highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
+            })
+            .then(response => {
+              const searchData = {
+                items: response.hits,
+                total: response.nbHits
+              }
+              this.searchData = mergeLeft(searchData, this.searchData)
+              this.isLoadingSearch = false
 
-                // Update alternative search results
-                this.alternativeSearchUpdate()
-              })
-              .catch(() => {
-                this.isLoadingSearch = false
-                this.searchFailed = true
-              })
-          }) 
+              // Update alternative search results
+              this.alternativeSearchUpdate()
+            })
+            .catch(() => {
+              this.isLoadingSearch = false
+              this.searchFailed = true
+            })
+        })
     },
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
@@ -599,13 +599,13 @@ export default {
 
         // Alogilia searches
         const datasetsFilter =
-          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
-            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
             : "item.types.name:Dataset"
 
         var filters = this.$refs.datasetFacetMenu?.getFilters()
-        filters = filters === undefined ? 
-          `${datasetsFilter}` : 
+        filters = filters === undefined ?
+          `${datasetsFilter}` :
           filters + ` AND ${datasetsFilter}`
 
         this.algoliaIndex
@@ -623,7 +623,7 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      var contentType = this.$route.query.type  
+      var contentType = this.$route.query.type
       var sortOrder = undefined
       var anatomicalFocus = undefined
       var funding = undefined
@@ -648,7 +648,7 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]' : anatomicalFocus,
+            'fields.projectSection.fields.title[in]': anatomicalFocus,
             'fields.program[in]': funding
           })
           .then(async response => {
@@ -663,6 +663,11 @@ export default {
             this.isLoadingSearch = false
           })
       }
+    },
+
+    onFacetSelectionChange: function () {
+      this.searchData.skip = 0
+      this.fetchResults()
     },
 
     onPaginationPageChange: function(page) {
@@ -722,14 +727,23 @@ export default {
 
       return viewports[viewport] || 24
     },
-    
     async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
-      this.onPaginationPageChange(1)
+      this.onSortOptionChange()
     },
     async onProjectsSortOptionChange(option) {
       this.selectedProjectsSortOption = option
-      this.onPaginationPageChange(1)
+      this.onSortOptionChange()
+    },
+    onSortOptionChange() {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          skip: 0,
+        }
+      })
+      this.searchData.skip = 0
+      this.fetchResults()
     }
   }
 }
