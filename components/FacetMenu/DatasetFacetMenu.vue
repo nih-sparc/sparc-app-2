@@ -183,7 +183,8 @@ export default {
       this.$router.replace({
         query: {
           ...this.$route.query,
-          selectedFacetIds: selectedFacetIds
+          selectedFacetIds: selectedFacetIds,
+          skip: 0
         }
       }).then(() => {
         this.latestUpdateId = data.id;
