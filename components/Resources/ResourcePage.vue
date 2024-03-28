@@ -133,8 +133,8 @@ export default {
     const route = useRoute()
     const searchType = searchTypes.find(searchType => searchType.path == route.path)
     const title = searchType.label
-    const searchTypeContentfulId = propOr('', 'contentfulLabel', searchType)
-    const resources = await fetchResources(searchTypeContentfulId, route.query.search, undefined, undefined, 10, 0)
+    const isTool = title == 'Tools'
+    const resources = await fetchResources(undefined, isTool, route.query.search, undefined, undefined, 10, 0)
     useHead({
       title: title,
       meta: [
@@ -152,16 +152,15 @@ export default {
     })
     return {
       resources: ref(resources),
-      title,
-      searchTypeContentfulId
+      title
     }
   },
 
   data() {
     return {
-      searchTypes,
       selectedSortOption: sortOptions[0],
       sortOptions,
+      searchTypes,
       breadcrumb: [
         {
           label: 'Home',
@@ -181,9 +180,9 @@ export default {
 
   watch: {
     '$route.query': {
-      handler: async function() {
-        this.resources = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, 10, 0)
-        this.$refs.alternativeSearchResults?.retrieveAltTotals()
+      handler: async function () {
+        this.resources = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, 10, 0)
+        this.$refs.altSearchResults?.retrieveAltTotals()
       },
       immediate: true
     }
@@ -200,12 +199,18 @@ export default {
     sortOrder: function() {
       return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
     },
+    resourceType: function () {
+      return this.$route.query.resourceType || undefined
+    },
     type: function() {
       return this.$route.query.type || undefined
     },
     path() {
       return this.$route.path
     },
+    isTool: function () {
+      return this.title == 'Tools'
+    }
   },
 
   methods: {
@@ -216,7 +221,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, limit, offset)
+      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, limit, offset)
       this.resources = response
     },
     /**
@@ -225,12 +230,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
+      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
       this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources(this.searchTypeContentfulId, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
+      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
       this.resources = response
     },
     altResultsMounted() {

@@ -6,31 +6,24 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(fields.summary)" />
-      <NuxtLink to="/resources/databases">
+      <NuxtLink to="/tools-and-resources/resources">
         <el-button class="secondary mb-16">Browse all Tools &amp; Resources</el-button>
       </NuxtLink>
     </page-hero>
     <div class="container">
       <div v-if="fields.featured !== undefined">
         <div class="heading2 my-32">Featured Tools &amp; Resources</div>
-        <gallery
-          galleryItemType="resources"
-          :items="fields.featured"
-        />
+        <gallery galleryItemType="resources" :items="fields.featured" />
         <div class="link-container mt-16">
-          <NuxtLink class="browse-all-link" to="/resources/databases">
+          <NuxtLink class="browse-all-link" to="/tools-and-resources/resources">
             Browse All Tools &amp; Resources
           </NuxtLink>
         </div>
       </div>
       <div class="pb-16">
         <h2 class="heading2 mt-32">Contribute</h2>
-        <paper
-          :text="parseMarkdown(fields.paperText)"
-          :button-text="'Submit a recommendation'"
-          :button-link="{ name: 'contact-us', query: { type: 'tool'} }"
-          new-tab
-        />
+        <paper :text="parseMarkdown(fields.paperText)" :button-text="'Submit a recommendation'"
+          :button-link="{ name: 'contact-us', query: { type: 'tool'} }" new-tab />
       </div>
     </div>
   </div>
@@ -42,7 +35,7 @@ import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 
 export default {
-  name: 'Resources',
+  name: 'ToolsAndResourcesPage',
 
   mixins: [marked],
 
@@ -95,16 +88,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 .resources {
   background-color: $background;
 }
+
 .button-container {
   text-align: center;
 }
+
 .browse-all-link {
   text-decoration: underline;
   font-weight: 500;
 }
+
 .link-container {
   text-align: center;
 }
