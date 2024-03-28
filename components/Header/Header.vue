@@ -117,9 +117,9 @@ const links = [
     href: '/data'
   },
   {
-    title: 'resources',
+    title: 'tools-and-resources',
     displayTitle: 'Tools & Resources',
-    href: `/resources`
+    href: `/tools-and-resources`
   },
   {
     title: 'maps',

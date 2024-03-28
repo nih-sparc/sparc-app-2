@@ -1,11 +1,17 @@
 <template>
-  <div>
+  <div class="resources-facet-menu">
     <facet-menu
       class="hide-bottom-border"
       :selected-facets="selectedFacets"
       :visible-facet-categories="visibleCategories"
       @deselect-facet="deselectFacet"
       @deselect-all-facets="deselectAllFacets"
+    />
+    <dropdown-multiselect
+      :category="resourceTypeCategory"
+      :default-checked-ids="selectedResourceTypeIds"
+      @selection-change="onResourceTypesChanged"
+      ref="resourceTypeCategory"
     />
     <dropdown-multiselect
       :category="typeCategory"
@@ -20,14 +26,42 @@
 import FacetMenu from './FacetMenu.vue'
 import { pluck } from 'ramda'
 
-const visibleCategories = ['type']
+const visibleCategories = ['resourceType', 'type']
+
+
+export const RESOURCE_TYPE_CATEGORY = {
+  label: 'Type',
+  id: 'resourceType',
+  data: [
+    {
+      label: 'Databases',
+      id: 'Data and Models'
+    },
+    {
+      label: 'Software',
+      id: 'Software'
+    },
+    {
+      label: 'Information Services',
+      id: 'Information Services'
+    },
+    {
+      label: 'Devices',
+      id: 'Devices'
+    },
+    {
+      label: 'Biological',
+      id: 'Biologicals'
+    }
+  ]
+}
 
 const TYPE_CATEGORY = {
-  label: 'Type',
+  label: 'Developed By',
   id: 'type',
   data: [
     {
-      label: 'Developed By SPARC',
+      label: 'SPARC',
       id: 'developedBySparc'
     },
     {
@@ -44,6 +78,8 @@ export default {
 
   data() {
     return {
+      resourceTypeCategory: RESOURCE_TYPE_CATEGORY,
+      selectedResourceTypeIds: [],
       typeCategory: TYPE_CATEGORY,
       selectedTypeIds: [],
       visibleCategories: visibleCategories,
@@ -62,6 +98,15 @@ export default {
           })
         })
       }
+      if (this.selectedResourceTypeIds != []) {
+        this.selectedResourceTypeIds.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: this.resourceTypeCategory.id
+          })
+        })
+      }
       return facets
     }
   },
@@ -70,11 +115,25 @@ export default {
     if (this.$route.query.type) {
       this.selectedTypeIds = this.$route.query.type.split(',')
     }
+    if (this.$route.query.resourceType) {
+      this.selectedResourceTypeIds = this.$route.query.resourceType.split(',')
+    }
   },
 
   methods: {
     visibleFacetsForCategory: function(key) {
       return this.visibleFacets[key]
+    },
+    onResourceTypesChanged: function (newValue) {
+      this.selectedResourceTypeIds = newValue.checkedNodes
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, resourceType: this.selectedResourceTypeIds.length === 0 ? undefined : pluck('id', this.selectedResourceTypeIds).toString() }
+        },
+        () => {
+          this.$emit('tool-and-resources-selections-changed')
+        }
+      )
     },
     onTypesChanged: function(newValue) {
       this.selectedTypeIds = newValue.checkedNodes
@@ -87,16 +146,31 @@ export default {
         }
       )
     },
-    deselectAllFacets() {
-      this.$refs.typeCategory.uncheckAll()
+    async deselectAllFacets() {
+      await this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+            type: undefined,
+            resourceType: undefined
+          }
+        }).then(() => {
+          this.$refs.resourceTypeCategory.uncheckAll()
+          this.$refs.typeCategory.uncheckAll()
+          this.$emit('tool-and-resources-selections-changed')
+        })
     },
     deselectFacet(id) {
+      this.$refs.resourceTypeCategory.uncheck(id)
       this.$refs.typeCategory.uncheck(id)
     },
   }
 }
 </script>
 <style lang="scss" scoped>
+.resources-facet-menu>.sparc-design-system-component-dropdown-multiselect:not(:last-child) {
+  border-bottom: none;
+}
 .hide-bottom-border {
   // hacky fix to address placing the design system drop down for the category outside the facet menu since it handles its own borders
   border-bottom: none;

@@ -182,9 +182,19 @@ export default {
     getSelectedNewsSubjects() {
       return this.selectedNewsSubjectIds
     },
-    deselectAllFacets() {
-      this.$refs.publicationCategory.reset()
-      this.$refs.newsSubjects.uncheckAll()
+    async deselectAllFacets() {
+      await this.$router.replace(
+        {
+          query: {
+            ...this.$route.query,
+            publicationDateOption: undefined,
+            selectedNewsSubjectIds: undefined
+          }
+        }).then(() => {
+          this.$refs.publicationCategory.reset()
+          this.$refs.newsSubjects.uncheckAll()
+          this.$emit('news-selections-changed')
+        })
     },
     deselectFacet(facetId) {
       this.$refs.newsSubjects.uncheck(facetId)

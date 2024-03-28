@@ -33,9 +33,6 @@
           </a>
         </div>
       </div>
-      <nuxt-link class="back-link" to="/resources/biological">
-        View All Tools & Resources >
-      </nuxt-link>
     </div>
   </div>
 </template>
@@ -131,10 +128,6 @@ export default {
   .updated {
     color: #aaa;
   }
-}
-.back-link {
-  color: $darkBlue;
-  font-weight: 700;
 }
 hr {
   border-top: none;

@@ -1,91 +1,41 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" :title=title />
-    <div class="container">
-      <div class="search-tabs__container">
-        <h3>
-          Browse categories
-        </h3>
-        <ul class="search-tabs">
-          <li v-for="searchType in searchTypes" :key="searchType.label">
-            <nuxt-link
-              class="search-tabs__button"
-              :class="{ active: searchType.path === '/resources/osparc-services' }"
-              :to="{
-                path: searchType.path,
-                query: {
-                  ...$route.query,
-                }
-              }"
-            >
-              {{ searchType.label }}
-            </nuxt-link>
-          </li>
-        </ul>
-      </div>
+    <div class="search-tabs__container p-16">
+      <h3>
+        o<sup>2</sup>S<sup>2</sup>PARC Services
+      </h3>
       <div class="search-bar__container">
         <h5>
-          Search within category
+          Search within o<sup>2</sup>S<sup>2</sup>PARC Services
         </h5>
-        <search-controls-contentful
-          class="search-bar"
-          placeholder="Enter search criteria"
-          path="/resources/osparc-services"
-          showSearchText
-        />
+        <search-controls-contentful class="search-bar" placeholder="Enter search criteria" showSearchText />
       </div>
     </div>
-    <div class="pb-16 container pt-32">
+
+    <div class="pb-16 pt-32">
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col>
               <p><em>By clicking on the button next to each search result, you can instantiate the service in the
-                <a href="/resources/4LkLiH5s4FV0LVJd3htsvH">o<sup>2</sup>S<sup>2</sup>PARC cloud platform</a>.</em></p>
+                  <a href="/resources/4LkLiH5s4FV0LVJd3htsvH">o<sup>2</sup>S<sup>2</sup>PARC cloud platform</a>.</em>
+              </p>
               <div class="search-heading mb-16">
                 <div class="label1" v-show="resources.items.length">
                   {{ resources.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="resources.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <pagination-menu :page-size="resources.limit" @update-page-size="onPaginationLimitChange" />
                 </div>
-                <!--
-                <span v-if="resources.items.length" class="label1">
-                  Sort
-                  <sort-menu
-                    :options="sortOptions"
-                    :selected-option="selectedSortOption"
-                    @update-selected-option="onSortOptionChange"
-                  />
-                </span>
-                -->
               </div>
               <div class="subpage">
-                <services-search-results
-                  :services="resources.items"
-                />
-                <alternative-search-results
-                  ref="altSearchResults"
-                  :search-had-results="resources.items.length > 0"
-                  @vue:mounted="altResultsMounted"
-                />
+                <services-search-results :services="resources.items" />
               </div>
               <div class="search-heading">
                 <div class="label1" v-if="resources.items.length">
                   {{ resources.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="resources.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <pagination-menu :page-size="resources.limit" @update-page-size="onPaginationLimitChange" />
                 </div>
-                <pagination
-                  v-if="resources.limit < resources.total"
-                  :selected="curSearchPage"
-                  :page-size="resources.limit"
-                  :total-count="resources.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <pagination v-if="resources.limit < resources.total" :selected="curSearchPage"
+                  :page-size="resources.limit" :total-count="resources.total" @select-page="onPaginationPageChange" />
               </div>
             </el-col>
           </el-row>
@@ -97,23 +47,17 @@
 
 <script>
 import { ref } from 'vue'
-import { propOr } from 'ramda'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
-import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ServicesSearchResults from '@/components/Resources/ServicesSearchResults.vue'
-import { searchTypes, sortOptions } from '../utils'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
-import AlternativeSearchResults from '~/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
 
 export default {
-  name: 'OsparcServicesPage',
+  name: 'OsparcServices',
 
   components: {
     SearchControlsContentful,
     ServicesSearchResults,
-    SortMenu,
-    SubmitToolSection,
-    AlternativeSearchResults
+    SubmitToolSection
   },
 
   async setup() {
@@ -149,34 +93,10 @@ export default {
     }
   },
 
-  data() {
-    return {
-      title: 'oSPARC Services',
-      searchTypes,
-      selectedSortOption: sortOptions[0],
-      sortOptions,
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'Tools & Resources',
-          to: {
-            name: 'resources'
-          }
-        }
-      ]
-    }
-  },
-
   watch: {
     '$route.query': {
-      handler: async function() {
+      handler: async function () {
         this.resources = await this.getResources()
-        this.$refs.alternativeSearchResults?.retrieveAltTotals()
       },
       immediate: true
     },
@@ -187,14 +107,8 @@ export default {
      * Compute the current page based off the limit and the offset
      * @returns {Number}
      */
-    curSearchPage: function() {
+    curSearchPage: function () {
       return this.resources.skip / this.resources.limit + 1
-    },
-    sortOrder: function() {
-      return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
-    },
-    type: function() {
-      return this.$route.query.type || undefined
     },
   },
 
@@ -218,11 +132,6 @@ export default {
       const response = await this.getResources(newLimit)
       this.resources = response
     },
-    // async onSortOptionChange(option) {
-    //   this.selectedSortOption = option
-    //   const response = await fetchResources('Software', this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
-    //   this.resources = response
-    // },
     async getResources(limit, skip) {
       const url = new URL(`${this.$config.public.portal_api}/sim/service`)
       if (this.$route.query.search) {
@@ -240,59 +149,67 @@ export default {
       })
       return resources
     },
-    altResultsMounted() {
-      this.$refs.altSearchResults?.retrieveAltTotals()
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 .page-data {
   background-color: $background;
 }
+
 :deep(.resources-search-results__items) {
   border-top: 1px solid $lineColor2;
   padding: 1rem 0;
+
   &:first-child {
     border: none;
     padding-top: 0;
   }
+
   &:last-child {
     padding-bottom: 0;
   }
 }
+
 .subpage {
   margin-bottom: 1rem;
   margin-top: 1rem;
   padding-bottom: 1rem;
 }
+
 .page-wrap {
   margin-bottom: 2.5rem;
 }
+
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;
   background-color: white;
   border: 0.1rem solid $lineColor2;
+
   h3 {
     padding-left: 0.75rem;
     font-weight: 600;
     font-size: 1.5rem;
   }
 }
+
 .search-bar__container {
   margin-top: 1em;
   padding: 0.75rem;
   border: 0.1rem solid $lineColor2;
   background: white;
+
   h5 {
     line-height: 1rem;
     font-weight: 600;
     font-size: 1rem;
   }
 }
+
 .search-tabs {
   display: flex;
   list-style: none;
@@ -300,18 +217,22 @@ export default {
   margin: 0 0 0 0;
   padding: 0 0;
   outline: 0.1rem solid $purple;
+
   @media (max-width: 40rem) {
     display: block;
   }
+
   li {
     width: 100%;
     text-align: center;
     color: $purple;
   }
-  li:last-child > a {
+
+  li:last-child>a {
     border-right: none;
   }
 }
+
 .search-tabs__button {
   background: #f9f2fc;
   display: block;
@@ -322,18 +243,22 @@ export default {
   text-decoration: none;
   text-transform: uppercase;
   line-height: 3.5rem;
+
   @media (min-width: 40rem) {
     font-size: 0.65rem;
     border-right: 0.1rem solid $purple;
   }
+
   @media (min-width: 50rem) {
     font-size: .75rem;
   }
+
   @media (min-width: 64rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
+
   &:hover,
   &.active {
     color: white;
@@ -341,17 +266,20 @@ export default {
     font-weight: 500;
   }
 }
+
 .search-heading {
   align-items: flex-end;
   display: flex;
   justify-content: space-between;
+
   @media screen and (max-width: 28em) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0;
   }
 }
-.events-facet-menu {
-  margin-top: 2rem;
+
+:deep(.sparc-design-system-pagination) {
+  padding-top: 0 !important;
 }
 </style>

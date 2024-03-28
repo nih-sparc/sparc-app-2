@@ -15,8 +15,8 @@ export const resourceCategories = [
     display: "Software"
   },
   {
-    label: "Biologicals",
-    display: "Biologicals (e.g. antibody, viral vector)"
+    label: "Biological",
+    display: "Biological (e.g. antibody, viral vector)"
   },
   {
     label: "Devices",
