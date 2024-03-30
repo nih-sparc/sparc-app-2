@@ -86,8 +86,8 @@ export default {
 }
 .max-set-row {
   display: grid;
-  grid-row-gap: 2rem;
-  grid-column-gap: 5rem;
+  grid-row-gap: 3rem;
+  grid-column-gap: 4rem;
   width: 97.5%
 }
 .col {

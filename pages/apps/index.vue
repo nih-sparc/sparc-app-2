@@ -8,11 +8,13 @@
       </p>
     </page-hero>
     <portal-features :features="appEntries" :title="appsSectionTitle" :icon-is-top-element="false" :max-per-row="3" />
+    <div class="container" :style="'text-align: center; margin-top: 1rem;'" v-html="parseMarkdown(footer)" />
   </div>
 </template>
 
 <script>
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
+import MarkedMixin from '@/mixins/marked'
 import { pathOr, propOr } from 'ramda'
 
 const constructPortalFeatureEntries = (apps) => {
@@ -48,6 +50,7 @@ export default {
   components: {
     PortalFeatures
   },
+  mixins: [MarkedMixin],
   async setup() {
     const config = useRuntimeConfig()
     const { $contentfulClient } = useNuxtApp()
@@ -101,6 +104,9 @@ export default {
     },
     appsSectionTitle: function () {
       return propOr('', 'appsSectionTitle', this.fields)
+    },
+    footer: function () {
+      return propOr('', 'footerText', this.fields)
     }
   }
 }
