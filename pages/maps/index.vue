@@ -1,7 +1,7 @@
 <template>
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    <page-hero>
+    <page-hero class="py-24">
       <h1>Maps</h1>
       <p>
         SPARC is creating detailed PNS maps based on SPARC data and information
@@ -13,13 +13,7 @@
         SPARC program progresses.
       </p>
     </page-hero>
-    <portal-features
-      v-if="isLandingPage"
-      :features="entries"
-      title="What can I do with Maps?"
-      :icon-is-top-element="false"
-    />
-    <div v-else ref="mappage" class="page-wrap portalmapcontainer">
+    <div ref="mappage" class="page-wrap portalmapcontainer">
       <client-only placeholder="Loading components...">
         <div class="mapClass">
           <map-content
@@ -318,6 +312,11 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const route = useRoute()
+    // if they tried to navigate to the old /maps page then redirect them to the apps page
+    if (Object.keys(route.query).length === 0) {
+      await navigateTo("/apps", { redirectCode: 301 })
+    }
     let startingMap = "AC"
     let organ_name = undefined
     let currentEntry = undefined
@@ -342,8 +341,6 @@ export default {
       options.sparcApi = options.sparcApi + '/'
     }
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
-
-    const route = useRoute()
 
     if (route.query.id) {
       [ uuid, state, successMessage, failMessage ] = await restoreStateWithUUID(route, $axios, options.sparcApi)
@@ -385,57 +382,7 @@ export default {
           label: 'Home',
         },
       ],
-      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
-      entries: [
-        {
-          fields: {
-            buttonLink: 'maps?type=ac',
-            buttonText: 'View AC Map',
-            description:
-              'The Anatomical Connectivity (AC) flatmaps show physical connectivity derived from SCKAN in an anatomical schematic context.',
-            title: 'Anatomical Connectivity',
-            icon: {
-              fields: {
-                file: {
-                  url: new URL('~/assets/ac-map.png', import.meta.url).href,
-                },
-              },
-            },
-          },
-        },
-        {
-          fields: {
-            buttonLink: 'maps?type=fc',
-            buttonText: 'View FC Map',
-            description:
-              'The Functional Connectivity (FC) flatmap provides a visualisation of semantic connectivity and a future interface to ANS models.',
-            title: 'Functional Connectivity',
-            icon: {
-              fields: {
-                file: {
-                  url: new URL('~/assets/fc-map.png', import.meta.url).href,
-                },
-              },
-            },
-          },
-        },
-        {
-          fields: {
-            buttonLink: 'maps?type=wholebody',
-            buttonText: 'View 3D Body',
-            description:
-              'The 3D whole-body shows physical connectivity derived from SCKAN in an anatomically realistic context.',
-            title: '3D Whole Body',
-            icon: {
-              fields: {
-                file: {
-                  url: new URL('~/assets/3d-map.png', import.meta.url).href,
-                },
-              },
-            },
-          },
-        },
-      ],
+      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
     }
   },
   head() {
@@ -469,14 +416,8 @@ export default {
   watch: {
     currentEntry: 'currentEntryUpdated',
     facets: 'facetsUpdated',
-    //isLandingPage: 'openViewWithQuery',
   },
   fetchOnServer: false,
-  computed: {
-    isLandingPage: function () {
-      return Object.keys(this.$route.query).length === 0
-    },
-  },
   methods: {
     updateUUID: function () {
       let url = this.options.sparcApi + `map/getshareid`

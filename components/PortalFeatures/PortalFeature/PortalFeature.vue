@@ -5,7 +5,7 @@
       class="icon"
       :src=iconUrl
     />
-    <div class="heading2">
+    <div class="heading2" :class="{ 'mb-8': !iconIsTopElement }">
       {{ title }}
     </div>
     <img
@@ -13,7 +13,7 @@
       class="icon"
       :src=iconUrl
     />
-    <div class="body1 my-16">
+    <div class="body1 mt-16">
       {{ description }}
     </div>
     <a class="button-link" :href="buttonLink">
@@ -69,10 +69,11 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 }
 .icon {
-  max-width: 50%;
   margin: 0 auto;
+  height: 8rem;
 }
 .centered {
   text-align: center;
