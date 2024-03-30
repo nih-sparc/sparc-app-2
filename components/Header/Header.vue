@@ -122,9 +122,9 @@ const links = [
     href: `/tools-and-resources`
   },
   {
-    title: 'maps',
-    displayTitle: 'Maps',
-    href: '/maps'
+    title: 'apps',
+    displayTitle: 'SPARC Apps',
+    href: '/apps'
   },
   {
     title: 'news-and-events',
