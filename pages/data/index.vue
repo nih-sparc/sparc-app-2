@@ -220,12 +220,12 @@ const searchTypes = [
 const projectsSortOptions = [
   {
     label: 'A-Z',
-    id: 'alphabatical',
+    id: 'alphabetical',
     sortOrder: 'fields.title'
   },
   {
     label: 'Z-A',
-    id: 'reverseAlphabatical',
+    id: 'reverseAlphabetical',
     sortOrder: '-fields.title'
   },
 ]
@@ -259,12 +259,12 @@ export default {
       },
       {
         label: 'A-Z',
-        id: 'alphabatical',
+        id: 'alphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_A_Z
       },
       {
         label: 'Z-A',
-        id: 'reverseAlphabatical',
+        id: 'reverseAlphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
@@ -729,17 +729,18 @@ export default {
     },
     async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
-      this.onSortOptionChange()
+      this.onSortOptionChange(option)
     },
     async onProjectsSortOptionChange(option) {
       this.selectedProjectsSortOption = option
-      this.onSortOptionChange()
+      this.onSortOptionChange(option)
     },
-    onSortOptionChange() {
+    onSortOptionChange(option) {
       this.$router.replace({
         query: {
           ...this.$route.query,
           skip: 0,
+          sort: option.id
         }
       })
       this.searchData.skip = 0
