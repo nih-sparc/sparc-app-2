@@ -324,8 +324,8 @@ export default {
     return {
       algoliaSortOptions,
       projectsSortOptions,
-      selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.sort) || algoliaSortOptions[0]),
-      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.sort) || projectsSortOptions[0]),
+      selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
+      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
@@ -449,8 +449,14 @@ export default {
       immediate: true
     },
 
-    '$route.query.sort': {
+    '$route.query.datasetSort': {
       handler: function() {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+    '$route.query.projectsSort': {
+      handler: function (option) {
         this.fetchResults()
       },
       immediate: true
@@ -638,8 +644,8 @@ export default {
       var funding = undefined
       var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
-        contentType = 'sparcAward',
-        sortOrder = this.selectedProjectsSortOption.sortOrder,
+        contentType = 'sparcAward'
+        sortOrder = this.selectedProjectsSortOption.sortOrder
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
@@ -738,19 +744,23 @@ export default {
     },
     async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
-      this.onSortOptionChange(option)
-    },
-    async onProjectsSortOptionChange(option) {
-      this.selectedProjectsSortOption = option
-      this.onSortOptionChange(option)
-    },
-    onSortOptionChange(option) {
       this.searchData.skip = 0
       this.$router.replace({
         query: {
           ...this.$route.query,
           skip: 0,
-          sort: option.id
+          datasetSort: option.id
+        }
+      })
+    },
+    async onProjectsSortOptionChange(option) {
+      this.selectedProjectsSortOption = option
+      this.searchData.skip = 0
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          skip: 0,
+          projectsSort: option.id
         }
       })
     }
