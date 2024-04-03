@@ -268,7 +268,6 @@ export default {
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
-    const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     let projectsAnatomicalFocusFacets = []
@@ -324,7 +323,9 @@ export default {
     })
     return {
       algoliaSortOptions,
-      selectedAlgoliaSortOption,
+      projectsSortOptions,
+      selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.sort) || algoliaSortOptions[0]),
+      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.sort) || projectsSortOptions[0]),
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
@@ -333,8 +334,6 @@ export default {
 
   data: () => {
     return {
-      selectedProjectsSortOption: projectsSortOptions[0],
-      projectsSortOptions,
       searchQuery: '',
       searchData: {
         limit: 10,
@@ -450,8 +449,18 @@ export default {
       immediate: true
     },
 
-    selectedAlgoliaSortOption: function(option) {
-      this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+    '$route.query.sort': {
+      handler: function() {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+
+    selectedAlgoliaSortOption: {
+      handler: function(option) {
+        this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+      },
+      immediate: true
     }
   },
 
@@ -736,6 +745,7 @@ export default {
       this.onSortOptionChange(option)
     },
     onSortOptionChange(option) {
+      this.searchData.skip = 0
       this.$router.replace({
         query: {
           ...this.$route.query,
@@ -743,8 +753,6 @@ export default {
           sort: option.id
         }
       })
-      this.searchData.skip = 0
-      this.fetchResults()
     }
   }
 }
