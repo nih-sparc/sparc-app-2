@@ -220,12 +220,12 @@ const searchTypes = [
 const projectsSortOptions = [
   {
     label: 'A-Z',
-    id: 'alphabatical',
+    id: 'alphabetical',
     sortOrder: 'fields.title'
   },
   {
     label: 'Z-A',
-    id: 'reverseAlphabatical',
+    id: 'reverseAlphabetical',
     sortOrder: '-fields.title'
   },
 ]
@@ -259,16 +259,15 @@ export default {
       },
       {
         label: 'A-Z',
-        id: 'alphabatical',
+        id: 'alphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_A_Z
       },
       {
         label: 'Z-A',
-        id: 'reverseAlphabatical',
+        id: 'reverseAlphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
-    const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     let projectsAnatomicalFocusFacets = []
@@ -324,7 +323,9 @@ export default {
     })
     return {
       algoliaSortOptions,
-      selectedAlgoliaSortOption,
+      projectsSortOptions,
+      selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
+      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
@@ -333,8 +334,6 @@ export default {
 
   data: () => {
     return {
-      selectedProjectsSortOption: projectsSortOptions[0],
-      projectsSortOptions,
       searchQuery: '',
       searchData: {
         limit: 10,
@@ -450,8 +449,24 @@ export default {
       immediate: true
     },
 
-    selectedAlgoliaSortOption: function(option) {
-      this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+    '$route.query.datasetSort': {
+      handler: function() {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+    '$route.query.projectsSort': {
+      handler: function (option) {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+
+    selectedAlgoliaSortOption: {
+      handler: function(option) {
+        this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+      },
+      immediate: true
     }
   },
 
@@ -629,8 +644,8 @@ export default {
       var funding = undefined
       var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
-        contentType = 'sparcAward',
-        sortOrder = this.selectedProjectsSortOption.sortOrder,
+        contentType = 'sparcAward'
+        sortOrder = this.selectedProjectsSortOption.sortOrder
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
@@ -729,21 +744,25 @@ export default {
     },
     async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
-      this.onSortOptionChange()
-    },
-    async onProjectsSortOptionChange(option) {
-      this.selectedProjectsSortOption = option
-      this.onSortOptionChange()
-    },
-    onSortOptionChange() {
+      this.searchData.skip = 0
       this.$router.replace({
         query: {
           ...this.$route.query,
           skip: 0,
+          datasetSort: option.id
         }
       })
+    },
+    async onProjectsSortOptionChange(option) {
+      this.selectedProjectsSortOption = option
       this.searchData.skip = 0
-      this.fetchResults()
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          skip: 0,
+          projectsSort: option.id
+        }
+      })
     }
   }
 }
