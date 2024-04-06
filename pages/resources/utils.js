@@ -37,13 +37,13 @@ export const fetchResources = async (resourceType, isTool, terms, sortOrder, typ
 }
 
 export const searchTypes = [
-    {
-      label: 'Resources',
-    path: '/tools-and-resources/resources',
-  },
   {
     label: 'Tools',
     path: '/tools-and-resources/tools',
+  },
+  {
+    label: 'Resources',
+    path: '/tools-and-resources/resources',
   }
 ]
 
