@@ -68,7 +68,7 @@ export default {
       return !isNaN(this.maxPerRow)
     },
     numRows() {
-      if (this.maxPerRow == NaN)
+      if (isNaN(this.maxPerRow))
         return 1
       return Math.ceil(this.features.length / this.maxPerRow)
     }
