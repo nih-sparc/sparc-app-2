@@ -10,14 +10,23 @@
     <dropdown-multiselect
       :category="resourceTypeCategory"
       :default-checked-ids="selectedResourceTypeIds"
+      collapse-by-default
       @selection-change="onResourceTypesChanged"
       ref="resourceTypeCategory"
     />
     <dropdown-multiselect
       :category="typeCategory"
       :default-checked-ids="selectedTypeIds"
+      collapse-by-default
       @selection-change="onTypesChanged"
       ref="typeCategory"
+    />
+    <dropdown-multiselect
+      :category="fundingCategory"
+      :default-checked-ids="defaultCheckedFundingIds"
+      collapse-by-default
+      @selection-change="onFundingFacetSelectionChange"
+      ref="fundingCategory"
     />
   </div>
 </template>
@@ -26,7 +35,7 @@
 import FacetMenu from './FacetMenu.vue'
 import { pluck } from 'ramda'
 
-const visibleCategories = ['resourceType', 'type']
+const visibleCategories = ['resourceType', 'type', 'funding']
 
 
 export const RESOURCE_TYPE_CATEGORY = {
@@ -71,6 +80,8 @@ const TYPE_CATEGORY = {
   ]
 }
 
+const FUNDING_CATEGORY_ID = 'funding'
+
 export default {
   name: 'ToolsAndResourcesFacetMenu',
 
@@ -80,9 +91,18 @@ export default {
     return {
       resourceTypeCategory: RESOURCE_TYPE_CATEGORY,
       selectedResourceTypeIds: [],
+      selectedFundingFacets: [],
       typeCategory: TYPE_CATEGORY,
       selectedTypeIds: [],
       visibleCategories: visibleCategories,
+      defaultCheckedFundingIds: []
+    }
+  },
+
+  props: {
+    fundingFacets: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -107,8 +127,24 @@ export default {
           })
         })
       }
+      if (this.selectedFundingFacets != []) {
+        this.selectedFundingFacets.forEach(selectedOption => {
+          facets.push({
+            label: `${selectedOption.label}`,
+            id: `${selectedOption.id}`,
+            facetPropPath: FUNDING_CATEGORY_ID
+          })
+        })
+      }
       return facets
-    }
+    },
+    fundingCategory: function () {
+      return {
+        label: 'Funding Program',
+        id: FUNDING_CATEGORY_ID,
+        data: this.fundingFacets
+      }
+    },
   },
 
   mounted() {
@@ -117,6 +153,9 @@ export default {
     }
     if (this.$route.query.resourceType) {
       this.selectedResourceTypeIds = this.$route.query.resourceType.split(',')
+    }
+    if (this.$route.query.selectedResourcesFundingIds) {
+      this.defaultCheckedFundingIds = this.$route.query.selectedResourcesFundingIds.split(",")
     }
   },
 
@@ -146,23 +185,38 @@ export default {
         }
       )
     },
+    onFundingFacetSelectionChange: function (newValue) {
+      this.selectedFundingFacets = newValue.checkedNodes
+
+      this.$router.replace(
+        {
+          query: { ...this.$route.query, selectedResourcesFundingIds: this.selectedFundingFacets.length === 0 ? undefined : pluck('id', this.selectedFundingFacets).toString() }
+        },
+        () => {
+        this.$emit('tool-and-resources-selections-changed')
+        }
+      )
+    },
     async deselectAllFacets() {
       await this.$router.replace(
         {
           query: {
             ...this.$route.query,
             type: undefined,
-            resourceType: undefined
+            resourceType: undefined,
+            selectedResourcesFundingIds: undefined
           }
         }).then(() => {
           this.$refs.resourceTypeCategory.uncheckAll()
           this.$refs.typeCategory.uncheckAll()
+          this.$refs.fundingCategory.uncheckAll()
           this.$emit('tool-and-resources-selections-changed')
         })
     },
     deselectFacet(id) {
       this.$refs.resourceTypeCategory.uncheck(id)
       this.$refs.typeCategory.uncheck(id)
+      this.$refs.fundingCategory.uncheck(id)
     },
   }
 }
