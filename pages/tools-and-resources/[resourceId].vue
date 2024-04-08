@@ -3,8 +3,13 @@
     <tools-and-resources-page :page="resource" :content="resource.fields.longDescription" :breadcrumb="breadcrumb"
       :hero-title="resource.fields.name" :hero-summary="resource.fields.description" type="resource">
       <div class="row">
-        <div class="image-container mr-16 mb-16">
-          <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
+        <div class="image-button-container">
+          <div class="image-container mr-16 mb-8">
+            <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
+          </div>
+          <el-button v-if="showOsparcServices" class="secondary mb-8" @click="scrollToServices()">
+            View o²S²PARC services
+          </el-button>
         </div>
         <div class="truncated">
           <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
@@ -57,7 +62,7 @@
         </div>
       </div>
     </tools-and-resources-page>
-    <div v-if="showOsparcServices" class="container">
+    <div v-if="showOsparcServices" id="osparcServicesContainer" class="container">
       <osparc-services />
     </div>
     <div class="container">
@@ -87,7 +92,7 @@ export default {
     const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
     const resource = await $contentfulClient.getEntry(route.params.resourceId)
-    const isTool = pathOr(false, ['fields', 'isTool'], resource)
+    const isTool = pathOr(false, ['fields', 'category'], resource)
     const parentPage = {
       label: isTool ? 'Tools' : 'Resources',
       path: isTool ? 'tools' : 'resources'
@@ -119,7 +124,7 @@ export default {
         {
           label: 'Tools & Resources',
           to: {
-            name: 'tools-and-resources'
+            path: 'tools'
           }
         },
         {
@@ -154,6 +159,12 @@ export default {
     showOsparcServices() {
       return this.$route.params.resourceId == this.$config.public.ctf_osparc_resource_entry_id
     }
+  },
+
+  methods: {
+    scrollToServices: function () {
+      document.getElementById('osparcServicesContainer').scrollIntoView()
+    },
   }
 }
 </script>
@@ -207,5 +218,8 @@ export default {
 .back-link {
   color: $darkBlue;
   font-weight: 700;
+}
+.image-button-container {
+  text-align: center;
 }
 </style>
