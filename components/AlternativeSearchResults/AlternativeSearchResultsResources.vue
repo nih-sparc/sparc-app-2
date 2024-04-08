@@ -87,6 +87,7 @@ export default {
       const isTool = category == 'tools'
       fetchResources(
         undefined,
+        undefined,
         isTool,
         this.$route.query.search,
         undefined,

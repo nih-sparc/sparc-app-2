@@ -46,6 +46,7 @@
               :lg="6"
             >
               <tools-and-resources-facet-menu
+                :fundingFacets="resourcesFundingFacets"
                 @tool-and-resources-selections-changed="onPaginationPageChange(1)"
               />
             </el-col>
@@ -131,10 +132,27 @@ export default {
 
   async setup() {
     const route = useRoute()
+    const { $contentfulClient } = useNuxtApp()
     const searchType = searchTypes.find(searchType => searchType.path == route.path)
     const title = searchType.label
     const isTool = title == 'Tools'
-    const resources = await fetchResources(undefined, isTool, route.query.search, undefined, undefined, 10, 0)
+    const resources = await fetchResources(undefined, undefined, isTool, route.query.search, undefined, undefined, 10, 0)
+    let resourcesFundingFacets = []
+    await $contentfulClient.getContentType('sparcPartners').then(contentType => {
+      contentType.fields.forEach((field) => {
+        if (field.name === 'Program') {
+          let fundingItems = field.items?.validations[0]['in']
+          let facetData = []
+          fundingItems.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
+          })
+          resourcesFundingFacets = facetData
+        }
+      })
+    })
     useHead({
       title: title,
       meta: [
@@ -152,7 +170,8 @@ export default {
     })
     return {
       resources: ref(resources),
-      title
+      title,
+      resourcesFundingFacets
     }
   },
 
@@ -171,7 +190,7 @@ export default {
         {
           label: 'Tools & Resources',
           to: {
-            name: 'resources'
+            name: 'tools'
           }
         }
       ]
@@ -181,7 +200,7 @@ export default {
   watch: {
     '$route.query': {
       handler: async function () {
-        this.resources = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, 10, 0)
+        this.resources = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, 10, 0)
         this.$refs.altSearchResults?.retrieveAltTotals()
       },
       immediate: true
@@ -202,6 +221,9 @@ export default {
     resourceType: function () {
       return this.$route.query.resourceType || undefined
     },
+    fundingProgram: function () {
+      return this.$route.query.selectedResourcesFundingIds || undefined
+    },
     type: function() {
       return this.$route.query.type || undefined
     },
@@ -221,7 +243,7 @@ export default {
     async onPaginationPageChange(page) {
       const { limit } = this.resources
       const offset = (page - 1) * limit
-      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, limit, offset)
+      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, limit, offset)
       this.resources = response
     },
     /**
@@ -230,12 +252,12 @@ export default {
      */
     async onPaginationLimitChange(limit) {
       const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
+      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
       this.resources = response
     },
     async onSortOptionChange(option) {
       this.selectedSortOption = option
-      const response = await fetchResources(this.resourceType, this.isTool, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
+      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
       this.resources = response
     },
     altResultsMounted() {

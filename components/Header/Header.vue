@@ -117,14 +117,14 @@ const links = [
     href: '/data'
   },
   {
-    title: 'tools-and-resources',
-    displayTitle: 'Tools & Resources',
-    href: `/tools-and-resources`
-  },
-  {
     title: 'apps',
     displayTitle: 'SPARC Apps',
     href: '/apps'
+  },
+  {
+    title: 'tools-and-resources',
+    displayTitle: 'Tools & Resources',
+    href: `/tools-and-resources/tools`
   },
   {
     title: 'news-and-events',

@@ -7,7 +7,7 @@ const replaceTerms = (terms) => {
   }
   return result
 }
-export const fetchResources = async (resourceType, isTool, terms, sortOrder, type, limit, skip) => {
+export const fetchResources = async (resourceType, fundingProgram, isTool, terms, sortOrder, type, limit, skip) => {
   const { $contentfulClient } = useNuxtApp()
   const config = useRuntimeConfig()
   const query = replaceTerms(terms)
@@ -26,7 +26,8 @@ export const fetchResources = async (resourceType, isTool, terms, sortOrder, typ
       'fields.resourceType[in]': resourceType,
       'fields.developedBySparc': developedBySparc,
       'fields.codeathon': codeathon,
-      'fields.category': isTool
+      'fields.category': isTool,
+      'fields.program[in]': fundingProgram
     }).then(async response => {
       return { ...response }
     })
