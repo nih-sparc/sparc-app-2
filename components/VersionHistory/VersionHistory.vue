@@ -184,18 +184,16 @@ export default {
       let version = this.versions[0].version
       let revision = this.versions[0].revision || '0'
       let latestDate =
-        this.versions[0].revisedAt || this.versions[0].firstPublishedAt
+        this.versions[0].revisedAt || this.versions[0].versionPublishedAt
       let date = this.formatDate(latestDate)
       return `Version ${version}, Revision ${revision}; ${date}`
     },
     originalVersionRevisionText: function() {
       const originalVersionPosition = this.versions.length - 1
-      let version = this.versions[originalVersionPosition].version
-      let revision = this.versions[originalVersionPosition].revision || '0'
       let date = this.formatDate(
         this.versions[originalVersionPosition].firstPublishedAt
       )
-      return `Version ${version}, Revision ${revision}; ${date}`
+      return `Version 1, Revision 0; ${date}`
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
