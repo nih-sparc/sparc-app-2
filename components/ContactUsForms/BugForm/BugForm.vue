@@ -37,10 +37,13 @@
         ref="fileUploader"
         action=""
         :limit="limit"
-        :auto-upload="false"
         :on-change="onUploadChange"
         :on-remove="onRemove"
-        :before-remove="beforeRemove" >
+        :before-remove="beforeRemove"
+        :on-success="onSuccess"
+        :on-error="onError"
+        :before-upload="beforeUpload"
+      >
         <template #trigger>
           <el-button class="secondary">Select file</el-button>
         </template>
@@ -60,14 +63,14 @@
       Please check the box to proceed
     </div>
 
-    <!--<el-form-item prop="recaptcha">
-      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
-    </el-form-item>-->
+    <el-form-item prop="captchaToken">
+      <NuxtTurnstile v-model="form.captchaToken"/>
+    </el-form-item>
 
     <hr/>
 
     <el-form-item>
-      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
+      <el-button class="primary" :disabled="isSubmitting || uploadingFile" @click="onSubmit">
         Submit
       </el-button>
       <p v-if="hasError" class="error">
@@ -98,8 +101,8 @@ export default {
   data() {
     return {
       form: {
-        recaptcha: '',
-        pageUrl: 'asdf',
+        captchaToken: '',
+        pageUrl: '',
         shortDescription: '',
         detailedDescription: '',
         user: {
@@ -112,6 +115,7 @@ export default {
           shouldSubscribe: false,
         }
       },
+      isUploading: false,
       isSubmitting: false,
       formRules: {
         user: {
@@ -162,7 +166,7 @@ export default {
           }
         ],
 
-        recaptcha: [
+        captchaToken: [
           {
             required: true,
             message: 'Please check the box',
@@ -231,6 +235,7 @@ export default {
       formData.append("title", `SPARC Bug Submission: ${this.form.shortDescription}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != ''){
         formData.append("attachment", this.file, this.file.name)
       }

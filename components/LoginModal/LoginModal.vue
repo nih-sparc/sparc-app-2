@@ -59,7 +59,7 @@ export default {
 
   data() {
     return {
-      dialogVisible: false,
+      dialogVisible: this.showDialog,
     }
   },
   props: {

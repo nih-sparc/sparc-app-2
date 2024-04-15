@@ -50,7 +50,7 @@
               <dataset-facet-menu
                 :facets="facets"
                 :visible-facets="visibleFacets"
-                @selected-facets-changed="onPaginationPageChange(1)"
+                @selected-facets-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted"
                 ref="datasetFacetMenu"
               />
@@ -65,7 +65,7 @@
               <projects-facet-menu
                 :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
                 :fundingFacets="projectsFundingFacets"
-                @projects-selections-changed="onPaginationPageChange(1)"
+                @projects-selections-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted"
                 ref="projectsFacetMenu"
               />
@@ -220,12 +220,12 @@ const searchTypes = [
 const projectsSortOptions = [
   {
     label: 'A-Z',
-    id: 'alphabatical',
+    id: 'alphabetical',
     sortOrder: 'fields.title'
   },
   {
     label: 'Z-A',
-    id: 'reverseAlphabatical',
+    id: 'reverseAlphabetical',
     sortOrder: '-fields.title'
   },
 ]
@@ -259,16 +259,15 @@ export default {
       },
       {
         label: 'A-Z',
-        id: 'alphabatical',
+        id: 'alphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_A_Z
       },
       {
         label: 'Z-A',
-        id: 'reverseAlphabatical',
+        id: 'reverseAlphabetical',
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
-    const selectedAlgoliaSortOption = ref(algoliaSortOptions[0])
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     let projectsAnatomicalFocusFacets = []
@@ -324,7 +323,9 @@ export default {
     })
     return {
       algoliaSortOptions,
-      selectedAlgoliaSortOption,
+      projectsSortOptions,
+      selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
+      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),
       algoliaIndex,
       projectsAnatomicalFocusFacets,
       projectsFundingFacets
@@ -333,8 +334,6 @@ export default {
 
   data: () => {
     return {
-      selectedProjectsSortOption: projectsSortOptions[0],
-      projectsSortOptions,
       searchQuery: '',
       searchData: {
         limit: 10,
@@ -450,8 +449,24 @@ export default {
       immediate: true
     },
 
-    selectedAlgoliaSortOption: function(option) {
-      this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+    '$route.query.datasetSort': {
+      handler: function() {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+    '$route.query.projectsSort': {
+      handler: function (option) {
+        this.fetchResults()
+      },
+      immediate: true
+    },
+
+    selectedAlgoliaSortOption: {
+      handler: function(option) {
+        this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
+      },
+      immediate: true
     }
   },
 
@@ -515,64 +530,64 @@ export default {
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       const datasetsFilter =
-        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
-          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
           : "item.types.name:Dataset"
 
       /* First we need to find only those facets that are relevant to the search query.
        * If we attempt to do this in the same search as below than the response facets
        * will only contain those specified by the filter */
-        this.latestSearchTerm = query     
-        this.algoliaIndex
-          .search(query, {
-            facets: ['*'],
-            filters: `${datasetsFilter}`
-          })
-          .then(response => {
-            this.visibleFacets = response.facets
-          })
-          .catch(() => {
-            this.isLoadingSearch = false
-            this.searchFailed = true
-          })
-          .finally(() => {
-            var filters =  this.$refs.datasetFacetMenu?.getFilters()
-            filters = filters === undefined ? 
-              `${datasetsFilter}` : 
-              filters + ` AND ${datasetsFilter}`
+      this.latestSearchTerm = query
+      this.algoliaIndex
+        .search(query, {
+          facets: ['*'],
+          filters: `${datasetsFilter}`
+        })
+        .then(response => {
+          this.visibleFacets = response.facets
+        })
+        .catch(() => {
+          this.isLoadingSearch = false
+          this.searchFailed = true
+        })
+        .finally(() => {
+          var filters = this.$refs.datasetFacetMenu?.getFilters()
+          filters = filters === undefined ?
+            `${datasetsFilter}` :
+            filters + ` AND ${datasetsFilter}`
 
-            this.algoliaIndex
-              .search(query, {
-                facets: ['*'],
-                hitsPerPage: this.searchData.limit,
-                page: this.curSearchPage - 1,
-                filters: filters,
-                attributesToHighlight: [
-                  'item.name',
-                  'item.description',
-                  'item.modalities',
-                  'anatomy.organ',
-                  'organisms.primary.species.name'
-                ],
-                highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
-                highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
-              })
-              .then(response => {
-                const searchData = {
-                  items: response.hits,
-                  total: response.nbHits
-                }
-                this.searchData = mergeLeft(searchData, this.searchData)
-                this.isLoadingSearch = false
+          this.algoliaIndex
+            .search(query, {
+              facets: ['*'],
+              hitsPerPage: this.searchData.limit,
+              page: this.curSearchPage - 1,
+              filters: filters,
+              attributesToHighlight: [
+                'item.name',
+                'item.description',
+                'item.modalities',
+                'anatomy.organ',
+                'organisms.primary.species.name'
+              ],
+              highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
+              highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
+            })
+            .then(response => {
+              const searchData = {
+                items: response.hits,
+                total: response.nbHits
+              }
+              this.searchData = mergeLeft(searchData, this.searchData)
+              this.isLoadingSearch = false
 
-                // Update alternative search results
-                this.alternativeSearchUpdate()
-              })
-              .catch(() => {
-                this.isLoadingSearch = false
-                this.searchFailed = true
-              })
-          }) 
+              // Update alternative search results
+              this.alternativeSearchUpdate()
+            })
+            .catch(() => {
+              this.isLoadingSearch = false
+              this.searchFailed = true
+            })
+        })
     },
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
@@ -599,13 +614,13 @@ export default {
 
         // Alogilia searches
         const datasetsFilter =
-          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)' 
-            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)' 
+          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
             : "item.types.name:Dataset"
 
         var filters = this.$refs.datasetFacetMenu?.getFilters()
-        filters = filters === undefined ? 
-          `${datasetsFilter}` : 
+        filters = filters === undefined ?
+          `${datasetsFilter}` :
           filters + ` AND ${datasetsFilter}`
 
         this.algoliaIndex
@@ -623,14 +638,14 @@ export default {
     fetchFromContentful: function() {
       this.isLoadingSearch = true
 
-      var contentType = this.$route.query.type  
+      var contentType = this.$route.query.type
       var sortOrder = undefined
       var anatomicalFocus = undefined
       var funding = undefined
       var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
-        contentType = 'sparcAward',
-        sortOrder = this.selectedProjectsSortOption.sortOrder,
+        contentType = 'sparcAward'
+        sortOrder = this.selectedProjectsSortOption.sortOrder
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
         linkedEntriesTargetType = 'awardSection'
@@ -648,7 +663,7 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]' : anatomicalFocus,
+            'fields.projectSection.fields.title[in]': anatomicalFocus,
             'fields.program[in]': funding
           })
           .then(async response => {
@@ -663,6 +678,11 @@ export default {
             this.isLoadingSearch = false
           })
       }
+    },
+
+    onFacetSelectionChange: function () {
+      this.searchData.skip = 0
+      this.fetchResults()
     },
 
     onPaginationPageChange: function(page) {
@@ -722,14 +742,27 @@ export default {
 
       return viewports[viewport] || 24
     },
-    
     async onAlgoliaSortOptionChange(option) {
       this.selectedAlgoliaSortOption = option
-      this.onPaginationPageChange(1)
+      this.searchData.skip = 0
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          skip: 0,
+          datasetSort: option.id
+        }
+      })
     },
     async onProjectsSortOptionChange(option) {
       this.selectedProjectsSortOption = option
-      this.onPaginationPageChange(1)
+      this.searchData.skip = 0
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          skip: 0,
+          projectsSort: option.id
+        }
+      })
     }
   }
 }

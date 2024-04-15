@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="container">
-      <div class="subpage mb-0">
+      <div class="subpage">
         <template v-if="isFeedbackForm">
           <template v-if="!isSubmitted">
             <div class="heading2 mb-8">Let us know why you are contacting us:</div>
@@ -72,8 +72,6 @@
 </template>
 
 <script>
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
-import PageHero from '@/components/PageHero/PageHero.vue'
 import GeneralForm from '@/components/ContactUsForms/GeneralForm/GeneralForm.vue'
 import BugForm from '@/components/ContactUsForms/BugForm/BugForm.vue'
 import FeedbackForm from '@/components/ContactUsForms/FeedbackForm/FeedbackForm.vue'
@@ -127,8 +125,6 @@ export default {
   name: 'ContactUsPage',
 
   components: {
-    Breadcrumb,
-    PageHero,
     GeneralForm,
     BugForm,
     FeedbackForm,
@@ -314,6 +310,10 @@ h2 {
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+.subpage {
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
 .tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;

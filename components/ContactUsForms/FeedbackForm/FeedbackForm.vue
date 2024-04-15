@@ -52,9 +52,9 @@
       Please check the box to proceed
     </div>
 
-    <!--<el-form-item prop="recaptcha">
-      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
-    </el-form-item>-->
+    <el-form-item prop="captchaToken">
+      <NuxtTurnstile v-model="form.captchaToken"/>
+    </el-form-item>
 
     <hr/>
 
@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       form: {
-        recaptcha: '',
+        captchaToken: '',
         pageOrResource: '',
         detailedDescription: '',
         shortDescription: '',
@@ -150,7 +150,7 @@ export default {
             trigger: 'change'
           }
         ],
-        recaptcha: [
+        captchaToken: [
           {
             required: true,
             message: 'Please check the box',
@@ -186,7 +186,7 @@ export default {
      * Send form to endpoint
      */
     async sendForm() {
-    const config = useRuntimeConfig()
+      const config = useRuntimeConfig()
       this.isSubmitting = true
       const description = `
         <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
@@ -203,6 +203,7 @@ export default {
       formData.append("title", `SPARC Feedback Submission: ${this.form.shortDescription}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
       saveForm(this.form)

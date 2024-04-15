@@ -103,7 +103,6 @@ export default {
           share_link: '',
           status: '',
           location: '',
-          web_neurolucida_link: ''
         }
       }
     },
@@ -119,40 +118,25 @@ export default {
   mixins: [FileDetails, RequestDownloadFile],
   async setup(props) {
     try {
-      const config = useRuntimeConfig()
       const image_identifier = props.biolucidaData.biolucida_image_id
-      const viewId = props.biolucidaData.share_link.replace(
-        config.public.BL_SHARE_LINK_PREFIX,
-        ''
-      )
       const [
         blv_info,
-        view_info,
-        image_info,
         xmp_metadata,
         readme_markdown
       ] = await Promise.all([
         biolucida.getBLVLink(image_identifier),
-        biolucida.decodeViewParameter(viewId),
-        biolucida.getImageInfo(image_identifier),
         biolucida.getXMPInfo(image_identifier),
         fetch(props.datasetInfo.readme).then((response) => {
           return response.text()
         })
       ])
-      const BASE_URL = `blv:${config.public.BL_SERVER_URL}`
-      const queryParameters = `image_id=${image_identifier}&type=${view_info[1]}${view_info[2]}&filename=${image_info.name}`
-      const webNeurolucidaLink = BASE_URL + '/image_view?' + queryParameters
 
       const html = MarkedMixin.methods.parseMarkdown(readme_markdown)
       const data_collection = extractSection(/data collect[^:]+:/i, html)
       const blv_link = blv_info['link']
-      const web_neurolucida_link = webNeurolucidaLink
       return {
         data_collection,
         blv_link,
-        web_neurolucida_link,
-        image_info,
         xmp_metadata
       }
     } catch (e) {

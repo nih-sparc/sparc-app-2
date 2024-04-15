@@ -39,7 +39,7 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/x-icon',
-          href: '/favicon/favicon.ico'
+          href: '/favicon.ico'
         },
         {
           rel: 'stylesheet',
@@ -55,9 +55,12 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    //'vue-recaptcha/nuxt',
-    '@zadigetvoltaire/nuxt-gtm'
+    '@zadigetvoltaire/nuxt-gtm',
+    '@nuxtjs/turnstile'
   ],
+  turnstile: {
+    siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
+  },
   vite: {
     define: {
       'window.global': {}
@@ -70,6 +73,17 @@ export default defineNuxtConfig({
       },
     },*/
   },
+  routeRules: {
+    '/resources': { redirect: '/tools-and-resources/tools' },
+    '/tools-and-resources': { redirect: '/tools-and-resources/tools' },
+    '/resources/biological': { redirect: '/tools-and-resources/tools?resourceType=Biological' },
+    '/resources/databases': { redirect: '/tools-and-resources/tools?resourceType=Data+and+Models' },
+    '/resources/devices': { redirect: '/tools-and-resources/tools?resourceType=Devices' },
+    '/resources/information-services': { redirect: '/tools-and-resources/tools?resourceType=Information+Services' },
+    '/resources/software': { redirect: '/tools-and-resources/tools?resourceType=Software' },
+    '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
+    '/resources/submit': { redirect: '/contact-us?type=tool' },
+  },
   hooks: {
     'pages:extend'(pages) {
       pages.push(
@@ -79,28 +93,13 @@ export default defineNuxtConfig({
             file: resolve('./pages/datasets/[datasetId].vue')
         },
         {
-          name: 'biological',
-          path: '/resources/biological',
+          name: 'tools',
+          path: '/tools-and-resources/tools',
           file: resolve('./components/Resources/ResourcePage.vue')
         },
         {
-          name: 'databases',
-          path: '/resources/databases',
-          file: resolve('./components/Resources/ResourcePage.vue')
-        },
-        {
-          name: 'devices',
-          path: '/resources/devices',
-          file: resolve('./components/Resources/ResourcePage.vue')
-        },
-        {
-          name: 'information-services',
-          path: '/resources/information-services',
-          file: resolve('./components/Resources/ResourcePage.vue')
-        },
-        {
-          name: 'software',
-          path: '/resources/software',
+          name: 'resources',
+          path: '/tools-and-resources/resources',
           file: resolve('./components/Resources/ResourcePage.vue')
         },
       )
@@ -130,7 +129,9 @@ export default defineNuxtConfig({
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
       ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
+      ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
+      ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
@@ -172,9 +173,9 @@ export default defineNuxtConfig({
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
-      /*recaptcha: {
-        v2SiteKey: process.env.RECAPTCHA_SITE_KEY
-      },*/
+      PENNSIEVE_URL: process.env.PENNSIEVE_URL || 'https://app.pennsieve.io',
+      INTERNAL_TRAFFIC_KEY: process.env.INTERNAL_TRAFFIC_KEY || 'internal_traffic',
+      INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
@@ -187,6 +188,9 @@ export default defineNuxtConfig({
         trackOnNextTick: false,
         devtools: true,
       }
+    },
+    turnstile: {
+      secretKey: process.env.NUXT_TURNSTILE_SECRET_KEY
     }
   },
   /*

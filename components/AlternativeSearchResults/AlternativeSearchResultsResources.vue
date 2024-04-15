@@ -49,25 +49,16 @@ export default {
     return {
       searchHasAltResults: false,
       dataTypes: [
-        'biological',
-        'databases',
-        'devices',
-        'information-services',
-        'software'
+        'tools',
+        'resources',
       ],
       humanReadableDataTypesLookup: {
-        biological: 'Biologicals',
-        databases: 'Data and Models',
-        devices: 'Devices',
-        'information-services': 'Information Services',
-        software: 'Software'
+        tools: 'Tools',
+        resources: 'Resources',
       },
       resultCounts: {
-        biological: 0,
-        databases: 0,
-        devices: 0,
-        'information-services': 0,
-        software: 0
+        tools: 0,
+        resources: 0
       }
     }
   },
@@ -92,9 +83,12 @@ export default {
         this.retrieveAltTotal(type)
       })
     },
-    retrieveAltTotal: function(category) {
+    retrieveAltTotal: function (category) {
+      const isTool = category == 'tools'
       fetchResources(
-        this.humanReadableDataTypesLookup[category], // needed as human readable is used for contentful
+        undefined,
+        undefined,
+        isTool,
         this.$route.query.search,
         undefined,
         undefined,

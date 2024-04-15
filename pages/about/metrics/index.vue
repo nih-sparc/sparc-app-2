@@ -48,7 +48,7 @@ import {
   propEq,
   propOr
 } from 'ramda'
-import { getPreviousMonth } from '@/utils/common'
+import { getPreviousDate } from '@/utils/common'
 import UserBehaviors from '@/components/Metrics/UserBehaviors.vue'
 import ScientificContribution from '@/components/Metrics/ScientificContribution.vue'
 
@@ -143,14 +143,16 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
-    const month = new Date().getMonth()
-    const year = new Date().getFullYear()
+    const currentMonth = new Date().getMonth() + 1
+    const currentYear = new Date().getFullYear()
+    // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
+    const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     let metricsData = undefined
     try {
-      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, month, year)
-    } catch (e) {
-      const lastMonthsDate = getPreviousMonth()
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
+    } catch (e) {
+      const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
+      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, monthBeforeLastDate.month, monthBeforeLastDate.year)
       .catch(err => {
         console.error('Could not retreive metrics.', err)
       })

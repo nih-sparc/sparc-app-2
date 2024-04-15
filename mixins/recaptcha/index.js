@@ -9,16 +9,11 @@ export default {
      * Submit the form and validate
      */
     async onSubmit() {
-      /*this.hasError = false
       await this.$refs.submitForm.validate(async valid => {
-        if (!valid) {
-          return
-        }
-        if (!this.hasError) {
+        if (valid) {
           await this.sendForm()
         }
-      })*/
-      return
+      })
     }
   }
 }

@@ -115,9 +115,10 @@
     <div class="heading2">
       Please check the box to proceed
     </div>
-    <!--<el-form-item prop="recaptcha">
-      <recaptcha-checkbox v-model="form.recaptcha" class="recaptcha my-16 pl-16"/>
-    </el-form-item>-->
+
+    <el-form-item prop="captchaToken">
+      <NuxtTurnstile v-model="form.captchaToken"/>
+    </el-form-item>
 
     <hr/>
 
@@ -157,7 +158,7 @@ export default {
   data() {
     return {
       form: {
-        recaptcha: '',
+        captchaToken: '',
         resourceName: '',
         resourceLinks: [''],
         resourceCategories: [],
@@ -253,7 +254,7 @@ export default {
             trigger: 'blur',
           }
         ],
-        recaptcha: [
+        captchaToken: [
           {
             required: true,
             message: 'Please check the box',
@@ -371,6 +372,7 @@ export default {
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
       saveForm(this.form)

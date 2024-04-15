@@ -72,7 +72,7 @@ import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 
 import marked from '@/mixins/marked'
-import { getPreviousMonth } from '@/utils/common'
+import { getPreviousDate } from '@/utils/common'
 
 export default {
   name: 'AboutPage',
@@ -113,11 +113,12 @@ export default {
   setup() {
     const config = useRuntimeConfig()
     const { $contentfulClient, $axios } = useNuxtApp()
-    const today = new Date()
-    const day = today.getDate().toString().padStart(2, "0")
-    let month = today.getMonth() + 1
-    month = month.toString().padStart(2, "0")
-    const year = today.getFullYear()
+    const currentDay = new Date().getDate().toString().padStart(2, "0")
+    let currentMonth = new Date().getMonth() + 1
+    currentMonth = currentMonth.toString().padStart(2, "0")
+    const currentYear = new Date().getFullYear()
+    // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
+    const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     return Promise.all([
       /**
        * Page data
@@ -147,7 +148,7 @@ export default {
        * Metrics
        */
       $axios
-        .get(config.public.METRICS_URL + `/pennsieve?year=${year}&month=${month}`)
+        .get(config.public.METRICS_URL + `/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`)
         .then(({ data }) => {
           const metrics = data[0]
           return {
@@ -157,9 +158,9 @@ export default {
           }
         })
         .catch(() => {
-          const lastMonthsDate = getPreviousMonth()
+          const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
           return $axios
-            .get(config.public.METRICS_URL + `/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`)
+            .get(config.public.METRICS_URL + `/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`)
             .then(({ data }) => {
               const metrics = data[0]
               return {
@@ -176,7 +177,7 @@ export default {
        * Download count
        */
       $axios
-        .get(config.public.discover_api_host + `/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${year}-${month}-${day}`)
+        .get(config.public.discover_api_host + `/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`)
         .then(response => {
           let totalDownloads = 0
           response.data.forEach(item => {

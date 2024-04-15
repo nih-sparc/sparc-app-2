@@ -7,7 +7,7 @@ const replaceTerms = (terms) => {
   }
   return result
 }
-export const fetchResources = async (resourceType, terms, sortOrder, type, limit, skip) => {
+export const fetchResources = async (resourceType, fundingProgram, isTool, terms, sortOrder, type, limit, skip) => {
   const { $contentfulClient } = useNuxtApp()
   const config = useRuntimeConfig()
   const query = replaceTerms(terms)
@@ -24,8 +24,10 @@ export const fetchResources = async (resourceType, terms, sortOrder, type, limit
       limit,
       skip,
       'fields.resourceType[in]': resourceType,
-      'fields.developedBySparc' : developedBySparc,
-      'fields.codeathon' : codeathon
+      'fields.developedBySparc': developedBySparc,
+      'fields.codeathon': codeathon,
+      'fields.category': isTool,
+      'fields.program[in]': fundingProgram
     }).then(async response => {
       return { ...response }
     })
@@ -35,38 +37,16 @@ export const fetchResources = async (resourceType, terms, sortOrder, type, limit
   }
 }
 
-export const searchTypes = 
-  [
-    {
-      label: 'Databases',
-      path: '/resources/databases',
-      contentfulLabel: 'Data and Models'
-    },
-    {
-      label: 'Software',
-      path: '/resources/software',
-      contentfulLabel: 'Software'
-    },
-    {
-      label: 'Information Services',
-      path: '/resources/information-services',
-      contentfulLabel: 'Information Services'
-    },
-    {
-      label: 'Devices',
-      path: '/resources/devices',
-      contentfulLabel: 'Devices'
-    },
-    {
-      label: 'Biological',
-      path: '/resources/biological',
-      contentfulLabel: 'Biologicals'
-    },
-    {
-      label: 'o²S²PARC Services',
-      path: '/resources/osparc-services'
-    }
-  ]
+export const searchTypes = [
+  {
+    label: 'Tools',
+    path: '/tools-and-resources/tools',
+  },
+  {
+    label: 'Resources',
+    path: '/tools-and-resources/resources',
+  }
+]
 
 export const sortOptions = [
   {

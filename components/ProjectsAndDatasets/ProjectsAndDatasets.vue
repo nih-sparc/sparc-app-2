@@ -27,7 +27,7 @@
             :link='resourceLink'
             button-text="View Resource"
           />
-          <nuxt-link class="view-all-link body2 mt-16" to="/resources/databases">
+          <nuxt-link class="view-all-link body2 mt-16" to="/tools-and-resources/tools">
             View All Tools & Resources
           </nuxt-link>
         </template>
