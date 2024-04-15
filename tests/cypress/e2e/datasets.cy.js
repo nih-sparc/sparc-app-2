@@ -372,20 +372,20 @@ datasetIds.forEach(datasetId => {
               cy.wrap($cell).should('contain', 'Not available')
             } else {
               // Check for changelog
-              cy.wrap($cell).find('.svg-icon').as('icons').should('have.length', 2)
+              cy.wrap($cell).find('.circle').as('icons').should('have.length', 2)
               cy.get('@icons').eq(0).click()
 
               // Check for changelog popover
               cy.get('.optional-content-container').should('be.visible');
               cy.get('.main-content-container').should('be.visible');
-              cy.get('.close-icon > path').click();
+              cy.get('.el-icon.el-dialog__close:visible').click();
 
               // Check for download
               cy.intercept('**/zipit/discover').as('changelogDownload')
               cy.get('@icons').eq(1).click({ force: true })
               cy.get('@changelogDownload').should(({ request, response }) => {
                 expect(request.method).to.equal('POST')
-                expect(request.body.data.datasetId).to.equal(`${datasetId}`)
+                expect(request.body.data.datasetId).to.equal(datasetId)
                 expect(response.statusCode).to.equal(200)
               })
             }
