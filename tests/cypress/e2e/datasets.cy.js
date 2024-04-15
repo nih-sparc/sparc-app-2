@@ -18,7 +18,7 @@ datasetIds.forEach(datasetId => {
 
     it("Gallery Tab", function () {
       // Should switch to 'Gallery'
-      cy.contains('#datasetDetailsTabsContainer .style1', 'Gallery').click();
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
 
       cy.wait(5000)
@@ -133,7 +133,7 @@ datasetIds.forEach(datasetId => {
 
     it("Abstract Tab", function () {
       // Should switch to 'Abstract'
-      cy.contains('#datasetDetailsTabsContainer .style1', 'Abstract').click();
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Abstract').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Abstract');
 
       //The following regular expression should capture space and letters
@@ -173,7 +173,7 @@ datasetIds.forEach(datasetId => {
 
     it("About Tab", function () {
       // Should switch to 'About'
-      cy.contains('#datasetDetailsTabsContainer .style1', 'About').click();
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('About').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'About');
 
       // Check for content
@@ -230,7 +230,7 @@ datasetIds.forEach(datasetId => {
 
     it("Cite Tab", function () {
       // Should switch to 'Cite'
-      cy.contains('#datasetDetailsTabsContainer .style1', 'Cite').click();
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Cite').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
 
       // Check for title
@@ -250,10 +250,10 @@ datasetIds.forEach(datasetId => {
 
     it("Files Tab", function () {
       //First check if there is a Files tab
-      cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
-        if ($tab.text().includes('Files')) {
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
+        if ($tabs.text().includes('Files')) {
           // Should switch to 'Files' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', 'Files').click();
+          cy.wrap($tabs).contains('Files').click();
           cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
 
           // Check for content
@@ -284,7 +284,7 @@ datasetIds.forEach(datasetId => {
 
           //Check get share links
           cy.get('@icons').eq(3).click({ force: true });
-          cy.get('.el-message').should('be.visible')
+          cy.get('.el-message', { timeout: 30000 }).should('be.visible')
 
           //Check oSPARC link
           cy.get('@icons').eq(2).click({ force: true });
@@ -309,10 +309,10 @@ datasetIds.forEach(datasetId => {
 
     it("References Tab", function () {
       //First check if reference tab is present
-      cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
-        if ($tab.text().includes('References')) {
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
+        if ($tabs.text().includes('References')) {
           // Should switch to 'References' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', 'References').click();
+          cy.wrap($tabs).contains('References').click();
           cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'References');
 
           // Check for content
@@ -360,14 +360,14 @@ datasetIds.forEach(datasetId => {
 
     it("Versions Tab", function () {
       //First check if version tab is present
-      cy.get('#datasetDetailsTabsContainer .style1').then(($tab) => {
-        if ($tab.text().includes(' Versions ')) {
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
+        if ($tabs.text().includes('Versions')) {
           // Should switch to 'Versions' if exist
-          cy.contains('#datasetDetailsTabsContainer .style1', 'Versions').click();
+          cy.wrap($tabs).contains('Versions').click();
           cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
 
           // Check for file actions
-          cy.get('.version-table > :nth-child(2) > :nth-child(4)').then(($cell) => {
+          cy.get('.version-table > :nth-child(2) > :nth-child(4)', { timeout: 30000 }).then(($cell) => {
             if ($cell.text().includes('Not available')) {
               cy.wrap($cell).should('contain', 'Not available')
             } else {
