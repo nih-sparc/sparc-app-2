@@ -7,12 +7,15 @@ const taxonModels = ['Rat', 'Human Female']
 const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
 
-const threeDSyncView = 'Human Male'
+/**
+ * Name of species for the 3D sync map
+ * 'Human Female', 'Human Male', 'Rat'
+ */
+const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
-const searchInput = 'heart'
+const searchInMap = 'heart'
 
-// const datasetIds = [150]
-const datasetIds = [150, 155]
+const scaffoldDatasetIds = Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim())
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
@@ -95,16 +98,16 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button > .el-icon-arrow-left').click()
 
     // Search keyword in displayed viewers
-    cy.get('.el-autocomplete > .el-input > .el-input__inner').type(searchInput)
+    cy.get('.el-autocomplete > .el-input > .el-input__inner').type(searchInMap)
     cy.get('.search-container > .map-icon > use').click()
 
     // Check for keyword(highlighted part) in displayed viewers
-    cy.get('.maplibregl-popup-content').contains(new RegExp(searchInput, 'i')).should('exist')
+    cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should('exist')
 
     cy.visit('/maps?type=ac')
   })
 
-  datasetIds.forEach((datasetId) => {
+  scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
 
@@ -125,7 +128,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           cy.get('.error-feedback').should('exist')
           cy.get('.error-feedback').contains(/No results found/i).should('exist')
         } else {
-          
+
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
           // Check for search result and the tag 'Scaffold'

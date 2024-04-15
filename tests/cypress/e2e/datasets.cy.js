@@ -1,6 +1,7 @@
-const datasetIds = [127];
-// const datasetIds = [127, 282, 290, 34, 76];
-
+/**
+ * List of dataset ids
+ */
+const datasetIds = Cypress.env('DATASET_IDS').split(',').map(item => item.trim())
 
 datasetIds.forEach(datasetId => {
 
@@ -8,7 +9,7 @@ datasetIds.forEach(datasetId => {
     before(function () {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
-    
+
     beforeEach(function () {
       cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
       cy.intercept('**/knowledge/query/**').as('flatmap')
@@ -51,7 +52,7 @@ datasetIds.forEach(datasetId => {
             }
           })
         } else {
-          cy.wrap($content).contains(' This dataset does not contain gallery items ');
+          cy.wrap($content).contains(/Loading gallery...|There was an error loading the gallery items|This dataset does not contain gallery items/);
         }
       });
     });
@@ -84,7 +85,7 @@ datasetIds.forEach(datasetId => {
 
       // Wait for the link in the clicked name
       cy.wait(5000)
-      
+
       // Should search for contributor in find data page
       cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
         cy.wrap($name).click()

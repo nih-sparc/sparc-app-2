@@ -1,11 +1,21 @@
-const categories = ['dataset']
-// const categories = ['dataset', 'model', 'simulation', 'projects']
-
-const limit = 20
-
-const keywords = ['Spine', 'neck']
+/**
+ * List of categories
+ * Default will be ['dataset', 'model', 'simulation', 'projects']
+ */
+const browseCategories = Cypress.env('BROWSE_CATEGORIES').split(',').map(item => item.trim())
 
 /**
+ * The number of datasets are displayed per page
+ */
+const pageLimit = Cypress.env('PAGE_LIMIT')
+
+/**
+ * List of keywords
+ */
+const searchKeywords = Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim())
+
+/**
+ * List of facets
  * 1.
  * If multiple facets are selected which includes one or more "ANATOMICAL STRUCTURE" parent facet,
  * place it/them to the end of the array,
@@ -15,9 +25,13 @@ const keywords = ['Spine', 'neck']
  * all facets need to be matched, 
  * otherwise that test will be skipped.
  */
-const facets = [['Human'], ['Heart', 'Adult']]
+let filterFacets
+const facets = Cypress.env('FILTER_FACETS').split(',').map(item => item.trim())
+if (facets && facets.length > 1) {
+  filterFacets = [facets.slice(0, 1), facets.slice(1, facets.length)]
+}
 
-categories.forEach((category) => {
+browseCategories.forEach((category) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
     before(function () {
@@ -30,6 +44,10 @@ categories.forEach((category) => {
     })
 
     it('Dataset card', function () {
+
+      cy.wait('@query', { timeout: 20000 })
+      cy.wait('@entries', { timeout: 20000 })
+
       if (category === 'projects') {
         cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > .image-container > .img-project').should('have.attr', 'src').and('contain', '//images.ctfassets.net/');
         cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Focus');
@@ -95,14 +113,23 @@ categories.forEach((category) => {
        */
       // Change the limit
       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(limit).click()
+      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
 
-      // Check for limit change in URL
-      cy.url().should('contain', `limit=${limit}`)
-      cy.get('.el-table__row', { timeout: 30000 }).should('have.length', limit)
+      if (pageLimit === 'View All') {
+        cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
+          const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
+          // Check for limit change in URL
+          cy.url().should('contain', `limit=${numberOfDatasets}`)
+          cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+        })
+      } else {
+        // Check for limit change in URL
+        cy.url().should('contain', `limit=${pageLimit}`)
+        cy.get('.el-table__row', { timeout: 30000 }).should('have.length', pageLimit)
+      }
     })
 
-    keywords.forEach((keyword) => {
+    searchKeywords.forEach((keyword) => {
 
       it(`Keyword Search - ${keyword}`, function () {
         cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
@@ -153,7 +180,7 @@ categories.forEach((category) => {
       })
     })
 
-    facets.forEach((facetList) => {
+    filterFacets.forEach((facetList) => {
 
       it(`Faceted Browse Search - ${facetList}`, function () {
         // Check for filters applied box
@@ -211,7 +238,7 @@ categories.forEach((category) => {
               cy.url().should('contain', 'selectedFacetIds')
 
               cy.wait('@query', { timeout: 20000 })
-              
+
             }
 
             cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
