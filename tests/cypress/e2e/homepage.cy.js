@@ -6,8 +6,8 @@ describe('Homepage', { testIsolation: false }, function () {
   it('Navigation Bar', function () {
     // Check for navigation bar
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'Tools & Resources').and('have.attr', 'href', '/resources')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should('contain', 'Maps').and('have.attr', 'href', '/maps')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'SPARC Apps').and('have.attr', 'href', '/apps')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should('contain', 'Tools & Resources').and('have.attr', 'href', '/tools-and-resources/tools')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').should('contain', 'News & Events').and('have.attr', 'href', '/news-and-events')
     cy.get(':nth-child(1) > :nth-child(5) > a').should('contain', 'About').and('have.attr', 'href', '/about')
     cy.get(':nth-child(1) > :nth-child(6) > a').should('contain', 'Submit to SPARC').and('have.attr', 'href', '/share-data')
