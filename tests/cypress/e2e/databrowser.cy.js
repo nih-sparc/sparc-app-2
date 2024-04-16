@@ -2,7 +2,7 @@
  * List of categories
  * Default will be ['dataset', 'model', 'simulation', 'projects']
  */
-const browseCategories = Cypress.env('BROWSE_CATEGORIES').split(',').map(item => item.trim())
+const browseCategories = Cypress.env('BROWSE_CATEGORIES').split(',').map(item => item.trim()).filter(item => item)
 
 /**
  * The number of datasets are displayed per page
@@ -12,7 +12,7 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 /**
  * List of keywords
  */
-const searchKeywords = Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim())
+const searchKeywords = Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item)
 
 /**
  * List of facets
@@ -25,10 +25,15 @@ const searchKeywords = Cypress.env('SEARCH_KEYWORDS').split(',').map(item => ite
  * all facets need to be matched, 
  * otherwise that test will be skipped.
  */
-let filterFacets
-const facets = Cypress.env('FILTER_FACETS').split(',').map(item => item.trim())
-if (facets && facets.length > 1) {
-  filterFacets = [facets.slice(0, 1), facets.slice(1, facets.length)]
+let filterFacets = []
+const filterFacet = Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item)
+if (filterFacet && filterFacet.length === 1) {
+  filterFacets.push(filterFacet)
+}
+
+const multipleFilterFacets = Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item)
+if (multipleFilterFacets && multipleFilterFacets.length > 1) {
+  filterFacets.push(multipleFilterFacets)
 }
 
 browseCategories.forEach((category) => {

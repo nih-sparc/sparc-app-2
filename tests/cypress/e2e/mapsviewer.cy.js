@@ -15,7 +15,7 @@ const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
 const searchInMap = 'heart'
 
-const scaffoldDatasetIds = Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim())
+const scaffoldDatasetIds = Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
