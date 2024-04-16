@@ -7,7 +7,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "test-cypress": "cypress run",
+    "test-run-e2e": "cypress run --record"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
