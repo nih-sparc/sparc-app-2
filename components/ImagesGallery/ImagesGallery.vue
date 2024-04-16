@@ -810,6 +810,9 @@ export default {
           const name = response.name
           if (name) {
             item.value['title'] = name.substring(0, name.lastIndexOf('.'))
+            if (name.lastIndexOf('.') === -1) {
+              item.value['title'] = name
+            }
           }
         },
         reason => {
