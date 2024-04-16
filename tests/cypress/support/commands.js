@@ -100,8 +100,9 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
           // Check for the popover provenance card content
           cy.get('.title').should('exist')
           cy.get('.subtitle').should('exist')
-          cy.get('.attribute-title').should('exist')
-          cy.get('.attribute-content').should('exist')
+          cy.get('.content-container').should('not.be.visible')
+          cy.get(':nth-child(3):visible').click()
+          cy.get('.content-container').should('be.visible')
         })
         // Close the provenance card
         cy.get('.maplibregl-popup-close-button').click({ force: true })
