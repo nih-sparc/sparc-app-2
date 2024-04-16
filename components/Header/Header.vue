@@ -124,7 +124,7 @@ const links = [
   {
     title: 'tools-and-resources',
     displayTitle: 'Tools & Resources',
-    href: `/tools-and-resources/tools`
+    href: `/tools-and-resources`
   },
   {
     title: 'news-and-events',
