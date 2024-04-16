@@ -29,7 +29,7 @@
             URL
           </div>
           <a class="resource-url truncated" :href="resource.fields.url" target="_blank">
-            {{ resource.fields.url }}
+            {{ fullResourceUrl }}
           </a>
           <template v-if="resource.fields.owner">
             <div class="label4">
@@ -158,6 +158,14 @@ export default {
     },
     showOsparcServices() {
       return this.$route.params.resourceId == this.$config.public.ctf_osparc_resource_entry_id
+    },
+    fullResourceUrl() {
+      const url = pathOr('', ['fields','url'], this.resource)
+      if (url.indexOf('://') > 0 || url.indexOf('//') === 0) {
+        return url
+      } else {
+        return `${this.$config.public.ROOT_URL}${url}`
+      }
     }
   },
 
