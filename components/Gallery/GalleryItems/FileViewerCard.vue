@@ -1,9 +1,8 @@
 <template>
-  <el-card :shadow="shadow" :style="{ padding: '0px', maxWidth: width + 'rem' }">
-    <div>
+  <el-card :shadow="shadow" :style="{ padding: '0px', width: width + 'rem' }">
+    <div v-loading="!isReady">
       <div class="cursor-pointer" @click.prevent="cardClicked">
-        <img v-if="useDefaultImg" src="~/assets/logo-sparc-wave-primary.svg" svg-inline />
-        <img v-else :src="thumbnail" alt="thumbnail loading ..." />
+        <img class="thumbnail" :src="thumbnail" alt="thumbnail loading ..." />
       </div>
       <div v-if="showCardDetails" class="details">
         <p v-if="!data.hideType">
@@ -65,9 +64,9 @@ export default {
       ro: null,
       triangleSize: 4,
       thumbnail: undefined,
-      useDefaultImg: false,
       disableTooltip: false,
       tooltipCalculated: false,
+      defaultImg: new URL('~/assets/logo-sparc-wave-primary.svg', import.meta.url).href,
     }
   },
   watch: {
@@ -76,7 +75,6 @@ export default {
       immediate: true,
       handler: function () {
         this.thumbnail = undefined
-        this.useDefaultImg = false
         this.tooltipCalculated = false
         this.disableTooltip = false
         if (this.data.thumbnail) {
@@ -86,9 +84,14 @@ export default {
             this.thumbnail = this.data.thumbnail
           }
         } else {
-          this.useDefaultImg = true
+          this.thumbnail = this.defaultImg
         }
       },
+    },
+  },
+  computed: {
+    isReady() {
+      return this.thumbnail && (this.data.link || this.data.userData)
     },
   },
   methods: {
@@ -131,7 +134,7 @@ export default {
             info.fetchAttempts += 1
             this.downloadThumbnail(url, info)
           } else {
-            this.useDefaultImg = true
+            this.thumbnail = this.defaultImg
           }
         }
       )
@@ -166,6 +169,12 @@ export default {
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.thumbnail {
+  object-fit: contain;
+  height: 8rem;
+  width: 100%;
 }
 
 p.bold {

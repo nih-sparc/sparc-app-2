@@ -1,8 +1,6 @@
 <template>
   <div class="full-size">
-      <div v-if="loading">
-        Loading gallery...
-      </div>
+      <div v-if="loading" class="loading-gallery" v-loading="loading" />
       <div v-else-if="hasError">
         There was an error loading the gallery items
       </div>
@@ -924,6 +922,11 @@ a.next {
   width: 2em;
   border-radius: 3px;
   background-color: #555;
+}
+
+.loading-gallery {
+  overflow: hidden;
+  min-height: 4rem;
 }
 
 :deep(.one-item .card-line) {
