@@ -1,8 +1,6 @@
 <template>
   <div class="full-size">
-      <div v-if="loading">
-        Loading gallery...
-      </div>
+      <div v-if="loading" class="loading-gallery" v-loading="loading" />
       <div v-else-if="hasError">
         There was an error loading the gallery items
       </div>
@@ -523,7 +521,9 @@ export default {
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
           items.push(
-            ...Array.from(biolucidaData.dataset_images, dataset_image => {
+            ...Array.from(biolucidaData.dataset_images.filter((obj, index) => {
+              return index === biolucidaData.dataset_images.findIndex(o => obj.image_id === o.image_id);
+            }), dataset_image => {
               let filePath = ""
               biolucida2DItems.forEach(biolucida2DItem => {
                 if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
@@ -781,7 +781,9 @@ export default {
       biolucida.getThumbnail(info.id).then(
         response => {
           let item = ref(items.find(x => x.id === info.id))
-          item.value['thumbnail'] = 'data:image/png;base64,' + response.data
+          if (response.data) {
+            item.value['thumbnail'] = 'data:image/png;base64,' + response.data
+          }
         },
         reason => {
           if (
@@ -806,6 +808,9 @@ export default {
           const name = response.name
           if (name) {
             item.value['title'] = name.substring(0, name.lastIndexOf('.'))
+            if (name.lastIndexOf('.') === -1) {
+              item.value['title'] = name
+            }
           }
         },
         reason => {
@@ -917,6 +922,11 @@ a.next {
   width: 2em;
   border-radius: 3px;
   background-color: #555;
+}
+
+.loading-gallery {
+  overflow: hidden;
+  min-height: 4rem;
 }
 
 :deep(.one-item .card-line) {

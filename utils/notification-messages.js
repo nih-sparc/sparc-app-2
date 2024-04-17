@@ -25,3 +25,17 @@ export const failMessage = message => {
     duration: 5000
   })
 }
+
+/**
+ * Failure notification message object
+ * @param {String} message
+ * @return {Object}
+ */
+export const infoMessage = message => {
+  ElMessage({
+    showClose: true,
+    message: message,
+    type: 'info',
+    duration: 5000
+  })
+}

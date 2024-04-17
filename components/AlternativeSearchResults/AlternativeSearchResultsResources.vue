@@ -1,9 +1,5 @@
 <template>
-  <div v-if="searchHasAltResults && this.$route.query.search" class="mt-8">
-    <hr />
-    <template v-if="!searchHadResults">
-      No results were found for <strong><i>{{ this.$route.query.search }}</i></strong>.
-    </template>
+  <div v-if="searchHasAltResults" class="mt-8">
     The following results were discovered for the other categories:
     <br />
     <br />
@@ -86,12 +82,12 @@ export default {
     retrieveAltTotal: function (category) {
       const isTool = category == 'tools'
       fetchResources(
-        undefined,
-        undefined,
+        this.$route.query.resourceType,
+        this.$route.query.selectedResourcesFundingIds,
         isTool,
         this.$route.query.search,
         undefined,
-        undefined,
+        this.$route.query.type,
         10,
         0
       )
