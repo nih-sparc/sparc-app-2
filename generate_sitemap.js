@@ -41,7 +41,10 @@ const contentfulClient = contentful.createClient({
 
 // Add static URLs here
 const urls = new Set([
-  '/data'
+  '/data',
+  '/about',
+  '/contact-us',
+  '/share-data'
 ])
 
 // DATA
@@ -291,7 +294,26 @@ commResp.items.forEach(db => {
   }
 })
 
-process.stdout.write('Fetching community spotlights from Contentful... Done. Found ' + counter + ' URLs.\n')
+// Fetching ABOUT DETAILS IDs
+process.stdout.write('Fetching about details from Contentful...')
+
+const aboutResp = await contentfulClient.getEntries({
+  content_type: 'aboutPageSecondLevel',
+  limit: 1000
+})
+
+process.stdout.clearLine(0)
+process.stdout.cursorTo(0)
+
+counter = 0
+aboutResp.items.forEach(db => {
+  if (db.sys.id) {
+    counter++
+    urls.add(PORTAL_BASE_URL + '/about/' + db.sys.id)
+  }
+})
+
+process.stdout.write('Fetching about details from Contentful... Done. Found ' + counter + ' URLs.\n')
 
 console.log('Finished scraping data. URLs found:', urls.size)
 process.stdout.write('Generating sitemap...')
