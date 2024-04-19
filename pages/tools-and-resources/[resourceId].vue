@@ -49,10 +49,10 @@
           </template>
           <template v-if="resource.fields.program">
             <div class="label4">
-              Funding Program
+              Funding Program(s)
             </div>
             <div class="truncated">
-              {{ resource.fields.program[0] }}
+              {{ fundingPrograms }}
             </div>
           </template>
           <div class="mt-4 label4">
@@ -166,6 +166,9 @@ export default {
       } else {
         return `${this.$config.public.ROOT_URL}${url}`
       }
+    },
+    fundingPrograms() {
+      return this.resource.fields.program.join(", ")
     }
   },
 
