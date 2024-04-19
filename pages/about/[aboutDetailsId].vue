@@ -74,7 +74,6 @@ export default {
 
   async setup() {
     const { $contentfulClient } = useNuxtApp()
-    const router = useRouter()
     const { params } = useRoute()
     const config = useRuntimeConfig()
     const aboutDetailsItem =

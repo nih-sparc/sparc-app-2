@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    :style="{ maxWidth: '54rem', minWidth: '22rem' }" 
     v-model="dialogVisible"
     :show-close="true"
     :append-to-body="true"
