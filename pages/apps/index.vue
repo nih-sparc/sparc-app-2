@@ -23,9 +23,10 @@ const constructPortalFeatureEntries = (apps) => {
   }
   let entries = []
   apps.forEach(app => {
+    const buttonLink = app.fields.requiresDetailsPage ? `/resources/${app.sys.id}` : pathOr('', ['fields', 'url'], app)
     const appEntry = {
       fields: {
-        buttonLink: pathOr('', ['fields','url'], app),
+        buttonLink: buttonLink,
         buttonText: pathOr('', ['fields', 'buttonText'], app),
         description: pathOr('', ['fields', 'description'], app),
         title: pathOr('', ['fields', 'name'], app),
