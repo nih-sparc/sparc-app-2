@@ -1,6 +1,6 @@
 <template>
   <div class="error-404">
-    <div class="page-wrap container">
+    <div class="container">
       <div class="subpage">
         <h1>This page does not exist</h1>
         <br />

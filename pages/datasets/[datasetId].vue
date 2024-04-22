@@ -1,11 +1,14 @@
 <template>
   <div class="dataset-details pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-    <div class="container" v-if="hasError">
-      <div class="subpage">
-        {{ errorMessage }}
-      </div>
-    </div>
+    <template v-if="hasError">
+      <template v-if="errorType == '404'">
+        <error404/>
+      </template>
+      <template v-else>
+        <error400/>
+      </template>
+    </template>
     <div v-else-if="showTombstone">
       <tombstone
         :dataset-details="datasetInfo"
@@ -97,13 +100,11 @@ import { clone, isEmpty, propOr, pathOr, head, compose } from 'ramda'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
 import { useMainStore } from '../store/index.js'
 import { mapState, mapActions } from 'pinia'
-
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
 import Scaffolds from '@/static/js/scaffolds.js'
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
-
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
@@ -113,9 +114,8 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
-
-import ErrorMessages from '@/mixins/error-messages'
-
+import error404 from '@/components/Error/404.vue'
+import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
@@ -210,7 +210,9 @@ export default {
     DatasetFilesInfo,
     ImagesGallery,
     DatasetReferences,
-    VersionHistory
+    VersionHistory,
+    error400,
+    error404
   },
 
   mixins: [DateUtils, FormatStorage],
@@ -413,10 +415,11 @@ export default {
       hasError: false
       }
     } catch (error) {
+      const status = pathOr('', ['response', 'status'], error)
       store.setDatasetInfo({})
       return {
         hasError: true,
-        errorMessage: ErrorMessages.methods.discover()
+        errorType: status
       }
     }
   },
