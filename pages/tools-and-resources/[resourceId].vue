@@ -6,10 +6,17 @@
         <div class="image-button-container">
           <div class="image-container mr-16 mb-8">
             <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
+            <div class="osparc-buttons-container" v-if="showOsparcServices">
+              <a :href="fullResourceUrl">
+                <el-button :style="'width: 100%'" class="mb-8">
+                  Launch o²S²PARC
+                </el-button>
+              </a>
+              <el-button class="secondary mb-8" @click="scrollToServices()">
+                View o²S²PARC services
+              </el-button>
+            </div>
           </div>
-          <el-button v-if="showOsparcServices" class="secondary mb-8" @click="scrollToServices()">
-            View o²S²PARC services
-          </el-button>
         </div>
         <div class="truncated">
           <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
@@ -232,5 +239,11 @@ export default {
 }
 .image-button-container {
   text-align: center;
+}
+.osparc-buttons-container {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: auto;
 }
 </style>
