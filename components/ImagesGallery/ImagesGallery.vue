@@ -261,11 +261,6 @@ export default {
       this.datasetInfo.version,
       this.datasetFacetsData
     )
-    if (Object.keys(biolucidaImageData).length === 0 &&
-      Object.keys(scicrunchData).length === 0 ) {
-      //Non critical error
-      failMessage(ErrorMessages.methods.scicrunch())
-    }
     this.datasetBiolucida = biolucidaImageData
     this.datasetScicrunch = scicrunchData
     this.hasError = hasError

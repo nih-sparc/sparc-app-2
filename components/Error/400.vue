@@ -1,6 +1,6 @@
 <template>
   <div class="error-400">
-    <div class="page-wrap container">
+    <div class="container">
       <div class="subpage">
         <!-- only display custom message if it is available -->
         <p v-if="error && error.display && error.message">

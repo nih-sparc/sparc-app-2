@@ -22,7 +22,7 @@ export default {
       citations at this moment, please try again later.'
     },
     scicrunch: function() {
-      return 'Sorry, some details may not be available at \
+      return 'Sorry, some gallery items may not be available at \
         this moment, please try again later.'
     },
     discover: function() {
