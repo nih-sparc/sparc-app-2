@@ -1,7 +1,12 @@
 <template>
   <div class="dataset-details pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-    <div v-if="showTombstone">
+    <div class="container" v-if="hasError">
+      <div class="subpage">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <div v-else-if="showTombstone">
       <tombstone
         :dataset-details="datasetInfo"
       />
@@ -110,7 +115,6 @@ import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 
 import ErrorMessages from '@/mixins/error-messages'
-import { failMessage } from '@/utils/notification-messages'
 
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
@@ -125,7 +129,6 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
       const pennsieveUrl = `${config.public.discover_api_host}/datasets/${datasetId}`
       var pennsieveDatasetUrl = version ? `${pennsieveUrl}/versions/${version}` : pennsieveUrl
       return await $pennsieveApiClient.value.get(pennsieveDatasetUrl).catch((error) => {
-        console.log("EEE = ", error)
         const status = pathOr('', ['data', 'status'], error.response)
         if (status === 'UNPUBLISHED') {
           const details = error.response.data
@@ -185,6 +188,12 @@ const tabs = [
   },
 ]
 
+const SPARC_ORGANIZATION_NAMES = [
+  'SPARC',
+  'SPARC Consortium',
+  'RE-JOIN',
+  'HEAL PRECISION'
+]
 
 export default {
   name: 'DatasetDetails',
@@ -221,26 +230,22 @@ export default {
 
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-
-    let [datasetDetails, versions, downloadsSummary] = await Promise.all([
-      getDatasetDetails(
-        config,
-        datasetId,
-        route.params.version,
-        $axios,
-        $pennsieveApiClient
-      ),
-      getDatasetVersions(config, datasetId, $axios),
-      getDownloadsSummary(config, $axios),
-    ])
-
+    const store = useMainStore()
+    try {
+      let [datasetDetails, versions, downloadsSummary] = await Promise.all([
+        getDatasetDetails(
+          config,
+          datasetId,
+          route.params.version,
+          $axios,
+          $pennsieveApiClient
+        ),
+        getDatasetVersions(config, datasetId, $axios),
+        getDownloadsSummary(config, $axios),
+      ])
+      
     datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
 
-    if (!datasetDetails) {
-      console.log(ErrorMessages.methods.discover())
-    }
-
-    const store = useMainStore()
     store.setDatasetInfo(datasetDetails)
     store.setDatasetFacetsData(datasetFacetsData)
     store.setDatasetTypeName(datasetTypeName)
@@ -391,15 +396,28 @@ export default {
         }
       ]
     })
+    const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
+    // Redirect them to doi if user tries to navifate directly to a dataset ID that is not a part of SPARC
+    if (!SPARC_ORGANIZATION_NAMES.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
+    {
+      navigateTo(doiLink, { external: true, redirectCode: 301 })
+    }
 
     return {
       tabs: tabsData,
       versions,
       datasetTypeName,
       downloadsSummary,
-      showTombstone: propOr(false, 'isUnpublished', datasetDetails),
-      errorMessages: [],
-      algoliaIndex
+      showTombstone,
+      algoliaIndex,
+      hasError: false
+      }
+    } catch (error) {
+      store.setDatasetInfo({})
+      return {
+        hasError: true,
+        errorMessage: ErrorMessages.methods.discover()
+      }
     }
   },
 
@@ -620,22 +638,10 @@ export default {
       handler: function () {
         this.getMarkdown()
       },
-      immediate: true
-    },
-    errorMessages: {
-      handler: function () {
-        //Non critical error messages
-        this.errorMessages.forEach(message => {
-          failMessage(message)
-        })
-        //Clean up the error messages
-        this.errorMessages.length = 0
-      },
-      immediate: true
     },
     hasFiles: {
       handler: function (newValue) {
-        if (newValue) {
+        if (newValue && !this.hasError) {
           const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
           if (!hasFilesTab) {
             this.tabs.splice(3, 0, { label: 'Files', id: 'files' })
@@ -646,7 +652,7 @@ export default {
     },
     hasCitations: {
       handler: function (newValue) {
-        if (newValue) {
+        if (newValue && !this.hasError) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
             this.tabs.splice(5, 0, { label: 'References', id: 'references' })
@@ -657,7 +663,7 @@ export default {
     },
     canViewVersions: {
       handler: function (newValue) {
-        if (newValue) {
+        if (newValue && !this.hasError) {
           const hasVersionsTab = this.tabs.find(tab => tab.id === 'versions') !== undefined
           if (!hasVersionsTab) {
             this.tabs.splice(6, 0, { label: 'Versions', id: 'versions' })
