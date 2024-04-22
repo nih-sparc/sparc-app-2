@@ -7,7 +7,7 @@
           <div class="image-container mr-16 mb-8">
             <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
             <div class="osparc-buttons-container" v-if="showOsparcServices">
-              <a :href="fullResourceUrl">
+              <a :href="fullResourceUrl" target="_blank">
                 <el-button :style="'width: 100%'" class="mb-8">
                   Launch o²S²PARC
                 </el-button>
