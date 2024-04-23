@@ -108,7 +108,7 @@
             <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
-            <template v-if="isLatestVersion">
+            <template v-if="isLatestVersion || !showRehydrationFeature">
               <div class="heading3">Resource Type</div>
               <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
               <div class="download-text-block mb-8 p-4">
@@ -299,6 +299,9 @@ export default {
         return metacellUrl.toString()
       }
       return null
+    },
+    showRehydrationFeature() {
+      return this.$config.public.SHOW_REHYDRATION_FEATURE == 'true'
     }
   },
 
