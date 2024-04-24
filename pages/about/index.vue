@@ -1,6 +1,6 @@
 <template>
   <div class="about-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" title="About SPARC" />
+    <breadcrumb :breadcrumb="breadcrumb" title="About" />
     <page-hero class="py-24" v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <div v-html="parseMarkdown(heroCopy)" />

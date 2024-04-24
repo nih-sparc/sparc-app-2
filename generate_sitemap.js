@@ -105,8 +105,7 @@ process.stdout.write('Fetching projects from Contentful...')
 
 const projectResp = await contentfulClient.getEntries({
   content_type: 'sparcAward',
-  limit: 1000,
-  'fields.projectSection.sys.contentType.sys.id': 'awardSection'
+  limit: 1000
 })
 
 process.stdout.clearLine(0)

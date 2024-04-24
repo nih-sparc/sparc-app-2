@@ -648,7 +648,6 @@ export default {
         sortOrder = this.selectedProjectsSortOption.sortOrder
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
-        linkedEntriesTargetType = 'awardSection'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false
@@ -662,8 +661,7 @@ export default {
             skip: this.searchData.skip,
             order: sortOrder,
             include: 2,
-            'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]': anatomicalFocus,
+            'fields.focus[in]': anatomicalFocus,
             'fields.program[in]': funding
           })
           .then(async response => {
