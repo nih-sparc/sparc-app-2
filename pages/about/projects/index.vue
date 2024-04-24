@@ -1,18 +1,18 @@
 <template>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
+    <breadcrumb :breadcrumb="breadcrumb" :title="consortiaType.label" />
     <div class="container">
       <div class="search-tabs__container">
         <div class="heading2 pl-8 mb-8">
           Browse projects
         </div>
         <ul class="search-tabs">
-          <li v-for="search in searchTypes" :key="search.label">
-            <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
-                name: 'data',
+          <li v-for="search in consortiaTypes" :key="search.label">
+            <nuxt-link class="search-tabs__button" :class="{ active: search.id == $route.query.consortiaType }" :to="{
+                path: 'projects',
                 query: {
                   ...$route.query,
-                  type: search.type,
+                  consortiaType: search.id,
                 }
               }">
               {{ search.label }}
@@ -33,8 +33,7 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
-              <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                :fundingFacets="projectsFundingFacets" @projects-selections-changed="onFacetSelectionChange()"
+              <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets" @projects-selections-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted" ref="projectsFacetMenu" />
             </el-col>
             <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
@@ -58,7 +57,7 @@
 
                 <div v-if="searchHasAltResults" class="mt-24">
                   <template v-if="searchData.total === 0">
-                    No results were found for <strong>{{ searchType.label }}</strong>.
+                    No results were found for <strong>{{ consortiaType.label }}</strong>.
                   </template>
                   The following results were discovered for the other categories:
                   <br />
@@ -100,14 +99,6 @@ const searchResultsComponents = {
   projects: ProjectSearchResults
 }
 
-const searchTypes = [
-  {
-    label: 'Projects',
-    type: 'projects',
-    dataSource: 'contentful'
-  }
-]
-
 const projectsSortOptions = [
   {
     label: 'A-Z',
@@ -136,7 +127,7 @@ export default {
     const { $contentfulClient } = useNuxtApp()
 
     let projectsAnatomicalFocusFacets = []
-    let projectsFundingFacets = []
+    let consortiaTypes = []
     await $contentfulClient.getEntries({
       content_type: 'awardSection',
     })
@@ -163,14 +154,14 @@ export default {
               id: itemLabel,
             })
           })
-          projectsFundingFacets = facetData
+          consortiaTypes = facetData
         }
       })
     })
-    const searchType = searchTypes.find(searchType => {
-      return searchType.type == route.query.type
+    const consortiaType = consortiaTypes.find(consortiaType => {
+      return consortiaType.id == route.query.consortiaType
     })
-    const title = propOr('', 'label', searchType)
+    const title = propOr('', 'label', consortiaType)
     useHead({
       title: title,
       meta: [
@@ -190,7 +181,7 @@ export default {
       projectsSortOptions,
       selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),
       projectsAnatomicalFocusFacets,
-      projectsFundingFacets
+      consortiaTypes
     }
   },
 
@@ -204,10 +195,8 @@ export default {
         total: 0
       },
       facets: [],
-      dataTypes: ['projects'],
       isLoadingSearch: false,
       searchFailed: false,
-      searchTypes: searchTypes,
       breadcrumb: [
         {
           to: {
@@ -234,13 +223,13 @@ export default {
   },
 
   computed: {
-    searchType: function () {
-      const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
-      const searchType = this.searchTypes.find(searchType => {
-        return searchType.type == searchTypeQuery
+    consortiaType: function () {
+      const consortiaTypeQuery = pathOr('', ['query', 'consortiaType'], this.$route)
+      const consortiaType = this.consortiaTypes.find(consortiaType => {
+        return consortiaType.id == consortiaTypeQuery
       })
 
-      return defaultTo(head(this.searchTypes), searchType)
+      return defaultTo(head(this.consortiaTypes), consortiaType)
     },
 
     tableData: function () {
@@ -248,7 +237,7 @@ export default {
     },
 
     searchResultsComponent: function () {
-      return defaultTo('', searchResultsComponents[this.$route.query.type])
+      return defaultTo('', searchResultsComponents[this.$route.query.consortiaType])
     },
 
     curSearchPage: function () {
@@ -258,12 +247,12 @@ export default {
     searchHeading: function () {
       const query = pathOr('', ['query', 'search'], this.$route)
 
-      const searchType = this.searchTypes.find(searchType => {
-        return searchType.type == this.$route.query.type
+      const consortiaType = this.consortiaTypes.find(consortiaType => {
+        return consortiaType.id == this.$route.query.consortiaType
       })
-      const searchTypeLabel = propOr('', 'label', searchType)
+      const consortiaTypeLabel = propOr('', 'label', consortiaType)
 
-      let searchHeading = `${this.searchData.total} ${searchTypeLabel}`
+      let searchHeading = `${this.searchData.total} ${consortiaTypeLabel}`
 
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
@@ -278,8 +267,8 @@ export default {
   },
 
   watch: {
-    '$route.query.type': function (val) {
-      if (!this.$route.query.type) {
+    '$route.query.consortiaType': function (val) {
+      if (!this.$route.query.consortiaType) {
         return
       } else {
         this.searchData = {
@@ -305,15 +294,21 @@ export default {
       },
       immediate: true
     },
+    '$route.query.selectedProjectsAnatomicalFocusIds': {
+      handler: function (option) {
+        this.fetchResults()
+      },
+      immediate: true
+    },
   },
 
   beforeMount: function () {
     this.windowWidth = window.innerWidth
   },
   mounted: function () {
-    if (!this.$route.query.type) {
-      const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
-      this.$router.replace({ query: { type: firstTabType } })
+    if (!this.$route.query.consortiaType) {
+      const firstTabType = compose(propOr('', 'label'), head)(this.consortiaTypes)
+      this.$router.replace({ query: { consortiaType: firstTabType } })
     } else {
       const queryParams = {
         skip: Number(this.$route.query.skip || this.searchData.skip),
@@ -346,17 +341,10 @@ export default {
 
     fetchResults: function () {
       this.isLoadingSearch = true
-
-      var contentType = this.$route.query.type
-      var sortOrder = undefined
-      var anatomicalFocus = undefined
-      var funding = undefined
-      if (this.$route.query.type === "projects") {
-        contentType = 'sparcAward'
-        sortOrder = this.selectedProjectsSortOption.sortOrder
-        anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
-        funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
-      }
+      var contentType = 'sparcAward'
+      var consortiaType = this.$route.query.consortiaType
+      const anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
+      var sortOrder = this.selectedProjectsSortOption.sortOrder
       if (contentType === undefined) {
         this.isLoadingSearch = false
       }
@@ -370,7 +358,7 @@ export default {
             order: sortOrder,
             include: 2,
             'fields.focus[in]': anatomicalFocus,
-            'fields.program[in]': funding
+            'fields.program[in]': consortiaType
           })
           .then(async response => {
             this.searchData = { ...response }

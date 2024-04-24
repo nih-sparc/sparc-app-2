@@ -12,11 +12,8 @@
     <el-table-column min-width="400">
       <template v-slot="scope">
         <nuxt-link :to="{
-            name: 'projects-projectId',
+            name: 'about-projects-projectId',
             params: { projectId: scope.row.sys.id },
-            query: {
-              type: 'projects'
-            }
           }" v-html="highlightMatches(scope.row.fields.title, $route.query.search)" />
         <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)" />
         <table class="property-table">
@@ -24,7 +21,7 @@
             <td class="property-name-column">
               Focus
             </td>
-            <td v-html="highlightMatches(scope.row.fields.focus, $route.query.search)" />
+            <td v-html="highlightMatches(scope.row.fields.focus.join(), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">

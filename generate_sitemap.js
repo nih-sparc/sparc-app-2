@@ -113,7 +113,7 @@ process.stdout.cursorTo(0)
 process.stdout.write('Fetching projects from Contentful... Done. Found ' + projectResp.items.length + ' URLs.\n')
 
 projectResp.items.forEach(project => {
-  urls.add(PORTAL_BASE_URL + '/projects/' + project.sys.id)
+  urls.add(PORTAL_BASE_URL + '/about/projects/' + project.sys.id)
 })
 
 // TOOLS & RESOURCES

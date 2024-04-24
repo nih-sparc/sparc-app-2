@@ -41,7 +41,6 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col
-              v-if="searchType.type === 'dataset' || searchType.type === 'model' || searchType.type === 'simulation'"
               class="facet-menu"
               :sm="24"
               :md="8"
@@ -53,21 +52,6 @@
                 @selected-facets-changed="onFacetSelectionChange()"
                 @hook:mounted="facetMenuMounted"
                 ref="datasetFacetMenu"
-              />
-            </el-col>
-            <el-col
-              v-else-if="searchType.type === 'projects'"
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <projects-facet-menu
-                :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                :fundingFacets="projectsFundingFacets"
-                @projects-selections-changed="onFacetSelectionChange()"
-                @hook:mounted="facetMenuMounted"
-                ref="projectsFacetMenu"
               />
             </el-col>
             <el-col
@@ -83,20 +67,12 @@
                     @update-page-size="updateDataSearchLimit"
                   />
                 </p>
-                <span v-if="searchType.type !== 'projects' && searchData.items.length" class="label1">
+                <span v-if="searchData.items.length" class="label1">
                   Sort
                   <sort-menu
                     :options="algoliaSortOptions"
                     :selected-option="selectedAlgoliaSortOption"
                     @update-selected-option="onAlgoliaSortOptionChange"
-                  />
-                </span>
-                <span v-else-if="searchType.type == 'projects'" class="label1">
-                  Sort
-                  <sort-menu
-                    :options="projectsSortOptions"
-                    :selected-option="selectedProjectsSortOption"
-                    @update-selected-option="onProjectsSortOptionChange"
                   />
                 </span>
               </div>
@@ -106,14 +82,8 @@
                   error, please try again later.
                 </p>
                 <dataset-search-results
-                  v-else-if="searchType.type !== 'projects'"
                   :tableData="tableData"
                 />
-                <project-search-results
-                  v-else-if="searchType.type == 'projects'"
-                  :tableData="tableData"
-                />
-
                 <div v-if="searchHasAltResults" class="mt-24">
                   <template v-if="searchData.total === 0">
                     No results were found for <strong>{{ searchType.label }}</strong>.
@@ -122,7 +92,7 @@
                   <br />
                   <br />
                   <template v-for="dataType in dataTypes">
-                    <dd v-if="resultCounts[dataType] > 0 && dataType !== 'projects'" :key="dataType">
+                    <dd v-if="resultCounts[dataType] > 0" :key="dataType">
                       <nuxt-link
                         class="alternative-links"
                         :to="{
@@ -169,10 +139,8 @@
 <script>
 import { ref } from 'vue'
 import {
-  clone,
   compose,
   defaultTo,
-  find,
   head,
   mergeLeft,
   pathOr,
@@ -180,16 +148,13 @@ import {
 } from 'ramda'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
-import ProjectsFacetMenu from '@/components/FacetMenu/ProjectsFacetMenu.vue'
 import { facetPropPathMapping, getAlgoliaFacets } from '../../utils/algolia'
 import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
-import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
-  projects: ProjectSearchResults,
   simulation: DatasetSearchResults,
   model: DatasetSearchResults
 }
@@ -198,36 +163,15 @@ const searchTypes = [
   {
     label: 'Datasets',
     type: 'dataset',
-    dataSource: 'algolia'
   },
   {
     label: 'Anatomical Models',
     type: 'model',
-    dataSource: 'algolia'
   },
   {
     label: 'Computational Models',
     type: 'simulation',
-    dataSource: 'algolia'
-  },
-  {
-    label: 'Projects',
-    type: 'projects',
-    dataSource: 'contentful'
   }
-]
-
-const projectsSortOptions = [
-  {
-    label: 'A-Z',
-    id: 'alphabetical',
-    sortOrder: 'fields.title'
-  },
-  {
-    label: 'Z-A',
-    id: 'reverseAlphabetical',
-    sortOrder: '-fields.title'
-  },
 ]
 
 export default {
@@ -238,14 +182,16 @@ export default {
     DatasetFacetMenu,
     DatasetSearchResults,
     SortMenu,
-    ProjectsFacetMenu,
-    ProjectSearchResults
   },
 
   async setup() {
     const config = useRuntimeConfig()
     const route = useRoute()
-    const { $algoliaClient, $contentfulClient } = useNuxtApp()
+    if (route.query.type == 'projects') {
+      const focusQuery = route.query.selectedProjectsAnatomicalFocusIds
+      await navigateTo(`/about/projects?consortiaType=SPARC&selectedProjectsAnatomicalFocusIds=${focusQuery}`)
+    }
+    const { $algoliaClient } = useNuxtApp()
     const algoliaSortOptions = [
       {
         label: 'Date (desc)',
@@ -270,38 +216,6 @@ export default {
     ]
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
-    let projectsAnatomicalFocusFacets = []
-    let projectsFundingFacets = []
-    await $contentfulClient.getEntries({
-        content_type: 'awardSection',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','title'], item)
-          facetData.push({
-            label: label,
-            id: label,
-          })
-        })
-        projectsAnatomicalFocusFacets = facetData
-      })
-      await $contentfulClient.getContentType('sparcAward').then(contentType => {
-      contentType.fields.forEach((field) => {
-        if (field.name === 'Funding') {
-          let fundingItems = field.items?.validations[0]['in']
-          let facetData = []
-          fundingItems.forEach(itemLabel => {
-            facetData.push({
-              label: itemLabel,
-              id: itemLabel,
-            })
-          })
-          projectsFundingFacets = facetData
-        }
-      })
-      })
     const searchType = searchTypes.find(searchType => {
       return searchType.type == route.query.type
     })
@@ -323,12 +237,8 @@ export default {
     })
     return {
       algoliaSortOptions,
-      projectsSortOptions,
       selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
-      selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),
-      algoliaIndex,
-      projectsAnatomicalFocusFacets,
-      projectsFundingFacets
+      algoliaIndex
     }
   },
 
@@ -342,7 +252,7 @@ export default {
         total: 0
       },
       facets: [],
-      dataTypes: ['dataset', 'simulation', 'model', 'projects'],
+      dataTypes: ['dataset', 'simulation', 'model'],
       humanReadableDataTypesLookup: {
         dataset: 'Datasets',
         model: 'Anatomical Models',
@@ -455,12 +365,6 @@ export default {
       },
       immediate: true
     },
-    '$route.query.projectsSort': {
-      handler: function (option) {
-        this.fetchResults()
-      },
-      immediate: true
-    },
 
     selectedAlgoliaSortOption: {
       handler: function(option) {
@@ -506,24 +410,11 @@ export default {
       this.fetchResults()
     },
 
-    fetchResults: function() {
-      const source = propOr('contentful', 'dataSource', this.searchType)
-
-      const searchSources = {
-        contentful: this.fetchFromContentful,
-        algolia: this.fetchFromAlgolia
-      }
-
-      if (typeof searchSources[source] === 'function') {
-        this.$nextTick(() => searchSources[source]())
-      }
-    },
-
     facetMenuMounted: function() {
       this.fetchResults()
     },
 
-    fetchFromAlgolia: function() {
+    fetchResults: function() {
       this.isLoadingSearch = true
       this.searchFailed = false
       const query = this.$route.query.search
@@ -635,49 +526,6 @@ export default {
       }
     },
 
-    fetchFromContentful: function() {
-      this.isLoadingSearch = true
-
-      var contentType = this.$route.query.type
-      var sortOrder = undefined
-      var anatomicalFocus = undefined
-      var funding = undefined
-      var linkedEntriesTargetType = undefined
-      if (this.$route.query.type === "projects") {
-        contentType = 'sparcAward'
-        sortOrder = this.selectedProjectsSortOption.sortOrder
-        anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
-        funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
-      }
-      if (contentType === undefined) {
-        this.isLoadingSearch = false
-      }
-      else {
-        this.$contentfulClient
-          .getEntries({
-            content_type: contentType,
-            query: this.$route.query.search,
-            limit: this.searchData.limit,
-            skip: this.searchData.skip,
-            order: sortOrder,
-            include: 2,
-            'fields.focus[in]': anatomicalFocus,
-            'fields.program[in]': funding
-          })
-          .then(async response => {
-            this.searchData = { ...response }
-            // Update alternative search results
-            this.alternativeSearchUpdate()
-          })
-          .catch(() => {
-            this.searchData = clone(searchData)
-          })
-          .finally(() => {
-            this.isLoadingSearch = false
-          })
-      }
-    },
-
     onFacetSelectionChange: function () {
       this.searchData.skip = 0
       this.fetchResults()
@@ -694,32 +542,6 @@ export default {
       this.fetchResults()
     },
 
-    onMapClick: function(label) {
-      const { query } = this.$route
-      const labelKey = label.toLowerCase()
-
-      // short circuit if nothing has changed
-      if (
-        query.tags === labelKey ||
-        find(t => t === labelKey, (query.tags || '').split(','))
-      ) {
-        return
-      }
-
-      const newTags = query.tags ? [query.tags, labelKey].join(',') : labelKey
-
-      this.$router
-        .replace({
-          query: {
-            ...query,
-            tags: newTags
-          }
-        })
-        .then(() => {
-          this.fetchResults()
-        })
-    },
-
     onResize: function(width) {
       width <= 768
         ? (this.titleColumnWidth = 150)
@@ -728,14 +550,10 @@ export default {
     },
 
     searchColSpan(viewport) {
-      const hasFacetMenu = this.searchType.type === 'dataset' ||
-        this.searchType.type === 'simulation' ||
-        this.searchType.type === 'model' ||
-        this.searchType.type === 'projects'
       const viewports = {
-        sm: hasFacetMenu ? 24 : 24,
-        md: hasFacetMenu ? 16 : 24,
-        lg: hasFacetMenu ? 18 : 24
+        sm: 24,
+        md: 16,
+        lg: 18
       }
 
       return viewports[viewport] || 24
@@ -748,17 +566,6 @@ export default {
           ...this.$route.query,
           skip: 0,
           datasetSort: option.id
-        }
-      })
-    },
-    async onProjectsSortOptionChange(option) {
-      this.selectedProjectsSortOption = option
-      this.searchData.skip = 0
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          skip: 0,
-          projectsSort: option.id
         }
       })
     }
