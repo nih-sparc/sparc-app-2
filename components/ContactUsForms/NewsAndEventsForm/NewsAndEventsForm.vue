@@ -25,15 +25,12 @@
       <div class="body4 mb-8"><i>To help others understand your news or event, an image can really help. We recommend images of 600px by 600px.</i></div>
       <el-upload
         ref="fileUploader"
-        action=""
+        action="#"
         :limit="limit"
         :auto-upload="false"
         :on-change="onUploadChange"
         :on-remove="onRemove"
         :before-remove="beforeRemove"
-        :on-success="onSuccess"
-        :on-error="onError"
-        :before-upload="beforeUpload"
       >
         <template #trigger>
           <el-button class="secondary">Select file</el-button>

@@ -24,5 +24,8 @@ logs
 .env.*
 !.env.example
 
+# Sitemaps
+public/sitemap*
+
 tests/cypress/videos
 tests/cypress/downloads

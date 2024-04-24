@@ -2,15 +2,13 @@ const kB_IN_MB = 1024;
 const MAX_FILE_SIZE_IN_MB = 5;
 const MAX_FILE_SIZE = kB_IN_MB * MAX_FILE_SIZE_IN_MB;
 import { failMessage } from '@/utils/notification-messages'
-import { isEmpty } from 'ramda'
 
 export default {
   data() {
     return {
       limit: 1,
       allowVideos: false,
-      file: {},
-      uploadingFile: false
+      file: {}
     }
   },
   computed: {
@@ -60,16 +58,13 @@ export default {
     onRemove() {
       this.file = {}
     },
-    beforeUpload()
+    beforeUpload(file)
     {
-      if (!isEmpty(this.file))
-        this.uploadingFile = true
-    },
-    onSuccess() {
-      this.uploadingFile = false
-    },
-    onError() {
-      this.uploadingFile = false
+      const isFileSizeTooLarge = this.isFileSizeTooLarge(file)
+      if (isFileSizeTooLarge) {
+        failMessage(`Upload file size cannot exceed ${MAX_FILE_SIZE_IN_MB} MB!`)
+      }
+      return !isFileSizeTooLarge
     }
   }
 }
