@@ -96,27 +96,6 @@
     vuex "^4.1.0"
     xss "^1.0.14"
 
-"@abi-software/plotvuer@0.4.0-vue-3-alpha.10", "@abi-software/plotvuer@^0.4.0-vue-3-alpha.10":
-  version "0.4.0-vue-3-alpha.10"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-0.4.0-vue-3-alpha.10.tgz#b7eee92c87d1b6708669f01286f9e59cf8df7794"
-  integrity sha512-6UXc2A11m4R6LpZfkbXM4Oq/hffchgqnWLfC4A8jRTlyfjNzQ1oZjLte/JnyhzB0NvdtWk08sGRc2mVcMLEHUA==
-  dependencies:
-    "@abi-software/svg-sprite" "^0.4.0-vue3-beta.0"
-    "@element-plus/icons-vue" "^2.3.1"
-    "@vuese/cli" "^2.14.3"
-    core-js "^3.7.0"
-    css-element-queries "^1.2.3"
-    current-script-polyfill "^1.0.0"
-    d3-time-format "^3.0.0"
-    element-plus "^2.5.3"
-    papaparse "^5.3.0"
-    plotly.js "^2.28.0"
-    unplugin-vue-components "^0.26.0"
-    vite-plugin-node-polyfills "^0.19.0"
-    vue "^3.4.15"
-    vue-draggable-resizable "^2.2.0"
-    vue-router "^4.2.5"
-
 "@abi-software/plotvuer@1.0.0", "@abi-software/plotvuer@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.0.tgz#8fb2e850eac50953721a1e27febc1e9281132725"
@@ -158,17 +137,6 @@
     vue3-component-svg-sprite "^0.0.1"
     zincjs "^1.5.1-beta.1"
 
-"@abi-software/simulationvuer@0.7.0-vue-3-alpha.5":
-  version "0.7.0-vue-3-alpha.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-0.7.0-vue-3-alpha.5.tgz#95c29e9c9246daf0830cd7dc5eab9b6d29c70f2d"
-  integrity sha512-gp6kpeZ3dTPfCaHJUAMUb0jU9z32qUMDMwPkQYrJQlHx1vqNUe5AfYGwFUjno0haKe+PiTooqZ9lJdpOMrrQKQ==
-  dependencies:
-    "@abi-software/plotvuer" "^0.4.0-vue-3-alpha.10"
-    element-plus "^2.5.3"
-    jsonschema "^1.4.0"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.15"
-
 "@abi-software/simulationvuer@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-1.0.0.tgz#c487e5c11ec982681049a65ec99d99a536853aeb"
@@ -193,13 +161,6 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.0.tgz#182dcf5ae2e31f3bbdf62faf339a7bbf7fed86e5"
   integrity sha512-K1fFe3m/su/Tva1qMxKdv6a1AIQiEoVajNfMQycqAg8NM2Z9KDmiXqAe5PgPYx7YDOy3SluRNtysSXRqhyutgg==
-  dependencies:
-    vue "^3.3.13"
-
-"@abi-software/svg-sprite@^0.4.0-vue3-beta.0":
-  version "0.4.0-vue3-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-0.4.0-vue3-beta.0.tgz#9b4e2f904d419884b5b11d64d03d352e79615b7c"
-  integrity sha512-JnB+IAq8fREW5fR3no6fOiE5+pJpadSU9XwDsBWrg95UZiJXiTBGOWc5YkR/KrVnER+Ut4oZz+BcBRAlO/JhAA==
   dependencies:
     vue "^3.3.13"
 
