@@ -33,8 +33,9 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
-              <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets" @projects-selections-changed="onFacetSelectionChange()"
-                @hook:mounted="facetMenuMounted" ref="projectsFacetMenu" />
+              <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                ref="projectsFacetMenu" />
             </el-col>
             <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
               <div class="search-heading">
@@ -55,12 +56,9 @@
                 </p>
                 <project-search-results :tableData="tableData" />
 
-                <div v-if="searchHasAltResults" class="mt-24">
-                  <template v-if="searchData.total === 0">
-                    No results were found for <strong>{{ consortiaType.label }}</strong>.
-                  </template>
-                  The following results were discovered for the other categories:
-                  <br />
+                <div class="mt-24">
+                  <alternative-search-results ref="altSearchResults" :data-types="consortiaTypes"
+                    @vue:mounted="altResultsMounted" />
                   <br />
                 </div>
               </div>
@@ -91,6 +89,7 @@ import {
   propOr
 } from 'ramda'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
+import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResultsProjects.vue'
 import ProjectsFacetMenu from '@/components/FacetMenu/ProjectsFacetMenu.vue'
 import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
@@ -117,6 +116,7 @@ export default {
 
   components: {
     SearchControlsContentful,
+    AlternativeSearchResults,
     SortMenu,
     ProjectsFacetMenu,
     ProjectSearchResults
@@ -356,7 +356,6 @@ export default {
             limit: this.searchData.limit,
             skip: this.searchData.skip,
             order: sortOrder,
-            include: 2,
             'fields.focus[in]': anatomicalFocus,
             'fields.program[in]': consortiaType
           })
@@ -370,6 +369,7 @@ export default {
             this.isLoadingSearch = false
           })
       }
+      this.$refs.altSearchResults?.retrieveAltTotals()
     },
 
     onFacetSelectionChange: function () {
@@ -414,6 +414,9 @@ export default {
           projectsSort: option.id
         }
       })
+    },
+    altResultsMounted() {
+      this.$refs.altSearchResults?.retrieveAltTotals()
     }
   }
 }
