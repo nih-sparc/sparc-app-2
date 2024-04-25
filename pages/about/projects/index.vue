@@ -212,7 +212,7 @@ export default {
         },
         {
           to: {
-            path: 'about-projects',
+            path: 'projects'
           },
           label: 'Projects'
         },
@@ -267,20 +267,23 @@ export default {
   },
 
   watch: {
-    '$route.query.consortiaType': function (val) {
-      if (!this.$route.query.consortiaType) {
-        return
-      } else {
-        this.searchData = {
-          limit: 10,
-          skip: 0,
-          items: [],
-          total: 0
-        }
-        this.fetchResults()
+    '$route.query.consortiaType': {
+      handler: function () {
+        if (!this.$route.query.consortiaType) {
+          this.$router.push({
+            query: { consortiaType: this.consortiaType['id'] }
+          })
+        } else {
+          this.searchData = {
+            limit: 10,
+            skip: 0,
+            items: [],
+            total: 0
+          }
+          this.fetchResults()
+        } 
       }
     },
-
     '$route.query.search': {
       handler: function () {
         this.searchQuery = this.$route.query.search
