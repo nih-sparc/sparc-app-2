@@ -246,173 +246,173 @@ export default {
         getDownloadsSummary(config, $axios),
       ])
       
-    datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
-
-    store.setDatasetInfo(datasetDetails)
-    store.setDatasetFacetsData(datasetFacetsData)
-    store.setDatasetTypeName(datasetTypeName)
-    // Creator data
-    const org = [
-      {
-        '@type': 'Organization',
-        name: propOr('', 'organizationName', datasetDetails)
-      }
-    ]
-    const contributors = datasetDetails?.contributors?.map(contributor => {
-      const sameAs = contributor.orcid
-        ? `http://orcid.org/${contributor.orcid}`
-        : null
-
-      return {
-        '@type': 'Person',
-        sameAs,
-        givenName: contributor.firstName,
-        familyName: contributor.lastName,
-        name: `${contributor.firstName} ${contributor.lastName}`
-      }
-    })
-
-    const creators = contributors?.concat(org)
-    const title = propOr('', 'name', datasetDetails)
-    const description = propOr('', 'description', datasetDetails)
-    const doi = propOr('', 'doi', datasetDetails)
-    const doiLink = doi ? `https://doi.org/${doi}` : ''
-    const licenseKey = propOr('', 'license', datasetDetails)
-    const datasetLicense = getLicenseAbbr(licenseKey)
-    const licenseLink = getLicenseLink(datasetLicense)
-    let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
-    useHead({
-      title: title,
-      meta: [
+      datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
+      const latestVersion = compose(propOr(1, 'version'), head)(versions)
+      store.setDatasetInfo({ ...datasetDetails, 'latestVersion': latestVersion })
+      store.setDatasetFacetsData(datasetFacetsData)
+      store.setDatasetTypeName(datasetTypeName)
+      // Creator data
+      const org = [
         {
-          name: 'DC.type',
-          content: 'Dataset'
-        },
-        {
-          name: 'DC.title',
-          content: title
-        },
-        {
-          name: 'DC.description',
-          content: description
-        },
-        {
-          name: 'DCTERMS.license',
-          content: licenseLink
-        },
-        {
-          property: 'og:type',
-          content: 'website'
-        },
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: title
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: description
-        },
-        {
-          property: 'og:image',
-          content: datasetDetails?.banner
-        },
-        {
-          property: 'og:image:alt',
-          content: `${title} Banner Image`
-        },
-        {
-          property: 'og:site_name',
-          content: 'SPARC Portal'
-        },
-        {
-          name: 'twitter:card',
-          content: 'summary'
-        },
-        {
-          name: 'twitter:site',
-          content: '@sparc_science'
-        },
-        {
-          name: 'twitter:description',
-          content: description
-        },
-        {
-          name: 'twitter:image',
-          content: datasetDetails?.banner
-        },
-        {
-          name: 'DC.creator',
-          content: JSON.stringify(creators)
-        },
-        {
-          name: 'DC.identifier',
-          content: doiLink,
-          scheme: 'DCTERMS.URI'
-        },
-        {
-          name: 'DC.publisher',
-          content: 'Pennsieve Discover'
-        },
-        {
-          name: 'DC.date',
-          content: originallyPublishedDate,
-          scheme: 'DCTERMS.W3CDTF'
-        },
-        {
-          name: 'DC.version',
-          content: datasetDetails?.version
-        }
-      ],
-      script: [
-        {
-          vmid: 'ldjson-schema',
-          json: {
-            '@context': 'http://schema.org',
-            '@type': 'Dataset',
-            '@id': doiLink,
-            sameAs: `${config.public.discover_api_host}/datasets/${datasetId}`,
-            name: title,
-            creator: creators,
-            datePublished: datasetDetails?.createdAt,
-            dateModified: datasetDetails?.revisedAt,
-            description: description,
-            license: licenseLink,
-            version: datasetDetails?.version,
-            url: config.public.ROOT_URL,
-            identifier: doiLink,
-            isAccessibleForFree: true
-          },
-          type: 'application/ld+json'
-        },
-        {
-          vmid: 'ldjson-schema',
-          json: {
-            '@context': 'http://schema.org',
-            '@type': 'WebSite',
-            url: config.public.ROOT_URL,
-            name: 'Pennsieve Discover'
-          },
-          type: 'application/ld+json'
+          '@type': 'Organization',
+          name: propOr('', 'organizationName', datasetDetails)
         }
       ]
-    })
-    const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
-    // Redirect them to doi if user tries to navifate directly to a dataset ID that is not a part of SPARC
-    if (!SPARC_ORGANIZATION_NAMES.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
-    {
-      navigateTo(doiLink, { external: true, redirectCode: 301 })
-    }
+      const contributors = datasetDetails?.contributors?.map(contributor => {
+        const sameAs = contributor.orcid
+          ? `http://orcid.org/${contributor.orcid}`
+          : null
 
-    return {
-      tabs: tabsData,
-      versions,
-      datasetTypeName,
-      downloadsSummary,
-      showTombstone,
-      algoliaIndex,
-      hasError: false
+        return {
+          '@type': 'Person',
+          sameAs,
+          givenName: contributor.firstName,
+          familyName: contributor.lastName,
+          name: `${contributor.firstName} ${contributor.lastName}`
+        }
+      })
+
+      const creators = contributors?.concat(org)
+      const title = propOr('', 'name', datasetDetails)
+      const description = propOr('', 'description', datasetDetails)
+      const doi = propOr('', 'doi', datasetDetails)
+      const doiLink = doi ? `https://doi.org/${doi}` : ''
+      const licenseKey = propOr('', 'license', datasetDetails)
+      const datasetLicense = getLicenseAbbr(licenseKey)
+      const licenseLink = getLicenseLink(datasetLicense)
+      let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
+      useHead({
+        title: title,
+        meta: [
+          {
+            name: 'DC.type',
+            content: 'Dataset'
+          },
+          {
+            name: 'DC.title',
+            content: title
+          },
+          {
+            name: 'DC.description',
+            content: description
+          },
+          {
+            name: 'DCTERMS.license',
+            content: licenseLink
+          },
+          {
+            property: 'og:type',
+            content: 'website'
+          },
+          {
+            hid: 'og:title',
+            property: 'og:title',
+            content: title
+          },
+          {
+            hid: 'description',
+            name: 'description',
+            content: description
+          },
+          {
+            property: 'og:image',
+            content: datasetDetails?.banner
+          },
+          {
+            property: 'og:image:alt',
+            content: `${title} Banner Image`
+          },
+          {
+            property: 'og:site_name',
+            content: 'SPARC Portal'
+          },
+          {
+            name: 'twitter:card',
+            content: 'summary'
+          },
+          {
+            name: 'twitter:site',
+            content: '@sparc_science'
+          },
+          {
+            name: 'twitter:description',
+            content: description
+          },
+          {
+            name: 'twitter:image',
+            content: datasetDetails?.banner
+          },
+          {
+            name: 'DC.creator',
+            content: JSON.stringify(creators)
+          },
+          {
+            name: 'DC.identifier',
+            content: doiLink,
+            scheme: 'DCTERMS.URI'
+          },
+          {
+            name: 'DC.publisher',
+            content: 'Pennsieve Discover'
+          },
+          {
+            name: 'DC.date',
+            content: originallyPublishedDate,
+            scheme: 'DCTERMS.W3CDTF'
+          },
+          {
+            name: 'DC.version',
+            content: datasetDetails?.version
+          }
+        ],
+        script: [
+          {
+            vmid: 'ldjson-schema',
+            json: {
+              '@context': 'http://schema.org',
+              '@type': 'Dataset',
+              '@id': doiLink,
+              sameAs: `${config.public.discover_api_host}/datasets/${datasetId}`,
+              name: title,
+              creator: creators,
+              datePublished: datasetDetails?.createdAt,
+              dateModified: datasetDetails?.revisedAt,
+              description: description,
+              license: licenseLink,
+              version: datasetDetails?.version,
+              url: config.public.ROOT_URL,
+              identifier: doiLink,
+              isAccessibleForFree: true
+            },
+            type: 'application/ld+json'
+          },
+          {
+            vmid: 'ldjson-schema',
+            json: {
+              '@context': 'http://schema.org',
+              '@type': 'WebSite',
+              url: config.public.ROOT_URL,
+              name: 'Pennsieve Discover'
+            },
+            type: 'application/ld+json'
+          }
+        ]
+      })
+      const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
+      // Redirect them to doi if user tries to navifate directly to a dataset ID that is not a part of SPARC
+      if (!SPARC_ORGANIZATION_NAMES.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
+      {
+        navigateTo(doiLink, { external: true, redirectCode: 301 })
+      }
+
+      return {
+        tabs: tabsData,
+        versions,
+        datasetTypeName,
+        downloadsSummary,
+        showTombstone,
+        algoliaIndex,
+        hasError: false
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
