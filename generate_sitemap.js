@@ -2,12 +2,12 @@ import { simpleSitemapAndIndex } from 'sitemap'
 import algoliasearch from 'algoliasearch'
 import contentful from 'contentful'
 
-const PORTAL_BASE_URL = process.env.PORTAL_BASE_URL || 'https://sparc.science'
+const PORTAL_BASE_URL = process.env.ROOL_URL || 'https://staging.sparc.science'
 
 // Algolia creds
 const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID
 const ALGOLIA_API_KEY = process.env.ALGOLIA_API_KEY
-const ALGOLIA_INDEX = process.env.ALGOLIA_INDEX
+const ALGOLIA_INDEX = process.env.ALGOLIA_INDEX || 'k-core_dev'
 
 const algoliaClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY)
 const algoliaIndex = algoliaClient.initIndex(ALGOLIA_INDEX)

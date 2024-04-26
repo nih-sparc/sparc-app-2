@@ -56,7 +56,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@zadigetvoltaire/nuxt-gtm',
-    '@nuxtjs/turnstile'
+    '@nuxtjs/turnstile',
+    '@nuxtjs/sitemap'
   ],
   turnstile: {
     siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
