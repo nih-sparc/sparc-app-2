@@ -70,25 +70,6 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
   let coorX = coordinate.x
   let coorY = coordinate.y
   const clickNeuron = () => {
-    /**
-     * ==================================================================
-     * Below is used to avoid the tooltip not display for the first click
-     * Can be removed if the popup logic updated
-     */
-    cy.get('@canvas').click(coorX, coorY)
-
-    cy.wait(5000)
-
-    cy.get('body').then(($body) => {
-      if ($body.find('.maplibregl-popup-close-button').length > 0) {
-        // Close the provenance card
-        cy.get('.maplibregl-popup-close-button').click({ force: true })
-      }
-    })
-    /**
-     * ==================================================================
-     */
-
     cy.get('@canvas').click(coorX, coorY)
 
     cy.wait(5000)

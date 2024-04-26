@@ -39,7 +39,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       if (model !== 'Rat') {
         // Switch to the second flatmap
-        cy.get('#flatmap-select').click()
+        cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
         cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
       }
@@ -65,7 +65,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
     // Switch to the human related flatmap
-    cy.get('#flatmap-select').click()
+    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
 
     cy.wait('@flatmap', { timeout: 20000 })
@@ -95,10 +95,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
 
     // Close the pathway sidebar
-    cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button > .el-icon-arrow-left').click()
+    cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button > .el-icon').click()
 
     // Search keyword in displayed viewers
-    cy.get('.el-autocomplete > .el-input > .el-input__inner').type(searchInMap)
+    cy.get('.el-autocomplete > .el-input > .el-input__wrapper').type(searchInMap)
     cy.get('.search-container > .map-icon > use').click()
 
     // Check for keyword(highlighted part) in displayed viewers

@@ -10,7 +10,7 @@
     "postinstall": "nuxt prepare",
     "sitemap": "node generate_sitemap.js",
     "test-cypress": "cypress run",
-    "test-run-e2e": "cypress run --record"
+    "test-cypress-record": "cypress run --record"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

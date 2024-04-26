@@ -24,7 +24,7 @@ datasetIds.forEach(datasetId => {
       cy.wait(5000)
 
       cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container');
+        const gallery = $content.find('.gallery-container', { timeout: 30000 });
         if (gallery && gallery.length) {
           // Check for pagination
           cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
@@ -52,7 +52,7 @@ datasetIds.forEach(datasetId => {
             }
           })
         } else {
-          cy.wrap($content).contains(/Loading gallery...|There was an error loading the gallery items|This dataset does not contain gallery items/);
+          cy.wrap($content).contains(/There was an error loading the gallery items|This dataset does not contain gallery items/);
         }
       });
     });

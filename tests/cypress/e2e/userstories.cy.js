@@ -20,11 +20,11 @@ describe('User stories', function () {
 
       it(`Access dataset ${id}`, function () {
         // Search for segmentation related dataset
-        cy.get('.el-input__inner').clear();
+        cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
         cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 10)
 
-        cy.get('.el-input__inner').type(id);
+        cy.get('.el-input__wrapper > .el-input__inner').type(id);
         cy.get('.search-text').click();
 
         cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 1).first().as('dataset');
@@ -65,11 +65,11 @@ describe('User stories', function () {
 
       it(`Access scaffold ${category}`, function () {
         // Search for scaffold related dataset
-        cy.get('.el-input__inner').clear();
+        cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
         cy.get('.el-table__row', { timeout: 30000 }).should('have.length', 10)
 
-        cy.get('.el-input__inner').type(category);
+        cy.get('.el-input__wrapper > .el-input__inner').type(category);
         cy.get('.search-text').click();
 
         cy.get('.el-table__row', { timeout: 30000 }).first().as('dataset');
@@ -101,8 +101,8 @@ describe('User stories', function () {
             cy.wait('@query', { timeout: 20000 });
 
             // Search dataset id
-            cy.get('.search-input > .el-input__wrapper').clear();
-            cy.get('.search-input > .el-input__wrapper').type(datasetId);
+            cy.get('.search-input > .el-input__wrapper > .el-input__inner').clear();
+            cy.get('.search-input > .el-input__wrapper > .el-input__inner').type(datasetId);
             cy.get('.header > .el-button').click();
 
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 });
