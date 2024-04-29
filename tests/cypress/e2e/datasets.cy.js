@@ -21,7 +21,7 @@ datasetIds.forEach(datasetId => {
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
 
-      cy.wait(5000)
+      cy.wait(10000)
 
       cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
         const gallery = $content.find('.gallery-container', { timeout: 30000 });
