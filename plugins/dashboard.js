@@ -14,7 +14,6 @@ const componentMap = [
 ]
 
 export default defineNuxtPlugin((nuxtApp) => {
-        console.log("emmiter")
         nuxtApp.vueApp.provide('emitter', emitter);
         componentMap.forEach(comp=>{
             const asyncComponent = defineAsyncComponent(() => import(`@/TestDashboard/src/components/${comp}.vue`)); 
