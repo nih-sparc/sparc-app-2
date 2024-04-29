@@ -1,8 +1,4 @@
-/**
- * List of categories
- * Default will be ['dataset', 'model', 'simulation', 'projects']
- */
-const browseCategories = Cypress.env('BROWSE_CATEGORIES').split(',').map(item => item.trim()).filter(item => item)
+const browseCategories = ['dataset', 'model', 'simulation', 'projects']
 
 /**
  * The number of datasets are displayed per page

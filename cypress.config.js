@@ -21,7 +21,6 @@ export default defineConfig({
     },
     env: {
       // databrowser.js
-      BROWSE_CATEGORIES: process.env.BROWSE_CATEGORIES ? process.env.BROWSE_CATEGORIES : 'dataset, model, simulation, projects',
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, neck',
       FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',

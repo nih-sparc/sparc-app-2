@@ -23,10 +23,6 @@ on:
         options:
           - "Staging"
           - "Production"
-      BROWSE_CATEGORIES:
-        description: "Define browse categories"
-        required: true
-        default: "dataset, model, simulation, projects"
       PAGE_LIMIT:
         type: "choice"
         description: "Define the number of displayed datasets per page"
@@ -74,7 +70,6 @@ on:
         default: "150, 155"
 
 env:
-  BROWSE_CATEGORIES: ${{ github.event.inputs.BROWSE_CATEGORIES }}
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
   SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
   FILTER_FACET: ${{ github.event.inputs.FILTER_FACET }}
