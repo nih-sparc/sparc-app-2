@@ -74,10 +74,7 @@ datasetIds.forEach(datasetId => {
 
       // Should reload the page
       cy.get('.dataset-information-box > :nth-child(2) > a').click()
-      cy.origin(redirectTarget, () => {
-        cy.url().should('contain', 'version')
-        cy.go('back')
-      })
+      cy.redirectDOILink(redirectTarget)
       // cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
       //   cy.request(href).then((resp) => {
       //     expect(resp.status).to.eq(200);
@@ -395,10 +392,7 @@ datasetIds.forEach(datasetId => {
 
           // DOI link should reload page with correct version
           cy.get(':nth-child(2) > .el-col-push-1 > a').click()
-          cy.origin(redirectTarget, () => {
-            cy.url().should('contain', 'version')
-            cy.go('back')
-          })
+          cy.redirectDOILink(redirectTarget)
           // cy.get('.el-col-push-1 > a').each(($link) => {
           //   cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
           //     cy.request(href).then((resp) => {
