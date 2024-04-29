@@ -11,7 +11,7 @@ on:
     branches: [master, main]
 
   schedule:
-    - cron: "*/5 * * * 1" # for test
+    - cron: "*/15 * * * *"
     - cron: "0 0 * * 1"
 
   workflow_dispatch:
@@ -35,7 +35,7 @@ on:
       SEARCH_KEYWORDS:
         description: "Define keywords for searching"
         required: true
-        default: "Spine, neck"
+        default: "Spine, Neck"
       FILTER_FACET:
         description: "Define facet for filtering"
         required: true
