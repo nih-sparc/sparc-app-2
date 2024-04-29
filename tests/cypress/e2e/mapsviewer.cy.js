@@ -1,6 +1,3 @@
-// Human Female, Human Male, Rat, Mouse, Pig, Cat
-// const taxonModels = ['Rat']
-const taxonModels = ['Rat', 'Human Female']
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
 // central coordinate { 'x': 768, 'y': 373 }
@@ -8,12 +5,17 @@ const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
 
 /**
+ * Human Female, Human Male, Rat, Mouse, Pig, Cat
+ */
+const TAXON_MODELS = cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item)
+
+/**
  * Name of species for the 3D sync map
  * 'Human Female', 'Human Male', 'Rat'
  */
 const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
-const searchInMap = 'heart'
+const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
 const scaffoldDatasetIds = Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
 
