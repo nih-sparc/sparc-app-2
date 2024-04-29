@@ -27,6 +27,7 @@
     "@abi-software/plotvuer": "1.0.0",
     "@abi-software/simulationvuer": "1.0.0",
     "@element-plus/nuxt": "^1.0.6",
+    "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
     "algoliasearch": "^4.19.1",

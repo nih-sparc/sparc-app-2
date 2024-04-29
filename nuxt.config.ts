@@ -56,7 +56,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@zadigetvoltaire/nuxt-gtm',
-    '@nuxtjs/turnstile'
+    '@nuxtjs/turnstile',
+    '@nuxtjs/sitemap'
   ],
   turnstile: {
     siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
@@ -198,4 +199,9 @@ export default defineNuxtConfig({
   ** Global CSS
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
+  sitemap: {
+    xslColumns: [
+      { label: 'URL', width: '100%' }
+    ],
+  },
 })
