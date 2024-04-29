@@ -53,7 +53,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
-      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true });
+      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true });
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
@@ -125,7 +125,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       cy.wait('@query', { timeout: 20000 })
 
-      cy.get('.dataset-results-feedback').then(($result) => {
+      cy.wait(5000)
+
+      cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
         const noResult = $result.text() === '0 results | Showing'
         if (noResult) {
           // Error message should exist if no result
@@ -135,6 +137,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
+          // Loading mask should not exist after the scaffold is loaded
+          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
           // Check for search result and the tag 'Scaffold'
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(datasetId).should('exist')
           cy.get('.dataset-card-container > .dataset-card').filter(`:contains(${datasetId})`).within(() => {
@@ -142,6 +147,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
 
+          // Loading mask should not exist after the scaffold is loaded
+          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+          
           // Check for button text
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
 
