@@ -7,7 +7,7 @@ const pixelChange = 3
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
-const TAXON_MODELS = cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item)
+const taxonModels = Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item)
 
 /**
  * Name of species for the 3D sync map
@@ -112,6 +112,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
+      // Loading mask should not exist after the default flatmap is loaded
+      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
