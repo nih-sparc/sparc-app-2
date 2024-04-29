@@ -11,6 +11,7 @@ on:
     branches: [master, main]
 
   schedule:
+    - cron: "*/5 * * * 1" # for test
     - cron: "0 0 * * 1"
 
   workflow_dispatch:
@@ -107,6 +108,8 @@ env:
   SHOW_TIMESERIES_VIEWER: ${{ secrets.SHOW_TIMESERIES_VIEWER }}
   SPARC_PORTAL_USER_ID: ${{ secrets.SPARC_PORTAL_USER_ID }}
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
+  # Should be removed when nuxt3 portal is on production
+  PROMOTION_TIMESTAMP: 1718107200 # Wed Jun 12 2024 00:00:00 GMT+1200 (New Zealand Standard Time)
 
 jobs:
   pull-request-cypress-run:
@@ -153,10 +156,6 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
-    # Can be removed when nuxt3 portal is on production
-    env:
-      PROMOTION_TIMESTAMP: 1718107200 # Wed Jun 12 2024 00:00:00 GMT+1200 (New Zealand Standard Time)
-
     strategy:
       fail-fast: false
       matrix:
@@ -176,7 +175,7 @@ jobs:
         run: echo "CURRENT_TIMESTAMP=$(date +'%s')" >> $GITHUB_ENV
 
       - name: Schedule Run Testing on ${{ matrix.target }}
-        # Can be removed when nuxt3 portal is on production
+        # Should be removed when nuxt3 portal is on production
         if: ${{ (matrix.target == 'https://sparc.science' && fromJSON(env.CURRENT_TIMESTAMP) > fromJSON(env.PROMOTION_TIMESTAMP)) || matrix.target == 'https://staging.sparc.science' }}
         uses: cypress-io/github-action@v6
         env:
@@ -189,10 +188,6 @@ jobs:
   manual-cypress-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-
-    # Can be removed when nuxt3 portal is on production
-    env:
-      PROMOTION_TIMESTAMP: 1718107200 # Wed Jun 12 2024 00:00:00 GMT+1200 (New Zealand Standard Time)
 
     steps:
       - name: Checkout
@@ -218,6 +213,7 @@ jobs:
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
 
       - name: Manual Run Testing against Production
+        # Should be edit when nuxt3 portal is on production
         if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' && fromJSON(env.CURRENT_TIMESTAMP) > fromJSON(env.PROMOTION_TIMESTAMP) }}
         env:
           ROOT_URL: "https://sparc.science"

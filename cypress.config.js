@@ -27,10 +27,11 @@ export default defineConfig({
       FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',
       MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Heart, Adult',
       // datasets.js
-      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 282, 290, 34, 76',
+      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 205, 290, 34, 76',
       // mapsviewer.js
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
       SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '150, 155',
+      // redirect
       REDIRECT_TARGET: process.env.ROOT_URL === 'http://localhost:3000' ? 'https://sparc.science' : null,
     }
   },
