@@ -190,6 +190,10 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
+    # Can be removed when nuxt3 portal is on production
+    env:
+      PROMOTION_TIMESTAMP: 1718107200 # Wed Jun 12 2024 00:00:00 GMT+1200 (New Zealand Standard Time)
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -198,6 +202,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.17.1
+
+      # Can be removed when nuxt3 portal is on production
+      - name: Setup datetime
+        run: echo "CURRENT_TIMESTAMP=$(date +'%s')" >> $GITHUB_ENV
 
       - name: Manual Run Testing against Staging
         if: ${{ github.event.inputs.PORTAL_TARGET == 'Staging' }}
@@ -210,7 +218,7 @@ jobs:
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
 
       - name: Manual Run Testing against Production
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
+        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' && fromJSON(env.CURRENT_TIMESTAMP) > fromJSON(env.PROMOTION_TIMESTAMP) }}
         env:
           ROOT_URL: "https://sparc.science"
         uses: cypress-io/github-action@v6
