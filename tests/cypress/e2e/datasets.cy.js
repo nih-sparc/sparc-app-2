@@ -3,6 +3,8 @@
  */
 const datasetIds = Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
 
+const redirectTarget = Cypress.env('REDIRECT_TARGET')
+
 datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
@@ -72,7 +74,7 @@ datasetIds.forEach(datasetId => {
 
       // Should reload the page
       cy.get('.dataset-information-box > :nth-child(2) > a').click()
-      cy.origin('https://sparc.science', () => {
+      cy.origin(redirectTarget, () => {
         cy.url().should('contain', 'version')
         cy.go('back')
       })
@@ -393,7 +395,7 @@ datasetIds.forEach(datasetId => {
 
           // DOI link should reload page with correct version
           cy.get(':nth-child(2) > .el-col-push-1 > a').click()
-          cy.origin('https://sparc.science', () => {
+          cy.origin(redirectTarget, () => {
             cy.url().should('contain', 'version')
             cy.go('back')
           })

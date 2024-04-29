@@ -31,6 +31,7 @@ export default defineConfig({
       // mapsviewer.js
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
       SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '150, 155',
+      REDIRECT_TARGET: process.env.ROOT_URL === 'http://localhost:3000' ? 'https://sparc.science' : process.env.ROOT_URL,
     }
   },
   fixturesFolder: "tests/cypress/fixtures",
