@@ -119,14 +119,19 @@ browseCategories.forEach((category) => {
       if (pageLimit === 'View All') {
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
-          // Check for limit change in URL
-          cy.url().should('contain', `limit=${numberOfDatasets}`)
-          cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+          if (pageLimit === 'View All') {
+            // Check for limit change in URL
+            cy.url().should('contain', `limit=${numberOfDatasets}`)
+            cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+          } else {
+            cy.url().should('contain', `limit=${pageLimit}`)
+            if (numberOfDatasets < pageLimit) {
+              cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+            } else {
+              cy.get('.el-table__row', { timeout: 30000 }).should('have.length', pageLimit)
+            }
+          }
         })
-      } else {
-        // Check for limit change in URL
-        cy.url().should('contain', `limit=${pageLimit}`)
-        cy.get('.el-table__row', { timeout: 30000 }).should('have.length', pageLimit)
       }
     })
 
