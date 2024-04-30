@@ -36,10 +36,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-
-      cy.waitForLoadingMask()
-
       if (model !== 'Rat') {
+        
+        cy.waitForLoadingMask()
+
         // Switch to the second flatmap
         cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
         cy.get('.el-select-dropdown__item').should('be.visible')
