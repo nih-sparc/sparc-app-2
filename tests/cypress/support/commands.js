@@ -111,3 +111,10 @@ Cypress.Commands.add('redirectDOILink', (target) => {
   }
   clickLink()
 })
+
+Cypress.Commands.add('waitForLoadingMask', () => {
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+  cy.wait(5000)
+  
+})

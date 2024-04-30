@@ -36,8 +36,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model) => {
 
     it(`Provenance card for ${model}`, function () {
-      // Loading mask should not exist after the new flatmap is loaded
-      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+      cy.waitForLoadingMask()
 
       if (model !== 'Rat') {
         // Switch to the second flatmap
@@ -48,8 +48,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       cy.wait('@flatmap', { timeout: 20000 })
 
-      // Loading mask should not exist after the new flatmap is loaded
-      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+      cy.waitForLoadingMask()
 
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
@@ -63,8 +62,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    // Loading mask should not exist after the default flatmap is loaded
-    cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+    cy.waitForLoadingMask()
 
     // Switch to the human related flatmap
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
@@ -72,8 +71,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
     cy.wait('@flatmap', { timeout: 20000 })
 
-    // Loading mask should not exist after the new flatmap is loaded
-    cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+    cy.waitForLoadingMask()
 
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
@@ -112,8 +110,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-      // Loading mask should not exist after the default flatmap is loaded
-      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+      cy.waitForLoadingMask()
 
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
@@ -125,7 +123,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       cy.wait('@query', { timeout: 20000 })
 
-      cy.wait(5000)
+      cy.waitForLoadingMask()
 
       cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
         const noResult = $result.text() === '0 results | Showing'
@@ -137,24 +135,17 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
           cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
 
-          // Loading mask should not exist after the scaffold is loaded
-          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
           // Check for search result and the tag 'Scaffold'
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(datasetId).should('exist')
           cy.get('.dataset-card-container > .dataset-card').filter(`:contains(${datasetId})`).within(() => {
             cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
             cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
-
-          // Loading mask should not exist after the scaffold is loaded
-          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
           
           // Check for button text
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
 
-          // Loading mask should not exist after the scaffold is loaded
-          cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+          cy.waitForLoadingMask()
 
           // Check for context card
           cy.get('.context-card').should('be.visible')

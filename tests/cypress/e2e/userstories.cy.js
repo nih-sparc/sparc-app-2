@@ -116,8 +116,7 @@ describe('User stories', function () {
 
             cy.get('@datasetCards').contains(/View Scaffold/i).click();
 
-            // Loading mask should not exist after the scaffold is loaded
-            cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist');
+            cy.waitForLoadingMask()
 
             // Check for context card
             cy.get('.context-card').should('be.visible');
