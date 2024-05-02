@@ -67,7 +67,7 @@ export default {
                 'rgba(131, 0, 191, .5)',
               ],
               borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.pageViewsData.lastMonth
+              data: behaviors.pageViewsData?.lastMonth
             },
             { 
               label: 'Last Quarter',
@@ -80,7 +80,7 @@ export default {
                 'rgba(188, 0, 252, .25)',
               ],
               borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.pageViewsData.last3Months
+              data: behaviors.pageViewsData?.last3Months
             }
           ]
         }
@@ -94,7 +94,7 @@ export default {
                 'rgba(131, 0, 191, .5)',
               ],
               borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.usersData.lastMonth
+              data: behaviors.usersData?.lastMonth
             },
             { 
               label: 'Last Quarter',
@@ -103,7 +103,7 @@ export default {
                 'rgba(188, 0, 252, .25)',
               ],
               borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.usersData.last3Months
+              data: behaviors.usersData?.last3Months
             }
           ]
         }

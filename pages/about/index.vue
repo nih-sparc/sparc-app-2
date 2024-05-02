@@ -210,7 +210,7 @@ export default {
         subData: `(${metrics.downloadsLastMonth} last month)`
       }, {
         title: 'Dataset Contributors',
-        data: metrics.totalContributors.toString(),
+        data: metrics.totalContributors?.toString(),
         subData: `(${metrics.newContributors} new in the last month)`
       }]
     }))
