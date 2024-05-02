@@ -31,7 +31,6 @@ import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
 import flatmaps from '@/services/flatmaps'
 import Uberons from '@/static/js/uberon-map.js'
-import ErrorMessages from '@/mixins/error-messages'
 import Gallery from '@/components/Gallery/Gallery.vue'
 
 import FormatString from '@/mixins/format-string'

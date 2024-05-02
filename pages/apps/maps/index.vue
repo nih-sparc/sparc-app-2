@@ -14,12 +14,8 @@
       </p>
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
-      <client-only placeholder="Loading components...">
-        <div class="mapClass">
-          <map-content class="map" ref="map" :state="state" :starting-map="startingMap" :options="options"
-            :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="mapMounted" />
-        </div>
-      </client-only>
+      <MapViewer class="mapviewer" ref="mapviewer" :state="state" :starting-map="startingMap" :options="options"
+        :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="mapMounted" />
     </div>
   </div>
 </template>
@@ -30,8 +26,6 @@ import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
-
-import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 
 import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
@@ -298,9 +292,6 @@ const openViewWithQuery = async (route, $axios, sparcApi, algoliaIndex, discover
 
 export default {
   name: 'MapsPage',
-  components: {
-    PortalFeatures,
-  },
   async setup() {
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
@@ -415,7 +406,7 @@ export default {
   methods: {
     updateUUID: function () {
       let url = this.options.sparcApi + `map/getshareid`
-      let state = this.$refs.map.getState()
+      let state = this._instance.getState()
       fetch(url, {
         method: 'POST',
         headers: {
@@ -432,14 +423,15 @@ export default {
         })
     },
     facetsUpdated: function () {
-      if (this.facets.length > 0 && this.$refs.map) this.$refs.map.openSearch(this.facets, "")
+      if (this.facets.length > 0 && this._instance) this._instance.openSearch(this.facets, "")
     },
     currentEntryUpdated: function () {
-      if (this.$refs.map && this.currentEntry) {
-        this.$refs.map.setCurrentEntry(this.currentEntry)
+      if (this._instance && this.currentEntry) {
+        this._instance.setCurrentEntry(this.currentEntry)
       }
     },
     mapMounted: function () {
+      this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
     },
@@ -484,59 +476,6 @@ export default {
 
 <style lang="scss">
 //@import 'sparc-design-system-components-2/src/assets/_variables.scss';
-@import '@abi-software/mapintegratedvuer/dist/style.css';
 @import '@abi-software/mapintegratedvuer/src/assets/mapicon-species-style.css';
 
-
-.mapClass {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border: solid 1px #dcdfe6;
-  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
-
-  .map-icon {
-    color: #8300bf !important;
-  }
-
-  .background-popper.el-popover.el-popper,
-  .open-map-popper.el-popover.el-popper {
-    background: #fff !important;
-    width: unset !important;
-  }
-
-  .pathway-container {
-    .container {
-      padding-left: 0px;
-    }
-  }
-
-  .el-popover.right-popper {
-    .popper__arrow {
-      border-top-color: transparent !important;
-      border-bottom-color: transparent !important;
-    }
-  }
-}
-
-.gallery-popper {
-  background: #f3ecf6 !important;
-  border: 1px solid #8300bf;
-  border-radius: 4px;
-  color: #303133 !important;
-  font-size: 12px;
-  line-height: 1rem;
-  height: 1rem;
-  padding: 10px;
-
-  &.el-popper[x-placement^='top'] {
-    .popper__arrow {
-      border-top-color: #8300bf !important;
-    }
-
-    .popper__arrow:after {
-      border-top-color: #f3ecf6 !important;
-    }
-  }
-}
 </style>

@@ -773,12 +773,19 @@ export default {
           .then(response => response.text())
           .then(response => {
             this.loadingMarkdown = false
-            const splitDelim = '\n\n---'
-            const splitResponse = response.split(splitDelim)
+            const splitDelim = '\\n---'
+            let splitResponse = response.split(splitDelim)
+            splitResponse = splitResponse.map(i => {
+              if (i < splitResponse.length - 1) {
+                return `${i}${splitDelim}`
+              } else {
+                return `${i}`
+              }
+            })
             this.markdown = {
-              markdownTop: splitResponse[0],
+              markdownTop: splitResponse[0].toString(),
               markdownBottom: splitResponse[1]
-                ? splitDelim + splitResponse[1]
+                ? splitResponse.slice(1).toString()
                 : ''
             }
           })

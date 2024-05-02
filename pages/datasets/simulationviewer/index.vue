@@ -8,7 +8,7 @@
       >
         <client-only placeholder="Loading simulation ...">
           <div class="simulation-vuer-container">
-            <simulation-vuer :apiLocation="apiLocation" :id="id" />
+            <simulation-viewer :apiLocation="apiLocation" :id="id" />
           </div>
         </client-only>
       </content-tab-card>
@@ -37,11 +37,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-@import '@abi-software/simulationvuer/dist/style.css';
-.simulation-vuer-container {
-  min-height: 24px;
-  overflow: hidden;
-}
-</style>
