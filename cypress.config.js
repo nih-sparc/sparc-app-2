@@ -32,8 +32,6 @@ export default defineConfig({
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
       SEARCH_IN_MAP: process.env.SEARCH_IN_MAP ? process.env.SEARCH_IN_MAP : 'Heart',
       SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '150, 155',
-      // redirect
-      REDIRECT_TARGET: process.env.ROOT_URL === 'http://localhost:3000' ? 'https://sparc.science' : null,
     }
   },
   fixturesFolder: "tests/cypress/fixtures",

@@ -96,25 +96,9 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
   clickNeuron()
 })
 
-Cypress.Commands.add('redirectDOILink', (target) => {
-  const clickLink = () => {
-    if (target) {
-      // When root url is localhost
-      cy.origin(target, () => {
-        cy.url().should('contain', 'version')
-        cy.go('back')
-      })
-    } else {
-      cy.url().should('contain', 'version')
-      cy.go('back')
-    }
-  }
-  clickLink()
-})
-
 Cypress.Commands.add('waitForLoadingMask', () => {
   cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
   cy.wait(5000)
-  
+
 })

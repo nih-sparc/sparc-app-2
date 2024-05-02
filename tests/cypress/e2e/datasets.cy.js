@@ -3,8 +3,6 @@
  */
 const datasetIds = Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
 
-const redirectTarget = Cypress.env('REDIRECT_TARGET')
-
 datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
@@ -17,6 +15,81 @@ datasetIds.forEach(datasetId => {
       cy.intercept('**/knowledge/query/**').as('flatmap')
       cy.intercept('**/query?**').as('query')
     })
+
+    it("Landing page", function () {
+
+      cy.waitForLoadingMask()
+
+      // Should display image with correct dataset src
+      cy.get('.dataset-image', { timeout: 30000 }).should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
+
+      // Check for tooltip when hover over author 
+      cy.get('.dataset-owners > :nth-child(2) > .contributor-item').then(($orcid) => {
+        if ($orcid.hasClass('has-orcid')) {
+          cy.wrap($orcid).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+          //only one visible popover
+          cy.get('.orcid-popover:visible').should('have.length', 1)
+        }
+      })
+
+      // DOI link should link to page with correct version
+      cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
+        const version = value.match(/[0-9]+/i)[0]
+        cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+          cy.request(href).then((resp) => {
+            expect(resp.status).to.eq(200);
+            expect(resp.body).to.include(`datasets/${datasetId}/version/${version}`);
+          })
+        })
+      });
+
+      // Wait for the link in the clicked name
+      cy.wait(5000)
+
+      // Should search for contributor in find data page
+      cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
+        cy.wrap($name).click()
+
+        cy.wait('@query', { timeout: 20000 })
+
+        cy.waitForLoadingMask()
+
+        // Check for result
+        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+
+        let datasetShowUp = false
+        cy.get('.img-dataset > img').each(($img) => {
+          cy.wrap($img).invoke('attr', 'src').then((src) => {
+            datasetShowUp = datasetShowUp || src.includes(datasetId)
+          })
+        }).then(() => {
+          if (!datasetShowUp) {
+            throw new Error("Can not find the dataset for current contributor")
+          }
+        })
+
+        // Check for URL and search input
+        cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
+        cy.get('.el-input__inner').should('have.value', $name.text());
+        cy.go('back')
+      });
+
+      // Check 'View other version' directs to Versions tab
+      cy.get('.dataset-information-box > div').contains('View other versions').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
+      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
+
+      //Check 'Get Dataset' directs to files tab
+      cy.contains('.button-container span', 'Get Dataset').click()
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
+      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
+
+      //Check 'Cite Dataset' directs to Cite tab
+      cy.contains('.button-container span', 'Cite Dataset').click()
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
+      cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
+    });
 
     it("Gallery Tab", function () {
       // Should switch to 'Gallery'
@@ -57,77 +130,6 @@ datasetIds.forEach(datasetId => {
           cy.wrap($content).contains(/There was an error loading the gallery items|This dataset does not contain gallery items/);
         }
       });
-    });
-
-    it("Landing page", function () {
-      // Should display image with correct dataset src
-      cy.get('.dataset-image').should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
-
-      // Check for tooltip when hover over author 
-      cy.get('.dataset-owners > :nth-child(2) > .contributor-item').then(($orcid) => {
-        if ($orcid.hasClass('has-orcid')) {
-          cy.wrap($orcid).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-          //only one visible popover
-          cy.get('.orcid-popover:visible').should('have.length', 1)
-        }
-      })
-
-      // Should reload the page
-      cy.get('.dataset-information-box > :nth-child(2) > a').click()
-      cy.redirectDOILink(redirectTarget)
-      // cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-      //   cy.request(href).then((resp) => {
-      //     expect(resp.status).to.eq(200);
-      //     expect(resp.body).to.include(`datasets/${datasetId}/version`);
-      //   })
-      // });
-
-      // Wait for the link in the clicked name
-      cy.wait(5000)
-
-      // Should search for contributor in find data page
-      cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
-        cy.wrap($name).click()
-
-        cy.wait('@query', { timeout: 20000 })
-
-        cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-        // Check for result
-        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
-        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
-        let datasetShowUp = false
-        cy.get('.img-dataset > img').each(($img) => {
-          cy.wrap($img).invoke('attr', 'src').then((src) => {
-            datasetShowUp = datasetShowUp || src.includes(datasetId)
-          })
-        }).then(() => {
-          if (!datasetShowUp) {
-            throw new Error("Can not find the dataset for current contributor")
-          }
-        })
-
-        // Check for URL and search input
-        cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
-        cy.get('.el-input__inner').should('have.value', $name.text());
-        cy.go('back')
-      });
-
-      // Check 'View other version' directs to Versions tab
-      cy.get('.dataset-information-box > div').contains('View other versions').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
-      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
-
-      //Check 'Get Dataset' directs to files tab
-      cy.contains('.button-container span', 'Get Dataset').click()
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
-      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
-
-      //Check 'Cite Dataset' directs to Cite tab
-      cy.contains('.button-container span', 'Cite Dataset').click()
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
-      cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
     });
 
     it("Abstract Tab", function () {
@@ -318,19 +320,8 @@ datasetIds.forEach(datasetId => {
           cy.get('.dataset-references .heading2').contains('Associated Publications for this Dataset');
           cy.get('.dataset-references .citation-container').each(($el) => {
             cy.wrap($el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
-
-            /**
-             * ============================================================================
-             * Temporarily disable the copy testing, 'document not focused issue' may occur
-             */
-
-            // cy.wrap($el).find('.copy-button').click();
-            // cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
-
-            /**
-             * ============================================================================
-             */
-
+            cy.wrap($el).find('.copy-button').click();
+            cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
           });
 
           // Check if redundant doi exist
@@ -390,17 +381,18 @@ datasetIds.forEach(datasetId => {
             }
           })
 
-          // DOI link should reload page with correct version
-          cy.get(':nth-child(2) > .el-col-push-1 > a').click()
-          cy.redirectDOILink(redirectTarget)
-          // cy.get('.el-col-push-1 > a').each(($link) => {
-          //   cy.wrap($link).should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-          //     cy.request(href).then((resp) => {
-          //       expect(resp.status).to.eq(200);
-          //       expect(resp.body).to.include(`datasets/${datasetId}/version`);
-          //     })
-          //   });
-          // })
+          // DOI link should link to page with correct version
+          cy.get('.version-table > .table-rows').each(($row) => {
+            cy.wrap($row).children('.el-col-pull-1').invoke('text').then((value) => {
+              const version = value.match(/[0-9]+/i)[0]
+              cy.wrap($row).children('.el-col-push-1').children('a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+                cy.request(href).then((resp) => {
+                  expect(resp.status).to.eq(200);
+                  expect(resp.body).to.include(`datasets/${datasetId}/version/${version}`);
+                })
+              });
+            })
+          })
         }
       });
     });
