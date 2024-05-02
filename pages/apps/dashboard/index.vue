@@ -1,7 +1,12 @@
 <template>
     <SparcDashboard />
 </template>
-<script setup>
-  import SparcDashboard from "@/TestDashboard/src/components/SparcDashboard.vue"
+<script>
+import SparcDashboard from "@/TestDashboard/src/components/SparcDashboard.vue"
+export default {
+  name: 'SparcDashboardPage',
+  components: {
+    SparcDashboard
+  }
+}
 </script>
-<style scoped lang="scss"></style>
