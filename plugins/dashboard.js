@@ -6,7 +6,6 @@ const emitter = mitt();
 
 const componentMap = [
     'ImageSelector',
-    'LocationNav',
     'FlatmapViewer',
     'BiolucidaViewer',
     'QDBChart'
