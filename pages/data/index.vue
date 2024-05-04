@@ -272,35 +272,31 @@ export default {
 
     let projectsAnatomicalFocusFacets = []
     let projectsFundingFacets = []
-    await $contentfulClient.getEntries({
-        content_type: 'awardSection',
-      })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields','title'], item)
-          facetData.push({
-            label: label,
-            id: label,
-          })
-        })
-        projectsAnatomicalFocusFacets = facetData
-      })
       await $contentfulClient.getContentType('sparcAward').then(contentType => {
-      contentType.fields.forEach((field) => {
-        if (field.name === 'Funding') {
-          let fundingItems = field.items?.validations[0]['in']
-          let facetData = []
-          fundingItems.forEach(itemLabel => {
-            facetData.push({
-              label: itemLabel,
-              id: itemLabel,
+        contentType.fields.forEach((field) => {
+          if (field.name === 'Funding') {
+            let fundingItems = field.items?.validations[0]['in']
+            let facetData = []
+            fundingItems.forEach(itemLabel => {
+              facetData.push({
+                label: itemLabel,
+                id: itemLabel,
+              })
             })
-          })
-          projectsFundingFacets = facetData
-        }
-      })
+            projectsFundingFacets = facetData
+          }
+          if (field.name === 'Focus') {
+            let focusItems = field.items?.validations[0]['in']
+            let facetData = []
+            focusItems.forEach(itemLabel => {
+              facetData.push({
+                label: itemLabel,
+                id: itemLabel,
+              })
+            })
+            projectsAnatomicalFocusFacets = facetData
+          }
+        })
       })
     const searchType = searchTypes.find(searchType => {
       return searchType.type == route.query.type
@@ -642,13 +638,11 @@ export default {
       var sortOrder = undefined
       var anatomicalFocus = undefined
       var funding = undefined
-      var linkedEntriesTargetType = undefined
       if (this.$route.query.type === "projects") {
         contentType = 'sparcAward'
         sortOrder = this.selectedProjectsSortOption.sortOrder
         anatomicalFocus = this.$refs.projectsFacetMenu?.getSelectedAnatomicalFocusTypes()
         funding = this.$refs.projectsFacetMenu?.getSelectedFundingTypes()
-        linkedEntriesTargetType = 'awardSection'
       }
       if (contentType === undefined) {
         this.isLoadingSearch = false
