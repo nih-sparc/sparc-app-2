@@ -20,10 +20,11 @@
     "sitemap": "^7.1.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "^0.7.0-vue3.9",
-    "@abi-software/plotvuer": "0.4.0-vue-3-alpha.10",
-    "@abi-software/simulationvuer": "0.7.0-vue-3-alpha.5",
+    "@abi-software/mapintegratedvuer": "1.0.2",
+    "@abi-software/plotvuer": "1.0.0",
+    "@abi-software/simulationvuer": "1.0.0",
     "@element-plus/nuxt": "^1.0.6",
+    "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
     "algoliasearch": "^4.19.1",

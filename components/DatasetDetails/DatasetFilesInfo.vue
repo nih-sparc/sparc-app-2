@@ -108,21 +108,34 @@
             <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
-            <div class="heading3">Resource Type</div>
-            <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
-            <div class="download-text-block mb-8 p-4">
-              {{ datasetArn }}
-              <button class="copy-button" @click="handleCitationCopy(datasetArn)">
-                <img src="../../static/images/copyIcon.png" />
-              </button>
-            </div>
-            <div class="heading3 mb-0">AWS Region</div>
-            <div class="download-text-block p-4 aws">
-              {{ awsMessage}}
-              <button class="copy-button" @click="handleCitationCopy(awsMessage)">
-                <img src="../../static/images/copyIcon.png" />
-              </button>
-            </div>
+            <template v-if="isLatestVersion || !showRehydrationFeature">
+              <div class="heading3">Resource Type</div>
+              <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
+              <div class="download-text-block mb-8 p-4">
+                {{ datasetArn }}
+                <button class="copy-button" @click="handleCitationCopy(datasetArn)">
+                  <img src="../../static/images/copyIcon.png" />
+                </button>
+              </div>
+              <div class="heading3 mb-0">AWS Region</div>
+              <div class="download-text-block p-4 aws">
+                {{ awsMessage}}
+                <button class="copy-button" @click="handleCitationCopy(awsMessage)">
+                  <img src="../../static/images/copyIcon.png" />
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="label4">
+                Requesting Access to Download from AWS
+              </div>
+              <p>
+                In order to request access to download this dataset, we ask that you please submit a rehydration request. This button will take you to a form where you can submit your request.
+              </p>
+              <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
+                Request Rehydration
+              </el-button>
+            </template>
           </div>
           <div>
             * Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
@@ -159,6 +172,13 @@
     <login-modal
       :show-dialog="showLoginDialog"
       @dialog-closed="showLoginDialog = false"
+    />
+    <rehydration-modal
+      v-model="showRehydrationModal"
+      append-to-body
+      @close-rehydration-dialog="showRehydrationModal = false"
+      :version="versionId"
+      :dataset-id="datasetId"
     />
   </div>
 </template>
@@ -258,6 +278,9 @@ export default {
     versionId: function() {
       return propOr(0, 'version', this.datasetInfo)
     },
+    isLatestVersion() {
+      return this.versionId == this.datasetInfo.latestVersion
+    },
     /**
      * Computes the API url for downloading a dataset
      * @returns {String}
@@ -276,6 +299,9 @@ export default {
         return metacellUrl.toString()
       }
       return null
+    },
+    showRehydrationFeature() {
+      return this.$config.public.SHOW_REHYDRATION_FEATURE == 'true'
     }
   },
 
@@ -284,6 +310,7 @@ export default {
       awsMessage: 'us-east-1',
       showAgreementPopup: false,
       showLoginDialog: false,
+      showRehydrationModal: false,
       agreementId: null
     }
   },

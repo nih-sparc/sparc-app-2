@@ -2,55 +2,58 @@
   <div ref="myButton" class="gallery">
     <div class="resources-gallery-strip">
       <div class="card-line">
-        <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
-          <template v-if="item">
-            <component
-              v-if="galleryItemType === 'resources'"
-              :is="galleryItemComponent"
-              :width="cardWidth"
-              :key="item.sys.id"
-              :title="item.fields.name"
-              :subtitle="item.fields.resourceType.join(', ')"
-              :showSparcTag="item.fields.developedBySparc"
-              :description="item.fields.description"
-              :thumbnail-url="item.fields.logo.fields.file.url"
-              :button-link="`/resources/${item.sys.id}`"
-              :external-url="item.fields.url"
-              @card-clicked="cardClicked"
-            />
-            <component
-              v-else-if="galleryItemType === 'metrics'"
-              :is="galleryItemComponent"
-              :width="cardWidth"
-              :key="item.title"
-              :title="item.title"
-              :data="item.data"
-              :subData="item.subData"
-            />
-            <component
-              v-else-if="galleryItemType === 'highlights'"
-              :is="galleryItemComponent"
-              :width="cardWidth"
-              :key="item.sys.id"
-              :item="item"
-            />
-            <component
-              v-else-if="galleryItemType === 'datasets'"
-              :is="galleryItemComponent"
-              :width="cardWidth"
-              :key="item.objectID"
-              :item="item"
-            />
-            <component
-              v-else-if="galleryItemType === 'fileViewer'"
-              :is="galleryItemComponent"
-              :data="item"
-              :width="cardWidth"
-              show-card-details
-              @card-clicked="cardClicked"
-            />
-          </template>
-        </span>
+        <!--template needed in order to force windowedItems to recompute when items changes-->
+        <template v-if="items.length">
+          <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
+            <template v-if="item">
+              <component
+                v-if="galleryItemType === 'resources'"
+                :is="galleryItemComponent"
+                :width="cardWidth"
+                :key="item.sys.id"
+                :title="item.fields.name"
+                :subtitle="item.fields.resourceType.join(', ')"
+                :showSparcTag="item.fields.developedBySparc"
+                :description="item.fields.description"
+                :thumbnail-url="item.fields.logo.fields.file.url"
+                :button-link="`/resources/${item.sys.id}`"
+                :external-url="item.fields.url"
+                @card-clicked="cardClicked"
+              />
+              <component
+                v-else-if="galleryItemType === 'metrics'"
+                :is="galleryItemComponent"
+                :width="cardWidth"
+                :key="item.title"
+                :title="item.title"
+                :data="item.data"
+                :subData="item.subData"
+              />
+              <component
+                v-else-if="galleryItemType === 'highlights'"
+                :is="galleryItemComponent"
+                :width="cardWidth"
+                :key="item.sys.id"
+                :item="item"
+              />
+              <component
+                v-else-if="galleryItemType === 'datasets'"
+                :is="galleryItemComponent"
+                :width="cardWidth"
+                :key="item.intId"
+                :item="item"
+              />
+              <component
+                v-else-if="galleryItemType === 'fileViewer'"
+                :is="galleryItemComponent"
+                :data="item"
+                :width="cardWidth"
+                show-card-details
+                @card-clicked="cardClicked"
+              />
+            </template>
+          </span>
+        </template>
       </div>
     </div>
     <pagination  v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex" :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked"/>

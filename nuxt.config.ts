@@ -56,7 +56,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@zadigetvoltaire/nuxt-gtm',
-    '@nuxtjs/turnstile'
+    '@nuxtjs/turnstile',
+    '@nuxtjs/sitemap'
   ],
   turnstile: {
     siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
@@ -176,6 +177,7 @@ export default defineNuxtConfig({
       PENNSIEVE_URL: process.env.PENNSIEVE_URL || 'https://app.pennsieve.io',
       INTERNAL_TRAFFIC_KEY: process.env.INTERNAL_TRAFFIC_KEY || 'internal_traffic',
       INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
+      SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
@@ -197,4 +199,9 @@ export default defineNuxtConfig({
   ** Global CSS
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
+  sitemap: {
+    xslColumns: [
+      { label: 'URL', width: '100%' }
+    ],
+  },
 })

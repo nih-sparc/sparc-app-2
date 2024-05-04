@@ -124,8 +124,9 @@
               <template v-for="datasetSubmission in datasetSubmissions" :key="datasetSubmission.id">
                 <div class="resource-container row">
                   <span class="body1 left-col mr-16">
-                    <div class="link1 submission-name" v-on:click="submissionNameClicked(datasetSubmission)">{{
-                      datasetSubmission.name }}</div>
+                    <a class="link1 submission-name" :href="getSubmissionLink(datasetSubmission)">
+                      {{ datasetSubmission.name }}
+                    </a>
                     <div v-if="isDraft(datasetSubmission)" class="body4">
                       Updated: {{ getUpdatedDate(datasetSubmission) }}
                     </div>
@@ -244,6 +245,27 @@ export default {
       organizations: [],
     }
   },
+  async setup() {
+    const config = useRuntimeConfig()
+    const { $axios } = useNuxtApp()
+    let downloadsSummary = 0
+
+    try {
+      const startDate = new Date('2000', '1');
+      const currentDate = new Date()
+      const url = `${config.public.LOGIN_API_URL}/discover/metrics/dataset/downloads/summary`
+      downloadsSummary = await $axios.get(url, {
+        params: { startDate: startDate, endDate: currentDate }
+      }).then(({ data }) => {
+        return data
+      })
+    } catch (error) {
+      return 0
+    }
+    return {
+      downloadsSummary
+    }
+  },
   head() {
     return {
       title: this.title,
@@ -303,9 +325,9 @@ export default {
       this.datasets = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
         filters: filter,
         hitsPerPage: 999
-      }).then(async ({ hits }) => {
+      }).then(({ hits }) => {
         let items = []
-        await hits.forEach(async hit => {
+        hits.forEach(async hit => {
           const datasetName = pathOr('', ['item', 'name'], hit)
           const datasetId = propOr('', 'objectID', hit)
           const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
@@ -351,16 +373,13 @@ export default {
         })
     },
     async getCitationsCount(id) {
-      try {
-        const headers = { 'Authorization': `Bearer ${this.userToken}` }
-        const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
-        return this.$axios.get(url, { headers }).then(({ data }) => {
-          let numCitations = propOr('0', 'length', data)
-          return numCitations
-        })
-      } catch (error) {
+      const headers = { 'Authorization': `Bearer ${this.userToken}` }
+      const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
+      return await this.$axios.get(url, { headers }).then(({ data }) => {
+        return propOr('0', 'length', data)
+      }).catch(() => {
         return 0
-      }
+      })
     },
     async fetchOrganizations() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
@@ -426,18 +445,8 @@ export default {
       this.datasetSubmissionDisabled = false
       this.showDatasetSubmissionModal = true
     },
-    submissionNameClicked(submission) {
-      this.datasetSubmissionDisabled = true
-      let form = {
-        detailedDescription: submission.description,
-        shortDescription: submission.name
-      }
-      this.questions.forEach(question => {
-        const key = question.id
-        form[key] = submission.survey?.find(question => question.questionId == key).response || ''
-      })
-      this.defaultForm = form
-      this.showDatasetSubmissionModal = true
+    getSubmissionLink(submission) {
+      return `${this.$config.public.PENNSIEVE_URL}/${submission.organizationNodeId}/datasets/${submission.datasetNodeId}`
     },
     submitDraft(nodeId) {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
