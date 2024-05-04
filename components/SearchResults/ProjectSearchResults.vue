@@ -27,11 +27,11 @@
         />
         <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)"/>
         <table class="property-table">
-          <tr v-if="scope.row.fields.projectSection">
+          <tr v-if="scope.row.fields.focus">
             <td class="property-name-column">
               Focus
             </td>
-            <td v-html="highlightMatches(scope.row.fields.projectSection.fields.title, $route.query.search)"/>
+            <td v-html="highlightMatches(scope.row.fields.focus.join(), $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
