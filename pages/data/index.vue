@@ -661,9 +661,7 @@ export default {
             limit: this.searchData.limit,
             skip: this.searchData.skip,
             order: sortOrder,
-            include: 2,
-            'fields.projectSection.sys.contentType.sys.id': linkedEntriesTargetType,
-            'fields.projectSection.fields.title[in]': anatomicalFocus,
+            'fields.focus[in]': anatomicalFocus,
             'fields.program[in]': funding
           })
           .then(async response => {

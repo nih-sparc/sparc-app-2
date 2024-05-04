@@ -14,12 +14,12 @@
             </div>
             <hr />
             <div class="body1">
-              <template v-if="projectSection">
+              <template v-if="focus">
                 <div class="label4">
                   FOCUS
                 </div>
                 <div class="mb-16">
-                  {{ projectSection }}
+                  {{ focus }}
                 </div>
               </template>
               <template v-if="investigator">
@@ -210,10 +210,8 @@ export default {
      * Compute subtitle based on its project section
      * @returns {String}
      */
-    projectSection: function() {
-      return this.fields.projectSection
-        ? this.fields?.projectSection.fields.title
-        : ''
+    focus: function() {
+      return propOr([], 'focus', this.fields).join(", ")
     },
     showAssociatedDatasets: function() {
       return !isEmpty(this.associatedDatasets)
