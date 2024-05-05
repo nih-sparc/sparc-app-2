@@ -40,40 +40,21 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
-            <el-col
-              class="facet-menu"
-              :sm="24"
-              :md="8"
-              :lg="6"
-            >
-              <dataset-facet-menu
-                :facets="facets"
-                :visible-facets="visibleFacets"
-                @selected-facets-changed="onFacetSelectionChange()"
-                @hook:mounted="facetMenuMounted"
-                ref="datasetFacetMenu"
-              />
+            <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
+              <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
+                @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                ref="datasetFacetMenu" />
             </el-col>
-            <el-col
-              :sm="searchColSpan('sm')"
-              :md="searchColSpan('md')"
-              :lg="searchColSpan('lg')"
-            >
+            <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
               <div class="search-heading">
                 <p v-show="!isLoadingSearch && searchData.items.length">
                   {{ searchData.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
-                  />
+                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
                 </p>
                 <span v-if="searchData.items.length" class="label1">
                   Sort
-                  <sort-menu
-                    :options="algoliaSortOptions"
-                    :selected-option="selectedAlgoliaSortOption"
-                    @update-selected-option="onAlgoliaSortOptionChange"
-                  />
+                  <sort-menu :options="algoliaSortOptions" :selected-option="selectedAlgoliaSortOption"
+                    @update-selected-option="onAlgoliaSortOptionChange" />
                 </span>
               </div>
               <div v-loading="isLoadingSearch" class="table-wrap">
@@ -81,9 +62,7 @@
                   Sorry, the search engine has encountered an unexpected
                   error, please try again later.
                 </p>
-                <dataset-search-results
-                  :tableData="tableData"
-                />
+                <dataset-search-results :tableData="tableData" />
                 <div v-if="searchHasAltResults" class="mt-24">
                   <template v-if="searchData.total === 0">
                     No results were found for <strong>{{ searchType.label }}</strong>.
@@ -93,18 +72,15 @@
                   <br />
                   <template v-for="dataType in dataTypes">
                     <dd v-if="resultCounts[dataType] > 0" :key="dataType">
-                      <nuxt-link
-                        class="alternative-links"
-                        :to="{
+                      <nuxt-link class="alternative-links" :to="{
                           name: 'data',
                           query: {
                             ...$route.query,
                             type: dataType
                           }
-                        }"
-                      >
+                        }">
                         {{ resultCounts[dataType] }} result{{
-                          resultCounts[dataType] > 1 ? 's' : ''
+                        resultCounts[dataType] > 1 ? 's' : ''
                         }}
                       </nuxt-link>
                       - {{ humanReadableDataTypesLookup[dataType] }}
@@ -115,18 +91,10 @@
               <div class="search-heading">
                 <p v-if="!isLoadingSearch && searchData.items.length">
                   {{ searchHeading }} | Showing
-                  <pagination-menu
-                    :page-size="searchData.limit"
-                    @update-page-size="updateDataSearchLimit"
-                  />
+                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
                 </p>
-                <pagination
-                  v-if="searchData.limit < searchData.total"
-                  :selected="curSearchPage"
-                  :page-size="searchData.limit"
-                  :total-count="searchData.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                  :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
               </div>
             </el-col>
           </el-row>
@@ -293,7 +261,7 @@ export default {
   },
 
   computed: {
-    searchType: function() {
+    searchType: function () {
       const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
       const searchType = this.searchTypes.find(searchType => {
         return searchType.type == searchTypeQuery
@@ -302,19 +270,19 @@ export default {
       return defaultTo(head(this.searchTypes), searchType)
     },
 
-    tableData: function() {
+    tableData: function () {
       return propOr([], 'items', this.searchData)
     },
 
-    searchResultsComponent: function() {
+    searchResultsComponent: function () {
       return defaultTo('', searchResultsComponents[this.$route.query.type])
     },
 
-    curSearchPage: function() {
+    curSearchPage: function () {
       return this.searchData.skip / this.searchData.limit + 1
     },
 
-    searchHeading: function() {
+    searchHeading: function () {
       const query = pathOr('', ['query', 'search'], this.$route)
 
       const searchType = this.searchTypes.find(searchType => {
@@ -327,17 +295,17 @@ export default {
       return query === '' ? searchHeading : `${searchHeading} for “${query}”`
     },
 
-    search: function() {
+    search: function () {
       return this.$route.query.search || ''
     },
 
-    isMobile: function() {
+    isMobile: function () {
       return this.windowWidth <= 500
     }
   },
 
   watch: {
-    '$route.query.type': function(val) {
+    '$route.query.type': function (val) {
       if (!this.$route.query.type) {
         return
       } else {
@@ -352,7 +320,7 @@ export default {
     },
 
     '$route.query.search': {
-      handler: function() {
+      handler: function () {
         this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
@@ -360,24 +328,24 @@ export default {
     },
 
     '$route.query.datasetSort': {
-      handler: function() {
+      handler: function () {
         this.fetchResults()
       },
       immediate: true
     },
 
     selectedAlgoliaSortOption: {
-      handler: function(option) {
+      handler: function (option) {
         this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
       },
       immediate: true
     }
   },
 
-  beforeMount: function() {
+  beforeMount: function () {
     this.windowWidth = window.innerWidth
   },
-  mounted: function() {
+  mounted: function () {
     if (!this.$route.query.type) {
       const firstTabType = compose(propOr('', 'type'), head)(searchTypes)
       this.$router.replace({ query: { type: firstTabType } })
@@ -398,7 +366,7 @@ export default {
   },
 
   methods: {
-    updateDataSearchLimit: function(limit) {
+    updateDataSearchLimit: function (limit) {
       this.searchData.skip = 0
 
       const newLimit = limit === 'View All' ? this.searchData.total : limit
@@ -410,11 +378,11 @@ export default {
       this.fetchResults()
     },
 
-    facetMenuMounted: function() {
+    facetMenuMounted: function () {
       this.fetchResults()
     },
 
-    fetchResults: function() {
+    fetchResults: function () {
       this.isLoadingSearch = true
       this.searchFailed = false
       const query = this.$route.query.search
@@ -483,7 +451,7 @@ export default {
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
     //    when a search returns 0 results
-    alternativeSearchUpdate: function() {
+    alternativeSearchUpdate: function () {
       const searchTypeInURL = pathOr('dataset', ['query', 'type'], this.$route) // Get current data type
 
       this.searchHasAltResults = false
@@ -498,32 +466,28 @@ export default {
     },
 
     //  searchContentsCheck(searchType): Takes in a search type and returns the number of datasets found with the current filters
-    searchContentsCheck: function(searchType) {
+    searchContentsCheck: function (searchType) {
       const query = this.$route.query.search
 
-      if (searchType !== 'projects'){
-
-        // Alogilia searches
-        const datasetsFilter =
-          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
-            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
+      const datasetsFilter =
+        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
             : "item.types.name:Dataset"
 
-        var filters = this.$refs.datasetFacetMenu?.getFilters()
-        filters = filters === undefined ?
-          `${datasetsFilter}` :
-          filters + ` AND ${datasetsFilter}`
+      var filters = this.$refs.datasetFacetMenu?.getFilters()
+      filters = filters === undefined ?
+        `${datasetsFilter}` :
+        filters + ` AND ${datasetsFilter}`
 
-        this.algoliaIndex
-          .search(query, {
-            facets: ['*'],
-            filters: filters
-          })
-          .then(response => {
-            response.nbHits > 0 ? (this.searchHasAltResults = true) : null
-            this.resultCounts[searchType] = response.nbHits
-          })
-      }
+      this.algoliaIndex
+        .search(query, {
+          facets: ['*'],
+          filters: filters
+        })
+        .then(response => {
+          response.nbHits > 0 ? (this.searchHasAltResults = true) : null
+          this.resultCounts[searchType] = response.nbHits
+        })
     },
 
     onFacetSelectionChange: function () {
@@ -531,7 +495,7 @@ export default {
       this.fetchResults()
     },
 
-    onPaginationPageChange: function(page) {
+    onPaginationPageChange: function (page) {
       const offset = (page - 1) * this.searchData.limit
       this.searchData.skip = offset
 
@@ -542,7 +506,7 @@ export default {
       this.fetchResults()
     },
 
-    onResize: function(width) {
+    onResize: function (width) {
       width <= 768
         ? (this.titleColumnWidth = 150)
         : (this.titleColumnWidth = 300)
@@ -575,35 +539,42 @@ export default {
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 .alternative-links {
   text-decoration: underline;
   color: $purple;
 }
+
 .page-data {
   background-color: $background;
 }
+
 .search-tabs__container {
   margin-top: 2rem;
   padding-top: 0.5rem;
   background-color: white;
   border: 0.1rem solid $lineColor2;
+
   h3 {
     padding-left: 0.75rem;
     font-weight: 600;
     font-size: 1.5rem;
   }
 }
+
 .search-bar__container {
   margin-top: 1em;
   padding: 0.75rem;
   border: 0.1rem solid $lineColor2;
   background: white;
+
   h5 {
     line-height: 1rem;
     font-weight: 600;
     font-size: 1rem;
   }
 }
+
 .search-tabs {
   display: flex;
   list-style: none;
@@ -611,18 +582,22 @@ export default {
   margin: 0 0 0 0;
   padding: 0 0;
   outline: 0.1rem solid $purple;
+
   @media (max-width: 40rem) {
     display: block;
   }
+
   li {
     width: 100%;
     text-align: center;
     color: $purple;
   }
-  li:last-child > a {
+
+  li:last-child>a {
     border-right: none;
   }
 }
+
 .search-tabs__button {
   color: $purple;
   background: #f9f2fc;
@@ -634,18 +609,22 @@ export default {
   text-decoration: none;
   text-transform: uppercase;
   line-height: 3.5rem;
+
   @media (min-width: 40rem) {
     font-size: 0.65rem;
     border-right: 0.1rem solid $purple;
   }
+
   @media (min-width: 50rem) {
     font-size: .75rem;
   }
+
   @media (min-width: 64rem) {
     font-size: 1.25rem;
     font-weight: 600;
     text-transform: none;
   }
+
   &:hover,
   &.active {
     color: white;
@@ -653,62 +632,76 @@ export default {
     font-weight: 500;
   }
 }
+
 .table-wrap {
   background: #fff;
   border: 1px solid $lineColor2;
   padding: 16px;
+
   .search-error {
-    margin: 0 0  auto;
-    text-align:center;
+    margin: 0 0 auto;
+    text-align: center;
   }
 }
+
 .search-heading {
   align-items: flex-end;
   display: flex;
   margin-bottom: 1em;
   justify-content: space-between;
+
   @media screen and (max-width: 28em) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 0;
   }
+
   p {
     font-size: 0.875em;
     flex-shrink: 0;
     margin: 2em 0 0 0;
   }
 }
+
 .facet-menu {
   margin-top: 2em;
 }
+
 :deep(.el-table td) {
   vertical-align: top;
 }
+
 :deep(.el-table .cell) {
   word-break: normal;
 }
+
 .dataset-filters {
   padding: 0.5rem 1rem 1rem;
   margin-bottom: 2rem;
+
   h2,
   h3 {
     font-size: 1.125rem;
     font-weight: normal;
     line-height: 1.2;
   }
+
   h2 {
     border-bottom: 1px solid $lineColor1;
     margin-bottom: 0.5rem;
     padding-bottom: 0.5rem;
   }
+
   h3 {
     font-size: 0.875rem;
     text-transform: uppercase;
   }
+
   :deep(.el-checkbox-group) {
     display: flex;
     flex-direction: column;
   }
+
   :deep(.el-checkbox__label) {
     color: $purple;
   }
