@@ -8,41 +8,33 @@
     <div class="container">
       <div class="subpage px-32 py-16">
         <div v-html="parseMarkdown(description)" />
-        <hr />
         <div v-for="callToAction in callsToAction" :key="callToAction.sys.id" class="mb-16">
-          <call-to-action :data="callToAction.fields"/>
+          <a v-if="callToAction.fields" :href="callToAction.fields.url" @click="callToAction.fields.url == null && $emit('click')">
+            <el-button>{{ callToAction.fields.title }}</el-button>
+          </a>
         </div>
       </div>
       <div v-if="learnMore" class="subpage px-32 mb-0">
         <div class="heading1 mb-16">Learn More</div>
         <div v-for="(item, i) in learnMore" :key="item.sys.id">
-          <learn-more-card
-            :about-details-item="item"
-            :parent-path="slug"
-          />
+          <learn-more-card :about-details-item="item" :parent-path="slug" />
           <hr v-if="i < learnMore.length - 1" />
         </div>
       </div>
     </div>
-    <login-modal
-      :show-dialog="showLoginDialog"
-      redirectUrl="/user/profile"
-      @dialog-closed="showLoginDialog = false"
-    />
+    <login-modal :show-dialog="showLoginDialog" redirectUrl="/user/profile" @dialog-closed="showLoginDialog = false" />
   </div>
 </template>
 
 <script>
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 import MarkedMixin from '@/mixins/marked'
-import CallToAction from '@/components/CallToAction/CallToAction.vue'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 
 export default {
   name: 'ShareDataPage',
   components: {
     LearnMoreCard,
-    CallToAction,
     LoginModal
   },
   mixins: [MarkedMixin],
