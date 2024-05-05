@@ -128,21 +128,6 @@ export default {
 
     let projectsAnatomicalFocusFacets = []
     let consortiaTypes = []
-    await $contentfulClient.getEntries({
-      content_type: 'awardSection',
-    })
-      .then(async response => {
-        let facetData = []
-        const items = propOr([], 'items', response)
-        items.forEach(item => {
-          const label = pathOr('', ['fields', 'title'], item)
-          facetData.push({
-            label: label,
-            id: label,
-          })
-        })
-        projectsAnatomicalFocusFacets = facetData
-      })
     await $contentfulClient.getContentType('sparcAward').then(contentType => {
       contentType.fields.forEach((field) => {
         if (field.name === 'Funding') {
@@ -155,6 +140,17 @@ export default {
             })
           })
           consortiaTypes = facetData
+        }
+        if (field.name === 'Focus') {
+          let focusItems = field.items?.validations[0]['in']
+          let facetData = []
+          focusItems.forEach(itemLabel => {
+            facetData.push({
+              label: itemLabel,
+              id: itemLabel,
+            })
+          })
+          projectsAnatomicalFocusFacets = facetData
         }
       })
     })
