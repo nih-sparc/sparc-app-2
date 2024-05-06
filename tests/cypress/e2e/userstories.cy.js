@@ -64,6 +64,9 @@ describe('User stories', function () {
     scaffoldDatasetCategories.forEach((category) => {
 
       it(`Access scaffold ${category}`, function () {
+
+        cy.waitForLoadingMask()
+
         // Search for scaffold related dataset
         cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
