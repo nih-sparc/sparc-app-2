@@ -100,6 +100,8 @@ describe('User stories', function () {
 
             cy.wait('@query', { timeout: 20000 });
 
+            cy.waitForLoadingMask()
+
             // Search dataset id
             cy.get('.search-input > .el-input__wrapper > .el-input__inner').clear();
             cy.get('.search-input > .el-input__wrapper > .el-input__inner').type(datasetId);
