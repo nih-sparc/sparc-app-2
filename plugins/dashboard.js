@@ -1,6 +1,6 @@
 import mitt from 'mitt'
-import { useGlobalVarsStore } from '@/TestDashboard/src/stores/globalVars.ts'
-import "@/TestDashboard/tailwind/output.css"
+import { useGlobalVarsStore } from '../TestDashboard/src/stores/globalVars.ts'
+import "../TestDashboard/tailwind/output.css"
 
 const emitter = mitt();
 
