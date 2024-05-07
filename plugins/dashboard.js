@@ -12,11 +12,11 @@ const componentMap = [
 ]
 
 export default defineNuxtPlugin((nuxtApp) => {
-    nuxtApp.vueApp.provide('emitter', emitter);
+    nuxtApp.vueApp.provide('emitter', emitter)
     componentMap.forEach(comp=>{
-        const asyncComponent = defineAsyncComponent(() => import(`@/TestDashboard/src/components/${comp}.vue`)); 
-        nuxtApp.vueApp.component(comp, asyncComponent);
+        const asyncComponent = defineAsyncComponent(() => import(`@/TestDashboard/src/components/${comp}.vue`))
+        nuxtApp.vueApp.component(comp, asyncComponent)
     })
-    const globalVars = useGlobalVarsStore();
-    globalVars.componentList = componentMap;
+    const globalVars = useGlobalVarsStore()
+    globalVars.componentList = componentMap
 })
