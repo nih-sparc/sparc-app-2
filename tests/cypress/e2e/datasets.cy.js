@@ -16,10 +16,52 @@ datasetIds.forEach(datasetId => {
       cy.intercept('**/query?**').as('query')
     })
 
-    it("Landing page", function () {
+
+    it("Gallery Tab", function () {
 
       cy.waitForLoadingMask()
 
+      // Should switch to 'Gallery'
+      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
+      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
+
+      cy.wait(10000)
+
+      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
+        const gallery = $content.find('.gallery-container', { timeout: 30000 });
+        if (gallery && gallery.length) {
+          // Check for pagination
+          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
+          cy.get('@pagination').find('li.number').should('have.length.least', 1);
+
+          // Check for gallery card
+          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
+          cy.get('@card').first().within(($card) => {
+            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
+            cy.wrap($card).contains('span', ' View ')
+          });
+
+          // Only check for dataset when it has valid flatmap data
+          cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
+
+            if (intercept.response.body.result[0].organs) {
+
+              cy.wait('@flatmap', { timeout: 20000 }).then((intercept) => {
+
+                if (intercept.response.body.values.length > 0) {
+                  cy.findGalleryCard('flatmap', 'prev');
+                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
+                }
+              })
+            }
+          })
+        } else {
+          cy.wrap($content).contains(/There was an error loading the gallery items|This dataset does not contain gallery items/);
+        }
+      });
+    });
+
+    it("Landing page", function () {
       // Should display image with correct dataset src
       cy.get('.dataset-image', { timeout: 30000 }).should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
 
@@ -89,47 +131,6 @@ datasetIds.forEach(datasetId => {
       cy.contains('.button-container span', 'Cite Dataset').click()
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
       cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
-    });
-
-    it("Gallery Tab", function () {
-      // Should switch to 'Gallery'
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
-
-      cy.wait(10000)
-
-      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container', { timeout: 30000 });
-        if (gallery && gallery.length) {
-          // Check for pagination
-          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
-          cy.get('@pagination').find('li.number').should('have.length.least', 1);
-
-          // Check for gallery card
-          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
-          cy.get('@card').first().within(($card) => {
-            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
-            cy.wrap($card).contains('span', ' View ')
-          });
-
-          // Only check for dataset when it has valid flatmap data
-          cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
-
-            if (intercept.response.body.result[0].organs) {
-
-              cy.wait('@flatmap', { timeout: 20000 }).then((intercept) => {
-
-                if (intercept.response.body.values.length > 0) {
-                  cy.findGalleryCard('flatmap', 'prev');
-                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
-                }
-              })
-            }
-          })
-        } else {
-          cy.wrap($content).contains(/There was an error loading the gallery items|This dataset does not contain gallery items/);
-        }
-      });
     });
 
     it("Abstract Tab", function () {
