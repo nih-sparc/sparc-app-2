@@ -34,6 +34,9 @@
         v-else
         :metrics-data="metricsData"
       />
+      <div class="row my-32">
+        Last metrics update: {{ monthLastUpdate.toLocaleString('default', { month: 'long' }) }} {{ monthLastUpdate.getFullYear() }}
+      </div>
     </div>
   </div>
 </template>
@@ -148,17 +151,21 @@ export default {
     // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
     const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     let metricsData = undefined
+    let monthLastUpdate
     try {
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
+      monthLastUpdate = new Date(`${lastMonthsDate.year}/${lastMonthsDate.month}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, monthBeforeLastDate.month, monthBeforeLastDate.year)
       .catch(err => {
         console.error('Could not retreive metrics.', err)
       })
+      monthLastUpdate = new Date(`${monthBeforeLastDate.year}/${monthBeforeLastDate.month}`)
     }
     return {
-      metricsData
+      metricsData,
+      monthLastUpdate
     }
   },
 
