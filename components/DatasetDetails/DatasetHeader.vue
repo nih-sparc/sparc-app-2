@@ -2,9 +2,9 @@
   <div class="details-header-container mt-16 py-16 px-24">
     <el-row>
       <el-col :sm="16" :md="18" :lg="19" :xl="20">
-        <h2 class="heading2 mt-0">
+        <h1 class="heading2 mt-0">
           {{ title }}
-        </h2>
+        </h1>
         <div class="dataset-owners">
           <span class="label4">Contributors:&nbsp;</span>
           <div
@@ -268,6 +268,9 @@ export default {
   }
   .citations-link {
     cursor: pointer;
+  }
+  h1 {
+    margin: 0 0 1rem;
   }
 }
 </style>
