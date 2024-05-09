@@ -69,9 +69,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
 
-    cy.wait('@flatmap', { timeout: 20000 })
-
-    cy.waitForLoadingMask()
+    if (threeDSyncView !== taxonModels[taxonModels.length - 1]) {
+      cy.wait('@flatmap', { timeout: 20000 })
+      cy.waitForLoadingMask()
+    }
 
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
