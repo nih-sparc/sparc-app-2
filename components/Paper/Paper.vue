@@ -1,34 +1,24 @@
 <template>
   <div>
     <div class="subpage-col about-page-border">
-      <div class="about-page-text" v-html="text" />
-      <NuxtLink
-        v-if="buttonText !== null && buttonLinkExternal === null"
-        class="margin-top-auto"
-        :to="buttonLink"
-        :target="newTab ? '_blank' : '_self'"
-      >
+      <template class="subpage-row">
+        <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
+        <div class="about-page-text" v-html="text" />
+      </template>
+      <NuxtLink v-if="buttonText !== null && buttonLinkExternal === null" class="margin-top-auto" :to="buttonLink"
+        :target="newTab ? '_blank' : '_self'">
         <el-button class="secondary">
           {{ buttonText }}
         </el-button>
       </NuxtLink>
-      <a
-        v-if="buttonText !== null && buttonLinkExternal !== null"
-        class="margin-top-auto"
-        :href="buttonLinkExternal"
-        target="_blank"
-      >
+      <a v-if="buttonText !== null && buttonLinkExternal !== null" class="margin-top-auto" :href="buttonLinkExternal"
+        target="_blank">
         <el-button class="secondary">
           {{ buttonText }}
         </el-button>
       </a>
     </div>
-    <img
-      v-if="imgSrc"
-      :v-slot="image"
-      class="portal-image midnightblue-background"
-      :src="imgSrc"
-    />
+    <img v-if="imgSrc" :v-slot="image" class="portal-image midnightblue-background" :src="imgSrc" />
   </div>
 </template>
 
@@ -59,7 +49,11 @@ export default {
     newTab: {
       type: Boolean,
       default: false
-    }
+    },
+    logoSrc: {
+      type: String,
+      default: null
+    },
   }
 }
 </script>
@@ -82,6 +76,10 @@ export default {
     }
   }
 }
+.subpage-row {
+  display: flex;
+  flex-direction: row;
+}
 .about-page-border {
   border: 1px solid #dcdfe6;
 }
@@ -99,5 +97,11 @@ export default {
   @media screen and (max-width: 767px) {
     display: none;
   }
+}
+.logo-image {
+  width: 8rem;
+  height: 8rem;
+  object-fit: contain;
+  border: solid $lineColor1 1px;
 }
 </style>
