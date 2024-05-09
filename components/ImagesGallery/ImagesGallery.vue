@@ -103,23 +103,32 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           }
         }
 
-        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        // Default species flatmap
+        let speciesData = {
+          taxo,
+          id: datasetId,
+          version: datasetVersion,
+          species: species
+        }
+        // Add uberonid and organ to the default flatmap if match the anatomy and taxonomy
         scicrunchData.organs.forEach(organ => {
-          if (foundAnatomy.includes(organ.curie)){
+          if (foundAnatomy.includes(organ.curie)) {
             let organData = {
-              taxo,
+              ...speciesData,
               uberonid: organ.curie,
               organ: organ.name,
-              id: datasetId,
-              version: datasetVersion,
-              species: species
             }
             flatmapData.push(organData)
           }
         })
-        //Only create a flatmaps field if flatmapData is not empty
-        if (flatmapData.length > 0)
-          scicrunchData['flatmaps'] = flatmapData
+        // Use the default species flatmap when the anatomy and taxonomy not match
+        if (flatmapData.length === 0) {
+          flatmapData.push(speciesData)
+        }
+        scicrunchData['flatmaps'] = flatmapData
+      } else {
+        // Use the rat flatmap when no entity on the anatomical structure as generic flatmap
+        scicrunchData['flatmaps'] = [{ taxo: Uberons.species['rat'] }]
       }
     }
   } catch (e) {
