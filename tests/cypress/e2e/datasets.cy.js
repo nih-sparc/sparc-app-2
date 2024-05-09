@@ -16,7 +16,6 @@ datasetIds.forEach(datasetId => {
       cy.intercept('**/query?**').as('query')
     })
 
-
     it("Gallery Tab", function () {
 
       cy.waitForLoadingMask()
