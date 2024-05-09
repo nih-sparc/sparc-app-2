@@ -4,19 +4,13 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 
 ## Setup
 
-1. Make sure to pull in any submodules after cloning the repo:
-
-```bash
-git submodule update --init --recursive
-```
-
-2. Make sure to install the dependencies:
+1. Make sure to install the dependencies:
 
 ```bash
 yarn install
 ```
 
-3. Make sure to set any un-set environment variables found in the nuxt.config file
+2. Make sure to set any un-set environment variables found in the nuxt.config file
 
 ## Development Server
 
