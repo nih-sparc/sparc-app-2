@@ -1,12 +1,30 @@
 <template>
+  <div>
+    <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <SparcDashboard />
+  </div>
 </template>
 <script>
-import SparcDashboard from "@/TestDashboard/src/components/SparcDashboard.vue"
 export default {
   name: 'SparcDashboardPage',
-  components: {
-    SparcDashboard
+  data() {
+    return {
+      title: 'SPARC Dashboard',
+      breadcrumb: [
+        {
+          label: 'Home',
+          to: {
+            name: 'index'
+          }
+        },
+        {
+          to: {
+            name: 'apps',
+          },
+          label: 'SPARC Apps',
+        }
+      ]
+    }
   }
 }
 </script>
