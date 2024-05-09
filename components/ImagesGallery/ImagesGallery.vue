@@ -408,7 +408,7 @@ export default {
                 id: f.uberonid,
                 title: title,
                 type: `${this.capitalize(
-                  f.species ? f.species : 'rat'
+                  f.species && f.species === flatmaps.speciesMap[f.taxo] ? f.species : 'generic'
                 )} flatmap`,
                 thumbnail: null,
                 link: linkUrl
