@@ -1,0 +1,215 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Cypress Timeline Tests
+
+on:
+  # push:
+  #   branches: [master, main]
+
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [master, main]
+
+  schedule:
+    - cron: "0 0 * * 1"
+
+  workflow_dispatch:
+    inputs:
+      PORTAL_TARGET:
+        type: "choice"
+        description: "Define portal target"
+        required: true
+        options:
+          - "Staging"
+          - "Production"
+      PAGE_LIMIT:
+        type: "choice"
+        description: "Define the number of displayed datasets per page"
+        required: true
+        options:
+          - "10"
+          - "20"
+          - "50"
+          - "View All"
+      SEARCH_KEYWORDS:
+        description: "Define keywords for searching"
+        required: true
+        default: "Spine, Neck"
+      FILTER_FACET:
+        description: "Define facet for filtering"
+        required: true
+        default: "Human"
+      MULTIPLE_FILTER_FACETS:
+        description: "Define multiple facets for filtering"
+        required: true
+        default: "Heart, Adult"
+      DATASET_IDS:
+        description: "Define dataset ids"
+        required: true
+        default: "127, 205, 290, 34, 76"
+      TAXON_MODELS:
+        description: "Define taxon models"
+        required: true
+        default: "Rat, Human Female"
+      THREE_SYNC_VIEW:
+        type: "choice"
+        description: "Define species for sync map"
+        required: true
+        options:
+          - "Human Female"
+          - "Human Male"
+          - "Rat"
+      SEARCH_IN_MAP:
+        description: "Define keyword"
+        required: true
+        default: "Heart"
+      SCAFFOLD_DATASET_IDS:
+        description: "Define scaffold dataset ids"
+        required: true
+        default: "150, 155"
+
+env:
+  PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
+  SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
+  FILTER_FACET: ${{ github.event.inputs.FILTER_FACET }}
+  MULTIPLE_FILTER_FACETS: ${{ github.event.inputs.MULTIPLE_FILTER_FACETS }}
+  DATASET_IDS: ${{ github.event.inputs.DATASET_IDS }}
+  TAXON_MODELS: ${{ github.event.inputs.TAXON_MODELS }}
+  THREE_SYNC_VIEW: ${{ github.event.inputs.THREE_SYNC_VIEW }}
+  SEARCH_IN_MAP: ${{ github.event.inputs.SEARCH_IN_MAP }}
+  SCAFFOLD_DATASET_IDS: ${{ github.event.inputs.SCAFFOLD_DATASET_IDS }}
+  CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
+  CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+  ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+  ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
+  AWS_USER_POOL_ID: ${{ secrets.AWS_USER_POOL_ID }}
+  AWS_USER_POOL_WEB_CLIENT_ID: ${{ secrets.AWS_USER_POOL_WEB_CLIENT_ID }}
+  BIOLUCIDA_PASSWORD: ${{ secrets.BIOLUCIDA_PASSWORD }}
+  BIOLUCIDA_USERNAME: ${{ secrets.BIOLUCIDA_USERNAME }}
+  BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
+  BLACKFYNN_API_SECRET: ${{ secrets.BLACKFYNN_API_SECRET }}
+  BLACKFYNN_API_TOKEN: ${{ secrets.BLACKFYNN_API_TOKEN }}
+  BLACKFYNN_CONCEPTS_API_HOST: ${{ secrets.BLACKFYNN_CONCEPTS_API_HOST }}
+  CTF_API_HOST: ${{ secrets.CTF_API_HOST }}
+  CTF_CDA_ACCESS_TOKEN: ${{ secrets.CTF_CDA_ACCESS_TOKEN }}
+  CTF_SPACE_ID: ${{ secrets.CTF_SPACE_ID }}
+  DEPLOY_ENV: ${{ secrets.DEPLOY_ENV }}
+  DISABLE_REDIRECT_SSL: ${{ secrets.DISABLE_REDIRECT_SSL }}
+  FLATMAP_API_HOST: ${{ secrets.FLATMAP_API_HOST }}
+  LOGIN_API_URL: ${{ secrets.LOGIN_API_URL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  NPM_CONFIG_PRODUCTION: ${{ secrets.NPM_CONFIG_PRODUCTION }}
+  OSPARC_HOST: ${{ secrets.OSPARC_HOST }}
+  PORTAL_API_HOST: ${{ secrets.PORTAL_API_HOST }}
+  RECAPTCHA_SECRET_KEY: ${{ secrets.RECAPTCHA_SECRET_KEY }}
+  RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+  SHOW_FUNDING_FACET: ${{ secrets.SHOW_FUNDING_FACET }}
+  SHOW_HIERARCHAL_FACETS: ${{ secrets.SHOW_HIERARCHAL_FACETS }}
+  SHOW_LOGIN_FEATURE: ${{ secrets.SHOW_LOGIN_FEATURE }}
+  SHOW_METRICS: ${{ secrets.SHOW_METRICS }}
+  SHOW_OSPARC_TAB: ${{ secrets.SHOW_OSPARC_TAB }}
+  SHOW_TIMESERIES_VIEWER: ${{ secrets.SHOW_TIMESERIES_VIEWER }}
+  SPARC_PORTAL_USER_ID: ${{ secrets.SPARC_PORTAL_USER_ID }}
+  SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
+
+jobs:
+  pull-request-cypress-run:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions-cool/check-user-permission@main
+        id: checkUser
+        with:
+          require: "write"
+          username: ${{ github.event.pull_request.user.name }}
+
+      - name: Checkout
+        if: steps.checkUser.outputs.require-result == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.17.1
+
+      - name: Automated Run Testing when Pull Request
+        if: steps.checkUser.outputs.require-result == 'true'
+        uses: cypress-io/github-action@v6
+        env:
+          ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
+        with:
+          build: yarn build
+          start: yarn preview
+          wait-on: ${{ secrets.ROOT_URL }}
+          record: true
+
+      - name: Skip tests
+        if: steps.checkUser.outputs.require-result == 'false'
+        uses: actions/github-script@v4
+        with:
+          script: |
+            core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')
+
+  schedule-cypress-run:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ["https://staging.sparc.science", "https://sparc.science"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.17.1
+
+      - name: Schedule Run Testing on ${{ matrix.target }}
+        uses: cypress-io/github-action@v6
+        env:
+          ROOT_URL: ${{ matrix.target }}
+        with:
+          wait-on: ${{ matrix.target }}
+          record: true
+          parallel: true
+
+  manual-cypress-run:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.17.1
+
+      - name: Manual Run Testing against Staging
+        if: ${{ github.event.inputs.PORTAL_TARGET == 'Staging' }}
+        env:
+          ROOT_URL: "https://staging.sparc.science"
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: ${{ env.ROOT_URL }}
+          record: true
+          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
+
+      - name: Manual Run Testing against Production
+        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
+        env:
+          ROOT_URL: "https://sparc.science"
+        uses: cypress-io/github-action@v6
+        with:
+          wait-on: ${{ env.ROOT_URL }}
+          record: true
+          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
