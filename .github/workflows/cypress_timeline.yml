@@ -56,9 +56,8 @@ on:
         description: "Define species for sync map"
         required: true
         options:
-          - "Human Female"
           - "Human Male"
-          - "Rat"
+          - "Human Female"
       SEARCH_IN_MAP:
         description: "Define keyword"
         required: true

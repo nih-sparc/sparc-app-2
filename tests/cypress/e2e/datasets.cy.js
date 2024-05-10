@@ -1,7 +1,7 @@
 /**
  * List of dataset ids
  */
-const datasetIds = Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
+const datasetIds = [...new Set(Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
 
 datasetIds.forEach(datasetId => {
 

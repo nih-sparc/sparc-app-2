@@ -8,7 +8,7 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 /**
  * List of keywords
  */
-const searchKeywords = Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item)
+const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
 
 /**
  * List of facets
