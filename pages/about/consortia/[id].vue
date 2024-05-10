@@ -1,8 +1,8 @@
 <template>
-  <div :style="consortiaStyle" class="pb-16">
+  <div :style="consortiaStyle" class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
-    <div class="container">
-      <paper class="row mt-32" :text="parseMarkdown(overview)" :logoSrc="logoUrl" />
+    <div class="container pt-32">
+      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" />
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
@@ -16,15 +16,16 @@
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
           :banner="featuredDataset.banner" :link="featuredDatasetLink" button-text="View Dataset" />
       </div>
-      <!--<div class="gallery-items-container p-32 mt-32">
-        <div class="heading2 mb-16">Highlights</div>
+      <div v-if="highlights.length > 0" class="gallery-items-container p-32 mt-32">
+        <div class="heading1 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
-      </div>-->
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue'
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
@@ -58,8 +59,7 @@ export default {
             name: 'about'
           }
         }
-      ],
-      highlights: [],
+      ]
     }
   },
 
@@ -87,6 +87,17 @@ export default {
         featuredDataset = {}
       })
     }
+    let highlights = ref([])
+    $contentfulClient.getEntries({
+      'content_type': config.public.ctf_news_id,
+      order: '-fields.publishedDate',
+      limit: '999',
+      'fields.consortiaHighlight[in]': consortiaItem.fields.title
+    }).then(({ items }) => {
+      highlights.value = items
+    }).catch(() => {
+      highlights.value = []
+    })
     useSeoMeta({
       title: consortiaItem.fields.title,
       meta: [
@@ -105,23 +116,9 @@ export default {
     return {
       consortiaItem,
       featuredDataset,
+      highlights,
       contentfulError
     }
-    /*      
-      $contentfulClient.getEntries({
-        'content_type': config.public.ctf_news_id,
-        order: '-fields.publishedDate',
-        limit: '999',
-        'fields.subject': 'Highlight'
-      })
-        .then(({ items }) => items)
-        .catch(err => {
-          console.log('Could not retrieve highlights.', err)
-        })
-    ]).then(([cfPage, highlights]) => ({
-      ...cfPage,
-      highlights,
-    }))*/
   },
   computed: {
     title() {
