@@ -8,12 +8,15 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
-    "sitemap": "node generate_sitemap.js"
+    "sitemap": "node generate_sitemap.js",
+    "test-cypress": "cypress run",
+    "test-cypress-record": "cypress run --record"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/turnstile": "^0.6.3",
     "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
+    "cypress": "^13.6.6",
     "nuxt": "^3.8.2",
     "nuxt-svgo": "^3.5.6",
     "sass": "^1.66.1",

@@ -2,6 +2,7 @@
   <div class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
     <div class="container">
+      <h1 hidden>File viewer for {{ file.path }}</h1>
       <form ref="zipForm" method="POST" :action="zipitUrl">
         <input v-model="zipData" type="hidden" name="data" />
       </form>

@@ -1,6 +1,7 @@
 <template>
   <div class="simulation-viewer-page">
     <div class="page-wrap container">
+      <hi hidden>Simulation viewer</hi>
       <content-tab-card
         class="mt-24"
         :tabs="tabs"

@@ -1,6 +1,7 @@
 <template>
   <div class="file-detail-page">
     <div class="container">
+      <h1 hidden>{{ title }} timeseries</h1>
       <content-tab-card
         v-if="hasTimeseriesViewer"
         class="tabs p-32 pt-48"
