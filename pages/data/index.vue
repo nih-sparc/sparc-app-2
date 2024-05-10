@@ -3,6 +3,7 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
+        <h1 hidden>Dataset search</h1>
         <div class="heading2 pl-8 mb-8">
           Browse categories
         </div>

@@ -80,9 +80,9 @@
             </template>
           </el-col>
           <el-col :span="16" :xs="24">
-            <div class="heading2 mb-32">
+            <h1 class="heading2 mb-32">
               {{ title }}
-            </div>
+            </h1>
             <div class="body1 content" v-html="parseMarkdown(description)" />
           </el-col>
         </el-row>

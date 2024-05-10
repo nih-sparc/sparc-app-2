@@ -3,9 +3,9 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
       <div class="search-tabs__container">
-        <h3>
+        <h1>
           Browse Metrics
-        </h3>
+        </h1>
         <ul class="search-tabs">
           <li v-for="type in metricsTypes" :key="type.label">
             <nuxt-link
@@ -243,10 +243,12 @@ export default {
   padding-top: 0.5rem;
   background-color: white;
   border: 0.1rem solid $lineColor2;
-  h3 {
+  h1 {
     padding-left: 0.75rem;
     font-weight: 600;
     font-size: 1.5rem;
+    line-height: 2.75rem;
+    margin: 0 0 0.5rem;
   }
 }
 .search-tabs {
