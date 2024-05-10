@@ -8,6 +8,7 @@ const pixelChange = 3
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
 const taxonModels = [...new Set(Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item))]
+let loadedModels = new Set()
 
 /**
  * Name of species for the 3D sync map
@@ -33,22 +34,28 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.intercept('**/datasets/**').as('datasets')
   })
 
-  taxonModels.forEach((model) => {
+  taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
-      if (model !== 'Rat') {
-        
-        cy.waitForLoadingMask()
-
-        // Switch to the second flatmap
-        cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
-        cy.get('.el-select-dropdown__item').should('be.visible')
-        cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-      }
-
-      cy.wait('@flatmap', { timeout: 20000 })
 
       cy.waitForLoadingMask()
+
+      // Switch to the second flatmap
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
+      cy.get('.el-select-dropdown__item').should('be.visible')
+      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
+
+      if (!loadedModels.has(model)) {
+
+        cy.wait('@flatmap', { timeout: 20000 })
+
+        cy.waitForLoadingMask()
+
+        if (index === 0) {
+          loadedModels.add('Rat')
+        }
+        loadedModels.add(model)
+      }
 
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
@@ -69,9 +76,12 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
 
-    if (threeDSyncView !== taxonModels[taxonModels.length - 1]) {
+    if (!loadedModels.has(threeDSyncView)) {
+
       cy.wait('@flatmap', { timeout: 20000 })
+
       cy.waitForLoadingMask()
+
     }
 
     // Open the 3D view in a split viewer
@@ -142,7 +152,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
             cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
-          
+
           // Check for button text
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
 
