@@ -7,7 +7,7 @@ const pixelChange = 3
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
-const taxonModels = Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item)
+const taxonModels = [...new Set(Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item))]
 
 /**
  * Name of species for the 3D sync map
@@ -17,7 +17,7 @@ const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
 const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
-const scaffoldDatasetIds = Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item)
+const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   before(function () {
