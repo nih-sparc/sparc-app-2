@@ -5,13 +5,13 @@
         <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
         <div class="about-page-text" v-html="text" />
       </template>
-      <NuxtLink v-if="buttonText !== null && buttonLinkExternal === null" class="margin-top-auto" :to="buttonLink"
+      <NuxtLink v-if="buttonText != '' && buttonLinkExternal == ''" class="margin-top-auto" :to="buttonLink"
         :target="newTab ? '_blank' : '_self'">
         <el-button class="secondary">
           {{ buttonText }}
         </el-button>
       </NuxtLink>
-      <a v-if="buttonText !== null && buttonLinkExternal !== null" class="margin-top-auto" :href="buttonLinkExternal"
+      <a v-if="buttonText != '' && buttonLinkExternal != ''" class="margin-top-auto" :href="buttonLinkExternal"
         target="_blank">
         <el-button class="secondary">
           {{ buttonText }}
@@ -36,11 +36,11 @@ export default {
     },
     buttonLinkExternal: {
       type: String,
-      default: null
+      default: ''
     },
     buttonText: {
       type: String,
-      default: null
+      default: ''
     },
     imgSrc: {
       type: String,
