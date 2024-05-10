@@ -58,7 +58,6 @@ on:
         options:
           - "Human Female"
           - "Human Male"
-          - "Rat"
       SEARCH_IN_MAP:
         description: "Define keyword"
         required: true
