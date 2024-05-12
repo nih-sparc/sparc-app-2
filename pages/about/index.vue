@@ -6,42 +6,35 @@
       <div v-html="parseMarkdown(heroCopy)" />
     </page-hero>
     <div class="container">
-      <paper
-        class="row mt-32"
-        :text="parseMarkdown(sparcPortal)"
-        button-text="View The Roadmap"
-        button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap"
-      />
+      <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
+        button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
+      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-32 mt-32">
+        <div class="heading1 mb-16">Who We Support</div>
+        <div class="body1 mb-16">The SPARC Portal currently supports {{ whoWeSupport.length }} consortia. Visit the consortia
+          page to find out more about them.</div>
+        <div class="data-wrap">
+          <nuxt-link v-for="item in whoWeSupport" :key="item.sys.id" class="who-we-support-item"
+            :to="`/about/consortia/${item.fields.slug}`">
+            <img :src="logoUrl(item)" :alt="`Logo for ${item.fields.title}`" />
+            <p class="mb-0 mt-8">
+              {{ item.fields.title }}
+            </p>
+          </nuxt-link>
+        </div>
+      </div>
       <div class="row mt-32">
-        <paper
-          class="row-item"
-          :text="parseMarkdown(whatWeOffer)"
-          :button-text="' What We Offer '"
-          :button-link="aboutLink(whatWeOfferPageId)"
-        />
-        <paper
-          class="row-item"
-          :text="parseMarkdown(teamLeadership)"
-          :button-text="' Who We Are '"
-          :button-link="aboutLink(teamAndLeadershipPageId)"
-        />
-        <paper
-          class="row-item"
-          :text="parseMarkdown(getInvolved)"
-          :button-text="' Help Us Grow '"
-          :button-link="aboutLink(getInvolvedPageId)"
-        />
+        <paper class="row-item" :text="parseMarkdown(whatWeOffer)" :button-text="' What We Offer '"
+          :button-link="aboutLink(whatWeOfferPageId)" />
+        <paper class="row-item" :text="parseMarkdown(teamLeadership)" :button-text="' Who We Are '"
+          :button-link="aboutLink(teamAndLeadershipPageId)" />
+        <paper class="row-item" :text="parseMarkdown(getInvolved)" :button-text="' Help Us Grow '"
+          :button-link="aboutLink(getInvolvedPageId)" />
       </div>
 
       <div class="gallery-items-container p-32 mt-32">
         <div class="heading2 mb-16">Portal Metrics</div>
-        <gallery
-          galleryItemType="metrics"
-          :items="metricsItems"
-        />
-        <nuxt-link
-          to="/about/metrics"
-        >
+        <gallery galleryItemType="metrics" :items="metricsItems" />
+        <nuxt-link to="/about/metrics">
           <el-button class="secondary mt-16">
             View All Metrics
           </el-button>
@@ -50,18 +43,11 @@
 
       <div class="gallery-items-container p-32 mt-32">
         <div class="heading2 mb-16">Highlights</div>
-        <gallery
-          galleryItemType="highlights"
-          :cardWidth="68"
-          :items="highlights"
-        />
+        <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
 
       <div class="gallery-items-container p-32 mt-32">
-        <div
-          class="about-page-text"
-          v-html="parseMarkdown(overview)"
-        />
+        <div class="about-page-text" v-html="parseMarkdown(overview)" />
       </div>
     </div>
   </div>
@@ -73,6 +59,7 @@ import Gallery from '~/components/Gallery/Gallery.vue'
 
 import marked from '@/mixins/marked'
 import { getPreviousDate } from '@/utils/common'
+import { pathOr } from 'ramda'
 
 export default {
   name: 'AboutPage',
@@ -226,7 +213,10 @@ export default {
     aboutLink(aboutDetailsId) {
       const name = 'about-aboutDetailsId'
       return { name, params: { aboutDetailsId } }
-    }
+    },
+    logoUrl: function (item) {
+      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], item)
+    },
   }
 }
 </script>
@@ -281,5 +271,47 @@ export default {
 .gallery-items-container {
   background-color: white;
   border: 1px solid $lineColor1;
+}
+.data-wrap {
+  justify-content: center;
+  width: 100%;
+  display: flex;
+}
+.who-we-support-item {
+  color: #000;
+  text-decoration: none;
+  width: 128px;
+  margin: 0rem 2rem;
+  text-align: center;
+
+  &:hover,
+  &:focus {
+    opacity: 0.9;
+  }
+
+  img {
+    background: #fff;
+    border-radius: 50%;
+    display: block;
+    margin-bottom: 8px;
+    width: 128px;
+    border: solid 1px #c0c4cc;
+    height: 128px;
+    object-fit: contain;
+  }
+
+  p {
+    font-size: 1em;
+    font-weight: 700;
+    color: #24245b;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.who-we-support-container {
+  background: white;
+  border: solid $lineColor1 1px;
 }
 </style>
