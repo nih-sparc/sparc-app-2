@@ -12,7 +12,7 @@ const organizationsData = [
   {
     name: 'HEAL PRECISION',
     id: 'N:organization:98d6e84c-9a27-48f8-974f-93c0cca15aae',
-    logo: new URL('@/assets/heal.png', import.meta.url).href
+    logo: new URL('@/assets/precision.png', import.meta.url).href
   }
 ]
 

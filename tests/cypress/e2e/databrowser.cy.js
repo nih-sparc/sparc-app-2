@@ -1,4 +1,4 @@
-const browseCategories = ['dataset', 'model', 'simulation', 'projects']
+const browseCategories = ['dataset', 'model', 'simulation']
 
 /**
  * The number of datasets are displayed per page
@@ -49,20 +49,11 @@ browseCategories.forEach((category) => {
       cy.wait('@query', { timeout: 20000 })
       cy.wait('@entries', { timeout: 20000 })
 
-      if (category === 'projects') {
-        cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > .image-container > .img-project').should('have.attr', 'src').and('contain', '//images.ctfassets.net/');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Focus');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Principle Investigator');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Institution');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Funding Program');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > .property-table > :nth-child(5) > .property-name-column').should('contain', 'Award');
-      } else {
-        cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Species');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Experimental Approach');
-        cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Publication Date');
-      }
+      cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Species');
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Experimental Approach');
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Publication Date');
     })
 
     it('All Page Features', function () {
@@ -204,7 +195,7 @@ browseCategories.forEach((category) => {
           facetList.forEach((facet) => {
             facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
           })
-          if (!facetIsObserved && category !== 'projects') {
+          if (!facetIsObserved) {
             // If the same facet are found in multiple place, the first will be checked by default
             // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
             // To avoid facet not found when using child facets as test facets
@@ -218,7 +209,7 @@ browseCategories.forEach((category) => {
           facetList.forEach((facet) => {
             facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
           })
-          if (!facetIsObserved && category !== 'projects') {
+          if (!facetIsObserved) {
             // If the same facet are found in multiple place, the first will be checked by default
             // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
             // To avoid facet not found when using child facets as test facets
@@ -235,17 +226,9 @@ browseCategories.forEach((category) => {
             })
 
             // Check for URL
-            if (category === 'projects') {
-              cy.url().should('contain', 'selectedProjectsAnatomicalFocusIds')
+            cy.url().should('contain', 'selectedFacetIds')
 
-              cy.wait('@entries', { timeout: 20000 })
-
-            } else {
-              cy.url().should('contain', 'selectedFacetIds')
-
-              cy.wait('@query', { timeout: 20000 })
-
-            }
+            cy.wait('@query', { timeout: 20000 })
 
             cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
 
