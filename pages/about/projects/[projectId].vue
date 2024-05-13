@@ -2,86 +2,63 @@
   <div :style="consortiaStyle" class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container">
-      <div class="subpage mb-32">
-        <el-row :gutter="32">
-          <el-col :span="8" :xs="24">
-            <div class="image-container p-16 mx-32 mb-32">
-              <img class="image" :src="getImageSrc" :alt="getImageAlt" />
+      <el-row class="row space-between">
+        <el-col class="subpage projects-subpage projects-details-container" :span="showAssociatedDatasets ? 17 : 24"
+          :xs="24">
+          <div ref="projectDetailsContainer">
+            <div class="row">
+              <div class="col image-container p-16 mb-8">
+                <img class="image" :src="getImageSrc" :alt="getImageAlt" />
+              </div>
+              <h1 class="col heading2 pl-16">
+                {{ title }}
+              </h1>
             </div>
-            <hr />
+            <div v-if="focus" class="body1">
+              FOCUS: <span class="label4">{{ focus }}</span>
+            </div>
+            <div v-if="investigator" class="body1 mb-4">
+              PRINCIPAL INVESTIGATOR: <span class="label4">{{ investigator }}</span>
+            </div>
+            <div v-if="institution" class="body1 mb-4">
+              INSTITUTION: <span class="label4">{{ institution }}</span>
+            </div>
+            <div v-if="fundingProgram.length > 0" class="body1 mb-4">
+              FUNDING PROGRAM(S): <span class="label4">{{ fundingProgram.join(', ') }}</span>
+            </div>
+            <div v-if="awardId" class="body1">
+              NIH AWARD:
+              <a class="link1" :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
+                {{ awardId }}
+                <svgo-icon-open v-if="!isInternalLink(nihReporterUrl)" class="icon-open" />
+              </a>
+            </div>
+            <hr class="mt-16" />
+            <div class="body1 content" v-html="parseMarkdown(description)" />
             <div class="body1">
-              <template v-if="focus">
-                <div class="label4">
-                  FOCUS
-                </div>
-                <div class="mb-16">
-                  {{ focus }}
-                </div>
-              </template>
-              <template v-if="investigator">
-                <div class="label4">
-                  PRINCIPAL INVESTIGATOR
-                </div>
-                <div class="mb-16">
-                  {{ investigator }}
-                </div>
-              </template>
-              <template v-if="institution">
-                <div class="label4">
-                  INSTITUTION
-                </div>
-                <div class="mb-16">
-                  {{ institution }}
-                </div>
-              </template>
-              <template v-if="fundingProgram.length > 0">
-                <div class="label4">
-                  FUNDING PROGRAM
-                </div>
-                <div class="mb-16">
-                  {{ fundingProgram[0] }}
-                </div>
-              </template>
-              <template v-if="awardId">
-                <div class="label4">
-                  AWARD
-                </div>
-                <div class="mb-16">
-                  <a :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
-                    {{ awardId }}
-                    <svgo-icon-open v-if="!isInternalLink(nihReporterUrl)" class="icon-open" />
-                  </a>
-                </div>
-              </template>
               <div class="label4">
                 SHARE
               </div>
               <share-links class="share-links" />
-            </div>
-            <template v-if="showAssociatedDatasets">
               <hr class="mt-16" />
-              <div class="label4">
-                ASSOCIATED DATASETS
-              </div>
-              <br />
-              <div class="associated-datasets-container">
-                <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4 ">
-                  <dataset-card :id="dataset.id" />
-                </div>
-              </div>
-            </template>
-          </el-col>
-          <el-col :span="16" :xs="24">
-            <h1 class="heading2 mb-32">
-              {{ title }}
-            </h1>
-            <div class="body1 content" v-html="parseMarkdown(description)" />
-          </el-col>
-        </el-row>
-      </div>
-      <nuxt-link class="back-link" :to="allProjectsLink">
-        View All Projects >
-      </nuxt-link>
+              <nuxt-link class="label4" :to="allProjectsLink">
+                View All Projects >
+              </nuxt-link>
+            </div>
+          </div>
+        </el-col>
+        <el-col v-if="showAssociatedDatasets" class="subpage associated-subpage" :span="6" :xs="24">
+          <div class="heading2">
+            Associated Content
+          </div>
+          <div class="associated-datasets-container pr-16" :style="{ maxHeight: associatedDatasetsMaxHeight + 'px' }">
+            <br />
+            <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4 ">
+              <dataset-card :id="dataset.id" />
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
@@ -93,6 +70,7 @@ import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { propOr, isEmpty } from 'ramda'
 import consortiaMixin from '@/mixins/consortia'
+import { ref } from 'vue'
 
 export default {
   name: 'ProjectDetails',
@@ -130,7 +108,8 @@ export default {
       })
       return {
         fields: project.fields,
-        associatedDatasets: propOr([], 'datasets', associatedDatasets)
+        associatedDatasets: propOr([], 'datasets', associatedDatasets),
+        associatedDatasetsMaxHeight: ref(0)
       }
     } catch (e) {
       console.error(e)
@@ -139,6 +118,14 @@ export default {
 
   mounted() {
     this.fetchConsortiaStyle(this.fundingProgram)
+  },
+
+  watch: {
+    consortiaStyle: {
+      handler: function(){
+        this.associatedDatasetsMaxHeight = this.$refs.projectDetailsContainer.clientHeight - 19
+      }
+    }
   },
 
   computed: {
@@ -163,7 +150,7 @@ export default {
               consortiaType: this.fundingProgram
             }
           },
-          label: 'Projects'
+          label: `${this.fundingProgram}`
         }
       ]
     },
@@ -171,37 +158,37 @@ export default {
      * Get image Source
      * @returns {String}
      */
-    getImageSrc: function() {
+    getImageSrc: function () {
       return this.fields.institution.fields.logo
         ? this.fields.institution.fields.logo.fields.file.url
         : ''
     },
-    title: function() {
+    title: function () {
       return this.fields.title
     },
-    description: function() {
+    description: function () {
       return this.fields.description
     },
-    fundingProgram: function() {
+    fundingProgram: function () {
       return this.fields.program
     },
-    awardId: function() {
+    awardId: function () {
       return this.fields.awardId
     },
-    institution: function() {
+    institution: function () {
       return this.fields.institution.fields.name
     },
-    investigator: function() {
+    investigator: function () {
       return this.fields.principleInvestigator
     },
-    nihReporterUrl: function() {
+    nihReporterUrl: function () {
       return this.fields.nihReporterUrl || '#'
     },
     /**
      * Get image source
      * @returns {String}
      */
-    getImageAlt: function() {
+    getImageAlt: function () {
       return this.fields.institution.fields.logo
         ? this.fields?.institution.fields.logo.fields.file.description
         : ''
@@ -210,10 +197,10 @@ export default {
      * Compute subtitle based on its project section
      * @returns {String}
      */
-    focus: function() {
+    focus: function () {
       return propOr([], 'focus', this.fields).join(", ")
     },
-    showAssociatedDatasets: function() {
+    showAssociatedDatasets: function () {
       return !isEmpty(this.associatedDatasets)
     },
     allProjectsLink() {
@@ -236,17 +223,14 @@ export default {
 .row {
   display: flex;
 }
-.back-link {
-  color: white;
-  font-weight: 500;
-}
-.first-column {
-  max-width: 25rem;
+.space-between {
+  justify-content: space-between;
 }
 .image-container {
   display: flex;
   aspect-ratio: 1;
   border: 1px solid $lineColor2;
+  max-width: 10rem;
 }
 .image {
   height: auto;
@@ -259,10 +243,8 @@ hr {
   border-right: none;
 }
 .associated-datasets-container {
-  max-height: 20rem;
   overflow: auto;
   overflow-x: hidden;
-  text-overflow: hidden;
 }
 .content {
   :deep(img) {
@@ -286,5 +268,18 @@ hr {
 .icon-open {
   width: 1.5rem;
   height: 1.5rem;
+}
+.projects-details-container {
+  height: fit-content;
+}
+.projects-subpage {
+  padding: 1rem 2rem !important;
+}
+.associated-subpage {
+  height: fit-content;
+  padding-left: 1rem !important;
+  padding-right: 0rem !important;
+  padding-top: 1rem !important;
+  padding-bottom: 0 !important;
 }
 </style>
