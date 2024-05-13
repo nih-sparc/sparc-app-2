@@ -1,4 +1,4 @@
-import { isEmpty, propOr } from 'ramda'
+import { propOr } from 'ramda'
 export default {
   data() {
     return {
@@ -18,8 +18,9 @@ export default {
           return propOr([], 'items', response)[0]
         }).catch(() => { })
       const { firstColor, secondColor, thirdColor } = propOr('', 'fields', consortiaItem)
-      this.consortiaStyle = isEmpty(thirdColor) ?
-        { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}` } :
+      this.consortiaStyle = thirdColor == undefined && secondColor == undefined ?
+        { backgroundColor: `#${firstColor}` } : thirdColor == undefined ?
+        { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}` } :    
         { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}, #${thirdColor}` }
     },
   }

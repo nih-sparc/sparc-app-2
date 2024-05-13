@@ -6,8 +6,8 @@
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
-        <paper class="row-item" :text="parseMarkdown(whatWeDo)" :button-text="whatWeDoButtonText"
-          :button-link="whatWeDoButtonLink" />
+        <!--<paper class="row-item" :text="parseMarkdown(whatWeDo)" :button-text="whatWeDoButtonText"
+          :button-link="whatWeDoButtonLink" />-->
         <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
           :button-link="ourResearchButtonLink" />
       </div>
@@ -190,7 +190,7 @@ export default {
 }
 
 .row-item {
-  width: 30%;
+  width: 49%;
   display: flex;
 
   @media screen and (max-width: 767px) {
