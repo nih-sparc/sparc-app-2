@@ -1,16 +1,12 @@
 <template>
-  <div class="page pb-32">
+  <div :style="consortiaStyle" class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container">
       <div class="subpage mb-32">
         <el-row :gutter="32">
-          <el-col :span="8"  :xs="24">
+          <el-col :span="8" :xs="24">
             <div class="image-container p-16 mx-32 mb-32">
-              <img
-                class="image"
-                :src="getImageSrc"
-                :alt="getImageAlt"
-              />
+              <img class="image" :src="getImageSrc" :alt="getImageAlt" />
             </div>
             <hr />
             <div class="body1">
@@ -69,11 +65,7 @@
               </div>
               <br />
               <div class="associated-datasets-container">
-                <div
-                  v-for="(dataset, index) in associatedDatasets"
-                  :key="index"
-                  class="body4 "
-                >
+                <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4 ">
                   <dataset-card :id="dataset.id" />
                 </div>
               </div>
@@ -87,7 +79,7 @@
           </el-col>
         </el-row>
       </div>
-      <nuxt-link class="back-link" to="/data?type=projects">
+      <nuxt-link class="back-link" :to="allProjectsLink">
         View All Projects >
       </nuxt-link>
     </div>
@@ -100,6 +92,7 @@ import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { propOr, isEmpty } from 'ramda'
+import consortiaMixin from '@/mixins/consortia'
 
 export default {
   name: 'ProjectDetails',
@@ -107,7 +100,7 @@ export default {
     DatasetCard,
     ShareLinks
   },
-  mixins: [marked],
+  mixins: [consortiaMixin, marked],
   async setup() {
     const config = useRuntimeConfig()
     const route = useRoute()
@@ -142,6 +135,10 @@ export default {
     } catch (e) {
       console.error(e)
     }
+  },
+
+  mounted() {
+    this.fetchConsortiaStyle(this.fundingProgram)
   },
 
   computed: {
@@ -218,6 +215,9 @@ export default {
     },
     showAssociatedDatasets: function() {
       return !isEmpty(this.associatedDatasets)
+    },
+    allProjectsLink() {
+      return `/about/projects?consortiaType=${this.fundingProgram}`
     }
   },
 
@@ -237,8 +237,8 @@ export default {
   display: flex;
 }
 .back-link {
-  color: $darkBlue;
-  font-weight: 700;
+  color: white;
+  font-weight: 500;
 }
 .first-column {
   max-width: 25rem;

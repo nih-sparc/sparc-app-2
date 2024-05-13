@@ -1,79 +1,81 @@
 <template>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="consortiaType.label" />
-    <div class="container">
-      <div class="search-tabs__container">
-        <div class="heading2 pl-8 mb-8">
-          Browse projects
-        </div>
-        <ul class="search-tabs">
-          <li v-for="search in consortiaTypes" :key="search.label">
-            <nuxt-link class="search-tabs__button" :class="{ active: search.id == $route.query.consortiaType }" :to="{
-                path: 'projects',
-                query: {
-                  ...$route.query,
-                  consortiaType: search.id,
-                }
-              }">
-              {{ search.label }}
-            </nuxt-link>
-          </li>
-        </ul>
+    <div class="container search-tabs__container">
+      <div class="heading2 pl-8 mb-8">
+        Browse projects
       </div>
-      <div class="search-bar__container">
-        <div class="body1 mb-8">
-          Search within consortia
-        </div>
-        <search-controls-contentful class="search-bar" placeholder="Enter search criteria" :path="$route.path"
-          showSearchText />
-      </div>
+      <ul class="search-tabs">
+        <li v-for="search in consortiaTypes" :key="search.label">
+          <nuxt-link class="search-tabs__button" :class="{ active: search.id == $route.query.consortiaType }" :to="{
+              path: 'projects',
+              query: {
+                ...$route.query,
+                consortiaType: search.id,
+              }
+            }">
+            {{ search.label }}
+          </nuxt-link>
+        </li>
+      </ul>
     </div>
-    <div class="container">
-      <el-row :gutter="32" type="flex">
-        <el-col :span="24">
-          <el-row :gutter="32">
-            <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
-              <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
-                ref="projectsFacetMenu" />
-            </el-col>
-            <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
-              <div class="search-heading">
-                <p v-show="!isLoadingSearch && searchData.items.length">
-                  {{ searchData.total }} Results | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
-                </p>
-                <span class="label1">
-                  Sort
-                  <sort-menu :options="projectsSortOptions" :selected-option="selectedProjectsSortOption"
-                    @update-selected-option="onProjectsSortOptionChange" />
-                </span>
-              </div>
-              <div v-loading="isLoadingSearch" class="table-wrap">
-                <p v-if="searchFailed" class="search-error">
-                  Sorry, the search engine has encountered an unexpected
-                  error, please try again later.
-                </p>
-                <project-search-results :tableData="tableData" />
-
-                <div class="mt-24">
-                  <alternative-search-results ref="altSearchResults" :data-types="consortiaTypes"
-                    @vue:mounted="altResultsMounted" />
-                  <br />
+    <div :style="consortiaStyle" class="pt-16">
+      <div class="container">
+        <div class="search-bar__container">
+          <div class="body1 mb-8">
+            Search within consortia
+          </div>
+          <search-controls-contentful class="search-bar" placeholder="Enter search criteria" :path="$route.path"
+            showSearchText />
+        </div>
+        <el-row class="mt-16 pb-16" :gutter="32" type="flex">
+          <el-col :span="24">
+            <el-row :gutter="32">
+              <el-col :sm="24" :md="8" :lg="6">
+                <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                  @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                  ref="projectsFacetMenu" />
+              </el-col>
+              <el-col class="search-results-container" :sm="searchColSpan('sm')" :md="searchColSpan('md')"
+                :lg="searchColSpan('lg')">
+                <div class="search-heading">
+                  <p v-show="!isLoadingSearch && searchData.items.length">
+                    {{ searchData.total }} Results | Showing
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </p>
+                  <span class="label1">
+                    Sort
+                    <sort-menu :options="projectsSortOptions" :selected-option="selectedProjectsSortOption"
+                      @update-selected-option="onProjectsSortOptionChange" />
+                  </span>
                 </div>
-              </div>
-              <div class="search-heading">
-                <p v-if="!isLoadingSearch && searchData.items.length">
-                  {{ searchHeading }} | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
-                </p>
-                <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
-                  :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
-              </div>
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
+                <div v-loading="isLoadingSearch" class="table-wrap">
+                  <p v-if="searchFailed" class="search-error">
+                    Sorry, the search engine has encountered an unexpected
+                    error, please try again later.
+                  </p>
+                  <project-search-results :tableData="tableData" />
+
+                  <div class="mt-24">
+                    <alternative-search-results ref="altSearchResults" :data-types="consortiaTypes"
+                      @vue:mounted="altResultsMounted" />
+                    <br />
+                  </div>
+                </div>
+                <div class="search-heading mt-16">
+                  <p v-if="!isLoadingSearch && searchData.items.length">
+                    {{ searchHeading }} | Showing
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </p>
+                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                    :page-size="searchData.limit" :total-count="searchData.total"
+                    @select-page="onPaginationPageChange" />
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
@@ -93,6 +95,7 @@ import AlternativeSearchResults from '@/components/AlternativeSearchResults/Alte
 import ProjectsFacetMenu from '@/components/FacetMenu/ProjectsFacetMenu.vue'
 import ProjectSearchResults from '@/components/SearchResults/ProjectSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import consortiaMixin from '@/mixins/consortia'
 
 const searchResultsComponents = {
   projects: ProjectSearchResults
@@ -121,6 +124,8 @@ export default {
     ProjectsFacetMenu,
     ProjectSearchResults
   },
+
+  mixins: [consortiaMixin],
 
   async setup() {
     const route = useRoute()
@@ -264,7 +269,7 @@ export default {
 
   watch: {
     '$route.query.consortiaType': {
-      handler: function () {
+      handler: async function () {
         if (!this.$route.query.consortiaType) {
           this.$router.push({
             query: { consortiaType: this.consortiaType['id'] }
@@ -276,9 +281,11 @@ export default {
             items: [],
             total: 0
           }
+          this.fetchConsortiaStyle(this.consortiaType.id)
           this.fetchResults()
         } 
-      }
+      },
+      immediate: true
     },
     '$route.query.search': {
       handler: function () {
@@ -428,13 +435,16 @@ export default {
   text-decoration: underline;
   color: $purple;
 }
-
+.container {
+  padding: 0;
+}
 .page-data {
   background-color: $background;
 }
 
 .search-tabs__container {
   margin-top: 2rem;
+  margin-bottom: 1rem !important;
   padding-top: 0.5rem;
   background-color: white;
   border: 0.1rem solid $lineColor2;
@@ -447,7 +457,6 @@ export default {
 }
 
 .search-bar__container {
-  margin-top: 1em;
   padding: 0.75rem;
   border: 0.1rem solid $lineColor2;
   background: white;
@@ -533,6 +542,7 @@ export default {
   display: flex;
   margin-bottom: 1em;
   justify-content: space-between;
+  margin-right: 1rem;
 
   @media screen and (max-width: 28em) {
     flex-direction: column;
@@ -543,12 +553,14 @@ export default {
   p {
     font-size: 0.875em;
     flex-shrink: 0;
-    margin: 2em 0 0 0;
+    margin: 0;
   }
 }
 
-.facet-menu {
-  margin-top: 2em;
+.search-results-container {
+  background-color: $background;
+  padding-right: 0 !important;
+  padding-top: 1rem;
 }
 
 :deep(.el-table td) {
@@ -589,5 +601,11 @@ export default {
   :deep(.el-checkbox__label) {
     color: $purple;
   }
+}
+:deep(.el-row) {
+  margin-right: -.5rem !important;
+}
+:deep(.sparc-design-system-pagination) {
+  padding-top: 0 !important;
 }
 </style>
