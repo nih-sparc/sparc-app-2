@@ -29,6 +29,7 @@ describe('Homepage', { testIsolation: false }, function () {
       cy.wrap($cat).should('have.attr', 'href').and('contain', 'selectedFacetIds')
     })
     cy.get('@category').first().click()
+    cy.url().should('contain', 'data?type=dataset&selectedFacetIds=')
     cy.visit('')
 
     // Check for the number of categories
@@ -65,7 +66,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(1) > .feature-container > .button-link > .el-button').click()
     cy.url().should('contain', 'data?type=dataset')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('have.class', 'active')
-    cy.go('back')
+    cy.visit('')
   })
 
   it('Projects and datasets', function () {
