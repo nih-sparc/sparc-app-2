@@ -281,42 +281,27 @@ browseCategories.forEach((category) => {
               cy.get('.no-facets').should('contain', 'No filters applied')
               cy.url().should('not.contain', 'selectedFacetIds')
 
-              /**
-               * =========================================================================
-               * Tests temporarily commented out due to a issue on the FILTER component
-               * Uncomment once it is fixed or has other reasonable reasons
-               */
+              // Reset all
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+              cy.get('.el-card__body > .capitalize').should('not.exist')
+              cy.get('.no-facets').should('contain', 'No filters applied')
+              cy.url().should('not.contain', 'selectedFacetIds')
 
-              // // Reset all
-              // facetList.forEach((facet) => {
-              //   cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              // })
-              // cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-              // cy.get('.el-card__body > .capitalize').should('not.exist')
-              // cy.get('.no-facets').should('contain', 'No filters applied')
-              // cy.url().should('not.contain', 'selectedFacetIds')
+              // Close a child facet tag and then click reset all
+              facetList.forEach((facet) => {
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+              })
+              cy.get('.el-card__body > .capitalize').then(($tag) => {
+                cy.get('.el-tag__close').last().click()
+                cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                cy.get('.el-card__body > .capitalize').should('not.exist')
+                cy.get('.no-facets').should('contain', 'No filters applied')
+                cy.url().should('not.contain', 'selectedFacetIds')
+              })
 
-              // // Close the child facet tag and then click reset all
-              // facetList.forEach((facet) => {
-              //   cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              // })
-              // cy.get('.el-card__body > .capitalize').then(($tag) => {
-              //   if ($tag.length > 1) {
-              //     cy.get('.el-tag__close').last().click()
-              //     cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-              //     cy.get('.el-card__body > .capitalize').should('not.exist')
-              //     cy.get('.no-facets').should('contain', 'No filters applied')
-              //     cy.url().should('not.contain', 'selectedFacetIds')
-              //   } else {
-              //     facetList.forEach((facet) => {
-              //       cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              //     })
-              //   }
-              // })
-
-              /**
-               * =========================================================================
-               */
             }
           } else {
             this.skip()
