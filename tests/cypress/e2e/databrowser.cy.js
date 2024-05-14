@@ -11,15 +11,7 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
 
 /**
- * List of facets
- * 1.
- * If multiple facets are selected which includes one or more "ANATOMICAL STRUCTURE" parent facet,
- * place it/them to the end of the array,
- * this is to make sure the "ANATOMICAL STRUCTURE" child facet can be closed during "close tag" process.
- * 2.
- * If multiple facets are selected,
- * all facets need to be matched, 
- * otherwise that test will be skipped.
+ * Single facet
  */
 let filterFacets = []
 const filterFacet = Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item)
@@ -27,7 +19,10 @@ if (filterFacet && filterFacet.length === 1) {
   filterFacets.push(filterFacet)
 }
 
-const multipleFilterFacets = Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item)
+/**
+ * List of facets
+ */
+const multipleFilterFacets = [...new Set(Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item))]
 if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }
@@ -199,20 +194,6 @@ browseCategories.forEach((category) => {
         cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
 
         // Expand nested facet menu item if facet not found
-        cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-          let facetIsObserved = true
-          facetList.forEach((facet) => {
-            facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
-          })
-          if (!facetIsObserved && category !== 'projects') {
-            // If the same facet are found in multiple place, the first will be checked by default
-            // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-            // To avoid facet not found when using child facets as test facets
-            // *** Need to think of a solution to open the specific parent facet, instead of open all
-            cy.get('.el-icon.el-tree-node__expand-icon:visible').not('.is-leaf').click({ multiple: true })
-          }
-        })
-
         cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
           let facetIsObserved = true
           facetList.forEach((facet) => {
