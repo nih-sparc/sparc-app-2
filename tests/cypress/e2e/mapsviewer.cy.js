@@ -16,7 +16,7 @@ let loadedModels = new Set()
  */
 const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
-const searchInMap = Cypress.env('SEARCH_IN_MAP')
+const searchInMap = [...new Set(Cypress.env('SEARCH_IN_MAP'))]
 
 const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
 
