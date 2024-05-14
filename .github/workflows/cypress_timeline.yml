@@ -220,7 +220,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4]
+        containers: [1, 2]
 
     steps:
       - name: Checkout
