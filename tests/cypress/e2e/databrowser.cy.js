@@ -10,15 +10,14 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
  */
 const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
 
+let filterFacets = []
 /**
  * Single facet
  */
-let filterFacets = []
-const filterFacet = Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item)
+const filterFacet = [...new Set(Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item))]
 if (filterFacet && filterFacet.length === 1) {
   filterFacets.push(filterFacet)
 }
-
 /**
  * List of facets
  */
@@ -184,19 +183,18 @@ browseCategories.forEach((category) => {
         cy.get('.expand-all-container > .el-link > .el-link__inner').click()
         cy.get('.label-content-container').should('be.visible').and('have.length.above', 0)
 
-        // Expand nested facet menu item if facet not found
+        // Expand nested facet menu item
+        cy.get('.el-icon.el-tree-node__expand-icon:visible').not('.is-leaf').each(($ele) => {
+          const isExpanded = $ele.hasClass('expanded')
+          if (!isExpanded) cy.wrap($ele).click()
+        })
+
+        // Check for filer
         cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
           let facetIsObserved = true
           facetList.forEach((facet) => {
             facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
           })
-          if (!facetIsObserved) {
-            // If the same facet are found in multiple place, the first will be checked by default
-            // This action is used to expand all parent facets in ANATOMICAL STRUCTURE
-            // To avoid facet not found when using child facets as test facets
-            // *** Need to think of a solution to open the specific parent facet, instead of open all
-            cy.get('.el-icon.el-tree-node__expand-icon:visible').not('.is-leaf').click({ multiple: true })
-          }
           if (facetIsObserved) {
             facetList.forEach((facet) => {
               // Check the matched facet checkbox
@@ -215,7 +213,7 @@ browseCategories.forEach((category) => {
 
             // Check for result correctness
             cy.get(':nth-child(1) > p').then(($result) => {
-              if ($result.text().includes(' 0 Results | Showing')) {
+              if ($result.text().includes('0 Results | Showing')) {
                 // Empty text should exist if no result
                 cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
               } else {
