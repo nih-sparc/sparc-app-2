@@ -133,6 +133,7 @@ export default defineNuxtConfig({
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
+      ctf_consortia_content_type_id: 'consortia',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',

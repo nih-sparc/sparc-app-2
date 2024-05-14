@@ -1,12 +1,12 @@
 <template>
   <div class="card-container p-16">
-    <el-row :gutter="16">
-      <el-col :span="6">
+    <div class="subpage-row">
+      <div class="subpage-col">
         <div class="image-container"> 
           <img class="banner-image" :src="banner" :alt="'image could not load'" />
         </div>
-      </el-col>
-      <el-col :span="18">
+      </div>
+      <div class="subpage-col">
         <template v-if="link.isInternal">
           <nuxt-link
             class="dataset-name tab1"
@@ -46,8 +46,8 @@
             </el-button>
           </a>
         </template>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -87,11 +87,25 @@ export default {
 .card-container {
   background-color: white;
   height: 100%;
+  border: solid $lineColor1 1px;
 }
 .image-container {
   display: flex;
   aspect-ratio: 1;
   border: 1px solid $lineColor2;
+  max-width: 12rem;
+}
+.subpage-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: white;
+  padding: .5rem;
+}
+
+.subpage-row {
+  display: flex;
+  flex-direction: row;
 }
 .banner-image {
   height: auto;

@@ -3,29 +3,19 @@
     <el-table-column width="160">
       <template v-slot="scope">
         <div class="image-container">
-          <img
-            v-if="scope.row.fields.institution"
-            class="img-project"
-            :src="getImageSrc(scope)"
-            :alt="getImageAlt(scope)"
-          />
+          <img v-if="scope.row.fields.institution" class="img-project" :src="getImageSrc(scope)"
+            :alt="getImageAlt(scope)" />
         </div>
       </template>
     </el-table-column>
 
     <el-table-column min-width="400">
       <template v-slot="scope">
-        <nuxt-link
-          :to="{
-            name: 'projects-projectId',
+        <nuxt-link :to="{
+            name: 'about-projects-projectId',
             params: { projectId: scope.row.sys.id },
-            query: {
-              type: 'projects'
-            }
-          }"
-          v-html="highlightMatches(scope.row.fields.title, $route.query.search)"
-        />
-        <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)"/>
+          }" v-html="highlightMatches(scope.row.fields.title, $route.query.search)" />
+        <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)" />
         <table class="property-table">
           <tr v-if="scope.row.fields.focus">
             <td class="property-name-column">
@@ -37,7 +27,7 @@
             <td class="property-name-column">
               Principle Investigator
             </td>
-            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)"/>
+            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.institution">
             <td class="property-name-column">
@@ -51,9 +41,7 @@
             <td class="property-name-column">
               Funding Program
             </td>
-            <td 
-              v-html="highlightMatches(scope.row.fields.program[0], $route.query.search)"
-            />
+            <td v-html="highlightMatches(scope.row.fields.program[0], $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">

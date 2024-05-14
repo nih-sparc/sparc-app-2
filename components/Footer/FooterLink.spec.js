@@ -17,7 +17,7 @@ const internalLink = {
     },
     locale: 'en-US'
   },
-  fields: { title: 'About SPARC', url: '/about' }
+  fields: { title: 'About', url: '/about' }
 }
 
 const externalLink = {

@@ -2,6 +2,7 @@
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="News" />
     <div class="container">
+      <h1 hidden>Search for news</h1>
       <div class="search-tabs__container">
         <h3>
           Browse categories

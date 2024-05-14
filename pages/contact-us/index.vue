@@ -3,6 +3,7 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="breadcrumbTitle" />
     <div class="container">
       <div class="tabs__container">
+        <h1 hidden>Contact forms</h1>
         <h3>
           Select Form
         </h3>
