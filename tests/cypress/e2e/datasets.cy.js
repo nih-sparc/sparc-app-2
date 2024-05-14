@@ -216,14 +216,16 @@ datasetIds.forEach(datasetId => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/).children().not('.label4').invoke('text').then((value) => {
+          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/).children().not('.label4').invoke('text').then((institution) => {
             cy.get('.mt-8 > a').click()
             cy.url({ timeout: 30000 }).should('contain', 'projects')
 
-            // Check for the institution 
-            const institution = value.match(/[ a-zA-Z]+/)[0].trim()
-            cy.get('.body1 > :nth-child(6)').should('contain', institution);
-            cy.go('back')
+            cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+              // Check for the title and the institution 
+              cy.get('.row > .heading2').should('contain', title.trim());
+              cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
+              cy.go('back')
+            })
           })
         }
       })
