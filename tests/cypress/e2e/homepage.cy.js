@@ -6,10 +6,6 @@ describe('Homepage', { testIsolation: false }, function () {
 
   })
 
-  beforeEach(function () {
-    cy.intercept('**/cdn.contentful.com/**').as('contentful')
-  })
-
   it('Navigation Bar', function () {
     // Check for navigation bar
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data')
@@ -38,8 +34,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('@category').first().click()
     cy.url().should('contain', 'data?type=dataset&selectedFacetIds=')
     cy.visit('')
-
-    cy.wait('@contentful', { timeout: 20000 })
 
     cy.waitForLoadingMask()
 
@@ -79,8 +73,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a', { timeout: 30000 }).should('have.class', 'active')
     cy.visit('')
 
-    cy.wait('@contentful', { timeout: 20000 })
-
     cy.waitForLoadingMask()
 
   })
@@ -113,7 +105,7 @@ describe('Homepage', { testIsolation: false }, function () {
     })
     cy.visit('')
 
-    cy.wait('@contentful', { timeout: 20000 })
+    cy.waitForLoadingMask()
 
   })
 
