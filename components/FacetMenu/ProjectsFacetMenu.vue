@@ -19,13 +19,6 @@
       :default-checked-ids="defaultCheckedAnatomicalFocusIds"
       @selection-change="onAnatomicalFacetSelectionChange"
     />
-    <dropdown-multiselect
-      ref="fundingCategory"
-      collapse-by-default
-      :category="fundingCategory"
-      :default-checked-ids="defaultCheckedFundingIds"
-      @selection-change="onFundingFacetSelectionChange"
-    />
   </div>
 </template>
 
@@ -34,7 +27,6 @@ import { pluck } from 'ramda'
 import FacetMenu from './FacetMenu.vue'
 
 const ANATOMICAL_FOCUS_CATEGORY_ID = 'anatomicalFocus'
-const FUNDING_CATEGORY_ID = 'funding'
 
 export default {
   name: 'ProjectsFacetMenu',
@@ -45,19 +37,13 @@ export default {
     anatomicalFocusFacets: {
       type: Array,
       default: () => []
-    },
-    fundingFacets: {
-      type: Array,
-      default: () => []
     }
   },  
   
   data() {
     return {
       selectedAnatomicalFocusFacets: [],
-      selectedFundingFacets: [],
       defaultCheckedAnatomicalFocusIds: [],
-      defaultCheckedFundingIds: []
     }
   },
 
@@ -69,21 +55,11 @@ export default {
         data: this.anatomicalFocusFacets
       }
     },
-    fundingCategory: function() {
-      return {
-        label: 'Funding Program',
-        id: FUNDING_CATEGORY_ID,
-        data: this.fundingFacets
-      }
-    },
     visibleCategories: function() {
-      return [ANATOMICAL_FOCUS_CATEGORY_ID, FUNDING_CATEGORY_ID]
+      return [ANATOMICAL_FOCUS_CATEGORY_ID]
     },
     selectedAnatomicalFocusIds: function() {
       return pluck('id', this.selectedAnatomicalFocusFacets).toString()
-    },
-    selectedFundingIds: function() {
-      return pluck('id', this.selectedFundingFacets).toString()
     },
     selectedFacets: function() {
       let facets = []
@@ -96,15 +72,6 @@ export default {
           })
         })
       }
-      if (this.selectedFundingFacets != []) {
-        this.selectedFundingFacets.forEach(selectedOption => {
-          facets.push({
-            label: `${selectedOption.label}`,
-            id: `${selectedOption.id}`,
-            facetPropPath: this.fundingCategory.id
-          })
-        })
-      }
       return facets
     },
   },
@@ -112,9 +79,6 @@ export default {
   mounted() {
     if (this.$route.query.selectedProjectsAnatomicalFocusIds) {
       this.defaultCheckedAnatomicalFocusIds = this.$route.query.selectedProjectsAnatomicalFocusIds.split(",")
-    }
-    if (this.$route.query.selectedProjectsFundingIds) {
-      this.defaultCheckedFundingIds = this.$route.query.selectedProjectsFundingIds.split(",")
     }
   },
 
@@ -132,46 +96,26 @@ export default {
         this.$emit('projects-selections-changed')
       })
     },
-    onFundingFacetSelectionChange: function(data) {
-      this.selectedFundingFacets = data.checkedNodes
-      const selectedFacetIds = this.selectedFundingFacets.length === 0 ? undefined : this.selectedFundingIds
-
-      this.$router.replace({
-        query: { 
-          ...this.$route.query, 
-          selectedProjectsFundingIds: selectedFacetIds
-        }
-      }).then(() => {
-        this.$emit('projects-selections-changed')
-      })
-    },
     getSelectedAnatomicalFocusTypes: function() {
       return this.selectedAnatomicalFocusFacets.length > 0 ? this.selectedAnatomicalFocusIds : undefined
-    },
-    getSelectedFundingTypes: function() {
-      return this.selectedFundingFacets.length > 0 ? this.selectedFundingIds : undefined
     },
     async deselectAllFacets() {
       await this.$router.replace(
         {
           query: {
             ...this.$route.query,
-            selectedProjectsAnatomicalFocusIds: undefined,
-            selectedFundingIds: undefined
+            selectedProjectsAnatomicalFocusIds: undefined
           }
         }).then(() => {
           this.$emit('projects-selections-changed')
           this.$refs.anatomicalFocusCategory.uncheckAll()
-          this.$refs.fundingCategory.uncheckAll()
         })
     },
     deselectFacet(id) {
       this.$refs.anatomicalFocusCategory.uncheck(id)
-      this.$refs.fundingCategory.uncheck(id)
     },
     expandAllCategories() {
       this.$refs.anatomicalFocusCategory.setCollapsed(false)
-      this.$refs.fundingCategory.setCollapsed(false)
     },
 	}
 }

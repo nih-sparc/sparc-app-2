@@ -155,7 +155,7 @@ export default {
     getProjectLink: function(associatedProject) {
       const sys = propOr(null, 'sys', associatedProject)
       const entryId = propOr(null, 'id', sys)
-      return entryId != null ? `/projects/${entryId}` : ''
+      return entryId != null ? `/about/projects/${entryId}` : ''
     },
     getProjectTitle: function(associatedProject) {
       const fields = propOr(null, 'fields', associatedProject)

@@ -1,6 +1,7 @@
 <template>
   <div class="file-detail-page">
     <div class="page-wrap container">
+      <h1 hidden>Image viewer</h1>
       <content-tab-card
         class="mt-24"
         :tabs="tabs"
