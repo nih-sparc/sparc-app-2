@@ -1,9 +1,8 @@
 describe('Homepage', { testIsolation: false }, function () {
   before(function () {
-    cy.intercept('**/cdn.contentful.com/**').as('contentful')
     cy.visit('')
 
-    cy.wait('@contentful', { timeout: 20000 })
+    cy.waitForLoadingMask()
 
   })
 
@@ -42,6 +41,8 @@ describe('Homepage', { testIsolation: false }, function () {
 
     cy.wait('@contentful', { timeout: 20000 })
 
+    cy.waitForLoadingMask()
+
     // Check for the number of categories
     cy.get('@category').should('have.length', 6)
 
@@ -79,6 +80,8 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.visit('')
 
     cy.wait('@contentful', { timeout: 20000 })
+
+    cy.waitForLoadingMask()
 
   })
 
