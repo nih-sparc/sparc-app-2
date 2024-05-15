@@ -131,7 +131,12 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
   } else if (route.query.fid) {
     successMessage = "A flatmap's unique id is provided, a legacy map may be displayed instead."
   } else {
-    failMessage = `Sorry! Species information cannot be found. The ${organ} of a rat has been shown instead.`
+    failMessage = 'Sorry! Species information cannot be found. '
+    if (organ) {
+      failMessage += `The ${organ} of a rat has been shown instead.`
+    } else {
+      failMessage += 'A generic rat flatmap has been shown instead.'
+    }
   }
   return { successMessage, failMessage }
 }

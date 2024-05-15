@@ -103,23 +103,32 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           }
         }
 
-        // Add flatmaps that match the anatomy and taxonomy to the gallery
+        // Default species flatmap
+        let speciesData = {
+          taxo,
+          id: datasetId,
+          version: datasetVersion,
+          species: species
+        }
+        // Add uberonid and organ to the default flatmap if match the anatomy and taxonomy
         scicrunchData.organs.forEach(organ => {
-          if (foundAnatomy.includes(organ.curie)){
+          if (foundAnatomy.includes(organ.curie)) {
             let organData = {
-              taxo,
+              ...speciesData,
               uberonid: organ.curie,
               organ: organ.name,
-              id: datasetId,
-              version: datasetVersion,
-              species: species
             }
             flatmapData.push(organData)
           }
         })
-        //Only create a flatmaps field if flatmapData is not empty
-        if (flatmapData.length > 0)
-          scicrunchData['flatmaps'] = flatmapData
+        // Use the default species flatmap when the anatomy and taxonomy not match
+        if (flatmapData.length === 0) {
+          flatmapData.push(speciesData)
+        }
+        scicrunchData['flatmaps'] = flatmapData
+      } else {
+        // Use the rat flatmap when no entity on the anatomical structure as generic flatmap
+        scicrunchData['flatmaps'] = [{ taxo: Uberons.species['rat'] }]
       }
     }
   } catch (e) {
@@ -402,13 +411,14 @@ export default {
                 title = `View ${f.organ}`
               }
 
-              let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}&uberonid=${f.uberonid}`
+              let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}`
+              if (f.uberonid) linkUrl = linkUrl + `&uberonid=${f.uberonid}`
               if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
               const item = {
                 id: f.uberonid,
                 title: title,
                 type: `${this.capitalize(
-                  f.species ? f.species : 'rat'
+                  f.species && f.species === flatmaps.speciesMap[f.taxo] ? f.species : 'generic'
                 )} flatmap`,
                 thumbnail: null,
                 link: linkUrl
