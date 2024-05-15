@@ -1,6 +1,10 @@
 describe('Homepage', { testIsolation: false }, function () {
   before(function () {
+    cy.intercept('**/cdn.contentful.com/**').as('contentful')
     cy.visit('')
+
+    cy.wait('@contentful', { timeout: 20000 })
+
   })
 
   beforeEach(function () {
@@ -8,9 +12,6 @@ describe('Homepage', { testIsolation: false }, function () {
   })
 
   it('Navigation Bar', function () {
-
-    cy.wait('@contentful', { timeout: 20000 })
-
     // Check for navigation bar
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'SPARC Apps').and('have.attr', 'href', '/apps')
