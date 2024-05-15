@@ -22,9 +22,9 @@ export default defineConfig({
     env: {
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
-      SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, neck',
+      SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',
       FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',
-      MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Heart, Adult',
+      MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Pig, Heart',
       // datasets.js
       DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 205, 290, 34, 76',
       // mapsviewer.js
