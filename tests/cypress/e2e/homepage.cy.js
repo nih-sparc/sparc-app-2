@@ -1,6 +1,9 @@
 describe('Homepage', { testIsolation: false }, function () {
   before(function () {
     cy.visit('')
+
+    cy.waitForLoadingMask()
+
   })
 
   it('Navigation Bar', function () {
@@ -12,7 +15,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(1) > :nth-child(5) > a').should('contain', 'About').and('have.attr', 'href', '/about')
     cy.get(':nth-child(1) > :nth-child(6) > a').should('contain', 'Submit to SPARC').and('have.attr', 'href', '/share-data')
   })
-  
+
   it('Page hero', function () {
     // Check for banner
     cy.get('h1').should('contain', 'SPARC')
@@ -29,7 +32,10 @@ describe('Homepage', { testIsolation: false }, function () {
       cy.wrap($cat).should('have.attr', 'href').and('contain', 'selectedFacetIds')
     })
     cy.get('@category').first().click()
+    cy.url().should('contain', 'data?type=dataset&selectedFacetIds=')
     cy.visit('')
+
+    cy.waitForLoadingMask()
 
     // Check for the number of categories
     cy.get('@category').should('have.length', 6)
@@ -64,8 +70,11 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for button function
     cy.get(':nth-child(1) > .feature-container > .button-link > .el-button').click()
     cy.url().should('contain', 'data?type=dataset')
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('have.class', 'active')
-    cy.go('back')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a', { timeout: 30000 }).should('have.class', 'active')
+    cy.visit('')
+
+    cy.waitForLoadingMask()
+
   })
 
   it('Projects and datasets', function () {
@@ -77,11 +86,11 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.row > :nth-child(2) > .mb-16').should('have.text', 'Featured Datasets')
 
     // Check for card content
-    cy.get(':nth-child(1) > .card-container > .el-row').within(() => {
-      cy.get('.el-col-6 > .image-container').should('exist')
-      cy.get('.el-col-18 > .dataset-name').should('exist')
-      cy.get('.el-col-18 > .dataset-description').should('exist')
-      cy.get('.el-col-18 > .button-link > .el-button').should('exist')
+    cy.get(':nth-child(1) > .card-container').within(() => {
+      cy.get('.subpage-row > :nth-child(1) > .image-container > .banner-image').should('exist')
+      cy.get('.subpage-row > :nth-child(2) > .dataset-name').should('exist')
+      cy.get('.subpage-row > :nth-child(2) > .dataset-description').should('exist')
+      cy.get('.subpage-row > :nth-child(2) > .button-link > .el-button').should('exist')
     })
 
     // Check for card 'view all' link
@@ -89,12 +98,15 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(2) > .view-all-link').should('contain', 'View All Datasets')
 
     // Check for button redirect to dataset
-    cy.get(':nth-child(2) > .card-container > .el-row > .el-col-18 > .dataset-name').then(($link)=>{
+    cy.get(':nth-child(2) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').then(($link) => {
       const title = $link.text().replace('\n', '').trim()
-      cy.get(':nth-child(2) > .card-container > .el-row > .el-col-18 > .button-link > .el-button').click()
-      cy.contains(title).should('exist')
+      cy.wrap($link).siblings('.button-link').click()
+      cy.contains(title, { timeout: 30000 }).should('exist')
     })
     cy.visit('')
+
+    cy.waitForLoadingMask()
+
   })
 
   it('Homepage news', function () {
@@ -114,7 +126,7 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for card 'view all' link
     cy.get('.sparc-card__content-wrap__content > .view-all-link').should('exist')
   })
-  
+
   it('Stay connected', function () {
     // Check for content title
     cy.get('.subheader').should('have.text', 'Stay Connected')
