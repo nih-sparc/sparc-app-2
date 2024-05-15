@@ -16,7 +16,7 @@ let loadedModels = new Set()
  */
 const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
-const searchInMap = [...new Set(Cypress.env('SEARCH_IN_MAP'))]
+const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
 const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
 
@@ -37,8 +37,14 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
+      if (index === 0) {
 
-      cy.waitForLoadingMask()
+        cy.wait('@flatmap', { timeout: 20000 })
+
+        cy.waitForLoadingMask()
+
+        loadedModels.add('Rat')
+      }
 
       // Switch to the second flatmap
       cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
@@ -51,9 +57,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
         cy.waitForLoadingMask()
 
-        if (index === 0) {
-          loadedModels.add('Rat')
-        }
         loadedModels.add(model)
       }
 
