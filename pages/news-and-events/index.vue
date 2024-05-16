@@ -13,7 +13,7 @@
         :src="page.fields.heroImage.fields.file.url"
       />
       <NuxtLink to="/news-and-events/news">
-        <el-button class="secondary mb-16">Browse all News &amp; Events</el-button>
+        <el-button class="secondary mb-16">Browse All News &amp; Events</el-button>
       </NuxtLink>
     </page-hero>
 
@@ -96,7 +96,7 @@
                   target="_blank"
                 >
                   <el-button class="get-involved-button secondary">
-                    Share news or events
+                    Share News Or Events
                   </el-button>
                 </nuxt-link>
                 <nuxt-link
@@ -109,7 +109,7 @@
                   target="_blank"
                 >
                   <el-button class="get-involved-button secondary mt-8">
-                    Submit a community spotlight idea
+                    Submit A Community Spotlight Idea
                   </el-button>
                 </nuxt-link>
               </div>

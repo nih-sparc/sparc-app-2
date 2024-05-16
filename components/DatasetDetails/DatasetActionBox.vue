@@ -83,7 +83,7 @@
           target="_blank"
         >
           <el-button class="secondary" @click="onSdsButtonClick">
-            Explore in SDS Viewer
+            Explore In SDS Viewer
           </el-button>
         </a>
       </template>
