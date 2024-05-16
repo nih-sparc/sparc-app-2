@@ -23,7 +23,7 @@
     "sitemap": "^7.1.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.0.2",
+    "@abi-software/mapintegratedvuer": "1.0.4",
     "@abi-software/plotvuer": "1.0.0",
     "@abi-software/simulationvuer": "1.0.0",
     "@element-plus/nuxt": "^1.0.6",
