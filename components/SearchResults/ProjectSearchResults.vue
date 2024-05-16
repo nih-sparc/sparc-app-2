@@ -41,7 +41,7 @@
             <td class="property-name-column">
               Funding Program(s)
             </td>
-            <td v-html="highlightMatches(scope.row.fields.program[0], $route.query.search)" />
+            <td v-html="highlightMatches(scope.row.fields.program.join(', '), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
