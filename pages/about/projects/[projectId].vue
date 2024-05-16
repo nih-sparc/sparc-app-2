@@ -17,11 +17,11 @@
             <div v-if="focus" class="body1">
               FOCUS: <span class="label4">{{ focus }}</span>
             </div>
-            <div v-if="investigator" class="body1 mb-4">
-              PRINCIPAL INVESTIGATOR: <span class="label4">{{ investigator }}</span>
+            <div v-if="investigators" class="body1 mb-4">
+              PRINCIPAL INVESTIGATOR(S): <span class="label4">{{ investigators.join(', ') }}</span>
             </div>
-            <div v-if="institution" class="body1 mb-4">
-              INSTITUTION: <span class="label4">{{ institution }}</span>
+            <div v-if="institutions" class="body1 mb-4">
+              INSTITUTION(S): <span class="label4">{{ institutions }}</span>
             </div>
             <div v-if="fundingProgram.length > 0" class="body1 mb-4">
               FUNDING PROGRAM(S): <span class="label4">{{ fundingProgram.join(', ') }}</span>
@@ -159,8 +159,8 @@ export default {
      * @returns {String}
      */
     getImageSrc: function () {
-      return this.fields.institution.fields.logo
-        ? this.fields.institution.fields.logo.fields.file.url
+      return this.fields.institutions[0].fields.logo
+        ? this.fields.institutions[0].fields.logo.fields.file.url
         : ''
     },
     title: function () {
@@ -175,11 +175,15 @@ export default {
     awardId: function () {
       return this.fields.awardId
     },
-    institution: function () {
-      return this.fields.institution.fields.name
+    institutions: function () {
+      let names = ''
+      this.fields.institutions.forEach(institution => {
+        names += institution.fields.name + ", "
+      })
+      return names.substring(0, names.length - 2)
     },
-    investigator: function () {
-      return this.fields.principleInvestigator
+    investigators: function () {
+      return this.fields.principalInvestigators
     },
     nihReporterUrl: function () {
       return this.fields.nihReporterUrl || '#'
@@ -189,8 +193,8 @@ export default {
      * @returns {String}
      */
     getImageAlt: function () {
-      return this.fields.institution.fields.logo
-        ? this.fields?.institution.fields.logo.fields.file.description
+      return this.fields.institutions[0].fields.logo
+        ? this.fields?.institutions[0].fields.logo.fields.file.description
         : ''
     },
     /**
