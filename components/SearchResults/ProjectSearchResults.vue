@@ -21,7 +21,7 @@
             <td class="property-name-column">
               Focus
             </td>
-            <td v-html="highlightMatches(scope.row.fields.focus.join(), $route.query.search)"/>
+            <td v-html="highlightMatches(scope.row.fields.focus.join(', '), $route.query.search)"/>
           </tr>
           <tr v-if="scope.row.fields.principleInvestigator">
             <td class="property-name-column">
