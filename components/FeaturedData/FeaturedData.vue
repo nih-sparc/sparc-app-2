@@ -52,7 +52,7 @@ export default {
 
   computed: {
     viewMoreText() {
-      return this.viewMore ? 'View less' : 'View more'
+      return this.viewMore ? 'View Less' : 'View More'
     }
   },
 

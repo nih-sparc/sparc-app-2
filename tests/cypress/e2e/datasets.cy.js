@@ -265,7 +265,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.aws-download-column > :nth-child(1) > .label4').should('have.text', 'Option 2 - AWS download: ');
 
           // Check for download full dataset button
-          cy.get('.left-column .el-button').contains('Download full dataset').should('be.visible');
+          cy.get('.left-column .el-button').contains('Download Full Dataset').should('be.visible');
           cy.contains('Dataset size').parent().then(($size) => {
             const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
             if ($size.text().includes("GB") && size > 5) {

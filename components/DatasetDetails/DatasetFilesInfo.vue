@@ -73,7 +73,7 @@
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
             <a :href="downloadUrl">
-              <el-button @click="sendGtmEvent" class="my-16">Download full dataset</el-button>
+              <el-button @click="sendGtmEvent" class="my-16">Download Full Dataset</el-button>
             </a>
           </div>
           <div v-else>
@@ -87,7 +87,7 @@
                 </div>
               </template>
               <template #item>
-                <el-button disabled class="my-16">Download full dataset</el-button>
+                <el-button disabled class="my-16">Download Full Dataset</el-button>
               </template>
             </sparc-tooltip>
           </div>

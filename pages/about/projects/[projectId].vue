@@ -118,6 +118,7 @@ export default {
 
   mounted() {
     this.fetchConsortiaStyle(this.fundingProgram)
+    this.$router.replace({'consortiaType': undefined})
   },
 
   watch: {

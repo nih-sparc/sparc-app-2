@@ -21,27 +21,27 @@
             <td class="property-name-column">
               Focus
             </td>
-            <td v-html="highlightMatches(scope.row.fields.focus.join(), $route.query.search)"/>
+            <td v-html="highlightMatches(scope.row.fields.focus.join(', '), $route.query.search)"/>
           </tr>
-          <tr v-if="scope.row.fields.principleInvestigator">
+          <tr v-if="scope.row.fields.principalInvestigators">
             <td class="property-name-column">
-              Principle Investigator
+              Principle Investigator(s)
             </td>
-            <td v-html="highlightMatches(reverseName(scope.row.fields.principleInvestigator), $route.query.search)" />
+            <td v-html="highlightMatches(scope.row.fields.principalInvestigators.join(', '), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.institution">
             <td class="property-name-column">
-              Institution
+              Institution(s)
             </td>
             <td>
-              {{ scope.row.fields.institution.fields.name }}
+              {{ getInstitutionNames(scope.row.fields.institutions) }}
             </td>
           </tr>
           <tr v-if="scope.row.fields.program.length > 0">
             <td class="property-name-column">
-              Funding Program
+              Funding Program(s)
             </td>
-            <td v-html="highlightMatches(scope.row.fields.program[0], $route.query.search)" />
+            <td v-html="highlightMatches(scope.row.fields.program.join(', '), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.awardId">
             <td class="property-name-column">
@@ -117,16 +117,12 @@ export default {
       return scope.row.fields.shortDescription || ''
     },
 
-    // Return name in the form last, first
-    reverseName: function(name) {
-      const fullName = name.split(' ')
-      if (fullName.length < 2) {
-        return name
-      }
-      if (fullName.length === 2) {
-        return `${fullName[1]}, ${fullName[0]}`
-      }
-      return `${fullName[2]}, ${fullName[0]} ${fullName[1]}`
+    getInstitutionNames(institutions) {
+      let names = ''
+      institutions.forEach(institution => {
+        names += institution.fields.name + ", "
+      })
+      return names.substring(0, names.length - 2)
     },
     isInternalLink,
     highlightMatches
@@ -163,7 +159,7 @@ table:not([class^='el-table__'])::before {
   display: none;
 }
 .property-name-column {
-  width: 160px;
+  width: 11rem;
   font-weight: bold;
   background-color: transparent !important;
 }

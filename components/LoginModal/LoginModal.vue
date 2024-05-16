@@ -30,7 +30,7 @@
           height="16"
           alt="Logo for ORCID"
         />
-        Sign in with ORCID iD
+        Sign In With ORCID iD
       </el-button>
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->

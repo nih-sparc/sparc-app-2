@@ -75,7 +75,7 @@
               })
           "
           >
-            Download Metadata file
+            Download Metadata File
           </el-button>
         </template>
       </sparc-tooltip>

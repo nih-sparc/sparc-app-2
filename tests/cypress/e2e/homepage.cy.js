@@ -41,7 +41,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('@category').should('have.length', 6)
 
     // Show more categories
-    cy.get('.featured-data > .el-button').should('have.text', 'View more')
+    cy.get('.featured-data > .el-button').should('have.text', 'View More')
     cy.get('.featured-data > .el-button > span').click()
 
     // Check for the number of categories after showing more

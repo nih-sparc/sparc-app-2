@@ -11,8 +11,7 @@
       <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-32 mt-32">
         <div class="heading1 mb-16">Who We Support</div>
         <div class="body1 mb-16">The SPARC Portal currently supports {{ whoWeSupport.length }} consortia. Visit the
-          consortia
-          page to find out more about them.</div>
+          consortia page to find out more about them.</div>
         <div class="data-wrap">
           <nuxt-link v-for="item in whoWeSupport" :key="item.sys.id" class="who-we-support-item"
             :to="`/about/consortia/${item.fields.slug}`">
@@ -22,6 +21,11 @@
             </p>
           </nuxt-link>
         </div>
+        <nuxt-link to="/about/projects">
+          <el-button class="secondary">
+            View All Projects
+          </el-button>
+        </nuxt-link>
       </div>
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whatWeOffer)" :button-text="' What We Offer '"
