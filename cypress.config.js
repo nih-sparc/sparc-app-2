@@ -45,7 +45,7 @@ export default defineConfig({
         config.env.TAXON_MODELS = randomAssign('Human Female, Human Male, Rat, Mouse, Pig, Cat', 2);
       }
       if (!config.env.THREE_SYNC_VIEW) {
-        config.env.THREE_SYNC_VIEW = randomAssign('Human Female, Human Male, Rat', 1);
+        config.env.THREE_SYNC_VIEW = randomAssign('Human Female, Human Male', 1);
       }
       if (!config.env.SEARCH_IN_MAP) {
         config.env.SEARCH_IN_MAP = randomAssign('Heart, Lung, Colon, Stomach, Liver', 1);
