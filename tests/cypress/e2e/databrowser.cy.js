@@ -135,6 +135,8 @@ browseCategories.forEach((category) => {
         // Click search button
         cy.get('.search-text').click()
 
+        cy.waitForLoadingMask()
+
         // Check for keyword in URL
         cy.url().should('contain', keyword)
 

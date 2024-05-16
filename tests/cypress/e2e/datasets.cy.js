@@ -99,6 +99,8 @@ datasetIds.forEach(datasetId => {
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
+        cy.waitForLoadingMask()
+
         let datasetShowUp = false
         cy.get('.img-dataset > img').each(($img) => {
           cy.wrap($img).invoke('attr', 'src').then((src) => {
@@ -114,6 +116,9 @@ datasetIds.forEach(datasetId => {
         cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
         cy.get('.el-input__inner').should('have.value', $name.text());
         cy.go('back')
+
+        cy.waitForLoadingMask()
+
       });
 
       // Check 'View other version' directs to Versions tab
@@ -225,6 +230,9 @@ datasetIds.forEach(datasetId => {
               cy.get('.row > .heading2').should('contain', title.trim());
               cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
               cy.go('back')
+
+              cy.waitForLoadingMask()
+
             })
           })
         }
