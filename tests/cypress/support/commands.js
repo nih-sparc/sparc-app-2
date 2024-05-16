@@ -102,3 +102,25 @@ Cypress.Commands.add('waitForLoadingMask', () => {
   cy.wait(5000)
 
 })
+
+Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
+  factArray.forEach((facet) => {
+    // Check the matched facet checkbox
+    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+        const isChecked = $checkbox.hasClass('is-checked')
+        if (action === 'check' && !isChecked) {
+          cy.wrap($label).click()
+        } else if (action === 'uncheck' && isChecked) {
+          cy.wrap($label).click()
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('checkFilterCleared', () => {
+  cy.get('.el-card__body > .capitalize').should('not.exist')
+  cy.get('.no-facets').should('contain', 'No filters applied')
+  cy.url().should('not.contain', 'selectedFacetIds')
+})
