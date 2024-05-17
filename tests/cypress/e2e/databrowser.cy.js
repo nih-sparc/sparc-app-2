@@ -139,7 +139,6 @@ browseCategories.forEach((category) => {
         cy.url().should('contain', keyword)
 
         cy.wait('@query', { timeout: 20000 })
-
         cy.waitForLoadingMask()
 
         // Check for result
@@ -214,7 +213,6 @@ browseCategories.forEach((category) => {
               cy.url().should('contain', 'selectedFacetIds')
 
               cy.wait('@query', { timeout: 20000 })
-
               cy.waitForLoadingMask()
 
               // Check for result correctness

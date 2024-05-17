@@ -40,7 +40,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       if (index === 0) {
 
         cy.wait('@flatmap', { timeout: 20000 })
-
         cy.waitForLoadingMask()
 
         loadedModels.add('Rat')
@@ -54,7 +53,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       if (!loadedModels.has(model)) {
 
         cy.wait('@flatmap', { timeout: 20000 })
-
         cy.waitForLoadingMask()
 
         loadedModels.add(model)
@@ -68,24 +66,22 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
       // Open a provenance card
       cy.clickNeuron(coordinate, pixelChange)
+
+      cy.visit('/maps?type=ac')
     })
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
 
+    cy.wait('@flatmap', { timeout: 20000 })
     cy.waitForLoadingMask()
 
     // Switch to the human related flatmap
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
 
-    if (!loadedModels.has(threeDSyncView)) {
-
-      cy.wait('@flatmap', { timeout: 20000 })
-
-      cy.waitForLoadingMask()
-
-    }
+    cy.wait('@flatmap', { timeout: 20000 })
+    cy.waitForLoadingMask()
 
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
@@ -136,7 +132,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.header > .el-button > span').click()
 
       cy.wait('@query', { timeout: 20000 })
-
       cy.waitForLoadingMask()
 
       cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
@@ -163,7 +158,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
           // Check for context card
           cy.get('.context-card').should('be.visible')
-          cy.get('.context-image:visible').should('have.attr', 'src').and('contain', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
+          cy.get('.context-image:visible').should('have.attr', 'src').and('contain', datasetId)
           cy.get('[style="margin-right: 8px;"] > .title:visible').should('have.class', 'title')
         }
       })

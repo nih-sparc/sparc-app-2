@@ -92,33 +92,34 @@ datasetIds.forEach(datasetId => {
         cy.wrap($name).click()
 
         cy.wait('@query', { timeout: 20000 })
-
         cy.waitForLoadingMask()
 
-        // Check for result
-        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
-        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+        cy.get('.table-wrap').then(($content) => {
+          if (!$content.text().includes('No Results')) {
+            // Check for result
+            cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
+            cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
-        cy.waitForLoadingMask()
+            cy.waitForLoadingMask()
 
-        let datasetShowUp = false
-        cy.get('.img-dataset > img').each(($img) => {
-          cy.wrap($img).invoke('attr', 'src').then((src) => {
-            datasetShowUp = datasetShowUp || src.includes(datasetId)
-          })
-        }).then(() => {
-          if (!datasetShowUp) {
-            throw new Error("Can not find the dataset for current contributor")
+            let datasetShowUp = false
+            cy.get('.img-dataset > img').each(($img) => {
+              cy.wrap($img).invoke('attr', 'src').then((src) => {
+                datasetShowUp = datasetShowUp || src.includes(datasetId)
+              })
+            }).then(() => {
+              if (datasetShowUp) {
+                // Check for URL and search input
+                cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
+                cy.get('.el-input__inner').should('have.value', $name.text());
+              } else {
+                throw new Error("Can not find the dataset for current contributor")
+              }
+            })
+          } else {
+            throw new Error("Can not find any datasets")
           }
         })
-
-        // Check for URL and search input
-        cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
-        cy.get('.el-input__inner').should('have.value', $name.text());
-        cy.go('back')
-
-        cy.waitForLoadingMask()
-
       });
 
       // Check 'View other version' directs to Versions tab
@@ -138,6 +139,14 @@ datasetIds.forEach(datasetId => {
     });
 
     it("Abstract Tab", function () {
+      cy.url().then((url) => {
+        if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+          cy.go('back')
+
+          y.waitForLoadingMask()
+        }
+      })
+
       // Should switch to 'Abstract'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Abstract').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Abstract');
@@ -240,6 +249,14 @@ datasetIds.forEach(datasetId => {
     });
 
     it("Cite Tab", function () {
+      cy.url().then((url) => {
+        if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+          cy.go('back')
+
+          cy.waitForLoadingMask()
+        }
+      })
+
       // Should switch to 'Cite'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Cite').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');

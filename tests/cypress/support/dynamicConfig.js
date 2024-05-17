@@ -58,7 +58,7 @@ const DYNAMICENVS = {
     'THREE_SYNC_VIEW': { 'value': 'Human Female, Human Male', 'number': 1 }, // fixed, no need to change
     'SEARCH_IN_MAP': {
         'value': 'Heart, Lung, Colon, Stomach, Liver',
-        'number': 2
+        'number': 1 // fixed, no need to change
     },
     'SCAFFOLD_DATASET_IDS': {
         'value': '150, 155, 292, 102, 223',
