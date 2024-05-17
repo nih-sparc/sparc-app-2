@@ -109,10 +109,14 @@ Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
     cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
       cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
         const isChecked = $checkbox.hasClass('is-checked')
+        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
         if (action === 'check' && !isChecked) {
           cy.wrap($label).click()
-        } else if (action === 'uncheck' && isChecked) {
-          cy.wrap($label).click()
+        } else if (action === 'uncheck' && (isChecked || isIndeterminate)) {
+          cy.wrap($label).click() // If isIndeterminate after this click checkbox will turn to isChecked
+          if (isIndeterminate) {
+            cy.wrap($label).click() // One more click to uncheck
+          }
         }
       })
     })

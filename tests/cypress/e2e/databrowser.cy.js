@@ -35,13 +35,11 @@ browseCategories.forEach((category) => {
 
     beforeEach(function () {
       cy.intercept('**/query?**').as('query')
-      cy.intercept('**/entries?**').as('entries')
     })
 
     it('Dataset card', function () {
 
       cy.wait('@query', { timeout: 20000 })
-      cy.wait('@entries', { timeout: 20000 })
 
       cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
       cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
@@ -258,8 +256,15 @@ browseCategories.forEach((category) => {
                   // Check the matched facet checkbox
                   cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
                     cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+                      const isChecked = $checkbox.hasClass('is-checked')
+                      const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
                       // Close all facet tags in filters applied box
-                      if ($checkbox.hasClass('is-checked')) cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
+                      if (isChecked) cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
+                      if (isIndeterminate) {
+                        cy.get('.el-card__body > .capitalize > .el-tag__close').each(($close) => {
+                          cy.wrap($close).click()
+                        })
+                      }
                     })
                   })
                 })
@@ -272,11 +277,9 @@ browseCategories.forEach((category) => {
 
                 // Close one child facet tag and then click reset all
                 cy.filterCheckbox(facetList, 'check', $label)
-                cy.get('.el-card__body > .capitalize').then(() => {
-                  cy.get('.el-tag__close').last().click()
-                  cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                  cy.checkFilterCleared()
-                })
+                cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
+                cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                cy.checkFilterCleared()
               }
             } else {
               this.skip()
