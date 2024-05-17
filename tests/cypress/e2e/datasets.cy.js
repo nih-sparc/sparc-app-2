@@ -276,7 +276,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.left-column .el-button').contains('Download full dataset').should('be.visible');
           cy.contains('Dataset size').parent().then(($size) => {
             const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
-            if ($size.text().includes("GB") && size > 5) {
+            if (($size.text().includes("GB") && size > 5) || $size.text().includes("TB")) {
               cy.get('.el-tooltip__trigger > .el-button').should('not.be.enabled')
             } else {
               cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled')
