@@ -331,7 +331,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'References');
 
           // Check for content
-          cy.get('.dataset-references .heading2').contains('Associated Publications for this Dataset');
+          cy.get('.dataset-references .heading2').contains(/Primary Publications for this Dataset|Associated Publications for this Dataset/);
           cy.get('.dataset-references .citation-container').each(($el) => {
             cy.wrap($el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
             cy.wrap($el).find('.copy-button').click();
