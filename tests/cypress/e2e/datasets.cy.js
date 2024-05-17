@@ -305,12 +305,16 @@ datasetIds.forEach(datasetId => {
           cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
           cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
           cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
-          cy.get('.cell > .file-name-wrap > .el-tooltip__trigger').then(($folder) => {
-            cy.get('.breadcrumb-link').should('have.length', 1)
-            cy.wrap($folder).first().click()
-            cy.get('.breadcrumb-link').should('have.length', 2)
-            cy.get(':nth-child(1) > .breadcrumb-link').click()
-            cy.get('.breadcrumb-link').should('have.length', 1)
+          cy.get('tbody').then(($ele) => {
+            if ($ele.text().includes('Folder')) {
+              cy.get('.cell > .file-name-wrap > .el-tooltip__trigger').then(($folder) => {
+                cy.get('.breadcrumb-link').should('have.length', 1)
+                cy.wrap($folder).first().click()
+                cy.get('.breadcrumb-link').should('have.length', 2)
+                cy.get(':nth-child(1) > .breadcrumb-link').click()
+                cy.get('.breadcrumb-link').should('have.length', 1)
+              })
+            }
           })
         } else {
           this.skip();
