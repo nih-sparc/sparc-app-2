@@ -163,10 +163,15 @@ export default {
     backgroundColor3() {
       return pathOr('', ['fields', 'thirdColor'], this.consortiaItem)
     },
+    buttonAndLinkColor() {
+      return pathOr('', ['fields', 'buttonAndLinkColor'], this.consortiaItem)
+    },
     consortiaStyle() {
-      return isEmpty(this.backgroundColor3) ?
+      let style = isEmpty(this.backgroundColor3) ?
         { backgroundImage: `linear-gradient(#${this.backgroundColor1}, #${this.backgroundColor2}` } :
         { backgroundImage: `linear-gradient(#${this.backgroundColor1}, #${this.backgroundColor2}, #${this.backgroundColor3}` }
+      style = { ...style, '--button-and-link-color': `#${this.buttonAndLinkColor}`, '--button-and-link-secondary-color': `#${this.buttonAndLinkColor}16` }
+      return style
     },
     logoUrl() {
       return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], this.consortiaItem)
@@ -210,5 +215,36 @@ export default {
 .gallery-items-container {
   background-color: white;
   border: 1px solid $lineColor1;
+}
+
+:deep(.gallery-items-container),:deep(.featured-dataset-container) {
+  button {
+    background: var(--button-and-link-color) !important;
+  }
+  li.number {
+    border-color: var(--button-and-link-color) !important;
+  }
+  li {
+    color: var(--button-and-link-color) !important;
+    background-color: var(--button-and-link-secondary-color) !important;
+  }
+  li.is-active {
+    background-color: var(--button-and-link-color) !important;
+    color: white !important;
+  }
+  li.number:hover {
+    background-color: var(--button-and-link-color) !important;
+  }
+}
+:deep(.el-button.secondary), :deep(.el-button)
+{
+  background-color: var(--button-and-link-secondary-color) !important;
+  border-color: var(--button-and-link-color) !important;
+  color: var(--button-and-link-color) !important;
+}
+:deep(.container) {
+  a {
+    color: var(--button-and-link-color) !important;
+  }
 }
 </style>

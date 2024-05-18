@@ -19,7 +19,7 @@
         </li>
       </ul>
     </div>
-    <div :style="consortiaStyle" class="pt-16">
+    <div class="consortia-container pt-16" :style="consortiaStyle">
       <div class="container">
         <div class="search-bar__container">
           <div class="body1 mb-8">
@@ -607,5 +607,39 @@ export default {
 }
 :deep(.sparc-design-system-pagination) {
   padding-top: 0 !important;
+}
+
+:deep(.consortia-container) {
+  a {
+    color: var(--button-and-link-color) !important;
+  }
+  svg, .filter-dropdown {
+    color: var(--button-and-link-color) !important;
+  }
+  .el-button {
+    background-color: var(--button-and-link-color) !important;
+    border-color: var(--button-and-link-color) !important;
+    svg {
+      color: white !important;
+    }
+  }
+  .el-button-secondary {
+    background-color: var(--button-and-link-secondary-color) !important;
+    border-color: var(--button-and-link-color) !important;
+    color: var(--button-and-link-color) !important;
+  }
+  .el-checkbox__input.is-checked+.el-checkbox__label, .el-tree-node.is-checked .custom-tree-node {
+    color: var(--button-and-link-color) !important;
+  }
+  .el-checkbox__input.is-checked .el-checkbox__inner {
+    background-color: var(--button-and-link-color) !important;
+    border-color: var(--button-and-link-color) !important;
+  }
+  .el-checkbox__inner:hover {
+    border-color: var(--button-and-link-color) !important;
+  }
+  .expand-options-container {
+    color: var(--button-and-link-color) !important;
+  }
 }
 </style>

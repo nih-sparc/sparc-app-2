@@ -287,4 +287,20 @@ hr {
   padding-top: 1rem !important;
   padding-bottom: 0 !important;
 }
+:deep(.container) {
+  a {
+    color: var(--button-and-link-color) !important;
+  }
+  .btn-copy-permalink {
+    color: var(--button-and-link-color) !important;
+    path {
+      fill: var(--button-and-link-color) !important;
+    }
+  }
+  .el-button.secondary, .el-button {
+    background-color: var(--button-and-link-secondary-color) !important;
+    border-color: var(--button-and-link-color) !important;
+    color: var(--button-and-link-color) !important;
+  }
+}
 </style>
