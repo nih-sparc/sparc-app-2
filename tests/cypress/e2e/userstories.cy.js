@@ -102,7 +102,6 @@ describe('User stories', function () {
             cy.visit(`/maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${version}`);
 
             cy.wait('@query', { timeout: 20000 });
-
             cy.waitForLoadingMask()
 
             // Search dataset id
@@ -117,6 +116,9 @@ describe('User stories', function () {
 
             cy.get('@datasetCards').filter(`:contains(${datasetId})`).within(() => {
               cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).click();
+              
+              cy.waitForLoadingMask()
+
             });
 
             cy.get('@datasetCards').contains(/View Scaffold/i).click();
@@ -151,7 +153,7 @@ describe('User stories', function () {
       cy.wait(5000)
 
     })
-    
+
     categories.forEach((category) => {
 
       it(`Filter datasets by ${category}`, function () {
@@ -165,7 +167,7 @@ describe('User stories', function () {
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
-        
+
         cy.get('.cell > :nth-child(1) > .property-table > :nth-child(1) > :nth-child(2)', { timeout: 30000 }).first().contains(regex).should('exist');
 
         // Check for detail page

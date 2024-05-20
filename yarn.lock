@@ -9105,10 +9105,10 @@ custom-event-polyfill@^1.0.7:
   resolved "https://registry.yarnpkg.com/custom-event-polyfill/-/custom-event-polyfill-1.0.7.tgz#9bc993ddda937c1a30ccd335614c6c58c4f87aee"
   integrity sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==
 
-cypress@^13.6.6:
-  version "13.6.6"
-  resolved "https://registry.yarnpkg.com/cypress/-/cypress-13.6.6.tgz#5133f231ed1c6e57dc8dcbf60aade220bcd6884b"
-  integrity sha512-S+2S9S94611hXimH9a3EAYt81QM913ZVA03pUmGDfLTFa5gyp85NJ8dJGSlEAEmyRsYkioS1TtnWtbv/Fzt11A==
+cypress@13.9.0:
+  version "13.9.0"
+  resolved "https://registry.yarnpkg.com/cypress/-/cypress-13.9.0.tgz#b529cfa8f8c39ba163ed0501a25bb5b09c143652"
+  integrity sha512-atNjmYfHsvTuCaxTxLZr9xGoHz53LLui3266WWxXJHY7+N6OdwJdg/feEa3T+buez9dmUXHT1izCOklqG82uCQ==
   dependencies:
     "@cypress/request" "^3.0.0"
     "@cypress/xvfb" "^1.2.4"

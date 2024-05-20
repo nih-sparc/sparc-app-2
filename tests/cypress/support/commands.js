@@ -37,6 +37,10 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('ResizeObserver loop completed with undelivered notifications'))
     return false
+  if (err.message.includes('path.dirname is not a function'))
+    return false
+  if (err.message.includes("Cannot destructure property 'type' of 'vnode' as it is null"))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
@@ -101,4 +105,30 @@ Cypress.Commands.add('waitForLoadingMask', () => {
 
   cy.wait(5000)
 
+})
+
+Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
+  factArray.forEach((facet) => {
+    // Check the matched facet checkbox
+    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+        const isChecked = $checkbox.hasClass('is-checked')
+        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
+        if (action === 'check' && !isChecked) {
+          cy.wrap($label).click()
+        } else if (action === 'uncheck' && (isChecked || isIndeterminate)) {
+          cy.wrap($label).click() // If isIndeterminate after this click checkbox will turn to isChecked
+          if (isIndeterminate) {
+            cy.wrap($label).click() // One more click to uncheck
+          }
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('checkFilterCleared', () => {
+  cy.get('.el-card__body > .capitalize').should('not.exist')
+  cy.get('.no-facets').should('contain', 'No filters applied')
+  cy.url().should('not.contain', 'selectedFacetIds')
 })

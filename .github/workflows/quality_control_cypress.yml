@@ -1,18 +1,6 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Cypress Timeline Tests
+name: Quality Control Cypress Testing
 
 on:
-  # push:
-  #   branches: [master, main]
-
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    branches: [master, main]
-
-  schedule:
-    - cron: "0 0 * * 1"
-
   workflow_dispatch:
     inputs:
       PORTAL_TARGET:
@@ -113,107 +101,7 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  pull-request-cypress-run:
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
-    steps:
-      - uses: actions-cool/check-user-permission@main
-        id: checkUser
-        with:
-          require: "write"
-          username: ${{ github.event.pull_request.user.name }}
-
-      - name: Checkout
-        if: steps.checkUser.outputs.require-result == 'true'
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.17.1
-
-      - name: Automated Run Testing when Pull Request
-        if: steps.checkUser.outputs.require-result == 'true'
-        uses: cypress-io/github-action@v6
-        env:
-          ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
-        with:
-          build: yarn build
-          start: yarn preview
-          wait-on: ${{ secrets.ROOT_URL }}
-          record: true
-          parallel: true
-
-      - name: Skip tests
-        if: steps.checkUser.outputs.require-result == 'false'
-        uses: actions/github-script@v4
-        with:
-          script: |
-            core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')
-
-  schedule-cypress-run-staging:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.17.1
-
-      - name: Schedule Run Testing against Staging
-        uses: cypress-io/github-action@v6
-        env:
-          ROOT_URL: "https://staging.sparc.science"
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          parallel: true
-
-  schedule-cypress-run-production:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.17.1
-
-      - name: Schedule Run Testing against Production
-        uses: cypress-io/github-action@v6
-        env:
-          ROOT_URL: "https://sparc.science"
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          parallel: true
-
-  manual-cypress-run:
+  quality-control-cypress-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 

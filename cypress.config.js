@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import dynamicConfig from './tests/cypress/support/dynamicConfig.js'
 
 export default defineConfig({
   defaultCommandTimeout: 5000,
@@ -17,9 +18,10 @@ export default defineConfig({
     testIsolation: true,
     // pageLoadTimeout: 1024*1024*1024,
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      return dynamicConfig(config)
     },
     env: {
+      PORTAL_API: process.env.PORTAL_API_HOST ? process.env.PORTAL_API_HOST : 'https://sparc-api.herokuapp.com',
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',

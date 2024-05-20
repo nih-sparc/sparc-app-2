@@ -35,13 +35,11 @@ browseCategories.forEach((category) => {
 
     beforeEach(function () {
       cy.intercept('**/query?**').as('query')
-      cy.intercept('**/entries?**').as('entries')
     })
 
     it('Dataset card', function () {
 
       cy.wait('@query', { timeout: 20000 })
-      cy.wait('@entries', { timeout: 20000 })
 
       cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
       cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
@@ -135,12 +133,13 @@ browseCategories.forEach((category) => {
         // Click search button
         cy.get('.search-text').click()
 
+        cy.waitForLoadingMask()
+
         // Check for keyword in URL
         cy.url().should('contain', keyword)
 
         cy.wait('@query', { timeout: 20000 })
-
-        cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+        cy.waitForLoadingMask()
 
         // Check for result
         cy.get(':nth-child(1) > p').then(($result) => {
@@ -189,104 +188,101 @@ browseCategories.forEach((category) => {
           if (!isExpanded) cy.wrap($ele).click()
         })
 
-        // Check for filer
+        // Check for filter
         cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
-          let facetIsObserved = true
-          facetList.forEach((facet) => {
-            facetIsObserved = facetIsObserved && $label.text().toLowerCase().includes(facet.toLowerCase())
-          })
-          if (facetIsObserved) {
+          let facetsArray = []
+          cy.wrap($label).each($span => facetsArray.push($span.text().toLowerCase())).then(() => {
+            let facetIsObserved = true
             facetList.forEach((facet) => {
-              // Check the matched facet checkbox
-              cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-
-              // Check for the number of facet tags in filters applied box
-              cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
+              facetIsObserved = facetIsObserved && facetsArray.includes(facet.toLowerCase())
             })
-
-            // Check for URL
-            cy.url().should('contain', 'selectedFacetIds')
-
-            cy.wait('@query', { timeout: 20000 })
-
-            cy.get('.table-wrap.el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-            // Check for result correctness
-            cy.get(':nth-child(1) > p').then(($result) => {
-              if ($result.text().includes('0 Results | Showing')) {
-                // Empty text should exist if no result
-                cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
-              } else {
-                // Check for facets exist in dataset card
-                cy.get('.property-table').then(($content) => {
-                  facetList.forEach((facet) => {
-                    const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
-                    if (facetExistInCard) {
-                      cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
-                    } else {
-                      // *** Ignore when facets cannot be found or
-                      // *** Find some other solutions in the future
-                    }
+            if (facetIsObserved) {
+              facetList.forEach((facet) => {
+                // Check the matched facet checkbox
+                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+                  cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+                    if (!$checkbox.hasClass('is-checked')) cy.wrap($label).click()
                   })
                 })
-              }
-            })
 
-            for (let index = 0; index < 2; index++) {
-              if (index === 1) {
-                // Combine with search
-                cy.get('.el-input__inner').clear()
-                cy.get('.el-input__inner').type('dataset')
+                // Check for the number of facet tags in filters applied box
+                cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
+              })
+
+              // Check for URL
+              cy.url().should('contain', 'selectedFacetIds')
+
+              cy.wait('@query', { timeout: 20000 })
+              cy.waitForLoadingMask()
+
+              // Check for result correctness
+              cy.get(':nth-child(1) > p').then(($result) => {
+                if ($result.text().includes('0 Results | Showing')) {
+                  // Empty text should exist if no result
+                  cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
+                } else {
+                  // Check for facets exist in dataset card
+                  cy.get('.property-table').then(($content) => {
+                    facetList.forEach((facet) => {
+                      const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
+                      if (facetExistInCard) {
+                        cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
+                      } else {
+                        // *** Ignore when facets cannot be found or
+                        // *** Find some other solutions in the future
+                      }
+                    })
+                  })
+                }
+              })
+
+              for (let index = 0; index < 2; index++) {
+                if (index === 1) {
+                  // Combine with search
+                  cy.get('.el-input__inner').clear()
+                  cy.get('.el-input__inner').type('dataset')
+                  cy.filterCheckbox(facetList, 'check', $label)
+                }
+
+                // Uncheck all
+                cy.filterCheckbox(facetList, 'uncheck', $label)
+                cy.checkFilterCleared()
+
+                // Close all tags in order
+                cy.filterCheckbox(facetList, 'check', $label)
                 facetList.forEach((facet) => {
-                  cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
+                  // Check the matched facet checkbox
+                  cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+                    cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+                      const isChecked = $checkbox.hasClass('is-checked')
+                      const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
+                      // Close all facet tags in filters applied box
+                      if (isChecked) cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
+                      if (isIndeterminate) {
+                        cy.get('.el-card__body > .capitalize > .el-tag__close').each(($close) => {
+                          cy.wrap($close).click()
+                        })
+                      }
+                    })
+                  })
                 })
-              }
+                cy.checkFilterCleared()
 
-              // Uncheck
-              facetList.forEach((facet) => {
-                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              })
-              cy.get('.el-card__body > .capitalize').should('not.exist')
-              cy.get('.no-facets').should('contain', 'No filters applied')
-              cy.url().should('not.contain', 'selectedFacetIds')
-
-              // Close all tags in order
-              facetList.forEach((facet) => {
-                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              })
-              facetList.forEach((facet) => {
-                // Close all facet tags in filters applied box
-                cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
-              })
-              cy.get('.el-card__body > .capitalize').should('not.exist')
-              cy.get('.no-facets').should('contain', 'No filters applied')
-              cy.url().should('not.contain', 'selectedFacetIds')
-
-              // Reset all
-              facetList.forEach((facet) => {
-                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              })
-              cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-              cy.get('.el-card__body > .capitalize').should('not.exist')
-              cy.get('.no-facets').should('contain', 'No filters applied')
-              cy.url().should('not.contain', 'selectedFacetIds')
-
-              // Close a child facet tag and then click reset all
-              facetList.forEach((facet) => {
-                cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).click()
-              })
-              cy.get('.el-card__body > .capitalize').then(($tag) => {
-                cy.get('.el-tag__close').last().click()
+                // Reset all
+                cy.filterCheckbox(facetList, 'check', $label)
                 cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                cy.get('.el-card__body > .capitalize').should('not.exist')
-                cy.get('.no-facets').should('contain', 'No filters applied')
-                cy.url().should('not.contain', 'selectedFacetIds')
-              })
+                cy.checkFilterCleared()
 
+                // Close one child facet tag and then click reset all
+                cy.filterCheckbox(facetList, 'check', $label)
+                cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
+                cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                cy.checkFilterCleared()
+              }
+            } else {
+              this.skip()
             }
-          } else {
-            this.skip()
-          }
+          })
         })
       })
     })
