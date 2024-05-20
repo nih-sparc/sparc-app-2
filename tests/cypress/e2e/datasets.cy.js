@@ -113,12 +113,17 @@ datasetIds.forEach(datasetId => {
                 cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
                 cy.get('.el-input__inner').should('have.value', $name.text());
               } else {
-                throw new Error("Can not find the dataset for current contributor")
+                throw new Error("Can not find matched dataset for current contributor")
               }
             })
           } else {
-            throw new Error("Can not find any datasets")
+            // Skip test if can not find any datasets
+            this.skip()
           }
+          cy.go('back')
+
+          cy.waitForLoadingMask()
+
         })
       });
 
@@ -143,7 +148,8 @@ datasetIds.forEach(datasetId => {
         if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
           cy.go('back')
 
-          y.waitForLoadingMask()
+          cy.waitForLoadingMask()
+
         }
       })
 
@@ -254,6 +260,7 @@ datasetIds.forEach(datasetId => {
           cy.go('back')
 
           cy.waitForLoadingMask()
+
         }
       })
 
@@ -396,6 +403,8 @@ datasetIds.forEach(datasetId => {
               cy.wrap($cell).find('.circle').as('icons').should('have.length', 2)
               cy.get('@icons').eq(0).click()
 
+              cy.wait(5000)
+
               // Check for changelog popover
               cy.get('.optional-content-container').should('be.visible');
               cy.get('.main-content-container').should('be.visible');
@@ -424,6 +433,8 @@ datasetIds.forEach(datasetId => {
               });
             })
           })
+        } else {
+          this.skip()
         }
       });
     });

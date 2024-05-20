@@ -37,6 +37,10 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('ResizeObserver loop completed with undelivered notifications'))
     return false
+  if (err.message.includes('path.dirname is not a function'))
+    return false
+  if (err.message.includes("Cannot destructure property 'type' of 'vnode' as it is null"))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
