@@ -116,6 +116,9 @@ describe('User stories', function () {
 
             cy.get('@datasetCards').filter(`:contains(${datasetId})`).within(() => {
               cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).click();
+              
+              cy.waitForLoadingMask()
+
             });
 
             cy.get('@datasetCards').contains(/View Scaffold/i).click();
