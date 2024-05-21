@@ -114,7 +114,6 @@ export default defineNuxtConfig({
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
       CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
-      ctf_footer_copy_id: 'wpik0A2sDOy9IQEoKpkKG',
       ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
       ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
       ctf_project_id: 'sparcAward',

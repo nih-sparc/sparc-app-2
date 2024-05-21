@@ -1,6 +1,6 @@
 <template>
   <div class="learn-more-card">
-    <a class="link1" :href="aboutDetailsItem.fields.link"
+    <a class="link1" :href="aboutDetailsItem.fields.url"
       v-html="aboutDetailsItem.fields ? highlightMatches(aboutDetailsItem.fields.title, $route.query.search) : ''"
     />
     <p

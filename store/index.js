@@ -111,8 +111,9 @@ export const useMainStore = defineStore('main', {
     },
     async fetchFooterData() {
       try {
-        const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_footer_copy_id)
-        this.setFooterData(response.fields)
+        const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_home_page_id)
+        const { footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks } = response.fields
+        this.setFooterData({ footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks })
       } catch (e) {
         console.error(e)
       }

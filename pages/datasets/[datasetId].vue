@@ -169,6 +169,25 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
+const getOrganizationNames = async (algoliaIndex) => {
+  try {
+    await algoliaIndex.search('', {
+      sortFacetValuesBy: 'alpha',
+      facets: 'pennsieve.organization.name',
+    }).then(({ facets }) => {
+      return facets['pennsieve.organization.name'].keys()
+    })
+  } catch (error) {
+    return [
+      'SPARC',
+      'SPARC Consortium',
+      'RE-JOIN',
+      'HEAL PRECISION',
+      "IT'IS Foundation"
+    ]
+  }
+}
+
 const tabs = [
   {
     label: 'Abstract',
@@ -234,7 +253,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary] = await Promise.all([
+      let [datasetDetails, versions, downloadsSummary, sparcOrganizationNames] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -244,6 +263,7 @@ export default {
         ),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
+        getOrganizationNames(algoliaIndex)
       ])
       
       datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
@@ -399,8 +419,8 @@ export default {
         ]
       })
       const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
-      // Redirect them to doi if user tries to navifate directly to a dataset ID that is not a part of SPARC
-      if (!SPARC_ORGANIZATION_NAMES.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
+      // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
+      if (!sparcOrganizationNames.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
       {
         navigateTo(doiLink, { external: true, redirectCode: 301 })
       }
