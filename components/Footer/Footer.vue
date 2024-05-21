@@ -11,7 +11,7 @@
             </div>
             <div class="footer__info--blurb">
               <p>
-                {{ footerData.copy }}
+                {{ footerData.footerDescription }}
               </p>
             </div>
             <div class="footer__info--social">
