@@ -60,18 +60,21 @@
         @input="form.datasetSize = $event.target.value"
         label="5GB"
         display="~5GB"
+        :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
         label="50GB"
         display="~50GB"
+        :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
         label="500GB"
         display="~500GB"
+        :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
@@ -291,6 +294,12 @@ export default {
     populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
+  computed: {
+    isOversized: function() {
+      return this.form.individualFileSize === "TB"
+    },
+  },
+
   methods: {
     /**
      * Send form to endpoint
@@ -346,6 +355,9 @@ export default {
     },
     profileEmail() {
       this.form.user.email = this.profileEmail
+    },
+    isOversized() {
+      this.form.datasetSize = "TB"
     }
   }
 }
