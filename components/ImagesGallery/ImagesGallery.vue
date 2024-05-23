@@ -126,9 +126,6 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           flatmapData.push(speciesData)
         }
         scicrunchData['flatmaps'] = flatmapData
-      } else {
-        // Use the rat flatmap when no entity on the anatomical structure as generic flatmap
-        scicrunchData['flatmaps'] = [{ taxo: Uberons.species['rat'] }]
       }
     }
   } catch (e) {
