@@ -58,29 +58,36 @@
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
-        label="5GB"
-        display="~5GB"
+        label="<5GB"
+        display="< 5 GB"
         :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
-        label="50GB"
-        display="~50GB"
+        label="5-50GB"
+        display="5 - 50GB"
         :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
-        label="500GB"
-        display="~500GB"
+        label="50-500GB"
+        display="50 - 500GB"
         :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
-        label="TB"
-        display="TB"
+        label="500GB-TB"
+        display="500GB - TB"
+        :disabled="isOversized"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label=">TB"
+        display="> TB"
       />
     </el-form-item>
 
@@ -357,7 +364,7 @@ export default {
       this.form.user.email = this.profileEmail
     },
     isOversized() {
-      this.form.datasetSize = "TB"
+      this.form.datasetSize = ">TB"
     }
   }
 }
