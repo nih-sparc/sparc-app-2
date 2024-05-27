@@ -57,7 +57,7 @@
       getInstance: function(){
         return this.$refs.map;
       },
-      onTrackEvent: function (eventData) {
+      onTrackEvent: function(eventData) {
         this.$gtm.trackEvent(eventData);
       },
     },
