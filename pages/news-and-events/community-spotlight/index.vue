@@ -197,7 +197,7 @@ export default {
   async setup() {
     const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
-    const communitySpotlightItems = await fetchCommunitySpotlightItems(route.query.search, undefined, undefined, undefined, 10, 0)
+    const communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, undefined, undefined, undefined, 10, 0)
     // get all the available pre-defined values for creating the facet menu
     let anatomicalStructures = {}
     await $contentfulClient.getContentType('communitySpotlight').then(contentType => {
@@ -264,7 +264,8 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        this.communitySpotlightItems = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
+        const { $contentfulClient } = useNuxtApp()
+        this.communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
         this.$refs.altSearchResults?.retrieveAltTotals()
       },
       immediate: true
@@ -290,9 +291,10 @@ export default {
      * @param {Number} page
      */
     async onPaginationPageChange(page) {
+      const { $contentfulClient } = useNuxtApp()
       const { limit } = this.communitySpotlightItems
       const offset = (page - 1) * limit
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
       this.communitySpotlightItems = response
     },
     /**
@@ -300,13 +302,15 @@ export default {
      * @param {Number} limit
      */
     async onPaginationLimitChange(limit) {
+      const { $contentfulClient } = useNuxtApp()
       const newLimit = limit === 'View All' ? this.communitySpotlightItems.total : limit
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
       this.communitySpotlightItems = response
     },
     async onSortOptionChange(option) {
+      const { $contentfulClient } = useNuxtApp()
       this.selectedSortOption = option
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
       this.communitySpotlightItems = response
     },
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats

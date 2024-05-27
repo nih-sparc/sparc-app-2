@@ -115,7 +115,7 @@
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
-              <div v-twitter-widgets>
+              <!-- <div v-twitter-widgets>
                 <a
                   class="twitter-timeline"
                   href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
@@ -124,7 +124,7 @@
                 >
                   Tweets by sparc_science
                 </a>
-              </div>
+              </div> -->
             </el-col>
           </el-row>
         </div>
@@ -162,7 +162,8 @@ export default {
 
   async setup() {
     try {
-      const data = await fetchData('', 2)
+      const { $contentfulClient } = useNuxtApp()
+      const data = await fetchData($contentfulClient, '', 2)
       useHead({
         title: 'News & Events',
         meta: [
@@ -178,6 +179,7 @@ export default {
           },
         ]
       })
+      console.log(data)
       return data
     } catch(e) {
       //Handle uncaught error
@@ -192,7 +194,8 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        const { upcomingEvents, news, page, stories } = await fetchData(this.$route.query.search, 2)
+        const { $contentfulClient } = useNuxtApp()
+        const { upcomingEvents, news, page, stories } = await fetchData($contentfulClient, this.$route.query.search, 2)
         this.upcomingEvents = upcomingEvents;
         this.news = news;
         this.page = page;
@@ -235,7 +238,8 @@ export default {
      * Get all news
      */
     getAllNews: async function() {
-      const news = await fetchNews(this.$route.query.search, undefined, undefined, undefined, undefined, this.news.total, 2)
+      const { $contentfulClient } = useNuxtApp()
+      const news = await fetchNews($contentfulClient, this.$route.query.search, undefined, undefined, undefined, undefined, this.news.total, 2)
       this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
     },
     currentMonth() {

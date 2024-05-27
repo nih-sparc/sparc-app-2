@@ -178,7 +178,8 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const events = await fetchEvents(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
+    const { $contentfulClient } = useNuxtApp()
+    const events = await fetchEvents($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
     useHead({
       title: searchTypes[1].label,
       meta: [
@@ -224,7 +225,9 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
+        const { $contentfulClient } = useNuxtApp()
         this.events = await fetchEvents(
+          $contentfulClient,
           this.$route.query.search, 
           this.$refs.eventsFacetMenu?.getStartLessThanDate(), 
           this.$refs.eventsFacetMenu?.getStartGreaterThanOrEqualToDate(),
@@ -289,9 +292,10 @@ export default {
      * @param {Number} page
      */
     async onPaginationPageChange(page) {
+      const { $contentfulClient } = useNuxtApp()
       const { limit } = this.events
       const offset = (page - 1) * limit
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
+      const response = await fetchEvents($contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, limit, offset)
       this.events = response
     },
     /**
@@ -299,13 +303,15 @@ export default {
      * @param {Number} limit
      */
     async onPaginationLimitChange(limit) {
+      const { $contentfulClient } = useNuxtApp()
       const newLimit = limit === 'View All' ? this.events.total : limit
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
+      const response = await fetchEvents($contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, newLimit, 0)
       this.events = response
     },
     async onSortOptionChange(option) {
+      const { $contentfulClient } = useNuxtApp()
       this.selectedSortOption = option
-      const response = await fetchEvents(this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
+      const response = await fetchEvents($contentfulClient, this.$route.query.search, this.startLessThanDate, this.startGreaterThanOrEqualToDate, this.eventTypes, this.sortOrder, this.events.limit, 0)
       this.events = response
     },
     altResultsMounted() {

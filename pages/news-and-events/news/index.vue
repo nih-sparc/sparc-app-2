@@ -172,7 +172,8 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const news = await fetchNews(route.query.search, undefined, undefined, undefined, undefined, 10, 0)
+    const { $contentfulClient } = useNuxtApp()
+    const news = await fetchNews($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
     useHead({
       title: searchTypes[0].label,
       meta: [
@@ -218,7 +219,9 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
+          const { $contentfulClient } = useNuxtApp()
           this.news = await fetchNews(
+            $contentfulClient,
             this.$route.query.search, 
             this.$refs.newsFacetMenu?.getPublishedLessThanDate(), 
             this.$refs.newsFacetMenu?.getPublishedGreaterThanOrEqualToDate(),
@@ -257,9 +260,10 @@ export default {
 
   methods: {
     async onPaginationPageChange(page) {
+      const { $contentfulClient } = useNuxtApp()
       const { limit } = this.news
       const offset = (page - 1) * limit
-      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, limit, offset)
+      const response = await fetchNews($contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, limit, offset)
       this.news = response
     },
     /**
@@ -267,13 +271,15 @@ export default {
      * @param {Number} limit
      */
     async onPaginationLimitChange(limit) {
+      const { $contentfulClient } = useNuxtApp()
       const newLimit = limit === 'View All' ? this.news.total : limit
-      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, newLimit, 0)
+      const response = await fetchNews($contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, newLimit, 0)
       this.news = response
     },
     async onSortOptionChange(option) {
+      const { $contentfulClient } = useNuxtApp()
       this.selectedSortOption = option
-      const response = await fetchNews(this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
+      const response = await fetchNews($contentfulClient, this.$route.query.search, this.publishedLessThanDate, this.publishedGreaterThanOrEqualToDate, this.subjects, this.sortOrder, this.news.limit, 0)
       this.news = response
     },
     altResultsMounted() {
