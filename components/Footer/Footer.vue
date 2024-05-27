@@ -99,11 +99,13 @@
 import { mapState } from 'pinia'
 import FooterLink from './FooterLink.vue'
 import { useMainStore } from '../store/index.js'
+import SparcLogo from 'sparc-design-system-components-2/src/components/SparcLogo'
 
 export default {
   name: 'SparcFooter',
   components: {
     FooterLink,
+    SparcLogo
   },
   computed: {
     ...mapState(useMainStore, ['footerData'])
@@ -205,6 +207,5 @@ export default {
     height: 4rem;
     width: 8rem;
   }
-  
 }
 </style>

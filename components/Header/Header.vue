@@ -109,6 +109,7 @@
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { useMainStore } from '../../store/index.js'
 import { mapActions, mapState } from 'pinia'
+import SparcLogo from 'sparc-design-system-components-2/src/components/SparcLogo'
 
 const links = [
   {
@@ -146,7 +147,8 @@ const links = [
 export default {
   name: 'SparcHeader',
   components: {
-    LoginModal
+    LoginModal,
+    SparcLogo
   },
   data: () => {
     return {
