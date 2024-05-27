@@ -189,21 +189,22 @@ export default {
       return searchType.type == route.query.type
     })
     const title = propOr('', 'label', searchType)
-    useHead({
-      title: title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${title}`
-        },
-      ]
-    })
+    // TODO why does it not work?
+    // useHead({
+    //   title: title,
+    //   meta: [
+    //     {
+    //       hid: 'og:title',
+    //       property: 'og:title',
+    //       content: title,
+    //     },
+    //     {
+    //       hid: 'description',
+    //       name: 'description',
+    //       content: `Browse ${title}`
+    //     },
+    //   ]
+    // })
     return {
       algoliaSortOptions,
       selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
@@ -361,9 +362,13 @@ export default {
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
-    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping).then(data => this.facets = data).finally(() => {
-      this.fetchResults()
-    })
+    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping)
+      .then(data => {
+        this.facets = data
+      })
+      .finally(() => {
+        this.fetchResults()
+      })
   },
 
   methods: {

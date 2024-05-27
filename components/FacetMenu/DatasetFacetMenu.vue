@@ -14,7 +14,7 @@
       </el-link>
     </span>
     <dropdown-multiselect
-      v-for="item in this.facets"
+      v-for="item in facets"
       v-show="visibleCategories.includes(item.key)"
       :collapse-by-default="!containsSelectedId(item)"
       :key="item.id"
