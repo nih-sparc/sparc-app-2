@@ -128,7 +128,7 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
     ) {
       failMessage = `Sorry! A flatmap for ${for_species} species does not yet exist. The ${organ_name} of a rat has been shown instead.`
     } else if (!organ) {
-      failMessage = `Sorry! A entity on the anatomical structure does not yet exist. A generic flatmap for ${for_species} species has been shown instead.`
+      failMessage = `Sorry! Applicable entity is not yet available. A generic flatmap for ${for_species} species has been shown instead.`
     }
   } else if (route.query.fid) {
     successMessage = "A flatmap's unique id is provided, a legacy map may be displayed instead."
