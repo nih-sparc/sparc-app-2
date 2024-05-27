@@ -1,11 +1,9 @@
 <template>
   <div :class="[disableScrolling ? 'layout' : '']">
-    <client-only>
-      <sparc-header />
-      <slot />
-      <sparc-footer />
-      <cookie-notice v-if="!hasAcceptedGDPR" />
-    </client-only>
+    <sparc-header />
+    <slot />
+    <sparc-footer />
+    <cookie-notice v-if="!hasAcceptedGDPR" />
   </div>
 </template>
 
