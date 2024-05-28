@@ -1,9 +1,8 @@
-name: Pull Request Cypress Testing
+name: Scheduled Staging Cypress Testing
 
 on:
-  pull_request_target:
-    types: [opened, synchronize, reopened]
-    branches: [master, main]
+  schedule:
+    - cron: "0 0 * * 1"
 
 env:
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
@@ -51,8 +50,8 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  pull-request-cypress-run:
-    if: github.event_name == 'pull_request_target'
+  scheduled-cypress-run-staging:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
     strategy:
@@ -61,39 +60,20 @@ jobs:
         containers: [1, 2, 3, 4]
 
     steps:
-      - uses: actions-cool/check-user-permission@main
-        id: checkUser
-        with:
-          require: "write"
-          username: ${{ github.event.pull_request.user.name }}
-
       - name: Checkout
-        if: steps.checkUser.outputs.require-result == 'true'
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.17.1
 
-      - name: Automated Run Testing when Pull Request
-        if: steps.checkUser.outputs.require-result == 'true'
+      - name: Schedule Run Testing against Staging
         uses: cypress-io/github-action@v6
         env:
-          ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
+          ROOT_URL: "https://staging.sparc.science"
         with:
-          build: yarn build
-          start: yarn preview
-          wait-on: ${{ secrets.ROOT_URL }}
+          wait-on: ${{ env.ROOT_URL }}
           record: true
           parallel: true
-          tag: PR
-
-      - name: Skip tests
-        if: steps.checkUser.outputs.require-result == 'false'
-        uses: actions/github-script@v4
-        with:
-          script: |
-            core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')
+          tag: Scheduled-Staging
