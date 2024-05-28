@@ -2,7 +2,7 @@
   <div :style="consortiaStyle" class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
-      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" />
+      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links />
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
@@ -25,8 +25,7 @@
         <template v-for="(item, index) in learnMore" :key="index">
           <div>
             <learn-more-card :about-details-item="item" />
-            <hr
-              v-if="learnMore.length > 1 && index != learnMore.length - 1" />
+            <hr v-if="learnMore.length > 1 && index != learnMore.length - 1" />
           </div>
         </template>
       </div>
@@ -262,4 +261,10 @@ export default {
     color: var(--button-and-link-color) !important;
   }
 }
+:deep(.btn-copy-permalink) {
+  path {
+    fill: var(--button-and-link-color) !important;
+  }
+}
+
 </style>
