@@ -6,57 +6,27 @@
         <template v-if="items.length">
           <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
             <template v-if="item">
-              <component
-                v-if="galleryItemType === 'resources'"
-                :is="galleryItemComponent"
-                :width="cardWidth"
-                :key="item.sys.id"
-                :title="item.fields.name"
-                :subtitle="item.fields.resourceType.join(', ')"
-                :showSparcTag="item.fields.developedBySparc"
-                :description="item.fields.description"
-                :thumbnail-url="item.fields.logo.fields.file.url"
-                :button-link="`/resources/${item.sys.id}`"
-                :external-url="item.fields.url"
-                @card-clicked="cardClicked"
-              />
-              <component
-                v-else-if="galleryItemType === 'metrics'"
-                :is="galleryItemComponent"
-                :width="cardWidth"
-                :key="item.title"
-                :title="item.title"
-                :data="item.data"
-                :subData="item.subData"
-              />
-              <component
-                v-else-if="galleryItemType === 'highlights'"
-                :is="galleryItemComponent"
-                :width="cardWidth"
-                :key="item.sys.id"
-                :item="item"
-              />
-              <component
-                v-else-if="galleryItemType === 'datasets'"
-                :is="galleryItemComponent"
-                :width="cardWidth"
-                :key="item.intId"
-                :item="item"
-              />
-              <component
-                v-else-if="galleryItemType === 'fileViewer'"
-                :is="galleryItemComponent"
-                :data="item"
-                :width="cardWidth"
-                show-card-details
-                @card-clicked="cardClicked"
-              />
+              <component v-if="galleryItemType === 'resources'" :is="galleryItemComponent" :width="cardWidth"
+                :key="item.sys.id" :title="item.fields.name" :subtitle="item.fields.resourceType.join(', ')"
+                :showSparcTag="item.fields.developedBySparc" :description="item.fields.description"
+                :thumbnail-url="item.fields.logo.fields.file.url" :button-link="`/resources/${item.sys.id}`"
+                :external-url="item.fields.url" @card-clicked="cardClicked" />
+              <component v-else-if="galleryItemType === 'metrics'" :is="galleryItemComponent" :width="cardWidth"
+                :key="item.title" :title="item.title" :data="item.data" :subData="item.subData" />
+              <component v-else-if="galleryItemType === 'highlights'" :is="galleryItemComponent" :width="cardWidth"
+                :key="item.sys.id" :item="item" />
+              <component v-else-if="galleryItemType === 'datasets'" :is="galleryItemComponent" :width="cardWidth"
+                :key="item.intId" :item="item" />
+              <component v-else-if="galleryItemType === 'fileViewer'" :is="galleryItemComponent" :data="item"
+                :width="cardWidth" show-card-details @card-clicked="cardClicked" />
+              <component v-else-if="galleryItemType === 'featuredData'" :is="galleryItemComponent" :item="item" :width="cardWidth" @card-clicked="cardClicked" />
             </template>
           </span>
         </template>
       </div>
     </div>
-    <pagination  v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex" :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked"/>
+    <pagination v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex"
+      :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked" />
   </div>
 </template>
 
@@ -66,6 +36,8 @@ import MetricsCard from '~/components/Gallery/GalleryItems/MetricsCard.vue'
 import HighlightCard from '~/components/Gallery/GalleryItems/HighlightCard.vue'
 import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
 import FileViewerCard from '~/components/Gallery/GalleryItems/FileViewerCard.vue'
+import FeaturedDataCard from '~/components/Gallery/GalleryItems/FeaturedDataCard.vue'
+
 import { defaultTo } from 'ramda'
 import { ref } from 'vue'
 
@@ -74,7 +46,8 @@ const galleryItemComponents = {
   metrics: MetricsCard,
   highlights: HighlightCard,
   datasets: DatasetCard,
-  fileViewer: FileViewerCard
+  fileViewer: FileViewerCard,
+  featuredData: FeaturedDataCard
 }
 
 function convertRemToPixels(rem) {
@@ -86,7 +59,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard, FileViewerCard },
+  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard, FileViewerCard, FeaturedDataCard },
   props: {
     items: {
       type: Array,

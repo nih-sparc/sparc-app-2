@@ -24,7 +24,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Featured data', function () {
     // Check for content title
-    cy.get('.featured-data > h2').should('have.text', 'Find Data by Category')
+    cy.get('.featured-data > h2').should('have.text', 'Find by')
 
     cy.get('.data-wrap > a:visible').as('category')
 
