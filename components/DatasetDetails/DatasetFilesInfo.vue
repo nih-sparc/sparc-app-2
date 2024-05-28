@@ -133,7 +133,7 @@
                 In order to request access to download this dataset, we ask that you please submit a rehydration request. This button will take you to a form where you can submit your request.
               </p>
               <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
-                Request Rehydration
+                Request Access
               </el-button>
             </template>
           </div>

@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :style="{ maxWidth: '36rem', minWidth: '22rem' }" :visible="visible" @close="closeDialog">
+  <el-dialog class="px-16 pb-24" :style="{ maxWidth: '36rem', minWidth: '22rem' }" :visible="visible" @close="closeDialog">
     <template #header>
-      <div class="heading2">Request Rehydration</div>
+      <div class="heading2">Request Access</div>
     </template>
     <div class="rehydration-modal-container">
       <div class="copy-container">
