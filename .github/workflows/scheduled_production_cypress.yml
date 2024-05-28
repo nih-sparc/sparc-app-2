@@ -51,6 +51,7 @@ env:
 
 jobs:
   scheduled-cypress-run-production:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
     strategy:
