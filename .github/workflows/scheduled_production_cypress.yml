@@ -75,3 +75,4 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           parallel: true
+          tag: Scheduled-Production

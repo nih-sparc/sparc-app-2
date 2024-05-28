@@ -89,6 +89,7 @@ jobs:
           wait-on: ${{ secrets.ROOT_URL }}
           record: true
           parallel: true
+          tag: PR
 
       - name: Skip tests
         if: steps.checkUser.outputs.require-result == 'false'
