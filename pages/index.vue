@@ -1,6 +1,6 @@
 <template>
   <div class="page-data">
-    <page-hero class="py-24">
+    <page-hero>
       <h1 v-if="heroHeading">
         {{ heroHeading }}
       </h1>

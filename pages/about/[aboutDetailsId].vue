@@ -18,7 +18,7 @@
         <share-links />
       </div>
       <div v-if="aboutDetailsItem.fields.learnMore" class="subpage">
-        <h1 class="heading1 mb-16">Learn More</h1>
+        <div class="heading2 mb-16">Learn More</div>
         <template v-for="(item, index) in aboutDetailsItem.fields.learnMore" :key="item + index">
           <div>
             <learn-more-card
