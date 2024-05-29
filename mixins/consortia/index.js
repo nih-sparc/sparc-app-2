@@ -10,10 +10,11 @@ export default {
      * Fetch dataset information from discover api with dataset id and version
      */
     async fetchConsortiaStyle(consortiaId) {
+      console.log("ID = ", consortiaId)
       const consortiaItem =
         await this.$contentfulClient.getEntries({
           content_type: this.$config.public.ctf_consortia_content_type_id,
-          'fields.title': consortiaId
+          'fields.title[match]': consortiaId
         }).then(response => {
           return propOr([], 'items', response)[0]
         }).catch(() => { })
@@ -21,7 +22,7 @@ export default {
       let style = thirdColor == undefined && secondColor == undefined ?
         { backgroundColor: `#${firstColor}` } : thirdColor == undefined ?
         { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}` } :    
-        { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}, #${thirdColor}` }
+          { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}, #${thirdColor}` }
       style = { ...style, '--button-and-link-color': `#${buttonAndLinkColor}`, '--button-and-link-secondary-color': `#${buttonAndLinkColor}16` }
       this.consortiaStyle = style
     },
