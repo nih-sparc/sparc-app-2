@@ -1,23 +1,25 @@
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 h1 {
-  font-size: 2.875em;
-  font-weight: normal;
+  font-size:2rem;
+  font-weight:500;
   margin: 0;
-  line-height: 3.75rem;
+  line-height:2.75rem;
   padding: 0;
 }
 
 h2 {
-  font-size: 2.25em;
-  font-weight: normal;
-  line-height: 3rem;
-  margin: 0 0 1rem;
+  font-size:1.5rem;
+  font-weight:500;
+  line-height:2.25rem;
+  margin: 0 0 .5rem;
   padding: 0;
 }
 
 h3 {
-  font-size: 1.75em;
-  font-weight: normal;
-  line-height: 2.75rem;
+  font-size:1rem;
+  font-weight:500;
+  line-height:1.875rem;
   margin: 0 0 0.5rem;
   padding: 0;
 }
@@ -47,12 +49,12 @@ h6 {
 }
 
 a {
-  color: #8300bf;
+  color: $purple;
   text-decoration: underline;
 }
 
 p {
-  margin: 0 0 1rem;
+  margin: 0 0 .5rem;
 }
 
 hr {

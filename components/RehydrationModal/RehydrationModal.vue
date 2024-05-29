@@ -1,5 +1,6 @@
 <template>
-  <el-dialog class="px-16 pb-24" :style="{ maxWidth: '36rem', minWidth: '22rem' }" :visible="visible" @close="closeDialog">
+  <el-dialog class="px-16 pb-24" :style="{ maxWidth: '36rem', minWidth: '22rem' }" :visible="visible"
+    @close="closeDialog">
     <template #header>
       <div class="heading2">Request Access</div>
     </template>
@@ -10,13 +11,16 @@
           dataset.
         </div>
         <p v-if="authenticatedUserEmail">
-          Once you submit your request, the version of the dataset you've
+          Once you submit your
+          <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">rehydration
+          request</a>, the version of the dataset you've
           requested will be extracted into an S3 folder. An email notification
           will be sent to <b>{{ authenticatedUserEmail }}</b> within 24 hours of initiating the process. The rehydrated
           dataset will then be available for 14 days.
         </p>
         <p v-else>
-          Once you submit your request, the version of the dataset you've
+          Once you submit your <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">
+          rehydration request</a>, the version of the dataset you've
           requested will be extracted into an S3 folder. An email notification
           will be sent within 24 hours of initiating the process. The rehydrated
           dataset will then be available for 14 days.

@@ -12,16 +12,16 @@
           :button-link="ourResearchButtonLink" />
       </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-16 mt-32">
-        <div class="mb-16">Here is a dataset you might be interested in:</div>
+        <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
           :banner="featuredDataset.banner" :link="featuredDatasetLink" button-text="View Dataset" />
       </div>
       <div v-if="highlights.length > 0" class="gallery-items-container p-32 mt-32">
-        <div class="heading1 mb-16">Highlights</div>
+        <div class="heading2 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
       <div v-if="learnMore.length > 0" class="subpage">
-        <h1 class="heading1 mb-16">Learn More</h1>
+        <div class="heading2 mb-16">Learn More</div>
         <template v-for="(item, index) in learnMore" :key="index">
           <div>
             <learn-more-card :about-details-item="item" />
@@ -205,7 +205,7 @@ export default {
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .featured-dataset-container {
   border: solid $lineColor1 1px;
-  background-color: $background;
+  background-color: white;
 }
 
 .row-item {
