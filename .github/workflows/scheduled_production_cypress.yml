@@ -1,4 +1,4 @@
-name: Scheduled Cypress Testing
+name: Scheduled Production Cypress Testing
 
 on:
   schedule:
@@ -50,33 +50,6 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  scheduled-cypress-run-staging:
-    if: github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18.17.1
-
-      - name: Schedule Run Testing against Staging
-        uses: cypress-io/github-action@v6
-        env:
-          ROOT_URL: "https://staging.sparc.science"
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          parallel: true
-
   scheduled-cypress-run-production:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
@@ -103,3 +76,4 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           parallel: true
+          tag: Scheduled-Production

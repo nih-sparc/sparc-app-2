@@ -2,7 +2,7 @@
   <div :style="consortiaStyle" class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
-      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" />
+      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links />
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
@@ -20,6 +20,15 @@
         <div class="heading1 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
+      <div v-if="learnMore.length > 0" class="subpage">
+        <h1 class="heading1 mb-16">Learn More</h1>
+        <template v-for="(item, index) in learnMore" :key="index">
+          <div>
+            <learn-more-card :about-details-item="item" />
+            <hr v-if="learnMore.length > 1 && index != learnMore.length - 1" />
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +38,7 @@ import { ref } from 'vue'
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 
 import marked from '@/mixins/marked'
 import { pathOr, propOr, isEmpty } from 'ramda'
@@ -39,7 +49,8 @@ export default {
   components: {
     Paper,
     Gallery,
-    ProjectsAndDatasetsCard
+    ProjectsAndDatasetsCard,
+    LearnMoreCard
   },
 
   mixins: [marked],
@@ -141,6 +152,9 @@ export default {
     },
     whatWeDoButtonLink() {
       return pathOr('', ['fields', 'whatWeDoButtonLink'], this.consortiaItem)
+    },
+    learnMore() {
+      return pathOr([], ['fields', 'learnMore'], this.consortiaItem)
     },
     ourResearch() {
       return pathOr('', ['fields', 'ourResearch'], this.consortiaItem)
@@ -247,4 +261,10 @@ export default {
     color: var(--button-and-link-color) !important;
   }
 }
+:deep(.btn-copy-permalink) {
+  path {
+    fill: var(--button-and-link-color) !important;
+  }
+}
+
 </style>

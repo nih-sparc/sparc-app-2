@@ -129,6 +129,7 @@ jobs:
           record: true
           parallel: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
+          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
 
       - name: Manual Run Testing against Production
         if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
@@ -140,3 +141,4 @@ jobs:
           record: true
           parallel: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
+          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
