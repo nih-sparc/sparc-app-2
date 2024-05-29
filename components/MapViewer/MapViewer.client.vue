@@ -1,13 +1,22 @@
 <template>
   <div class="mapClass">
-    <MapContent class="map" ref="map" :state="state" :starting-map="startingMap" :options="options"
-        :share-link="shareLink" @updateShareLinkRequested="$emit('updateShareLinkRequested')" @isReady="$emit('isReady')" />
+    <MapContent
+      class="map"
+      ref="map"
+      :state="state"
+      :starting-map="startingMap"
+      :options="options"
+      :share-link="shareLink"
+      @updateShareLinkRequested="$emit('updateShareLinkRequested')"
+      @isReady="$emit('isReady')"
+      @trackEvent="onTrackEvent"
+    />
   </div>
 </template>
 
 <script>
   import { MapContent } from "@abi-software/mapintegratedvuer"
-  
+
   export default {
     name: 'MapViewer',
     components: {
@@ -47,6 +56,9 @@
     methods: {
       getInstance: function(){
         return this.$refs.map;
+      },
+      onTrackEvent: function(eventData) {
+        this.$gtm.trackEvent(eventData);
       },
     },
   }
