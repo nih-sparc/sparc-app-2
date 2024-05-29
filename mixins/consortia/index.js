@@ -22,7 +22,7 @@ export default {
       let style = thirdColor == undefined && secondColor == undefined ?
         { backgroundColor: `#${firstColor}` } : thirdColor == undefined ?
         { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}` } :    
-          { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}, #${thirdColor}` }
+        { backgroundImage: `linear-gradient(#${firstColor}, #${secondColor}, #${thirdColor}` }
       style = { ...style, '--button-and-link-color': `#${buttonAndLinkColor}`, '--button-and-link-secondary-color': `#${buttonAndLinkColor}16` }
       this.consortiaStyle = style
     },
