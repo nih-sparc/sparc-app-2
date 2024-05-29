@@ -154,14 +154,14 @@ export default {
     let monthLastUpdate
     try {
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
-      monthLastUpdate = new Date(`${lastMonthsDate.year}/${lastMonthsDate.month}`)
+      monthLastUpdate = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, monthBeforeLastDate.month, monthBeforeLastDate.year)
       .catch(err => {
         console.error('Could not retreive metrics.', err)
       })
-      monthLastUpdate = new Date(`${monthBeforeLastDate.year}/${monthBeforeLastDate.month}`)
+      monthLastUpdate = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
     }
     return {
       metricsData,
