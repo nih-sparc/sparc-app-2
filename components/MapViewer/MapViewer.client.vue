@@ -65,7 +65,7 @@
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
 
   .map-icon {
-    color: #8300bf !important;
+    color: #8300bf;
   }
 
   .background-popper.el-popover.el-popper,
