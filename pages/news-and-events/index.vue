@@ -115,16 +115,9 @@
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
-              <!-- <div v-twitter-widgets>
-                <a
-                  class="twitter-timeline"
-                  href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw"
-                  data-height="500"
-                  target="_blank"
-                >
-                  Tweets by sparc_science
-                </a>
-              </div> -->
+              <div v-twitter-widgets>
+                <a class="twitter-timeline" href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw">Tweets by sparc_science</a>
+              </div>
             </el-col>
           </el-row>
         </div>
@@ -189,6 +182,9 @@ export default {
 
   mounted() {
     this.$injectNewsletterArchive('#newsletter-archive')
+    const xFeedScript = document.createElement('script')
+    xFeedScript.setAttribute('src', 'https://platform.twitter.com/widgets.js')
+    document.head.appendChild(xFeedScript)
   },
 
   watch: {
@@ -218,7 +214,11 @@ export default {
       ],
       upcomingEvents: {},
       news: {},
-      page: {},
+      page: {
+        fields: {
+          'page_title': 'News & Events'
+        }
+      },
       stories: {}
     }
   },
