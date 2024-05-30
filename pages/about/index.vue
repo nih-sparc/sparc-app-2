@@ -8,7 +8,7 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-32 mt-32">
+      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-24 mt-32">
         <div class="heading2">Who We Support</div>
         <div class="body1 mb-16">The SPARC Portal currently supports {{ whoWeSupport.length }} consortia. Visit the
           consortia page to find out more about them.</div>
@@ -36,7 +36,7 @@
           :button-link="aboutLink(getInvolvedPageId)" />
       </div>
 
-      <div class="gallery-items-container p-32 mt-32">
+      <div class="gallery-items-container p-24 mt-32">
         <div class="heading2 mb-16">Portal Metrics</div>
         <gallery galleryItemType="metrics" :items="metricsItems" />
         <nuxt-link to="/about/metrics">
@@ -46,7 +46,7 @@
         </nuxt-link>
       </div>
 
-      <div class="gallery-items-container p-32 mt-32">
+      <div class="gallery-items-container p-24 mt-32">
         <div class="heading2 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
