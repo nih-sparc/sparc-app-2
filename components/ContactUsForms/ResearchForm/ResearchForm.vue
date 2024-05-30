@@ -33,20 +33,14 @@
       <sparc-radio
         :value="form.individualFileSize"
         @input="form.individualFileSize = $event.target.value"
-        label="MB"
-        display="MB"
+        label="<220GB"
+        display="< 220 GB"
       />
       <sparc-radio
         :value="form.individualFileSize"
         @input="form.individualFileSize = $event.target.value"
-        label="GB"
-        display="GB"
-      />
-      <sparc-radio
-        :value="form.individualFileSize"
-        @input="form.individualFileSize = $event.target.value"
-        label="TB"
-        display="TB"
+        label="≥220GB"
+        display="≥ 220 GB"
       />
     </el-form-item>
 
@@ -74,14 +68,12 @@
         @input="form.datasetSize = $event.target.value"
         label="50-500GB"
         display="50 - 500GB"
-        :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
         @input="form.datasetSize = $event.target.value"
         label="500GB-TB"
         display="500GB - TB"
-        :disabled="isOversized"
       />
       <sparc-radio
         :value="form.datasetSize"
@@ -303,7 +295,7 @@ export default {
 
   computed: {
     isOversized: function() {
-      return this.form.individualFileSize === "TB"
+      return this.form.individualFileSize === '≥220GB'
     },
   },
 
@@ -363,8 +355,10 @@ export default {
     profileEmail() {
       this.form.user.email = this.profileEmail
     },
-    isOversized() {
-      this.form.datasetSize = ">TB"
+    isOversized(value) {
+      if (value && (this.form.datasetSize === '<5GB' || this.form.datasetSize === '5-50GB')) {
+        this.form.datasetSize = ''
+      }
     }
   }
 }
