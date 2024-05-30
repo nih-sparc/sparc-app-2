@@ -117,6 +117,7 @@ import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+import ContentTabCard from 'sparc-design-system-components-2/src/components/ContentTabCard'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
@@ -231,7 +232,8 @@ export default {
     DatasetReferences,
     VersionHistory,
     error400,
-    error404
+    error404,
+    ContentTabCard
   },
 
   mixins: [DateUtils, FormatStorage],
@@ -651,7 +653,7 @@ export default {
       handler: function (val) {
         if (isEmpty(this.datasetId))
           return
-        if (val) {
+        if (val && this.algoliaIndex) {
           this.getDatasetRecords()
         }
       },
