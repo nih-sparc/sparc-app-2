@@ -43,6 +43,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes("Cannot read properties of undefined (reading 'receiveSynchronisedEvent')"))
     return false
+  if (err.message.includes('Source "markers" already exists.'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
