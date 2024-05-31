@@ -7,6 +7,7 @@
       :starting-map="startingMap"
       :options="options"
       :share-link="shareLink"
+      :useHelpModeDialog="true"
       @updateShareLinkRequested="$emit('updateShareLinkRequested')"
       @isReady="$emit('isReady')"
       @trackEvent="onTrackEvent"
