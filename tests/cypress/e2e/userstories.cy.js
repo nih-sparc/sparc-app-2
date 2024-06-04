@@ -19,6 +19,9 @@ describe('User stories', function () {
     segmentationDatasetIds.forEach((id) => {
 
       it(`Access dataset ${id}`, function () {
+        
+        cy.waitForLoadingMask()
+        
         // Search for segmentation related dataset
         cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
