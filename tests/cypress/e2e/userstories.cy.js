@@ -1,7 +1,7 @@
 // To check the segmentation card
 // should use datasets which have segmentation data
 const segmentationDatasetIds = [226, 77]
-const scaffoldDatasetCategories = ['stomach', 'heart']
+const scaffoldDatasetCategories = ['pig colon', 'pig heart']
 const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
