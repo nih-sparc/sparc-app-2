@@ -125,7 +125,7 @@
                 Requesting Access to Download from AWS
               </div>
               <p>
-                In order to request access to download this dataset, we ask that you please submit a 
+                In order to request access to download this version of the dataset, we ask that you please submit a 
                 <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">rehydration
                 request</a>. This button will take you to a form where you can submit your request.
               </p>
