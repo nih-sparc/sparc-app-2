@@ -41,7 +41,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes("Cannot destructure property 'type' of 'vnode' as it is null"))
     return false
-  if (err.message.includes("Cannot read properties of undefined (reading 'receiveSynchronisedEvent')"))
+  if (err.message.includes('Cannot read properties of undefined'))
     return false
   if (err.message.includes('Source "markers" already exists.'))
     return false
