@@ -1,7 +1,7 @@
 // To check the segmentation card
 // should use datasets which have segmentation data
 const segmentationDatasetIds = [226, 77]
-const scaffoldDatasetCategories = ['stomach', 'heart']
+const scaffoldDatasetCategories = ['pig colon', 'pig heart']
 const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
@@ -19,6 +19,9 @@ describe('User stories', function () {
     segmentationDatasetIds.forEach((id) => {
 
       it(`Access dataset ${id}`, function () {
+        
+        cy.waitForLoadingMask()
+        
         // Search for segmentation related dataset
         cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();

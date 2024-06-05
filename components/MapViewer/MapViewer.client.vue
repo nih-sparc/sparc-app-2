@@ -7,6 +7,7 @@
       :starting-map="startingMap"
       :options="options"
       :share-link="shareLink"
+      :useHelpModeDialog="true"
       @updateShareLinkRequested="$emit('updateShareLinkRequested')"
       @isReady="$emit('isReady')"
       @trackEvent="onTrackEvent"
@@ -58,7 +59,7 @@
         return this.$refs.map;
       },
       onTrackEvent: function(eventData) {
-        this.$gtm.trackEvent(eventData);
+        this.$gtm.push(eventData);
       },
     },
   }

@@ -17,12 +17,12 @@
         <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
           :button-link="ourResearchButtonLink" />
       </div>
-      <div v-if="featuredDataset?.title" class="featured-dataset-container p-16 mt-32">
+      <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
           :banner="featuredDataset.banner" :link="featuredDatasetLink" button-text="View Dataset" />
       </div>
-      <div v-if="highlights.length > 0" class="gallery-items-container p-32 mt-32">
+      <div v-if="highlights.length > 0" class="gallery-items-container p-24 mt-32">
         <div class="heading2 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>

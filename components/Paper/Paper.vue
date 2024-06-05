@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="subpage-col about-page-border p-32">
+    <div class="subpage-col about-page-border p-24">
       <div class="subpage-row">
         <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
         <div class="subpage-col">
