@@ -151,6 +151,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
 
+          cy.waitForLoadingMask()
+
           // Check for button text
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
 
