@@ -30,7 +30,7 @@
                 name: 'contact-us',
                 query: {
                   type: 'bug',
-                  source_url: fullPath
+                  source_url: $route.fullPath
                 }
               }"
             >
@@ -50,12 +50,6 @@ export default {
     error: {
       type: Object,
       default: () => {}
-    }
-  },
-  setup() {
-    const route = useRoute()
-    return {
-      route
     }
   }
 }

@@ -42,15 +42,19 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
-              <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
-                @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
-                ref="datasetFacetMenu" />
+              <client-only>
+                <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
+                  @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                  ref="datasetFacetMenu" />
+              </client-only>
             </el-col>
             <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
               <div class="search-heading">
                 <p v-show="!isLoadingSearch && searchData.items.length">
                   {{ searchData.total }} Results | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  <client-only>
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </client-only>
                 </p>
                 <span v-if="searchData.items.length" class="label1">
                   Sort
@@ -92,10 +96,14 @@
               <div class="search-heading">
                 <p v-if="!isLoadingSearch && searchData.items.length">
                   {{ searchHeading }} | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  <client-only>
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </client-only>
                 </p>
-                <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
-                  :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
+                <client-only>
+                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                    :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
+                </client-only>
               </div>
             </el-col>
           </el-row>

@@ -46,7 +46,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.loadOrganFacets()
   },
 
@@ -70,7 +70,7 @@ export default {
       getAlgoliaFacets(algoliaIndex, facetPropPathMapping)
         .then(data => {
           this.organFacets = data.find(
-            facet => facet.key === 'anatomy.organ.name'
+            facet => facet.key === 'anatomy.organ.category.name'
           ).children
         })
     },

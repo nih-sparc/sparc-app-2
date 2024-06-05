@@ -503,7 +503,7 @@ export default {
       handler: function (val) {
         if (isEmpty(this.datasetId))
           return
-        if (val && this.algoliaIndex) {
+        if (val) {
           this.getDatasetRecords()
         }
       },
