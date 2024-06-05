@@ -59,7 +59,7 @@
         return this.$refs.map;
       },
       onTrackEvent: function(eventData) {
-        this.$gtm.trackEvent(eventData);
+        this.$gtm.push(eventData);
       },
     },
   }
