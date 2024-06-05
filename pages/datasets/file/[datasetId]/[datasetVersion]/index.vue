@@ -1,55 +1,27 @@
 <template>
-  <div class="pb-32">
-    <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
-    <div class="container">
-      <h1 hidden>File viewer for {{ file.path }}</h1>
-      <form ref="zipForm" method="POST" :action="zipitUrl">
-        <input v-model="zipData" type="hidden" name="data" />
-      </form>
-      <content-tab-card
-        v-if="hasViewer"
-        class="mt-24"
-        :tabs="tabs"
-        :active-tab-id="activeTabId"
-      >
-        <biolucida-viewer
-          v-if="hasBiolucidaViewer"
-          v-show="activeTabId === 'imageViewer'"
-          :data="biolucidaData"
-          :datasetInfo="datasetInfo"
-          :file="file"
-        />
-        <segmentation-viewer
-          v-if="hasSegmentationViewer"
-          v-show="activeTabId === 'segmentationViewer'"
-          :data="segmentationData"
-          :datasetInfo="datasetInfo"
-          :file="file"
-        />
-        <plot-viewer
-          v-if="hasPlotViewer"
-          v-show="activeTabId === 'plotViewer'"
-          :plotData="plotData"
-          :datasetInfo="datasetInfo"
-          :file="file"
-        />
-        <video-viewer
-          v-if="hasVideoViewer"
-          v-show="activeTabId === 'videoViewer'"
-          :videoData="videoData"
-          :videoSource="signedUrl"
-          :datasetInfo="datasetInfo"
-          :file="file"
-        />
-      </content-tab-card>
-      <file-viewer-metadata
-        v-if="!hasViewer"
-        :datasetInfo="datasetInfo"
-        :file="file"
-        @download-file="executeDownload"
-      />
+  <client-only>
+    <div class="pb-32">
+      <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
+      <div class="container">
+        <h1 hidden>File viewer for {{ file.path }}</h1>
+        <form ref="zipForm" method="POST" :action="zipitUrl">
+          <input v-model="zipData" type="hidden" name="data" />
+        </form>  
+        <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
+          <biolucida-viewer v-if="hasBiolucidaViewer" v-show="activeTabId === 'imageViewer'" :data="biolucidaData"
+            :datasetInfo="datasetInfo" :file="file" />
+          <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
+            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" />
+          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotData="plotData"
+            :datasetInfo="datasetInfo" :file="file" />
+          <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
+            :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" />
+        </content-tab-card>
+        <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
+          @download-file="executeDownload" />
+      </div>
     </div>
-  </div>
+  </client-only>
 </template>
 
 <script>
@@ -111,17 +83,21 @@ export default {
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
-    const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
-    const imagesData = biolucidaSearchResults['dataset_images']
-    if (imagesData != undefined) {
-      await Promise.all(imagesData.map(async image => {
-        const imageInfo = await biolucida.getImageInfo(image.image_id)
-        if (imageInfo['name'] == file.name)
-        {
-          sourcePackageId = image['sourcepkg_id']
-          return
-        }
-      }))
+    try {
+      const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
+      const imagesData = biolucidaSearchResults['dataset_images']
+      if (imagesData != undefined) {
+        await Promise.all(imagesData.map(async image => {
+          const imageInfo = await biolucida.getImageInfo(image.image_id)
+          if (imageInfo['name'] == file.name)
+          {
+            sourcePackageId = image['sourcepkg_id']
+            return
+          }
+        }))
+      }
+    } catch (e) {
+      console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
     }
 
     let biolucidaData = {}
@@ -138,7 +114,7 @@ export default {
 
     // We must remove the N: in order for scicrunch to realize the package
     sourcePackageId = file.sourcePackageId
-    const expectedScicrunchIdentifier = sourcePackageId != "" ? sourcePackageId.replace("N:", "") : ""
+    const expectedScicrunchIdentifier = sourcePackageId != undefined ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
       if (expectedScicrunchIdentifier != "") {

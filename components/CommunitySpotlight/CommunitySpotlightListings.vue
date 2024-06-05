@@ -6,7 +6,7 @@
   </div>
   <div v-else class="subpage mb-16">
     <div v-for="(item, index) in stories" :key="index">
-      <community-spotlight-item :story="getLinkedItem(item)" />
+      <client-only><community-spotlight-item :story="getLinkedItem(item)" /></client-only>
       <div v-if="index !== stories.length - 1 || bottomLink" class="seperator-path my-16" />
     </div>
     <nuxt-link

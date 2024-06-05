@@ -40,7 +40,6 @@ import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
 
-//import ContentfulErrorHandle from '@/mixins/contentful-error-handle'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { useMainStore } from '../store/index.js'
@@ -58,7 +57,7 @@ export default {
     StayConnected
   },
 
-  mixins: [/*ContentfulErrorHandle,*/ marked],
+  mixins: [marked],
 
   async setup() {
     const config = useRuntimeConfig()

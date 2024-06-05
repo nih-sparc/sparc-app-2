@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchTypes[2].label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="searchTypes[2].label" />
+    <Meta name="twitter:title" :content="searchTypes[2].label" />
+    <Meta name="description" hid="description" :content="`Browse ${searchTypes[2].label}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${searchTypes[2].label}`" />
+    <Meta name="twitter:description" :content="`Browse ${searchTypes[2].label}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="Community Spotlight" />
     <div class="container">
@@ -46,12 +54,14 @@
               :md="6"
               :lg="6"
             >
-              <community-spotlight-facet-menu
-                ref="communitySpotlightFacetMenu"
-                class="community-spotlight-facet-menu"
-                :anatomical-structures="anatomicalStructures"
-                @community-spotlight-selections-changed="onPaginationPageChange(1)"
-              />
+              <client-only>
+                <community-spotlight-facet-menu
+                  ref="communitySpotlightFacetMenu"
+                  class="community-spotlight-facet-menu"
+                  :anatomical-structures="anatomicalStructures"
+                  @community-spotlight-selections-changed="onPaginationPageChange(1)"
+                />
+              </client-only>
             </el-col>
             <el-col
               :sm='24'
@@ -61,27 +71,33 @@
               <div class="search-heading mt-32 mb-16">
                 <div class="label1" v-show="communitySpotlightItems.items.length">
                   {{ communitySpotlightItems.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="communitySpotlightItems.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="communitySpotlightItems.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
                 <span class="label1">
                   Sort
-                  <sort-menu
-                    :options="sortOptions"
-                    :selected-option="selectedSortOption"
-                    @update-selected-option="onSortOptionChange"
-                  />
+                  <client-only>
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </client-only>
                 </span>
               </div>
               <div class="subpage">
                 <template v-if="communitySpotlightItems.items.length > 0">
-                  <community-spotlight-item
-                    v-for="(item, index) in communitySpotlightItems.items"
-                    :key="index"
-                    :story="getLinkedItems(item)"
-                  />
+                  <client-only>
+                    <community-spotlight-item
+                      v-for="(item, index) in communitySpotlightItems.items"
+                      :key="index"
+                      :story="getLinkedItems(item)"
+                    />
+                  </client-only>
                 </template>
                 <template v-else>
                   <div class="no-results-container">
@@ -89,27 +105,33 @@
                     <hr />
                   </div>
                 </template>
-                <alternative-search-results-news
-                  ref="altSearchResults"
-                  :search-had-results="communitySpotlightItems.items.length > 0"
-                  @vue:mounted="altResultsMounted"
-                />
+                <client-only>
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="communitySpotlightItems.items.length > 0"
+                    @vue:mounted="altResultsMounted"
+                  />
+                </client-only>
               </div>
               <div class="search-heading">
                 <div class="label1" v-if="communitySpotlightItems.items.length">
                   {{ communitySpotlightItems.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="communitySpotlightItems.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="communitySpotlightItems.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
-                <pagination
-                  v-if="communitySpotlightItems.limit < communitySpotlightItems.total"
-                  :selected="curSearchPage"
-                  :page-size="communitySpotlightItems.limit"
-                  :total-count="communitySpotlightItems.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <client-only>
+                  <pagination
+                    v-if="communitySpotlightItems.limit < communitySpotlightItems.total"
+                    :selected="curSearchPage"
+                    :page-size="communitySpotlightItems.limit"
+                    :total-count="communitySpotlightItems.total"
+                    @select-page="onPaginationPageChange"
+                  />
+                </client-only>
               </div>
             </el-col>
           </el-row>
@@ -218,21 +240,6 @@ export default {
           }
         }
       })
-    })
-    useHead({
-      title: searchTypes[2].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: searchTypes[2].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${searchTypes[2].label}`
-        },
-      ]
     })
 
     return {

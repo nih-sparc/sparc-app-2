@@ -14,8 +14,9 @@
             name: 'news-and-events-news-id',
             params: { id: item.sys.id }
           }"
-          v-html="highlightMatches(item.fields.title, $route.query.search)"
-        />
+        >
+          <p v-html="highlightMatches(item.fields.title, $route.query.search)"/>
+        </nuxt-link>
         <a
           v-else
           :href="item.fields?.url"
@@ -32,6 +33,36 @@
     </div>
   </div>
 </template>
+
+<script setup>
+const props = defineProps({
+  item: Object,
+})
+const { item } = toRefs(props)
+const openInNewTab = ref({})
+const isDestinationLinkRetreived = ref(false)
+
+const config = useRuntimeConfig()
+const { $axios } = useNuxtApp()
+const url = pathOr("", ['fields', 'url'], item)
+if (url.includes('bit.ly')) {
+  const bitlyId = url.replace("https://", "")
+  await $axios.post(config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+    headers: {
+      Authorization: `Bearer ${config.public.BITLY_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    }
+  }).then(response => {
+    openInNewTab.value = !isInternalLink(response.data.long_url)
+    isDestinationLinkRetreived.value = true
+  })
+  .catch(err => {
+    console.error('Error retreiving bitly link destination URL.', err)
+    openInNewTab.value = !isInternalLink(url)
+    isDestinationLinkRetreived.value = true
+  })
+}
+</script>
 
 <script>
 import { pathOr } from 'ramda'
@@ -52,47 +83,6 @@ export default {
 
   mixins: [FormatDate],
 
-  props: {
-    item: {
-      type: Object,
-      default: () => {}
-    },
-  },
-
-  data() {
-    return {
-      isDestinationLinkRetreived: false,
-      openInNewTab: false
-    }
-  },
-  setup(props) {
-    const config = useRuntimeConfig()
-    const { $axios } = useNuxtApp()
-    const url = pathOr("", ['fields', 'url'], props.item)
-    if (url.includes('bit.ly')) {
-      const bitlyId = url.replace("https://", "")
-      return $axios.post(config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
-        headers: {
-          Authorization: `Bearer ${config.public.BITLY_ACCESS_TOKEN}`,
-          'Content-Type': 'application/json',
-        }
-      })
-        .then(response => ({
-          openInNewTab: !isInternalLink(response.data.long_url),
-          isDestinationLinkRetreived: true
-        }))
-        .catch(err => {
-          console.error('Error retreiving bitly link destination URL.', err)
-          return {
-            openInNewTab: !isInternalLink(url)
-          }
-        })
-    }
-    return {
-      openInNewTab: !isInternalLink(url),
-      isDestinationLinkRetreived: true
-    }
-  },
   computed: {
     /**
      * Compute and formate start date

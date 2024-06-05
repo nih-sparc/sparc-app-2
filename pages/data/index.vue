@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchType.label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="`Browse ${title}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${title}`" />
+    <Meta name="twitter:description" :content="`Browse ${title}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
@@ -9,17 +17,13 @@
         </div>
         <ul class="search-tabs">
           <li v-for="search in searchTypes" :key="search.label">
-            <nuxt-link
-              class="search-tabs__button"
-              :class="{ active: search.type === $route.query.type }"
-              :to="{
+            <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
                 name: 'data',
                 query: {
                   ...$route.query,
                   type: search.type,
                 }
-              }"
-            >
+              }">
               {{ search.label }}
             </nuxt-link>
           </li>
@@ -29,12 +33,8 @@
         <div class="body1 mb-8">
           Search within category
         </div>
-        <search-controls-contentful
-          class="search-bar"
-          placeholder="Enter search criteria"
-          :path="$route.path"
-          showSearchText
-        />
+        <search-controls-contentful class="search-bar" placeholder="Enter search criteria" :path="$route.path"
+          showSearchText />
       </div>
     </div>
     <div class="container">
@@ -189,26 +189,11 @@ export default {
       return searchType.type == route.query.type
     })
     const title = propOr('', 'label', searchType)
-    // TODO why does it not work?
-    // useHead({
-    //   title: title,
-    //   meta: [
-    //     {
-    //       hid: 'og:title',
-    //       property: 'og:title',
-    //       content: title,
-    //     },
-    //     {
-    //       hid: 'description',
-    //       name: 'description',
-    //       content: `Browse ${title}`
-    //     },
-    //   ]
-    // })
     return {
       algoliaSortOptions,
       selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
-      algoliaIndex
+      algoliaIndex,
+      title
     }
   },
 

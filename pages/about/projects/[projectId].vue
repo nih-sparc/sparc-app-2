@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="description" />
+    <Meta name="og:description" hid="og:description" :content="description" />
+    <Meta name="twitter:description" :content="description" />
+  </Head>
   <div :style="consortiaStyle" class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container">
@@ -90,21 +98,6 @@ export default {
         associatedDatasets = data
       }).catch(() => {
         // No award ID found
-      })
-      useHead({
-        title: project.fields.title,
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: project.fields.title,
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: project.fields.description ? project.fields.description : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-          },
-        ]
       })
       return {
         fields: project.fields,

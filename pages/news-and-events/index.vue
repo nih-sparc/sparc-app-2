@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ page.fields.page_title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="page.fields.page_title" />
+    <Meta name="twitter:title" :content="page.fields.page_title" />
+    <Meta name="description" hid="description" :content="page.fields.heroCopy" />
+    <Meta name="og:description" hid="og:description" :content="page.fields.heroCopy" />
+    <Meta name="twitter:description" :content="page.fields.heroCopy" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
@@ -6,12 +14,8 @@
       <!-- eslint-disable vue/no-v-html -->
       <!-- marked will sanitize the HTML injected -->
       <div v-html="parseMarkdown(page.fields.heroCopy)" />
-      <img
-        v-if="page.fields.heroImage"
-        :v-slot="image"
-        class="page-hero-img"
-        :src="page.fields.heroImage.fields.file.url"
-      />
+      <img v-if="page.fields.heroImage" :v-slot="image" class="page-hero-img"
+        :src="page.fields.heroImage.fields.file.url" />
       <NuxtLink to="/news-and-events/news">
         <el-button class="secondary mb-16">Browse All News &amp; Events</el-button>
       </NuxtLink>
@@ -31,12 +35,9 @@
               <div>
                 <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
 
-                <nuxt-link
-                  class="btn-load-more mt-16"
-                  :to="{
+                <nuxt-link class="btn-load-more mt-16" :to="{
                     name: 'news-and-events-news'
-                  }"
-                >
+                  }">
                   View All News
                 </nuxt-link>
               </div>
@@ -45,19 +46,12 @@
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
             <div class="upcoming-events">
-              <event-card
-                v-for="event in upcomingEvents.items"
-                :key="event.sys.id"
-                :event="event"
-              />
+              <event-card v-for="event in upcomingEvents.items" :key="event.sys.id" :event="event" />
             </div>
             <div class="mt-16">
-              <nuxt-link
-                class="btn-load-more"
-                :to="{
+              <nuxt-link class="btn-load-more" :to="{
                   name: 'news-and-events-events',
-                }"
-              >
+                }">
                 View All Events
               </nuxt-link>
             </div>
@@ -74,40 +68,37 @@
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
               <div class="heading2">Sign up for the SPARC Newsletter</div>
-              <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
+              <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.
+              </div>
               <newsletter-form />
               <div class="newsletter-archive mt-16">
                 <div class="heading2 mt-24">Current Newsletter</div>
                 <div ref="newsletterArchive" id="newsletter-archive" />
-                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8" target="_blank">
+                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                  target="_blank">
                   View all Newsletters<svgo-icon-open />
                 </a>
               </div>
               <div class="heading2 mt-24">Get Involved</div>
-              <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your science story, news, or event.</div>
+              <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your
+                science story, news, or event.</div>
               <div class="get-involved-buttons-container">
-                <nuxt-link
-                  :to="{
+                <nuxt-link :to="{
                     name: 'contact-us',
                     query: {
                       type: 'news-event'
                     }
-                  }"
-                  target="_blank"
-                >
+                  }" target="_blank">
                   <el-button class="get-involved-button secondary">
                     Share News Or Events
                   </el-button>
                 </nuxt-link>
-                <nuxt-link
-                  :to="{
+                <nuxt-link :to="{
                     name: 'contact-us',
                     query: {
                       type: 'story'
                     }
-                  }"
-                  target="_blank"
-                >
+                  }" target="_blank">
                   <el-button class="get-involved-button secondary mt-8">
                     Submit A Community Spotlight Idea
                   </el-button>
@@ -116,7 +107,8 @@
             </el-col>
             <el-col :xs="24" :sm="12" class="twitter-wrap">
               <div v-twitter-widgets>
-                <a class="twitter-timeline" href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw">Tweets by sparc_science</a>
+                <a class="twitter-timeline" href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw">Tweets by
+                  sparc_science</a>
               </div>
             </el-col>
           </el-row>
@@ -133,7 +125,6 @@ import EventCard from '@/components/EventCard/EventCard.vue';
 import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue';
 import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
 
-import ErrorMessages from '@/mixins/error-messages'
 import MarkedMixin from '@/mixins/marked'
 
 import { fetchData, fetchNews } from './model';
@@ -157,26 +148,8 @@ export default {
     try {
       const { $contentfulClient } = useNuxtApp()
       const data = await fetchData($contentfulClient, '', 2)
-      useHead({
-        title: 'News & Events',
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: 'News & Events',
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: data?.page.fields.heroCopy ? data?.page.fields.heroCopy : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-          },
-        ]
-      })
-      console.log(data)
       return data
     } catch(e) {
-      //Handle uncaught error
-      const message = ErrorMessages.methods.contentful()
     }
   },
 

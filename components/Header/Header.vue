@@ -2,53 +2,45 @@
   <div class="header">
     <div class="header__nav">
       <div class="header__nav--parent">
-        <svgo-icon-contact class="tab3 mr-4 mt-4"/>
+        <svgo-icon-contact class="tab3 mr-4 mt-4" />
         <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
           Contact Us
         </nuxt-link>
-        <svgo-icon-help class="tab3 mr-4 mt-4"/>
+        <svgo-icon-help class="tab3 mr-4 mt-4" />
         <a href="https://docs.sparc.science/" target="_blank">
           Help
         </a>
-        <svgo-icon-sign-in class="tab3 mt-4"/>
-        <a class="sign-in-link" v-if="!userProfile" @click="showLoginDialog = true">
-          Sign in
-        </a>
-        <el-menu ref="userMenu" class="mr-16 user-menu" v-else :ellipsis="false" background-color="#24245b" @select="handleUserMenuSelect" @mouseleave="closeMenu" @mouseenter="openMenu">
-          <el-sub-menu index="user" class="submenu">
-            <template #title>{{username}}</template>
-            <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
-            <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
-          </el-sub-menu>
-        </el-menu>
+        <client-only>
+          <svgo-icon-sign-in class="tab3 mt-4" />
+          <a class="sign-in-link" v-if="!userProfile" @click="showLoginDialog = true">
+            Sign in
+          </a>
+          <el-menu ref="userMenu" class="mr-16 user-menu" v-else :ellipsis="false" background-color="#24245b"
+            @select="handleUserMenuSelect" @mouseleave="closeMenu" @mouseenter="openMenu">
+            <el-sub-menu index="user" class="submenu">
+              <template #title>{{username}}</template>
+              <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
+              <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
+            </el-sub-menu>
+          </el-menu>
+        </client-only>
       </div>
       <div class="header__nav--main">
         <div class="nav-main-container">
-          <button
-            class="nav-main-container__mobile-menu"
-            @click="openMobileNav"
-          >
+          <button class="nav-main-container__mobile-menu" @click="openMobileNav">
             <svgo-icon-hamburger height="25" width="25" />
           </button>
           <div class="logo">
             <nuxt-link :to="{ name: 'index' }">
-              <sparc-logo />
+              <client-only><sparc-logo /></client-only>
             </nuxt-link>
           </div>
 
           <div :class="[menuOpen ? 'overlay' : '']">
             <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
               <ul>
-                <li
-                  v-for="link in links"
-                  :key="link.href"
-                  style="z-index: 100;"
-                >
-                  <nuxt-link
-                    :to="link.href"
-                    :class="{ active: activeLink(link.href) }"
-                    exact-active-class="active"
-                  >
+                <li v-for="link in links" :key="link.href" style="z-index: 100;">
+                  <nuxt-link :to="link.href" :class="{ active: activeLink(link.href) }" exact-active-class="active">
                     {{ link.displayTitle }}
                   </nuxt-link>
                 </li>
@@ -56,41 +48,40 @@
               </ul>
               <ul class="mobile-navigation__links">
                 <li>
-                  <svgo-icon-contact class="tab2"/>
+                  <svgo-icon-contact class="tab2" />
                   <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
                     Contact Us
                   </nuxt-link>
                 </li>
                 <li>
-                  <svgo-icon-help class="tab2"/>
+                  <svgo-icon-help class="tab2" />
                   <a href="https://docs.sparc.science/" target="_blank">
                     Help
                   </a>
                 </li>
                 <li>
-                  <svgo-icon-sign-in class="tab2"/>
-                  <a v-if="!userProfile" class="sign-in-link" @click="showLoginDialog = true">
-                    Sign in
-                  </a>
-                  <span v-else>
-                    <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
-                      Profile
+                  <client-only>
+                    <svgo-icon-sign-in class="tab2" />
+                    <a v-if="!userProfile" class="sign-in-link" @click="showLoginDialog = true">
+                      Sign in
                     </a>
-                    <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                      Logout
-                    </a>
-                  </span>
+                    <span v-else>
+                      <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
+                        Profile
+                      </a>
+                      <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
+                        Logout
+                      </a>
+                    </span>
+                  </client-only>
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
                 <a href="https://twitter.com/sparc_science" target="_blank">
-                  <svgo-icon-twitter class="social-media-icon pr-16"/>
+                  <svgo-icon-twitter class="social-media-icon pr-16" />
                 </a>
-                <a
-                  href="https://www.youtube.com/results?search_query=sparc+nih"
-                  target="_blank"
-                >
-                <svgo-icon-youtube class="social-media-icon"/>
+                <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
+                  <svgo-icon-youtube class="social-media-icon" />
                 </a>
               </div>
             </div>
@@ -98,10 +89,7 @@
         </div>
       </div>
     </div>
-    <login-modal
-      :show-dialog="showLoginDialog"
-      @dialog-closed="showLoginDialog = false"
-    />
+    <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
   </div>
 </template>
 

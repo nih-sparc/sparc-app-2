@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-16 similar-datasets-container">
+  <client-only><div class="mt-16 similar-datasets-container">
     <div class="header">
       <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
       <div v-else class="p-8 mb-0">Search related models/simulations</div>
@@ -91,7 +91,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div></client-only>
 </template>
 
 <script>

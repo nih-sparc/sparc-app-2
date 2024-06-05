@@ -42,8 +42,6 @@ import { useMainStore } from '../../store'
 
 import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
-import { failMessage } from '@/utils/notification-messages'
-
 /**
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId

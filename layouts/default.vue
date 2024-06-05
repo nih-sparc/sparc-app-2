@@ -22,19 +22,6 @@ export default {
     SparcHeader,
     SparcFooter
   },
-  setup() {
-    const config = useRuntimeConfig()
-    const route = useRoute()
-    useHead({
-      meta: [
-        {
-          hid: 'og:url',
-          property: 'og:url',
-          content: `${config.public.ROOT_URL}${route.fullPath}`,
-        },
-      ]
-    })
-  },
   data() {
     return {
       store: useMainStore()

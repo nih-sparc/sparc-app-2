@@ -102,6 +102,7 @@ export default {
     },
     retrieveAltTotal: function(category) {
       this.functionLookup[category](
+        this.$contentfulClient,
         this.$route.query.search,
         undefined,
         undefined,

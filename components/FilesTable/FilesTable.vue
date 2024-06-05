@@ -66,22 +66,22 @@
                     </template>
                   </sparc-tooltip>
                 </div>
-                <div v-else-if="isScaffoldMetaFile(scope)" class="truncated">
+                <div v-else-if="isScaffoldMetaFile(scope.row.path)" class="truncated">
                   <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
                     <template #item>
                       <div class="truncated">
-                        <nuxt-link :to="getScaffoldLink(scope)">
+                        <nuxt-link :to="getScaffoldLink(scope.row.path)">
                           {{ scope.row.name }}
                         </nuxt-link>
                       </div>
                     </template>
                   </sparc-tooltip>
                 </div>
-                <div v-else-if="isScaffoldViewFile(scope)" class="truncated">
+                <div v-else-if="scope.row.path && isScaffoldViewFile(scope.row.path)" class="truncated">
                   <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
                     <template #item>
                       <div class="truncated">
-                        <nuxt-link :to="getScaffoldViewLink(scope)">
+                        <nuxt-link :to="getScaffoldViewLink(scope.row.path, scope.row.name)">
                           {{ scope.row.name }}
                         </nuxt-link>
                       </div>
@@ -178,9 +178,9 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isScaffoldMetaFile(scope)"
+                v-if="isScaffoldMetaFile(scope.row.path)"
                 class="circle"
-                @click="openScaffold(scope)"
+                @click="openScaffold(scope.row.path)"
               >
                 <sparc-tooltip
                   placement="bottom-center"
@@ -192,9 +192,9 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isScaffoldViewFile(scope)"
+                v-if="isScaffoldViewFile(scope.row.path)"
                 class="circle"
-                @click="openScaffoldView(scope)"
+                @click="openScaffoldView(scope.row.path, scope.row.name)"
               >
                 <sparc-tooltip
                   placement="bottom-center"
@@ -206,11 +206,11 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isBiolucidaViewFile(scope)"
+                v-if="isBiolucidaViewFile(scope.row.path)"
                 class="circle"
                 @click="openViewerFile(scope)"
               >
-                <sparc-tooltip
+              <sparc-tooltip
                   placement="bottom-center"
                   content="Open Biolucida Viewer"
                 >
@@ -220,7 +220,7 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isPlotViewFile(scope)"
+                v-if="isPlotViewFile(scope.row.path)"
                 class="circle"
                 @click="openViewerFile(scope)"
               >
@@ -234,7 +234,7 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isVideoViewFile(scope)"
+                v-if="isVideoViewFile(scope.row.path)"
                 class="circle"
                 @click="openViewerFile(scope)"
               >
@@ -248,7 +248,7 @@
                 </sparc-tooltip>
               </div>
               <div
-                v-if="isSegmentationViewFile(scope)"
+                v-if="isSegmentationViewFile(scope.row.path)"
                 class="circle"
                 @click="openViewerFile(scope)"
               >
@@ -390,8 +390,6 @@ import { useMainStore } from '../../store'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
-
-import * as path from 'path'
 
 const openableFileTypes = [
   'pdf',
@@ -755,13 +753,13 @@ export default {
      * Create nuxt-link object for opening a scaffold.
      * @param {Object} scope
      */
-    getScaffoldLink: function(scope) {
+    getScaffoldLink: function(path) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       return {
         name: 'maps',
         params: {},
-        query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scope.row.path }
+        query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: path }
       }
     },
 
@@ -769,15 +767,15 @@ export default {
      * Create nuxt-link object for opening a scaffold.
      * @param {Object} scope
      */
-    getScaffoldViewLink: function(scope) {
+    getScaffoldViewLink: function(filePath, name) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       if (
+        filePath &&
         this.datasetScicrunch &&
         this.datasetScicrunch['abi-scaffold-view-file']
       ) {
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        const shortened = filePath.replace('files/', '')
         
 
         // Find the file with a matching name
@@ -786,20 +784,14 @@ export default {
         )[0]
 
         // Find the current directory path. Note that the trailing '/' is included
-        const currentDirectoryPath = scope.row.path.split(scope.row.name)[0]
+        const currentDirectoryPath = filePath.split(name)[0]
 
         // Create paths for fetching the files from 'sparc-api/s3-resource/'
         const scaffoldPath = `${currentDirectoryPath}${viewMetadata.datacite.isDerivedFrom.relative.path[0]}`
-
-        // View paths need to be relative
-        const viewPath = path.relative(
-          path.dirname(scaffoldPath),
-          scope.row.path
-        )
         return {
           name: 'maps',
           params: {},
-          query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: viewPath }
+          query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: name }
         }
       }
       return {}
@@ -809,16 +801,16 @@ export default {
      * Open scaffold
      * @param {Object} scope
      */
-    openScaffold: function(scope) {
-      this.$router.push(this.getScaffoldLink(scope))
+    openScaffold: function(path) {
+      this.$router.push(this.getScaffoldLink(path))
     },
 
     /**
      * Open scaffold view file
      * @param {Object} scope
      */
-    openScaffoldView: function(scope) {
-      const scaffoldViewLink = this.getScaffoldViewLink(scope)
+    openScaffoldView: function(path, name) {
+      const scaffoldViewLink = this.getScaffoldViewLink(path, name)
       if (scaffoldViewLink) {
         this.$router.push(scaffoldViewLink)
       }
@@ -827,15 +819,15 @@ export default {
      * Checks if file is a scaffold view port
      * @param {Object} scope
      */
-    isScaffoldViewFile: function(scope) {
+    isScaffoldViewFile: function(path) {
       if (
+        path &&
         this.datasetScicrunch &&
         this.datasetScicrunch['abi-scaffold-view-file']
       ) {
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        path = path.replace('files/', '')
         for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === shortened)
+          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === path)
             return true
         }
       }
@@ -845,77 +837,77 @@ export default {
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
-    isScaffoldMetaFile: function(scope) {
+    isScaffoldMetaFile: function(path) {
       if (
+        path &&
         this.datasetScicrunch &&
         this.datasetScicrunch['abi-scaffold-metadata-file']
       ) {
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
-        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file'].length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i].dataset.path === shortened)
+        path = path.replace('files/', '')
+        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file']?.length; i++) {
+          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i]?.dataset?.path === path)
             return true
         }
       }
       return false
     },
-    isBiolucidaViewFile: function (scope) {
+    isBiolucidaViewFile: function (path) {
       if (
+        path &&
         this.datasetScicrunch &&
         (this.datasetScicrunch['biolucida-2d'] || this.datasetScicrunch['biolucida-3d'])
       ) {
         const biolucida2dObjects = this.datasetScicrunch['biolucida-2d']
         const biolucida3dObjects = this.datasetScicrunch['biolucida-3d']
         const biolucidaObjects = biolucida2dObjects == undefined ? biolucida3dObjects : biolucida2dObjects.concat(biolucida3dObjects).filter((item) => item !== undefined)
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        path = path.replace('files/', '')
         for (let i = 0; i < biolucidaObjects.length; i++) {
-          if (biolucidaObjects[i].dataset.path === shortened)
+          if (biolucidaObjects[i].dataset.path === path)
             return true
         }
       }
       return false
     },
-    isPlotViewFile: function (scope) {
+    isPlotViewFile: function (path) {
       if (
+        path &&
         this.datasetScicrunch &&
         this.datasetScicrunch['abi-plot']
       ) {
         let plotObjects = this.datasetScicrunch['abi-plot']
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        path = path.replace('files/', '')
         for (let i = 0; i < plotObjects.length; i++) {
-          if (plotObjects[i].dataset.path === shortened)
+          if (plotObjects[i].dataset.path === path)
             return true
         }
       }
       return false
     },
-    isVideoViewFile: function (scope) {
+    isVideoViewFile: function (path) {
       if (
+        path &&
         this.datasetScicrunch &&
         this.datasetScicrunch['video']
       ) {
         let videoObjects = this.datasetScicrunch['video']
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        path = path.replace('files/', '')
         for (let i = 0; i < videoObjects.length; i++) {
-          if (videoObjects[i].dataset.path === shortened)
+          if (videoObjects[i].dataset.path == path)
             return true
         }
       }
       return false
     },
-    isSegmentationViewFile: function (scope) {
+    isSegmentationViewFile: function (path) {
       if (
+        path &&
         this.datasetScicrunch &&
         this.datasetScicrunch['mbf-segmentation']
       ) {
         let segmentationObjects = this.datasetScicrunch['mbf-segmentation']
-        let shortened = scope.row.path
-        shortened = shortened.replace('files/', '')
+        path = path.replace('files/', '')
         for (let i = 0; i < segmentationObjects.length; i++) {
-          if (segmentationObjects[i].dataset.path === shortened)
+          if (segmentationObjects[i].dataset.path === path)
             return true
         }
       }

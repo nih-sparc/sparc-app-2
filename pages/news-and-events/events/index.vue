@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchTypes[1].label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="searchTypes[1].label" />
+    <Meta name="twitter:title" :content="searchTypes[1].label" />
+    <Meta name="description" hid="description" :content="`Browse ${searchTypes[1].label}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${searchTypes[1].label}`" />
+    <Meta name="twitter:description" :content="`Browse ${searchTypes[1].label}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="Events" />
     <div class="container">
@@ -46,11 +54,13 @@
               :md="6"
               :lg="6"
             >
-              <events-facet-menu
-                ref="eventsFacetMenu"
-                class="events-facet-menu"
-                @events-selections-changed="onPaginationPageChange(1)"
-              />
+              <client-only>
+                <events-facet-menu
+                  ref="eventsFacetMenu"
+                  class="events-facet-menu"
+                  @events-selections-changed="onPaginationPageChange(1)"
+                />
+              </client-only>
             </el-col>
             <el-col
               :sm='24'
@@ -60,48 +70,58 @@
               <div class="search-heading mt-32 mb-16">
                 <div class="label1" v-show="events.items.length">
                   {{ events.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="events.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="events.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
                 <span class="label1">
                   Sort
-                  <sort-menu
-                    :options="sortOptions"
-                    :selected-option="selectedSortOption"
-                    @update-selected-option="onSortOptionChange"
-                  />
+                  <client-only>
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </client-only>
                 </span>
               </div>
               <div ref="eventsWrap" class="subpage">
-                <event-list-item
-                  v-for="item in events.items"
-                  :key="item.sys.id"
-                  :item="item"
-                  :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
-                />
-                <alternative-search-results-news
-                  ref="altSearchResults"
-                  :search-had-results="events.items.length > 0"
-                  @vue:mounted="altResultsMounted"
-                />
+                <client-only>
+                  <event-list-item
+                    v-for="item in events.items"
+                    :key="item.sys.id"
+                    :item="item"
+                    :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
+                  />
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="events.items.length > 0"
+                    @vue:mounted="altResultsMounted"
+                  />
+                </client-only>
               </div>
               <div class="search-heading">
                 <div class="label1" v-if="events.items.length">
                   {{ events.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="events.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="events.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
-                <pagination
-                  v-if="events.limit < events.total"
-                  :selected="curSearchPage"
-                  :page-size="events.limit"
-                  :total-count="events.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <client-only>
+                  <pagination
+                    v-if="events.limit < events.total"
+                    :selected="curSearchPage"
+                    :page-size="events.limit"
+                    :total-count="events.total"
+                    @select-page="onPaginationPageChange"
+                  />
+                </client-only>
               </div>
             </el-col>
           </el-row>
@@ -180,21 +200,6 @@ export default {
     const route = useRoute()
     const { $contentfulClient } = useNuxtApp()
     const events = await fetchEvents($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
-    useHead({
-      title: searchTypes[1].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: searchTypes[1].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${searchTypes[1].label}`
-        },
-      ]
-    })
     return {
       events: ref(events)
     }

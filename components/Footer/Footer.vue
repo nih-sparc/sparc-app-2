@@ -6,7 +6,7 @@
           <div class="footer__info">
             <div class="footer__info--logo">
               <nuxt-link :to="{ name: 'index' }">
-                <sparc-logo />
+                <client-only><sparc-logo /></client-only>
               </nuxt-link>
             </div>
             <div class="footer__info--blurb">

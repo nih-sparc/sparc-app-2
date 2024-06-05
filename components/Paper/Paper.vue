@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="subpage-col about-page-border p-32">
-      <template class="subpage-row">
+      <div class="subpage-row">
         <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
-        <template class="subpage-col">
+        <div class="subpage-col">
           <div class="about-page-text" v-html="text" />
           <div v-if="showShareLinks">
             <share-links />
           </div>
-        </template>
-      </template>
+        </div>
+      </div>
       <NuxtLink v-if="buttonText != '' && buttonLinkExternal == ''" class="margin-top-auto" :to="buttonLink"
         :target="newTab ? '_blank' : '_self'">
         <el-button class="secondary">
@@ -115,5 +115,8 @@ export default {
   height: 8rem;
   object-fit: contain;
   border: solid $lineColor1 1px;
+}
+:deep(img) {
+  max-width: 100%;
 }
 </style>

@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchTypes[0].label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="searchTypes[0].label" />
+    <Meta name="twitter:title" :content="searchTypes[0].label" />
+    <Meta name="description" hid="description" :content="`Browse ${searchTypes[0].label}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${searchTypes[0].label}`" />
+    <Meta name="twitter:description" :content="`Browse ${searchTypes[0].label}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="News" />
     <div class="container">
@@ -46,11 +54,13 @@
                 :md="6"
                 :lg="6"
               >
-                <news-facet-menu
-                  ref="newsFacetMenu"
-                  class="news-facet-menu"
-                  @news-selections-changed="onPaginationPageChange(1)"
-                />
+                <client-only>
+                  <news-facet-menu
+                    ref="newsFacetMenu"
+                    class="news-facet-menu"
+                    @news-selections-changed="onPaginationPageChange(1)"
+                  />
+                </client-only>
               </el-col>
               <el-col
                 :sm='24'
@@ -60,18 +70,22 @@
                 <div class="search-heading mt-32 mb-16">
                   <div class="label1" v-show="news.items?.length">
                     {{ news.total }} Results | Showing
-                    <pagination-menu
-                      :page-size="news.limit"
-                      @update-page-size="onPaginationLimitChange"
-                    />
+                    <client-only>
+                      <pagination-menu
+                        :page-size="news.limit"
+                        @update-page-size="onPaginationLimitChange"
+                      />
+                    </client-only>
                   </div>
                   <span class="label1">
                     Sort
-                    <sort-menu
-                      :options="sortOptions"
-                      :selected-option="selectedSortOption"
-                      @update-selected-option="onSortOptionChange"
-                    />
+                    <client-only>
+                      <sort-menu
+                        :options="sortOptions"
+                        :selected-option="selectedSortOption"
+                        @update-selected-option="onSortOptionChange"
+                      />
+                    </client-only>
                   </span>
                 </div>
                 <div class="subpage">
@@ -80,27 +94,33 @@
                       :item="item"
                     />
                   </template>
-                  <alternative-search-results-news
-                    ref="altSearchResults"
-                    :search-had-results="news.items.length > 0"
-                    @vue:mounted="altResultsMounted"
-                  />
+                  <client-only>
+                    <alternative-search-results-news
+                      ref="altSearchResults"
+                      :search-had-results="news.items.length > 0"
+                      @vue:mounted="altResultsMounted"
+                    />
+                  </client-only>
                 </div>
                 <div class="search-heading">
                   <div class="label1" v-if="news.items?.length">
                     {{ news.total }} Results | Showing
-                    <pagination-menu
-                      :page-size="news.limit"
-                      @update-page-size="onPaginationLimitChange"
-                    />
+                    <client-only>
+                      <pagination-menu
+                        :page-size="news.limit"
+                        @update-page-size="onPaginationLimitChange"
+                      />
+                    </client-only>
                   </div>
-                  <pagination
-                    v-if="news.limit < news.total"
-                    :selected="curSearchPage"
-                    :page-size="news.limit"
-                    :total-count="news.total"
-                    @select-page="onPaginationPageChange"
-                  />
+                  <client-only>
+                    <pagination
+                      v-if="news.limit < news.total"
+                      :selected="curSearchPage"
+                      :page-size="news.limit"
+                      :total-count="news.total"
+                      @select-page="onPaginationPageChange"
+                    />
+                  </client-only>
                 </div>
               </el-col>
           </el-row>
@@ -174,21 +194,6 @@ export default {
     const route = useRoute()
     const { $contentfulClient } = useNuxtApp()
     const news = await fetchNews($contentfulClient, route.query.search, undefined, undefined, undefined, undefined, 10, 0)
-    useHead({
-      title: searchTypes[0].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: searchTypes[0].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${searchTypes[0].label}`
-        },
-      ]
-    })
     return {
       news : ref(news)
     }

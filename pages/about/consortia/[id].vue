@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="overview" />
+    <Meta name="og:description" hid="og:description" :content="overview" />
+    <Meta name="twitter:description" :content="overview" />
+  </Head>
   <div :style="consortiaStyle" class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
@@ -6,8 +14,6 @@
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
-        <!--<paper class="row-item" :text="parseMarkdown(whatWeDo)" :button-text="whatWeDoButtonText"
-          :button-link="whatWeDoButtonLink" />-->
         <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
           :button-link="ourResearchButtonLink" />
       </div>
@@ -108,21 +114,6 @@ export default {
       highlights.value = items
     }).catch(() => {
       highlights.value = []
-    })
-    useSeoMeta({
-      title: consortiaItem.fields.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: consortiaItem.fields.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: consortiaItem.fields.overview ? consortiaItem.fields.overview : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-        },
-      ]
     })
     return {
       consortiaItem,

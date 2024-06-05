@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+    <Meta name="og:description" hid="og:description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+    <Meta name="twitter:description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+  </Head>
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
@@ -375,23 +383,6 @@ export default {
         },
       ],
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
-    }
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'SPARC is creating detailed PNS maps based on SPARC data and information available from the literature.'
-        },
-      ]
     }
   },
   mounted: function () {
