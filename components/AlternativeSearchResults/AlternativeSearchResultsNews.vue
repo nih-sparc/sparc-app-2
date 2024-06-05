@@ -1,8 +1,8 @@
 <template>
-  <div v-if="searchHasAltResults && this.$route.query.search" class="mt-8">
+  <div v-if="searchHasAltResults && route.query.search" class="mt-8">
     <hr />
     <template v-if="!searchHadResults">
-      No results were found for <strong><i>{{ this.$route.query.search }}</i></strong>.
+      No results were found for <strong><i>{{ route.query.search }}</i></strong>.
     </template>
     The following results were discovered for the other categories:
     <br />
@@ -13,7 +13,7 @@
           :to="{
             name: `news-and-events-${dataType}`,
             query: {
-              ...$route.query
+              ...route.query
             }
           }"
         >
@@ -47,6 +47,12 @@ export default {
     searchHadResults: {
       type: Boolean,
       default: true
+    }
+  },
+  setup() {
+    const route = useRoute()
+    return {
+      route
     }
   },
   data: function() {
@@ -96,6 +102,7 @@ export default {
     },
     retrieveAltTotal: function(category) {
       this.functionLookup[category](
+        this.$contentfulClient,
         this.$route.query.search,
         undefined,
         undefined,

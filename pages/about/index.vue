@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ pageTitle }}</Title>
+    <Meta name="og:title" hid="og:title" :content="pageTitle" />
+    <Meta name="twitter:title" :content="pageTitle" />
+    <Meta name="description" hid="description" :content="heroCopy" />
+    <Meta name="og:description" hid="og:description" :content="heroCopy" />
+    <Meta name="twitter:description" :content="heroCopy" />
+  </Head>
   <div class="about-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" title="About" />
     <page-hero class="py-24" v-if="heroCopy">
@@ -117,21 +125,6 @@ export default {
       $contentfulClient
         .getEntry(config.public.ctf_about_page_id)
         .then(({fields}) => {
-          useSeoMeta({
-            title: fields.pageTitle,
-            meta: [
-              {
-                hid: 'og:title',
-                property: 'og:title',
-                content: fields.pageTitle,
-              },
-              {
-                hid: 'description',
-                name: 'description',
-                content: fields.heroCopy ? fields.heroCopy : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-              },
-            ]
-          })
           return fields
         })
         .catch(err => console.error('Could not fetch page data from Contentful.', err)),

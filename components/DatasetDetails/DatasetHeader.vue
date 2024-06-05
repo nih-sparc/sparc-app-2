@@ -1,79 +1,81 @@
 <template>
-  <div class="details-header-container mt-16 py-16 px-24">
-    <el-row>
-      <el-col :sm="16" :md="18" :lg="19" :xl="20">
-        <h1 class="heading2 mt-0">
-          {{ title }}
-        </h1>
-        <div class="dataset-owners">
-          <span class="label4">Contributors:&nbsp;</span>
-          <div
-            v-for="(contributor, idx) in contributors"
-            :key="contributor.id"
-            class="contributor-item-wrap mr-4"
-          >
-            <contributor-item :contributor="contributor" />
-            <template v-if="idx < contributors.length - 1">
-              ,
-            </template>
-          </div>
-        </div>
-        <hr />
-        <div>
-          <span class="label4">Description: </span>{{ formatDescription(description) }}
-        </div>
-      </el-col>
-      <el-col :sm="8" :md="6" :lg="5" :xl="4">
-        <dataset-information-box 
-          :latest-version-revision="latestVersionRevision"
-          :latest-version-date="latestVersionDate"
-        />
-      </el-col>
-      <el-col>
-        <hr />
-        <div v-if="showPrimaryPublications">
-          <div class="publications-container">
-            <span class="primary-publications-title-column">
-              <span class="label4">Primary Publication(s): </span>
-            </span>
-            <span>
-              <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
-                <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" :can-copy-citation="false" />
-              </div>
-            </span>
+  <client-only>
+    <div class="details-header-container mt-16 py-16 px-24">
+      <el-row>
+        <el-col :sm="16" :md="18" :lg="19" :xl="20">
+          <h1 class="heading2 mt-0">
+            {{ title }}
+          </h1>
+          <div class="dataset-owners">
+            <span class="label4">Contributors:&nbsp;</span>
+            <div
+              v-for="(contributor, idx) in contributors"
+              :key="contributor.id"
+              class="contributor-item-wrap mr-4"
+            >
+              <contributor-item :contributor="contributor" />
+              <template v-if="idx < contributors.length - 1">
+                ,
+              </template>
+            </div>
           </div>
           <hr />
-        </div>
-        <div class="header-stats-block">
           <div>
-            <span class="label4">
-              Usage Rights: 
-            </span>
-            <span>
-              <template v-if="license">
-                <sparc-tooltip
-                  placement="left-center"
-                  :content="licenseName"
-                >
-                  <template #item>
-                    <a class="link1" :href="licenseLink" target="_blank">
-                      {{ license }}
-                    </a>
-                  </template>
-                </sparc-tooltip>
-              </template>
-              <template v-else>
-                No License Selected
-              </template>
-            </span>
+            <span class="label4">Description: </span>{{ formatDescription(description) }}
           </div>
-          <div class="metics-container">
-            <span class="label4">Downloads: {{numDownloadsText}}</span>
+        </el-col>
+        <el-col :sm="8" :md="6" :lg="5" :xl="4">
+          <dataset-information-box 
+            :latest-version-revision="latestVersionRevision"
+            :latest-version-date="latestVersionDate"
+          />
+        </el-col>
+        <el-col>
+          <hr />
+          <div v-if="showPrimaryPublications">
+            <div class="publications-container">
+              <span class="primary-publications-title-column">
+                <span class="label4">Primary Publication(s): </span>
+              </span>
+              <span>
+                <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
+                  <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" :can-copy-citation="false" />
+                </div>
+              </span>
+            </div>
+            <hr />
           </div>
-        </div>
-      </el-col>
-    </el-row>
-  </div>
+          <div class="header-stats-block">
+            <div>
+              <span class="label4">
+                Usage Rights: 
+              </span>
+              <span>
+                <template v-if="license">
+                  <client-only><sparc-tooltip
+                    placement="left-center"
+                    :content="licenseName"
+                  >
+                    <template #item>
+                      <a class="link1" :href="licenseLink" target="_blank">
+                        {{ license }}
+                      </a>
+                    </template>
+                  </sparc-tooltip></client-only>
+                </template>
+                <template v-else>
+                  No License Selected
+                </template>
+              </span>
+            </div>
+            <div class="metics-container">
+              <span class="label4">Downloads: {{numDownloadsText}}</span>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+  </client-only>
 </template>
 
 <script>

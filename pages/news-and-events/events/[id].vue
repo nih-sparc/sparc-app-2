@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ page.fields.title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="page.fields.title" />
+    <Meta name="twitter:title" :content="page.fields.title" />
+    <Meta name="description" hid="description" :content="page.fields.summary" />
+    <Meta name="og:description" hid="og:description" :content="page.fields.summary" />
+    <Meta name="twitter:description" :content="page.fields.summary" />
+  </Head>
   <news-events-resources-page
     :page="page"
     :content="page.fields?.description"
@@ -70,21 +78,6 @@ export default {
       if (slug !== null && route.params.id !== slug) {
         router.push(`/news-and-events/events/${slug}`)
       }
-      useHead({
-        title: page.fields.title,
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: page.fields.title,
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: page.fields.summary ? page.fields.summary : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-          },
-        ]
-      })
       return { page }
     } catch (error) {
       return {

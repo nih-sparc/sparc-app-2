@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ page.fields.title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="page.fields.title" />
+    <Meta name="twitter:title" :content="page.fields.title" />
+    <Meta name="description" hid="description" :content="page.fields.summary" />
+    <Meta name="og:description" hid="og:description" :content="page.fields.summary" />
+    <Meta name="twitter:description" :content="page.fields.summary" />
+  </Head>
   <div class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" title="Event Details" />
     <page-hero class="py-24">
@@ -61,21 +69,6 @@ export default {
       if (isEmpty(eventDetailsItem)) {
         router.push(`/news-and-events/events/${route.params.eventId}`)
       }
-      useHead({
-        title: pathOr('', ['fields', 'title'], page),
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: pathOr('', ['fields', 'title'], page),
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: pathOr('', ['fields', 'summary'], page) ? pathOr('', ['fields', 'summary'], page) : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-          },
-        ]
-      })
       return { 
         page,
         eventDetailsItem 

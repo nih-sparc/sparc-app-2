@@ -1,7 +1,9 @@
 <template>
   <div>
     <breadcrumb :breadcrumb="breadcrumb" :title=title />
-    <SparcDashboard />
+    <client-only>
+      <SparcDashboard />
+    </client-only>
   </div>
 </template>
 <script>

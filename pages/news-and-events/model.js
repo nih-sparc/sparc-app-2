@@ -12,13 +12,12 @@ const replaceTerms = (terms) => {
   return result
 }
 
-export const fetchData = async (terms, limit) => {
-  const { $contentfulClient } = useNuxtApp()
+export const fetchData = async (client, terms, limit) => {
   const query = replaceTerms(terms)
   try {
     const todaysDate = new Date()
 
-    const upcomingEvents = await $contentfulClient.getEntries({
+    const upcomingEvents = await client.getEntries({
       content_type: CTF_EVENT_ID,
       order: 'fields.startDate',
       'fields.startDate[gte]': todaysDate.toISOString(),
@@ -26,11 +25,11 @@ export const fetchData = async (terms, limit) => {
       limit
     })
 
-    const news = await fetchNews(query, undefined, undefined, undefined, undefined, limit)
+    const news = await fetchNews(client, query, undefined, undefined, undefined, undefined, limit)
 
-    const page = await $contentfulClient.getEntry(CTF_NEWS_AND_EVENTS_PAGE_ID ?? '')
+    const page = await client.getEntry(CTF_NEWS_AND_EVENTS_PAGE_ID ?? '')
 
-    const stories = await fetchCommunitySpotlightItems(query, undefined, undefined, undefined, 2, 0)
+    const stories = await fetchCommunitySpotlightItems(client, query, undefined, undefined, undefined, 2, 0)
 
     return {
       upcomingEvents,
@@ -49,11 +48,10 @@ export const fetchData = async (terms, limit) => {
   }
 }
 
-export const fetchEvents = async (terms, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes, sortOrder, limit, skip) => {
-  const { $contentfulClient } = useNuxtApp()
+export const fetchEvents = async (client, terms, eventStartLessThanDate, eventStartGreaterThanOrEqualToDate, eventTypes, sortOrder, limit, skip) => {
   const query = replaceTerms(terms)
   try {
-    return await $contentfulClient.getEntries({
+    return await client.getEntries({
       content_type: CTF_EVENT_ID,
       order: sortOrder || '-fields.startDate',
       query,
@@ -69,11 +67,10 @@ export const fetchEvents = async (terms, eventStartLessThanDate, eventStartGreat
   }
 }
 
-export const fetchNews = async (terms, publishedLessThanDate, publishedGreaterThanOrEqualToDate, subjects, sortOrder, limit, skip) => {
-  const { $contentfulClient } = useNuxtApp()
+export const fetchNews = async (client, terms, publishedLessThanDate, publishedGreaterThanOrEqualToDate, subjects, sortOrder, limit, skip) => {
   const query = replaceTerms(terms)
   try {
-    return await $contentfulClient.getEntries({
+    return await client.getEntries({
       content_type: CTF_NEWS_ID,
       order: sortOrder || '-fields.publishedDate',
       query,
@@ -89,11 +86,10 @@ export const fetchNews = async (terms, publishedLessThanDate, publishedGreaterTh
   }
 }
 
-export const fetchCommunitySpotlightItems = async (terms, spotlightTypes, anatomicalStructures, sortOrder, limit, skip) => {
-  const { $contentfulClient } = useNuxtApp()
+export const fetchCommunitySpotlightItems = async (client, terms, spotlightTypes, anatomicalStructures, sortOrder, limit, skip) => {
   const query = replaceTerms(terms)
   try {
-    return await $contentfulClient.getEntries({
+    return await client.getEntries({
       content_type: CTF_COMMUNITY_SPOTLIGHT_ITEM_ID,
       order: sortOrder || '-fields.publishedDate',
       query,

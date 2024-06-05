@@ -1,11 +1,9 @@
 <template>
   <div :class="[disableScrolling ? 'layout' : '']">
-    <client-only>
-      <sparc-header />
-      <slot />
-      <sparc-footer />
-      <cookie-notice v-if="!hasAcceptedGDPR" />
-    </client-only>
+    <sparc-header />
+    <slot />
+    <sparc-footer />
+    <cookie-notice v-if="!hasAcceptedGDPR" />
   </div>
 </template>
 
@@ -23,19 +21,6 @@ export default {
     CookieNotice,
     SparcHeader,
     SparcFooter
-  },
-  setup() {
-    const config = useRuntimeConfig()
-    const route = useRoute()
-    useHead({
-      meta: [
-        {
-          hid: 'og:url',
-          property: 'og:url',
-          content: `${config.public.ROOT_URL}${route.fullPath}`,
-        },
-      ]
-    })
   },
   data() {
     return {

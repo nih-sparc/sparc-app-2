@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>Metrics</Title>
+    <Meta name="og:title" hid="og:title" content="Metrics" />
+    <Meta name="twitter:title" content="Metrics" />
+    <Meta name="description" hid="description" content="Browse Metrics" />
+    <Meta name="og:description" hid="og:description" content="Browse Metrics" />
+    <Meta name="twitter:description" content="Browse Metrics" />
+  </Head>
   <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">

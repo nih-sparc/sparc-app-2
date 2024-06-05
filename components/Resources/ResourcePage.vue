@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="`Browse ${title}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${title}`" />
+    <Meta name="twitter:description" :content="`Browse ${title}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title=title />
     <div class="container">
@@ -46,10 +54,12 @@
               :md="6"
               :lg="6"
             >
-              <tools-and-resources-facet-menu
-                :fundingFacets="resourcesFundingFacets"
-                @tool-and-resources-selections-changed="onPaginationPageChange(1)"
-              />
+              <client-only>
+                <tools-and-resources-facet-menu
+                  :fundingFacets="resourcesFundingFacets"
+                  @tool-and-resources-selections-changed="onPaginationPageChange(1)"
+                />
+              </client-only>
             </el-col>
             <el-col
               :sm='24'
@@ -59,22 +69,26 @@
               <div class="search-heading mb-16">
                 <div class="label1" v-show="resources.items.length">
                   {{ resources.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="resources.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="resources.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
                 <span v-if="resources.items.length" class="label1">
                   Sort
-                  <sort-menu  
-                    :options="sortOptions"
-                    :selected-option="selectedSortOption"
-                    @update-selected-option="onSortOptionChange"
-                  />
+                  <client-only>
+                    <sort-menu  
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </client-only>
                 </span>
               </div>
               <div class="subpage">
-                <resources-search-results :table-data="resources.items" />
+                <client-only><resources-search-results :table-data="resources.items" /></client-only>
                 <alternative-search-results
                   ref="altSearchResults"
                   :search-had-results="resources.items.length > 0"
@@ -84,18 +98,22 @@
               <div class="search-heading">
                 <div class="label1" v-if="resources.items.length">
                   {{ resources.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="resources.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="resources.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
-                <pagination
-                  v-if="resources.limit < resources.total"
-                  :selected="curSearchPage"
-                  :page-size="resources.limit"
-                  :total-count="resources.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <client-only>
+                  <pagination
+                    v-if="resources.limit < resources.total"
+                    :selected="curSearchPage"
+                    :page-size="resources.limit"
+                    :total-count="resources.total"
+                    @select-page="onPaginationPageChange"
+                  />
+                </client-only>
               </div>
             </el-col>
           </el-row>
@@ -153,21 +171,6 @@ export default {
           resourcesFundingFacets = facetData
         }
       })
-    })
-    useHead({
-      title: title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${title}`
-        },
-      ]
     })
     return {
       resources: ref(resources),

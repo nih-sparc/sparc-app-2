@@ -1,97 +1,99 @@
 <template>
-  <div class="mt-16 similar-datasets-container">
-    <div class="header">
-      <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
-      <div v-else class="p-8 mb-0">Search related models/simulations</div>
-      <hr />
-    </div>
-    <div class="px-8">
-      <div v-if="associatedProjects">
-        <div class="capitalize">project(s):</div>
-        <div class="mt-8" v-for="(project, index) in associatedProjects" :key="index">
-          <nuxt-link :to="getProjectLink(project)">
-            <u>{{ getProjectTitle(project) }}</u>
-          </nuxt-link>
-        </div>
-        <hr class="mt-16"/>
+  <client-only>
+    <div class="mt-16 similar-datasets-container">
+      <div class="header">
+        <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
+        <div v-else class="p-8 mb-0">Search related models/simulations</div>
+        <hr />
       </div>
-      <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.key">
-        <div v-if="facet.children && showFacet(facet)">
-          <div class="capitalize mb-8">{{facet.label}}:</div>
-          <div class="facet-button-container parent-facet mt-8" v-for="child in facet.children" :key="child.id">
-            <div v-if="child.children.length > 0">
-              <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
-                <template #item>
-                  <div class="tooltip-item facet-button my-2 px-12 label2">
-                    <a
-                      :href="getSelectedFacetLink(getFacetId(child))"
-                    >
-                      <div class="facet-label capitalize">
-                        {{child.label}}
-                      </div>
-                    </a>
-                  </div>
-                </template>
-              </sparc-tooltip>
-              <div class="facet-button-container child-facet" v-for="nestedChild in child.children" :key="nestedChild.id">
-                <sparc-tooltip placement="left-center" :content="capitalize(nestedChild.label.split('.')[1])" is-repeating-item-content>
+      <div class="px-8">
+        <div v-if="associatedProjects">
+          <div class="capitalize">project(s):</div>
+          <div class="mt-8" v-for="(project, index) in associatedProjects" :key="index">
+            <nuxt-link :to="getProjectLink(project)">
+              <u>{{ getProjectTitle(project) }}</u>
+            </nuxt-link>
+          </div>
+          <hr class="mt-16"/>
+        </div>
+        <div class="my-8" v-for="facet in datasetFacetsData" :key="facet.key">
+          <div v-if="facet.children && showFacet(facet)">
+            <div class="capitalize mb-8">{{facet.label}}:</div>
+            <div class="facet-button-container parent-facet mt-8" v-for="child in facet.children" :key="child.id">
+              <div v-if="child.children.length > 0">
+                <sparc-tooltip placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
                   <template #item>
-                    <div class="ml-32 tooltip-item facet-button my-2 px-12 label2">
+                    <div class="tooltip-item facet-button my-2 px-12 label2">
                       <a
-                        :href="getSelectedFacetLink(getFacetId(nestedChild))"
+                        :href="getSelectedFacetLink(getFacetId(child))"
                       >
                         <div class="facet-label capitalize">
-                          {{nestedChild.label.split('.')[1]}}
+                          {{child.label}}
                         </div>
                       </a>
                     </div>
                   </template>
-                </sparc-tooltip> 
-              </div>
-            </div>
-            <sparc-tooltip v-else placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
-              <template #item>
-                <div class="tooltip-item facet-button my-2 px-12 label2">
-                  <nuxt-link
-                    :to="getSelectedFacetLink(getFacetId(child))"
-                  >
-                    <div class="facet-label capitalize">
-                      {{child.label}}
-                    </div>
-                  </nuxt-link>
+                </sparc-tooltip>
+                <div class="facet-button-container child-facet" v-for="nestedChild in child.children" :key="nestedChild.id">
+                  <sparc-tooltip placement="left-center" :content="capitalize(nestedChild.label.split('.')[1])" is-repeating-item-content>
+                    <template #item>
+                      <div class="ml-32 tooltip-item facet-button my-2 px-12 label2">
+                        <a
+                          :href="getSelectedFacetLink(getFacetId(nestedChild))"
+                        >
+                          <div class="facet-label capitalize">
+                            {{nestedChild.label.split('.')[1]}}
+                          </div>
+                        </a>
+                      </div>
+                    </template>
+                  </sparc-tooltip> 
                 </div>
-              </template>
-            </sparc-tooltip> 
-          </div>
-          <hr class="my-16"/>
-        </div>
-      </div>
-      <div class="mb-16" v-if="contributors">
-        <div class="capitalize mb-8">contributors:</div>
-        <div
-          class="ml-8"
-          v-for="contributor in contributors"
-          :key="contributor.id"
-        >
-          <ul class="contributor-list">
-            <li>
-              <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)" is-repeating-item-content>
+              </div>
+              <sparc-tooltip v-else placement="left-center" :content="capitalize(child.label)" is-repeating-item-content>
                 <template #item>
-                  <div class="tooltip-item">
+                  <div class="tooltip-item facet-button my-2 px-12 label2">
                     <nuxt-link
-                      :to="getSelectedContributorLink(contributor)"
+                      :to="getSelectedFacetLink(getFacetId(child))"
                     >
-                      <u>{{getContributorFullName(contributor)}}</u>
+                      <div class="facet-label capitalize">
+                        {{child.label}}
+                      </div>
                     </nuxt-link>
                   </div>
                 </template>
-              </sparc-tooltip>
-            </li>
-          </ul>
+              </sparc-tooltip> 
+            </div>
+            <hr class="my-16"/>
+          </div>
+        </div>
+        <div class="mb-16" v-if="contributors">
+          <div class="capitalize mb-8">contributors:</div>
+          <div
+            class="ml-8"
+            v-for="contributor in contributors"
+            :key="contributor.id"
+          >
+            <ul class="contributor-list">
+              <li>
+                <sparc-tooltip placement="left-center" :content="getContributorFullName(contributor)" is-repeating-item-content>
+                  <template #item>
+                    <div class="tooltip-item">
+                      <nuxt-link
+                        :to="getSelectedContributorLink(contributor)"
+                      >
+                        <u>{{getContributorFullName(contributor)}}</u>
+                      </nuxt-link>
+                    </div>
+                  </template>
+                </sparc-tooltip>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </client-only>
 </template>
 
 <script>

@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="entry.summary" />
+    <Meta name="og:description" hid="og:description" :content="entry.summary" />
+    <Meta name="twitter:description" :content="entry.summary" />
+  </Head>
   <div class="events-page">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
@@ -129,21 +137,6 @@ export default {
         'fields.storyRoute[match]': route.params.id,
         include: 1,
         order: '-fields.publishedDate',
-      })
-      useHead({
-        title: results.items[0].fields.storyTitle,
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: results.items[0].fields.storyTitle,
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: results.items[0].fields.summary ? results.items[0].fields.summary : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-          },
-        ]
       })
       return {
         entry: results.items[0].fields,

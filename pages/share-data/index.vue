@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="summary" />
+    <Meta name="og:description" hid="og:description" :content="summary" />
+    <Meta name="twitter:description" :content="summary" />
+  </Head>
   <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">

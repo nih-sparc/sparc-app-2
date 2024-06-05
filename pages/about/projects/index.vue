@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ consortiaType.label }} Projects</Title>
+    <Meta name="og:title" hid="og:title" :content="`${consortiaType.label} Projects`" />
+    <Meta name="twitter:title" :content="`${consortiaType.label} Projects`" />
+    <Meta name="description" hid="description" :content="`Browse ${consortiaType.label} Projects`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${consortiaType.label} Projects`" />
+    <Meta name="twitter:description" :content="`Browse ${consortiaType.label} Projects`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="consortiaType.label" />
     <div class="container search-tabs__container">
@@ -32,21 +40,27 @@
           <el-col :span="24">
             <el-row :gutter="32">
               <el-col :sm="24" :md="8" :lg="6">
-                <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                  @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
-                  ref="projectsFacetMenu" />
+                <client-only>
+                  <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
+                    @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                    ref="projectsFacetMenu" />
+                </client-only>
               </el-col>
               <el-col class="search-results-container" :sm="searchColSpan('sm')" :md="searchColSpan('md')"
                 :lg="searchColSpan('lg')">
                 <div class="search-heading">
                   <p v-show="!isLoadingSearch && searchData.items.length">
                     {{ searchData.total }} Results | Showing
-                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                    <client-only>
+                      <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                    </client-only>
                   </p>
                   <span class="label1">
                     Sort
-                    <sort-menu :options="projectsSortOptions" :selected-option="selectedProjectsSortOption"
-                      @update-selected-option="onProjectsSortOptionChange" />
+                    <client-only>
+                      <sort-menu :options="projectsSortOptions" :selected-option="selectedProjectsSortOption"
+                        @update-selected-option="onProjectsSortOptionChange" />
+                    </client-only>
                   </span>
                 </div>
                 <div v-loading="isLoadingSearch" class="table-wrap">
@@ -65,11 +79,15 @@
                 <div class="search-heading mt-16">
                   <p v-if="!isLoadingSearch && searchData.items.length">
                     {{ searchHeading }} | Showing
-                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                    <client-only>
+                      <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                    </client-only>
                   </p>
-                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
-                    :page-size="searchData.limit" :total-count="searchData.total"
-                    @select-page="onPaginationPageChange" />
+                  <client-only>
+                    <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                      :page-size="searchData.limit" :total-count="searchData.total"
+                      @select-page="onPaginationPageChange" />
+                  </client-only>
                 </div>
               </el-col>
             </el-row>
@@ -158,25 +176,6 @@ export default {
           projectsAnatomicalFocusFacets = facetData
         }
       })
-    })
-    const consortiaType = consortiaTypes.find(consortiaType => {
-      return consortiaType.id == route.query.consortiaType
-    })
-    const title = propOr('', 'label', consortiaType)
-    useHead({
-      title: title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${title}`
-        },
-      ]
     })
     return {
       projectsSortOptions,

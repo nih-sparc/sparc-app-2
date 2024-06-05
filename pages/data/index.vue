@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchType.label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="`Browse ${title}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${title}`" />
+    <Meta name="twitter:description" :content="`Browse ${title}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
@@ -9,17 +17,13 @@
         </div>
         <ul class="search-tabs">
           <li v-for="search in searchTypes" :key="search.label">
-            <nuxt-link
-              class="search-tabs__button"
-              :class="{ active: search.type === $route.query.type }"
-              :to="{
+            <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
                 name: 'data',
                 query: {
                   ...$route.query,
                   type: search.type,
                 }
-              }"
-            >
+              }">
               {{ search.label }}
             </nuxt-link>
           </li>
@@ -29,12 +33,8 @@
         <div class="body1 mb-8">
           Search within category
         </div>
-        <search-controls-contentful
-          class="search-bar"
-          placeholder="Enter search criteria"
-          :path="$route.path"
-          showSearchText
-        />
+        <search-controls-contentful class="search-bar" placeholder="Enter search criteria" :path="$route.path"
+          showSearchText />
       </div>
     </div>
     <div class="container">
@@ -42,15 +42,19 @@
         <el-col :span="24">
           <el-row :gutter="32">
             <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
-              <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
-                @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
-                ref="datasetFacetMenu" />
+              <client-only>
+                <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
+                  @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                  ref="datasetFacetMenu" />
+              </client-only>
             </el-col>
             <el-col :sm="searchColSpan('sm')" :md="searchColSpan('md')" :lg="searchColSpan('lg')">
               <div class="search-heading">
                 <p v-show="!isLoadingSearch && searchData.items.length">
                   {{ searchData.total }} Results | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  <client-only>
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </client-only>
                 </p>
                 <span v-if="searchData.items.length" class="label1">
                   Sort
@@ -92,10 +96,14 @@
               <div class="search-heading">
                 <p v-if="!isLoadingSearch && searchData.items.length">
                   {{ searchHeading }} | Showing
-                  <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  <client-only>
+                    <pagination-menu :page-size="searchData.limit" @update-page-size="updateDataSearchLimit" />
+                  </client-only>
                 </p>
-                <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
-                  :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
+                <client-only>
+                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                    :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
+                </client-only>
               </div>
             </el-col>
           </el-row>
@@ -189,25 +197,11 @@ export default {
       return searchType.type == route.query.type
     })
     const title = propOr('', 'label', searchType)
-    useHead({
-      title: title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${title}`
-        },
-      ]
-    })
     return {
       algoliaSortOptions,
       selectedAlgoliaSortOption: ref(algoliaSortOptions.find(opt => opt.id === route.query.datasetSort) || algoliaSortOptions[0]),
-      algoliaIndex
+      algoliaIndex,
+      title
     }
   },
 
@@ -361,9 +355,13 @@ export default {
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
-    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping).then(data => this.facets = data).finally(() => {
-      this.fetchResults()
-    })
+    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping)
+      .then(data => {
+        this.facets = data
+      })
+      .finally(() => {
+        this.fetchResults()
+      })
   },
 
   methods: {

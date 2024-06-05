@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>Contact Us</Title>
+    <Meta name="og:title" hid="og:title" content="Contact Us" />
+    <Meta name="twitter:title" content="Contact Us" />
+    <Meta name="description" hid="description" :content="breadcrumbTitle" />
+    <Meta name="og:description" hid="og:description" :content="breadcrumbTitle" />
+    <Meta name="twitter:description" :content="breadcrumbTitle" />
+  </Head>
   <div class="contact-us-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="breadcrumbTitle" />
     <div class="container">
@@ -52,12 +60,13 @@
             <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />  
           </template>
         </template>
-        <component
-          v-if="!isSubmitted"
-          :is="formComponent"
-          @submit="formSubmitted"
-        />
-
+        <client-only>
+          <component
+            v-if="!isSubmitted"
+            :is="formComponent"
+            @submit="formSubmitted"
+          />
+        </client-only>
         <div v-if="isSubmitted" class="msg-success">
           <template v-if="firstName">
             <p>{{ firstName }},</p>
@@ -228,24 +237,6 @@ export default {
         if (formType.subtypes.includes(this.formType))
           return true
       })
-    }
-  },
-
-  head() {
-    return {
-      title: this.breadcrumbTitle,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.breadcrumbTitle,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.formTypeObject.description ? this.formTypeObject.description : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-        },
-      ]
     }
   },
 

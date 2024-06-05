@@ -1,96 +1,75 @@
 <template>
+
+  <Head>
+    <Title>{{ datasetTitle }}</Title>
+    <Meta name="og:title" hid="og:title" :content="datasetTitle" />
+    <Meta name="twitter:title" :content="datasetTitle" />
+    <Meta name="description" hid="description" :content="datasetDescription" />
+    <Meta name="og:description" hid="og:description" :content="datasetDescription" />
+    <Meta name="twitter:description" :content="datasetDescription" />
+    <Meta name="DC.type" content="Dataset" />
+    <Meta name="DC.description" :content="datasetDescription" />
+    <Meta name="DCTERMS.license" :content="licenseLink" />
+    <Meta name="og:type" content="website" />
+    <Meta name="og:title" :content="datasetTitle" />
+    <Meta name="og:image" :content="datasetInfo?.banner" />
+    <Meta name="og:image:alt" :content="`${datasetTitle} Banner Image`" />
+    <Meta name="og:site_name" content="SPARC Portal" />
+    <Meta name="twitter:card" content="summary" />
+    <Meta name="twitter:site" content="@sparc_science" />
+    <Meta name="twitter:image" :content="datasetInfo?.banner" />
+    <Meta name="DC.creator" :content="JSON.stringify(creators)" />
+    <Meta name="DC.identifier" :content="doiLink" scheme="DCTERMS.URI" />
+    <Meta name="DC.publisher" content="Pennsieve Discover" />
+    <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
+    <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
+  </Head>
   <div class="dataset-details pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
-    <template v-if="hasError">
-      <template v-if="errorType == '404'">
-        <error404/>
+
+      <breadcrumb :breadcrumb="breadcrumb" :title="datasetTitle" />
+      <template v-if="hasError">
+        <template v-if="errorType == '404'">
+          <error404 />
+        </template>
+        <template v-else>
+          <error400 />
+        </template>
       </template>
-      <template v-else>
-        <error400/>
-      </template>
-    </template>
-    <div v-else-if="showTombstone">
-      <tombstone
-        :dataset-details="datasetInfo"
-      />
-    </div>
-    <div class="details-container" v-else>
-      <el-row :gutter="16">
-        <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
-          <dataset-action-box />
-          <similar-datasets-info-box
-            :associated-projects="associatedProjects"
-            :dataset-type-name="datasetTypeName"
-          />
-        </el-col>
-        <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
-          <dataset-header
-            class="dataset-header"
-            :latestVersionRevision="latestVersionRevision"
-            :latestVersionDate="latestVersionDate"
-            :numCitations="numCitations"
-            :numDownloads="numDownloads"
-          />
-          <content-tab-card
-            class="mt-32"
-            id="datasetDetailsTabsContainer"
-            :tabs="tabs"
-            :active-tab-id="activeTabId"
-            @tab-changed="tabChanged"
-            routeName="datasetDetailsTab"
-          >
-            <dataset-description-info
-              class="body1"
-              v-show="activeTabId === 'abstract'"
-              :markdown="markdown"
-              :dataset-records="datasetRecords"
-              :loading-markdown="loadingMarkdown"
-              :dataset-tags="datasetTags"
-            />
-            <dataset-about-info
-              class="body1"
-              v-show="activeTabId === 'about'"
-              :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate"
-              :associated-projects="associatedProjects"
-            />
-            <citation-details
-              class="body1"
-              v-show="activeTabId === 'cite'"
-              :doi-value="datasetInfo.doi"
-            />
-            <dataset-files-info
-              class="body1"
-              v-if="hasFiles"
-              v-show="activeTabId === 'files'"
-            />
-            <images-gallery
-              class="body1"
-              :markdown="markdown.markdownTop"
-              v-show="activeTabId === 'images'"
-            />
-            <dataset-references
-              v-if="hasCitations"
-              class="body1"
-              v-show="activeTabId === 'references'"
-              :primary-publications="primaryPublications"
-              :associated-publications="associatedPublications"
-            />
-            <version-history
-              v-if="canViewVersions"
-              class="body1"
-              v-show="activeTabId === 'versions'"
-              :versions="versions"
-            />
-          </content-tab-card>
-        </el-col>
-      </el-row>
-    </div>
-    <dataset-version-message
-      v-if="!isLatestVersion"
-      :current-version="datasetInfo.version"
-      :dataset-details="datasetInfo"
-    />
+      <div v-else-if="showTombstone">
+        <tombstone :dataset-details="datasetInfo" />
+      </div>
+      <div class="details-container" v-else>
+        <el-row :gutter="16">
+          <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
+            <dataset-action-box />
+            <similar-datasets-info-box :associated-projects="associatedProjects" :dataset-type-name="datasetTypeName" />
+          </el-col>
+          <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
+            <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
+              :latestVersionDate="latestVersionDate" :numCitations="numCitations" :numDownloads="numDownloads" />
+            <client-only>
+              <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
+                @tab-changed="tabChanged" routeName="datasetDetailsTab">
+                <dataset-description-info class="body1" v-show="activeTabId === 'abstract'" :markdown="markdown"
+                  :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
+                <dataset-about-info class="body1" v-show="activeTabId === 'about'"
+                  :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
+                  :associated-projects="associatedProjects" />
+                <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
+                <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
+                <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
+                <dataset-references v-if="hasCitations" class="body1" v-show="activeTabId === 'references'"
+                  :primary-publications="primaryPublications" :associated-publications="associatedPublications" />
+                <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
+                  :versions="versions" />
+              </content-tab-card>
+            </client-only>
+          </el-col>
+        </el-row>
+      </div>
+      <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version"
+        :dataset-details="datasetInfo" />
+    
   </div>
 </template>
 
@@ -207,13 +186,6 @@ const tabs = [
   },
 ]
 
-const SPARC_ORGANIZATION_NAMES = [
-  'SPARC',
-  'SPARC Consortium',
-  'RE-JOIN',
-  'HEAL PRECISION'
-]
-
 export default {
   name: 'DatasetDetails',
 
@@ -293,131 +265,9 @@ export default {
       })
 
       const creators = contributors?.concat(org)
-      const title = propOr('', 'name', datasetDetails)
-      const description = propOr('', 'description', datasetDetails)
       const doi = propOr('', 'doi', datasetDetails)
       const doiLink = doi ? `https://doi.org/${doi}` : ''
-      const licenseKey = propOr('', 'license', datasetDetails)
-      const datasetLicense = getLicenseAbbr(licenseKey)
-      const licenseLink = getLicenseLink(datasetLicense)
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
-      useHead({
-        title: title,
-        meta: [
-          {
-            name: 'DC.type',
-            content: 'Dataset'
-          },
-          {
-            name: 'DC.title',
-            content: title
-          },
-          {
-            name: 'DC.description',
-            content: description
-          },
-          {
-            name: 'DCTERMS.license',
-            content: licenseLink
-          },
-          {
-            property: 'og:type',
-            content: 'website'
-          },
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: title
-          },
-          {
-            hid: 'description',
-            name: 'description',
-            content: description
-          },
-          {
-            property: 'og:image',
-            content: datasetDetails?.banner
-          },
-          {
-            property: 'og:image:alt',
-            content: `${title} Banner Image`
-          },
-          {
-            property: 'og:site_name',
-            content: 'SPARC Portal'
-          },
-          {
-            name: 'twitter:card',
-            content: 'summary'
-          },
-          {
-            name: 'twitter:site',
-            content: '@sparc_science'
-          },
-          {
-            name: 'twitter:description',
-            content: description
-          },
-          {
-            name: 'twitter:image',
-            content: datasetDetails?.banner
-          },
-          {
-            name: 'DC.creator',
-            content: JSON.stringify(creators)
-          },
-          {
-            name: 'DC.identifier',
-            content: doiLink,
-            scheme: 'DCTERMS.URI'
-          },
-          {
-            name: 'DC.publisher',
-            content: 'Pennsieve Discover'
-          },
-          {
-            name: 'DC.date',
-            content: originallyPublishedDate,
-            scheme: 'DCTERMS.W3CDTF'
-          },
-          {
-            name: 'DC.version',
-            content: datasetDetails?.version
-          }
-        ],
-        script: [
-          {
-            vmid: 'ldjson-schema',
-            json: {
-              '@context': 'http://schema.org',
-              '@type': 'Dataset',
-              '@id': doiLink,
-              sameAs: `${config.public.discover_api_host}/datasets/${datasetId}`,
-              name: title,
-              creator: creators,
-              datePublished: datasetDetails?.createdAt,
-              dateModified: datasetDetails?.revisedAt,
-              description: description,
-              license: licenseLink,
-              version: datasetDetails?.version,
-              url: config.public.ROOT_URL,
-              identifier: doiLink,
-              isAccessibleForFree: true
-            },
-            type: 'application/ld+json'
-          },
-          {
-            vmid: 'ldjson-schema',
-            json: {
-              '@context': 'http://schema.org',
-              '@type': 'WebSite',
-              url: config.public.ROOT_URL,
-              name: 'Pennsieve Discover'
-            },
-            type: 'application/ld+json'
-          }
-        ]
-      })
       const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
       // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
       if (!sparcOrganizationNames.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
@@ -432,7 +282,9 @@ export default {
         downloadsSummary,
         showTombstone,
         algoliaIndex,
-        hasError: false
+        hasError: false,
+        originallyPublishedDate,
+        creators
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
