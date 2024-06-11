@@ -105,11 +105,6 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2]
-
     steps:
       - name: Cleanup pre-installed tools
         run: |
@@ -135,7 +130,6 @@ jobs:
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          parallel: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
           tag: QC-${{github.event.inputs.PORTAL_TARGET}}
 
@@ -148,6 +142,5 @@ jobs:
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          parallel: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
           tag: QC-${{github.event.inputs.PORTAL_TARGET}}
