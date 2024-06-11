@@ -54,11 +54,6 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
     steps:
       - name: Cleanup pre-installed tools
         run: |
@@ -83,5 +78,4 @@ jobs:
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          parallel: true
           tag: Scheduled-Production

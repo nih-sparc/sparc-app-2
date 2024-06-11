@@ -6,7 +6,7 @@ const categories = ['stomach', 'lung']
 
 describe('User stories', function () {
   describe('Should find segmentation in the gallery', { testIsolation: false }, function () {
-    before('Loading Datasets', function () {
+    beforeEach('Loading Datasets', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
 
@@ -14,14 +14,14 @@ describe('User stories', function () {
 
       // Navigate to 'Data&Models' page
       cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').click();
+
+      cy.waitForLoadingMask()
+      
     })
 
     segmentationDatasetIds.forEach((id) => {
 
       it(`Access dataset ${id}`, function () {
-        
-        cy.waitForLoadingMask()
-        
         // Search for segmentation related dataset
         cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
@@ -43,14 +43,12 @@ describe('User stories', function () {
         cy.findGalleryCard('Segmentation', 'prev');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > :nth-child(1) > b').should('contain', 'Segmentation');
         cy.get('.el-card > .el-card__body > :nth-child(1) > .details > .el-button > span').should('contain', ' View Segmentation');
-
-        cy.visit(`${Cypress.config().baseUrl}/data?type=dataset`);
       })
     })
   })
 
   describe('Should open scaffold through the gallery', { testIsolation: false }, function () {
-    before('Loading Anatomical Models', function () {
+    beforeEach('Loading Anatomical Models', function () {
       cy.intercept('**/query?**').as('query');
       cy.visit('');
 
@@ -62,14 +60,14 @@ describe('User stories', function () {
       // Go to 'Anatomical Models'
       cy.get(':nth-child(2) > .search-tabs__button').click();
       cy.get(':nth-child(2) > .search-tabs__button').should('have.class', 'active');
+
+      cy.waitForLoadingMask()
+
     })
 
     scaffoldDatasetCategories.forEach((category) => {
 
       it(`Access scaffold ${category}`, function () {
-
-        cy.waitForLoadingMask()
-
         // Search for scaffold related dataset
         cy.get('.el-input__wrapper > .el-input__inner').clear();
         cy.get('.search-text').click();
@@ -142,7 +140,6 @@ describe('User stories', function () {
             cy.visit(`/datasets/${datasetId}?type=dataset`);
           })
         })
-        cy.visit(`${Cypress.config().baseUrl}/data?type=model&search=${category}`);
       })
     })
   })
@@ -154,6 +151,7 @@ describe('User stories', function () {
 
       // Wait for 'href' ready for click
       cy.wait(5000)
+      cy.waitForLoadingMask()
 
     })
 
