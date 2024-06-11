@@ -11,18 +11,16 @@
           dataset.
         </div>
         <p v-if="authenticatedUserEmail">
-          Once you submit your request, the version of the dataset you've
-          requested will be restored for your temporary access in an S3 folder. An email notification
-          will be sent to <b>{{ authenticatedUserEmail }}</b> within 24 hours of initiating the process when the dataset is available to you. 
-          The dataset will then be available for 14 days before it is automatically removed. Learn more about this process in the 
-          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>
+          After submitting your request, the dataset version will be temporarily accessible in an S3 folder. 
+          An email notification from support@pennsieve.io will be sent to <b>{{ authenticatedUserEmail }}</b> once the restoration is complete within 24 hours. 
+          Access lasts for 14 days before automatic removal. 
+          Further details are available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>.
         </p>
         <p v-else>
-          Once you submit your request, the version of the dataset you've
-          requested will be restored for your temporary access in an S3 folder. An email notification
-          will be sent to you within 24 hours of initiating the process when the dataset is available to you. The dataset
-          will then be available for 14 days before it is automatically removed. Learn more about this process in the 
-          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>
+          After submitting your request, the dataset version will be temporarily accessible in an S3 folder. 
+          You'll receive an email from support@pennsieve.io once the restoration is complete within 24 hours. 
+          Access lasts for 14 days before automatic removal. Further details are available in the 
+          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>.
         </p>
       </div>
       <p>
