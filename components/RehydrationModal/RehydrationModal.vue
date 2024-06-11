@@ -7,23 +7,22 @@
     <div class="rehydration-modal-container">
       <div class="copy-container">
         <div class="heading3">
-          You are requesting rehydration for version {{ version }} of this
+          You are requesting temporary access for version {{ version }} of this
           dataset.
         </div>
         <p v-if="authenticatedUserEmail">
-          Once you submit your
-          <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">rehydration
-          request</a>, the version of the dataset you've
-          requested will be extracted into an S3 folder. An email notification
-          will be sent to <b>{{ authenticatedUserEmail }}</b> within 24 hours of initiating the process. The rehydrated
-          dataset will then be available for 14 days.
+          Once you submit your request, the version of the dataset you've
+          requested will be restored for your temporary access in an S3 folder. An email notification
+          will be sent to <b>{{ authenticatedUserEmail }}</b> within 24 hours of initiating the process when the dataset is available to you. 
+          The dataset will then be available for 14 days before it is automatically removed. Learn more about this process in the 
+          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>
         </p>
         <p v-else>
-          Once you submit your <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">
-          rehydration request</a>, the version of the dataset you've
-          requested will be extracted into an S3 folder. An email notification
-          will be sent within 24 hours of initiating the process. The rehydrated
-          dataset will then be available for 14 days.
+          Once you submit your request, the version of the dataset you've
+          requested will be restored for your temporary access in an S3 folder. An email notification
+          will be sent to you within 24 hours of initiating the process when the dataset is available to you. The dataset
+          will then be available for 14 days before it is automatically removed. Learn more about this process in the 
+          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>
         </p>
       </div>
       <p>
