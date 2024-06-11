@@ -125,10 +125,9 @@
                 Requesting Access from AWS
               </div>
               <p>
-                Older versions of a full dataset are no longer readily accessible directly on AWS. 
-                If you would like access to this older version of this dataset in its entirety directly from your own AWS account, 
-                please Request Access. This button will take you to a form where you can submit your request. 
-                Learn more about this process in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
+                Access to older versions of the dataset on AWS is no longer readily available. 
+                To obtain access to previous versions directly from your AWS account, click "Request Access" below. 
+                More information is available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
               </p>
               <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
                 Request Access
