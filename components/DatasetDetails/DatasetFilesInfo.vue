@@ -122,12 +122,13 @@
             </template>
             <template v-else>
               <div class="label4">
-                Requesting Access to Download from AWS
+                Requesting Access from AWS
               </div>
               <p>
-                In order to request access to download this version of the dataset, we ask that you please submit a 
-                <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">rehydration
-                request</a>. This button will take you to a form where you can submit your request.
+                Older versions of a full dataset are no longer readily accessible directly on AWS. 
+                If you would like access to this older version of this dataset in its entirety directly from your own AWS account, 
+                please Request Access. This button will take you to a form where you can submit your request. 
+                Learn more about this process in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
               </p>
               <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
                 Request Access
@@ -135,7 +136,7 @@
             </template>
           </div>
           <div>
-            * Requester pays means that any costs associated with downloading the data will be charged to your AWS
+            * Requester Pays means that any costs associated with downloading the data will be charged to your AWS
             account.
             For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS
               Pricing documentation.</a>
