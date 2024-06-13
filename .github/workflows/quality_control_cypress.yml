@@ -3,13 +3,6 @@ name: Quality Control Cypress Testing
 on:
   workflow_dispatch:
     inputs:
-      PORTAL_TARGET:
-        type: "choice"
-        description: "Define portal target"
-        required: true
-        options:
-          - "Staging"
-          - "Production"
       PAGE_LIMIT:
         type: "choice"
         description: "Define the number of displayed datasets per page"
@@ -30,7 +23,7 @@ on:
       MULTIPLE_FILTER_FACETS:
         description: "Define multiple facets for filtering"
         required: true
-        default: "Heart, Adult"
+        default: "Pig, Heart"
       DATASET_IDS:
         description: "Define dataset ids"
         required: true
@@ -121,20 +114,7 @@ jobs:
         with:
           node-version: 18.17.1
 
-      - name: Manual Run Testing against Staging
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Staging' }}
-        env:
-          ROOT_URL: "https://staging.sparc.science"
-        uses: cypress-io/github-action@v6
-        timeout-minutes: 30
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
-
-      - name: Manual Run Testing against Production
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
+      - name: Manual Run QC Testing against Production
         env:
           ROOT_URL: "https://sparc.science"
         uses: cypress-io/github-action@v6
@@ -143,4 +123,4 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
+          tag: QC
