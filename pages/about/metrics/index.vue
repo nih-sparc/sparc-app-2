@@ -42,7 +42,7 @@
         v-else
         :metrics-data="metricsData"
       />
-      <div class="row my-32">
+      <div class="body1 ml-16">
         Last metrics update: {{ monthLastUpdate.toLocaleString('default', { month: 'long' }) }} {{ monthLastUpdate.getFullYear() }}
       </div>
     </div>
