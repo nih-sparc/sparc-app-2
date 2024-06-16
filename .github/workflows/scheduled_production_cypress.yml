@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: "0 0 * * 1"
 
+  workflow_dispatch:
+
 env:
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
   SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
