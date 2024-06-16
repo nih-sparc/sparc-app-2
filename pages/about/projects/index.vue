@@ -268,10 +268,11 @@ export default {
 
   watch: {
     '$route.query.consortiaType': {
-      handler: async function () {
-        if (!this.$route.query.consortiaType) {
+      handler: function () {
+        // Added route name check bc clicking on Data & Models header link was causing this to still fire after navigating to the data page
+        if (!this.$route.query.consortiaType && this.$route.name == 'about-projects') {
           this.$router.push({
-            query: { consortiaType: this.consortiaType['id'] }
+            query: {consortiaType: this.consortiaType['id'] }
           })
         } else {
           this.searchData = {

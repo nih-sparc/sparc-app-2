@@ -103,7 +103,7 @@ const links = [
   {
     title: 'data',
     displayTitle: 'Data & Models',
-    href: '/data'
+    href: '/data?type=dataset'
   },
   {
     title: 'apps',

@@ -73,6 +73,21 @@ import marked from '@/mixins/marked'
 import { getPreviousDate } from '@/utils/common'
 import { pathOr } from 'ramda'
 
+const months = [
+  'January',
+  'Febuary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
+
 export default {
   name: 'AboutPage',
 
@@ -118,6 +133,7 @@ export default {
     const currentYear = new Date().getFullYear()
     // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
     const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
+    let dateUsed = lastMonthsDate
     return Promise.all([
       /**
        * Page data
@@ -143,6 +159,7 @@ export default {
         })
         .catch(() => {
           const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
+          dateUsed = monthBeforeLastDate
           return $axios
             .get(config.public.METRICS_URL + `/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`)
             .then(({ data }) => {
@@ -191,11 +208,11 @@ export default {
       metricsItems: [{
         title: 'Total Downloads',
         data: totalDownloads.toString(),
-        subData: `(${metrics.downloadsLastMonth} last month)`
+        subData: `(${metrics.downloadsLastMonth} in ${months[dateUsed.month - 1]})`
       }, {
         title: 'Dataset Contributors',
         data: metrics.totalContributors?.toString(),
-        subData: `(${metrics.newContributors} new in the last month)`
+        subData: `(${metrics.newContributors} new in ${months[dateUsed.month - 1]})`
       }]
     }))
   },
