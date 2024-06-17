@@ -94,6 +94,20 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
+  latest-deployment-sha:
+    runs-on: ubuntu-latest
+
+    outputs:
+      latest-sha: ${{ steps.deployment.outputs.deployment_sha }}
+
+    steps:
+      - name: Get Latest Deployment
+        id: deployment
+        uses: KowalskiTom/get-github-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: sparc-app-prod
+
   quality-control-cypress-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -108,6 +122,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.latest-deployment-sha.outputs.latest-sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
