@@ -9,6 +9,8 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.intercept('**/query?**').as('query')
   })
 
+  it(`Portal Target is ${Cypress.config().baseUrl}`, function () { })
+
   it('Navigation Bar', function () {
     // Check for navigation bar
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data?type=dataset')
