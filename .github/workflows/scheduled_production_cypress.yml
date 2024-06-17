@@ -52,19 +52,19 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  output-latest-release:
+  latest-deployment-sha:
     runs-on: ubuntu-latest
 
     outputs:
-      release-tag: ${{ steps.releasetag.outputs.tag }}
+      latest-sha: ${{ steps.deployment.outputs.deployment_sha }}
 
     steps:
-      - uses: actions/checkout@v4
-      - run: git fetch --tags origin
-
-      - name: Checkout Latest Release Tag
-        id: releasetag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: Get Latest Deployment
+        id: deployment
+        uses: KowalskiTom/get-github-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: sparc-app-prod
 
   scheduled-cypress-run-production:
     if: github.event_name == 'schedule'
@@ -81,7 +81,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.output-latest-release.outputs.release-tag }}
+          ref: ${{ needs.latest-deployment-sha.outputs.latest-sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
