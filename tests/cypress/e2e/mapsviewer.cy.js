@@ -1,3 +1,5 @@
+import { retryableBefore } from "../support/retryableBefore.js"
+
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
 // central coordinate { 'x': 768, 'y': 373 }
@@ -21,7 +23,7 @@ const searchInMap = Cypress.env('SEARCH_IN_MAP')
 const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
 
 describe('Maps Viewer', { testIsolation: false }, function () {
-  before(function () {
+  retryableBefore(function () {
     cy.visit('/maps?type=ac')
   })
 
@@ -37,10 +39,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
-      
+
       cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
       cy.waitForLoadingMask()
-      
+
       if (index === 0) {
         loadedModels.add('Rat')
       }

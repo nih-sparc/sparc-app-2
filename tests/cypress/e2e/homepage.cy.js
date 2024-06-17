@@ -1,5 +1,7 @@
+import { retryableBefore } from "../support/retryableBefore.js"
+
 describe('Homepage', { testIsolation: false }, function () {
-  before(function () {
+  retryableBefore(function () {
     cy.visit('')
 
     cy.waitForLoadingMask()

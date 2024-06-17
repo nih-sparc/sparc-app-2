@@ -1,3 +1,5 @@
+import { retryableBefore } from "../support/retryableBefore.js"
+
 const browseCategories = ['dataset', 'model', 'simulation']
 
 /**
@@ -29,8 +31,8 @@ if (multipleFilterFacets && multipleFilterFacets.length > 1) {
 browseCategories.forEach((category) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
-    before(function () {
       cy.visit(`/data?type=${category}`)
+    retryableBefore(function () {
     })
 
     beforeEach(function () {
