@@ -31,8 +31,8 @@ if (multipleFilterFacets && multipleFilterFacets.length > 1) {
 browseCategories.forEach((category) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
-      cy.visit(`/data?type=${category}`)
     retryableBefore(function () {
+      cy.visitLoadedPage(`/data?type=${category}`)
     })
 
     beforeEach(function () {
@@ -40,9 +40,6 @@ browseCategories.forEach((category) => {
     })
 
     it('Dataset card', function () {
-
-      cy.wait('@query', { timeout: 20000 })
-
       cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
       cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
       cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Species');

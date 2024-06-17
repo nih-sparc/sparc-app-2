@@ -2,10 +2,7 @@ import { retryableBefore } from "../support/retryableBefore.js"
 
 describe('Homepage', { testIsolation: false }, function () {
   retryableBefore(function () {
-    cy.visit('')
-
-    cy.waitForLoadingMask()
-
+    cy.visitLoadedPage('')
   })
 
   beforeEach(function () {
@@ -121,13 +118,10 @@ describe('Homepage', { testIsolation: false }, function () {
 
       cy.get('.el-col-sm-16 > .heading2').should('contain', title)
     })
-    cy.go('back')
-
-    cy.waitForLoadingMask()
-
   })
 
   it('Homepage news', function () {
+    cy.visitLoadedPage('')
     // Check for content title
     cy.get('.featured-datasets > .heading2').should('contain', 'News & Upcoming Events')
 
