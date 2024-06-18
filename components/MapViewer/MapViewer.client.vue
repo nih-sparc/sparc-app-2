@@ -84,6 +84,9 @@
   .background-popper.el-popover.el-popper,
   .open-map-popper.el-popover.el-popper {
     background: #fff !important;
+  }
+
+  .open-map-popper.el-popover.el-popper {
     width: unset !important;
   }
 
