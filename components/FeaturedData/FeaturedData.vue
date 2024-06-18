@@ -1,12 +1,12 @@
 <template>
   <div class="featured-data container py-32">
     <div class="categories-container mb-8">
-      <span class="heading2 mt-0 mr-12">Find by</span>
+      <h2 class="heading2 mt-0 mr-12">Find by</h2>
       <el-select class="categories-select" v-model="selectedCategory">
         <el-option v-for="category in categories" :key="category" :label="category" :value="category" />
       </el-select>
     </div>
-    <gallery galleryItemType="featuredData" :card-width=Number(12) :items="selectedCategoryFeaturedData" :key="refreshKey" />
+    <gallery galleryItemType="featuredData" :card-width=Number(10) :items="selectedCategoryFeaturedData" :key="refreshKey" />
   </div>
 </template>
 <script>
