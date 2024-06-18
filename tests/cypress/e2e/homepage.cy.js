@@ -28,7 +28,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Featured data', function () {
     // Check for content title
-    cy.get('.featured-data > h2').should('have.text', 'Find by')
+    cy.get('.featured-data > .categories-container > h2').should('have.text', 'Find by')
 
     cy.get('.data-wrap > a:visible').as('category')
 
@@ -91,7 +91,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Projects and datasets', function () {
     // Check for content title
-    cy.get(':nth-child(5) > .section-container > .heading2').should('contain', 'Resources & Datasets')
+    cy.get(':nth-child(7) > .section-container > .heading2').should('contain', 'Resources & Datasets')
 
     // Check for card description
     cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'you might be interested in:')

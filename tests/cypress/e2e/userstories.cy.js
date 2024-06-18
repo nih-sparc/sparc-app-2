@@ -160,7 +160,7 @@ describe('User stories', function () {
       it(`Filter datasets by ${category}`, function () {
         // Check for category exist
         const regex = new RegExp(category, 'i')
-        cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
+        cy.get('.data-wrap > .data-item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
