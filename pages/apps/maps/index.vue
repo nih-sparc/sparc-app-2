@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+    <Meta name="og:description" hid="og:description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+    <Meta name="twitter:description" content="SPARC is creating detailed PNS maps based on SPARC data and information available from the literature." />
+  </Head>
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
@@ -127,13 +135,15 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
       route.query.for_species !== flatmaps.speciesMap[taxo]
     ) {
       failMessage = `Sorry! A flatmap for ${for_species} species does not yet exist. The ${organ_name} of a rat has been shown instead.`
+    } else if (!organ) {
+      failMessage = `Sorry! Applicable entity is not yet available. A generic flatmap for ${for_species} species has been shown instead.`
     }
   } else if (route.query.fid) {
     successMessage = "A flatmap's unique id is provided, a legacy map may be displayed instead."
   } else {
     failMessage = 'Sorry! Species information cannot be found. '
     if (organ) {
-      failMessage += `The ${organ} of a rat has been shown instead.`
+      failMessage += `The ${organ_name} of a rat has been shown instead.`
     } else {
       failMessage += 'A generic rat flatmap has been shown instead.'
     }
@@ -373,23 +383,6 @@ export default {
         },
       ],
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
-    }
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'SPARC is creating detailed PNS maps based on SPARC data and information available from the literature.'
-        },
-      ]
     }
   },
   mounted: function () {

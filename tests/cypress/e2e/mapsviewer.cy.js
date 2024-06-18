@@ -37,22 +37,22 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
+      
+      cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
+      cy.waitForLoadingMask()
+      
       if (index === 0) {
-
-        cy.wait('@flatmap', { timeout: 20000 })
-        cy.waitForLoadingMask()
-
         loadedModels.add('Rat')
       }
 
       // Switch to the second flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
       cy.get('.el-select-dropdown__item').should('be.visible')
       cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
 
       if (!loadedModels.has(model)) {
 
-        cy.wait('@flatmap', { timeout: 20000 })
+        cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
         cy.waitForLoadingMask()
 
         loadedModels.add(model)
@@ -73,14 +73,14 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
 
-    cy.wait('@flatmap', { timeout: 20000 })
+    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
     cy.waitForLoadingMask()
 
     // Switch to the human related flatmap
-    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click()
+    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
 
-    cy.wait('@flatmap', { timeout: 20000 })
+    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
     cy.waitForLoadingMask()
 
     // Open the 3D view in a split viewer
@@ -150,6 +150,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
             cy.get('.badges-container > .container').contains(/Scaffold/i).click()
           })
+
+          cy.waitForLoadingMask()
 
           // Check for button text
           cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()

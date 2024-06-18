@@ -9,11 +9,11 @@
       SPARC consortium. During embargo, the
       public will be able to view basic
       metadata about these datasets as well
-      as their release date. The embargoed release 
-      date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
+      as their release date. The embargoed release
+      date for this dataset is <b>{{ embargoedReleaseDate }}</b>
       and will become available to the public on that day.
       <a class="sign-in-link" @click="showLoginDialog = true">
-      Sign in</a> to the SPARC Portal to request
+        Sign in</a> to the SPARC Portal to request
       access to or view the status of an access request to embargoed data.
       <div>
         <sparc-tooltip content="Sign in to request access" placement="top-center">
@@ -26,10 +26,10 @@
       </div>
     </div>
     <div v-else-if="embargoed && requestPending">
-      Your access request is pending. The author has received your 
-      request and an email confirming or denying your request will 
-      be sent to you once the author has made a decision. The embargoed 
-      release date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
+      Your access request is pending. The author has received your
+      request and an email confirming or denying your request will
+      be sent to you once the author has made a decision. The embargoed
+      release date for this dataset is <b>{{ embargoedReleaseDate }}</b>
       and will become available to the public on that day.
       <div>
         <sparc-tooltip content="Access request is pending" placement="top-center">
@@ -49,17 +49,13 @@
       SPARC consortium. During embargo, the
       public will be able to view basic
       metadata about these datasets as well
-      as their release date. The embargoed release 
-      date for this dataset is <b>{{ embargoedReleaseDate }}</b> 
-      and will become available to the public on that day. 
+      as their release date. The embargoed release
+      date for this dataset is <b>{{ embargoedReleaseDate }}</b>
+      and will become available to the public on that day.
       Click 'Request Access' to request permission from
       the author to view the embargoed data.
       <div>
-        <el-button
-          class="my-8"
-          :disabled="embargoAccess != null && agreementId != null"
-          @click="openAgreementPopup()"
-        >
+        <el-button class="my-8" :disabled="embargoAccess != null && agreementId != null" @click="openAgreementPopup()">
           Request Access
         </el-button>
       </div>
@@ -71,16 +67,18 @@
       <el-row class="bx--row">
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
           <div v-if="!isDatasetSizeLarge">
-            <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and metadata directly to your computer free of charge. Please note that the files will be compressed upon download.</div>
+            <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and
+              metadata directly to your computer free of charge. Please note that the files will be compressed upon
+              download.</div>
             <a :href="downloadUrl">
               <el-button @click="sendGtmEvent" class="my-16">Download Full Dataset</el-button>
             </a>
           </div>
           <div v-else>
-            <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS. </div>
-            <sparc-tooltip
-              placement="left-center"
-            >
+            <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of
+              charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS.
+            </div>
+            <sparc-tooltip placement="left-center">
               <template #data>
                 <div>
                   Dataset size is over 5GB. To download, use <b>Option 2 - AWS download</b>
@@ -91,11 +89,7 @@
               </template>
             </sparc-tooltip>
           </div>
-          <a
-            v-show="sdsViewer"
-            :href="sdsViewer"
-            target="_blank"
-          >
+          <a v-show="sdsViewer" :href="sdsViewer" target="_blank">
             <el-button class="secondary" @click="onSdsButtonClick">
               Explore in SDS Viewer
             </el-button>
@@ -104,7 +98,8 @@
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
             <span class="label4">Option 2 - AWS download: </span>
-            Download or transfer the dataset to your AWS Account. The files and metadata are stored in an AWS S3 Requester Pays bucket. You can learn more about downloading data from AWS on our
+            Download or transfer the dataset to your AWS Account. The files and metadata are stored in an AWS S3
+            Requester Pays bucket. You can learn more about downloading data from AWS on our
             <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
@@ -127,19 +122,23 @@
             </template>
             <template v-else>
               <div class="label4">
-                Requesting Access to Download from AWS
+                Requesting Access from AWS
               </div>
               <p>
-                In order to request access to download this dataset, we ask that you please submit a rehydration request. This button will take you to a form where you can submit your request.
+                Access to older versions of the dataset on AWS is no longer readily available. 
+                To obtain access to previous versions directly from your AWS account, click "Request Access" below. 
+                More information is available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
               </p>
               <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
-                Request Rehydration
+                Request Access
               </el-button>
             </template>
           </div>
           <div>
-            * Requester pays means that any costs associated with downloading the data will be charged to your AWS account.
-            For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS Pricing documentation.</a>
+            * Requester Pays means that any costs associated with downloading the data will be charged to your AWS
+            account.
+            For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS
+              Pricing documentation.</a>
           </div>
         </el-col>
       </el-row>
@@ -152,34 +151,18 @@
           <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
         </span>
         <span class="dataset-link inline">
-          <a
-            href="https://docs.sparc.science/docs/navigating-a-sparc-dataset"
-            class="dataset-link"
-            target="_blank"
-          >
+          <a href="https://docs.sparc.science/docs/navigating-a-sparc-dataset" class="dataset-link" target="_blank">
             How to navigate datasets
           </a>
         </span>
       </div>
-      <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch"/>
+      <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch" />
     </div>
-    <data-use-agreement-popup
-      :show-dialog="showAgreementPopup"
-      @agreement-loaded="agreementLoaded"
-      @dialog-closed="showAgreementPopup = false"
-      @agreement-signed="requestAccess"
-    />
-    <login-modal
-      :show-dialog="showLoginDialog"
-      @dialog-closed="showLoginDialog = false"
-    />
-    <rehydration-modal
-      v-model="showRehydrationModal"
-      append-to-body
-      @close-rehydration-dialog="showRehydrationModal = false"
-      :version="versionId"
-      :dataset-id="datasetId"
-    />
+    <data-use-agreement-popup :show-dialog="showAgreementPopup" @agreement-loaded="agreementLoaded"
+      @dialog-closed="showAgreementPopup = false" @agreement-signed="requestAccess" />
+    <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
+    <rehydration-modal v-model="showRehydrationModal" append-to-body
+      @close-rehydration-dialog="showRehydrationModal = false" :version="versionId" :dataset-id="datasetId" />
   </div>
 </template>
 

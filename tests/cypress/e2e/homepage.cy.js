@@ -6,9 +6,13 @@ describe('Homepage', { testIsolation: false }, function () {
 
   })
 
+  beforeEach(function () {
+    cy.intercept('**/query?**').as('query')
+  })
+
   it('Navigation Bar', function () {
     // Check for navigation bar
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data')
+    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should('contain', 'Data & Models').and('have.attr', 'href', '/data?type=dataset')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should('contain', 'SPARC Apps').and('have.attr', 'href', '/apps')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should('contain', 'Tools & Resources').and('have.attr', 'href', '/tools-and-resources')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').should('contain', 'News & Events').and('have.attr', 'href', '/news-and-events')
@@ -32,8 +36,12 @@ describe('Homepage', { testIsolation: false }, function () {
       cy.wrap($cat).should('have.attr', 'href').and('contain', 'selectedFacetIds')
     })
     cy.get('@category').first().click()
+
+    cy.wait('@query', { timeout: 20000 })
+    cy.waitForLoadingMask()
+
     cy.url().should('contain', 'data?type=dataset&selectedFacetIds=')
-    cy.visit('')
+    cy.go('back')
 
     cy.waitForLoadingMask()
 
@@ -69,9 +77,13 @@ describe('Homepage', { testIsolation: false }, function () {
 
     // Check for button function
     cy.get(':nth-child(1) > .feature-container > .button-link > .el-button').click()
+
+    cy.wait('@query', { timeout: 20000 })
+    cy.waitForLoadingMask()
+
     cy.url().should('contain', 'data?type=dataset')
     cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a', { timeout: 30000 }).should('have.class', 'active')
-    cy.visit('')
+    cy.go('back')
 
     cy.waitForLoadingMask()
 
@@ -101,9 +113,13 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get(':nth-child(2) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').then(($link) => {
       const title = $link.text().replace('\n', '').trim()
       cy.wrap($link).siblings('.button-link').click()
-      cy.contains(title, { timeout: 30000 }).should('exist')
+
+      cy.wait('@query', { timeout: 20000 })
+      cy.waitForLoadingMask()
+
+      cy.get('.el-col-sm-16 > .heading2').should('contain', title)
     })
-    cy.visit('')
+    cy.go('back')
 
     cy.waitForLoadingMask()
 

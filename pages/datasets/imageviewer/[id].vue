@@ -2,19 +2,21 @@
   <div class="file-detail-page">
     <div class="page-wrap container">
       <h1 hidden>Image viewer</h1>
-      <content-tab-card
-        class="mt-24"
-        :tabs="tabs"
-        :active-tab-id="activeTabId"
-      >
-        <img
-          v-show="activeTab === 'imageViewer'"
-          ref="img"
-          :src="imageSrc"
-          class="image-viewer"
-          @load="imageLoaded"
-        />
-      </content-tab-card>
+      <client-only>
+        <content-tab-card
+          class="mt-24"
+          :tabs="tabs"
+          :active-tab-id="activeTabId"
+        >
+          <img
+            v-show="activeTab === 'imageViewer'"
+            ref="img"
+            :src="imageSrc"
+            class="image-viewer"
+            @load="imageLoaded"
+          />
+        </content-tab-card>
+      </client-only>
       <div class="subpage">
         <div class="page-heading">
           <h2>{{ fileName }}</h2>

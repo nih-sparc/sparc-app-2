@@ -13,8 +13,9 @@
             name: 'news-and-events-events-id',
             params: { id: item.sys.id }
           }"
-          v-html="highlightMatches(item.fields.title, $route.query.search)"
-        />
+        >
+          <p v-html="highlightMatches(item.fields.title, $route.query.search)" />
+        </nuxt-link>
         <a v-else-if="item.fields.url" class="link1" :href="item.fields.url" :target="openInNewTab ? '_blank' : '_self'">
           <span v-html="highlightMatches(item.fields.title, $route.query.search)"/>
           <svgo-icon-open v-if="openInNewTab" class="open-icon" />
@@ -56,6 +57,37 @@
   </div>
 </template>
 
+<script setup>
+const props = defineProps({
+  item: Object,
+  showPastEventsDivider: Boolean
+})
+const { item, showPastEventsDivider } = toRefs(props)
+const openInNewTab = ref({})
+const isDestinationLinkRetreived = ref(false)
+
+const config = useRuntimeConfig()
+const { $axios } = useNuxtApp()
+const url = pathOr("", ['fields', 'url'], item)
+if (url.includes('bit.ly')) {
+  const bitlyId = url.replace("https://", "")
+  await $axios.post(config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
+    headers: {
+      Authorization: `Bearer ${config.public.BITLY_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+    }
+  }).then(response => {
+    openInNewTab.value = !isInternalLink(response.data.long_url)
+    isDestinationLinkRetreived.value = true
+  })
+  .catch(err => {
+    console.error('Error retreiving bitly link destination URL.', err)
+    openInNewTab.value = !isInternalLink(url)
+    isDestinationLinkRetreived.value = true
+  })
+}
+</script>
+
 <script>
 import { isEmpty, pathOr } from 'ramda'
 import EventBannerImage from '@/components/EventBannerImage/EventBannerImage.vue'
@@ -70,45 +102,6 @@ export default {
     EventBannerImage
   },
   mixins: [FormatDate],
-  props: {
-    item: {
-      type: Object,
-      default: () => {}
-    },
-    showPastEventsDivider: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      isDestinationLinkRetreived: false,
-      openInNewTab: false
-    }
-  },
-  async mounted() {
-    const url = pathOr("", ['fields', 'url'], this.item)
-    if (url.includes('bit.ly')) {
-      const bitlyId = url.replace("https://", "")
-      try {
-        const response = await this.$axios.post(this.$config.public.bitly_expand_endpoint, { bitlink_id: bitlyId }, {
-          headers: {
-            Authorization: `Bearer ${this.$config.public.BITLY_ACCESS_TOKEN}`,
-            'Content-Type': 'application/json',
-          }
-        })
-        const newUrl = response.data.long_url
-        this.openInNewTab = !isInternalLink(newUrl)
-      } catch {
-        console.log("Error retreiving bitly link destination url")
-        this.openInNewTab = !isInternalLink(url)
-      }
-    }
-    else {
-      this.openInNewTab = !isInternalLink(url)
-    }
-    this.isDestinationLinkRetreived = true
-  },
   computed: {
     /**
      * Compute banner URL

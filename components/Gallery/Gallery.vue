@@ -14,19 +14,22 @@
               <component v-else-if="galleryItemType === 'metrics'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item.title" :title="item.title" :data="item.data" :subData="item.subData" />
               <component v-else-if="galleryItemType === 'highlights'" :is="galleryItemComponent" :width="cardWidth"
-                :key="item.sys.id" :item="item" />
+                :item="item" />
               <component v-else-if="galleryItemType === 'datasets'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item.intId" :item="item" />
               <component v-else-if="galleryItemType === 'fileViewer'" :is="galleryItemComponent" :data="item"
                 :width="cardWidth" show-card-details @card-clicked="cardClicked" />
-              <component v-else-if="galleryItemType === 'featuredData'" :is="galleryItemComponent" :item="item" :width="cardWidth" @card-clicked="cardClicked" />
+              <component v-else-if="galleryItemType === 'featuredData'" :is="galleryItemComponent" :item="item" 
+                :width="cardWidth" @card-clicked="cardClicked" />
             </template>
           </span>
         </template>
       </div>
     </div>
-    <pagination v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex"
-      :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked" />
+    <client-only>
+      <pagination v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex"
+        :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked" />
+    </client-only>
   </div>
 </template>
 
@@ -83,7 +86,6 @@ export default {
   data() {
     return {
       resizeObserver: null,
-      count: 0,
       currentIndex: ref(1),
       maxWidth: 0
     }

@@ -1,4 +1,9 @@
 <template>
+  <Head>
+    <Title>Welcome</Title>
+    <Meta name="og:title" hid="og:title" content="Welcome" />
+    <Meta name="twitter:title" content="Welcome" />
+  </Head>
   <div class="container mb-16">
     <setup-new-user />
   </div>
@@ -17,11 +22,6 @@ export default {
   name: 'welcome',
   components: {
     SetupNewUser
-  },
-  head() {
-    return {
-      title: "Welcome"
-    }
-  },
+  }
 }
 </script>

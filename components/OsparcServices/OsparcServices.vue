@@ -73,21 +73,6 @@ export default {
     await $axios.get(url.toString()).then(({ data }) => {
       resources = data
     })
-    useHead({
-      title: 'oSPARC Services',
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'oSPARC Services',
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Browse oSPARC Services'
-        },
-      ]
-    })
     return {
       resources: ref(resources)
     }

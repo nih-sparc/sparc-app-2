@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ pageTitle }}</Title>
+    <Meta name="og:title" hid="og:title" :content="pageTitle" />
+    <Meta name="twitter:title" :content="pageTitle" />
+    <Meta name="description" hid="description" :content="heroCopy" />
+    <Meta name="og:description" hid="og:description" :content="heroCopy" />
+    <Meta name="twitter:description" :content="heroCopy" />
+  </Head>
   <div class="about-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" title="About" />
     <page-hero class="py-24" v-if="heroCopy">
@@ -8,8 +16,8 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-32 mt-32">
-        <div class="heading1 mb-16">Who We Support</div>
+      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-24 mt-32">
+        <div class="heading2">Who We Support</div>
         <div class="body1 mb-16">The SPARC Portal currently supports {{ whoWeSupport.length }} consortia. Visit the
           consortia page to find out more about them.</div>
         <div class="data-wrap">
@@ -36,8 +44,8 @@
           :button-link="aboutLink(getInvolvedPageId)" />
       </div>
 
-      <div class="gallery-items-container p-32 mt-32">
-        <div class="heading1 mb-16">Portal Metrics</div>
+      <div class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">Portal Metrics</div>
         <gallery galleryItemType="metrics" :items="metricsItems" />
         <nuxt-link to="/about/metrics">
           <el-button class="secondary mt-16">
@@ -46,8 +54,8 @@
         </nuxt-link>
       </div>
 
-      <div class="gallery-items-container p-32 mt-32">
-        <div class="heading1 mb-16">Highlights</div>
+      <div class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
 
@@ -64,6 +72,21 @@ import Gallery from '~/components/Gallery/Gallery.vue'
 import marked from '@/mixins/marked'
 import { getPreviousDate } from '@/utils/common'
 import { pathOr } from 'ramda'
+
+const months = [
+  'January',
+  'Febuary',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
 
 export default {
   name: 'AboutPage',
@@ -110,6 +133,7 @@ export default {
     const currentYear = new Date().getFullYear()
     // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
     const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
+    let dateUsed = lastMonthsDate
     return Promise.all([
       /**
        * Page data
@@ -117,21 +141,6 @@ export default {
       $contentfulClient
         .getEntry(config.public.ctf_about_page_id)
         .then(({fields}) => {
-          useSeoMeta({
-            title: fields.pageTitle,
-            meta: [
-              {
-                hid: 'og:title',
-                property: 'og:title',
-                content: fields.pageTitle,
-              },
-              {
-                hid: 'description',
-                name: 'description',
-                content: fields.heroCopy ? fields.heroCopy : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-              },
-            ]
-          })
           return fields
         })
         .catch(err => console.error('Could not fetch page data from Contentful.', err)),
@@ -150,6 +159,7 @@ export default {
         })
         .catch(() => {
           const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
+          dateUsed = monthBeforeLastDate
           return $axios
             .get(config.public.METRICS_URL + `/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`)
             .then(({ data }) => {
@@ -198,11 +208,11 @@ export default {
       metricsItems: [{
         title: 'Total Downloads',
         data: totalDownloads.toString(),
-        subData: `(${metrics.downloadsLastMonth} last month)`
+        subData: `(${metrics.downloadsLastMonth} in ${months[dateUsed.month - 1]})`
       }, {
         title: 'Dataset Contributors',
         data: metrics.totalContributors?.toString(),
-        subData: `(${metrics.newContributors} new in the last month)`
+        subData: `(${metrics.newContributors} new in ${months[dateUsed.month - 1]})`
       }]
     }))
   },

@@ -1,59 +1,8 @@
-name: Quality Control Cypress Testing
+name: Scheduled Staging Cypress Testing
 
 on:
-  workflow_dispatch:
-    inputs:
-      PORTAL_TARGET:
-        type: "choice"
-        description: "Define portal target"
-        required: true
-        options:
-          - "Staging"
-          - "Production"
-      PAGE_LIMIT:
-        type: "choice"
-        description: "Define the number of displayed datasets per page"
-        required: true
-        options:
-          - "10"
-          - "20"
-          - "50"
-          - "View All"
-      SEARCH_KEYWORDS:
-        description: "Define keywords for searching"
-        required: true
-        default: "Spine, Neck"
-      FILTER_FACET:
-        description: "Define facet for filtering"
-        required: true
-        default: "Human"
-      MULTIPLE_FILTER_FACETS:
-        description: "Define multiple facets for filtering"
-        required: true
-        default: "Heart, Adult"
-      DATASET_IDS:
-        description: "Define dataset ids"
-        required: true
-        default: "127, 205, 290, 34, 76"
-      TAXON_MODELS:
-        description: "Define taxon models"
-        required: true
-        default: "Rat, Human Female"
-      THREE_SYNC_VIEW:
-        type: "choice"
-        description: "Define species for sync map"
-        required: true
-        options:
-          - "Human Male"
-          - "Human Female"
-      SEARCH_IN_MAP:
-        description: "Define keyword"
-        required: true
-        default: "Heart"
-      SCAFFOLD_DATASET_IDS:
-        description: "Define scaffold dataset ids"
-        required: true
-        default: "150, 155"
+  schedule:
+    - cron: "0 0 * * 1"
 
 env:
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
@@ -101,8 +50,8 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  quality-control-cypress-run:
-    if: github.event_name == 'workflow_dispatch'
+  scheduled-cypress-run-staging:
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
     steps:
@@ -121,26 +70,12 @@ jobs:
         with:
           node-version: 18.17.1
 
-      - name: Manual Run Testing against Staging
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Staging' }}
+      - name: Schedule Run Testing against Staging
+        uses: cypress-io/github-action@v6
+        timeout-minutes: 30
         env:
           ROOT_URL: "https://staging.sparc.science"
-        uses: cypress-io/github-action@v6
-        timeout-minutes: 30
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
-
-      - name: Manual Run Testing against Production
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
-        env:
-          ROOT_URL: "https://sparc.science"
-        uses: cypress-io/github-action@v6
-        timeout-minutes: 30
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
+          tag: Scheduled-Staging

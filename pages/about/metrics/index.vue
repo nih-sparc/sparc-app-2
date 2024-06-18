@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>Metrics</Title>
+    <Meta name="og:title" hid="og:title" content="Metrics" />
+    <Meta name="twitter:title" content="Metrics" />
+    <Meta name="description" hid="description" content="Browse Metrics" />
+    <Meta name="og:description" hid="og:description" content="Browse Metrics" />
+    <Meta name="twitter:description" content="Browse Metrics" />
+  </Head>
   <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
     <div class="container">
@@ -34,7 +42,7 @@
         v-else
         :metrics-data="metricsData"
       />
-      <div class="row my-32">
+      <div class="body1 ml-16">
         Last metrics update: {{ monthLastUpdate.toLocaleString('default', { month: 'long' }) }} {{ monthLastUpdate.getFullYear() }}
       </div>
     </div>
@@ -154,14 +162,14 @@ export default {
     let monthLastUpdate
     try {
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
-      monthLastUpdate = new Date(`${lastMonthsDate.year}/${lastMonthsDate.month}`)
+      monthLastUpdate = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
       metricsData = await fetchMetrics($axios, config.public.METRICS_URL, monthBeforeLastDate.month, monthBeforeLastDate.year)
       .catch(err => {
         console.error('Could not retreive metrics.', err)
       })
-      monthLastUpdate = new Date(`${monthBeforeLastDate.year}/${monthBeforeLastDate.month}`)
+      monthLastUpdate = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
     }
     return {
       metricsData,

@@ -30,7 +30,7 @@
                 name: 'contact-us',
                 query: {
                   type: 'bug',
-                  source_url: this.$route.fullPath
+                  source_url: $route.fullPath
                 }
               }"
             >
@@ -43,6 +43,7 @@
   </div>
 </template>
 <script>
+import { useRoute } from 'vue-router'
 export default {
   name: 'error-404',
   props: {

@@ -1,13 +1,23 @@
 <template>
   <div class="mapClass">
-    <MapContent class="map" ref="map" :state="state" :starting-map="startingMap" :options="options"
-        :share-link="shareLink" @updateShareLinkRequested="$emit('updateShareLinkRequested')" @isReady="$emit('isReady')" />
+    <MapContent
+      class="map"
+      ref="map"
+      :state="state"
+      :starting-map="startingMap"
+      :options="options"
+      :share-link="shareLink"
+      :useHelpModeDialog="true"
+      @updateShareLinkRequested="$emit('updateShareLinkRequested')"
+      @isReady="$emit('isReady')"
+      @trackEvent="onTrackEvent"
+    />
   </div>
 </template>
 
 <script>
   import { MapContent } from "@abi-software/mapintegratedvuer"
-  
+
   export default {
     name: 'MapViewer',
     components: {
@@ -48,6 +58,9 @@
       getInstance: function(){
         return this.$refs.map;
       },
+      onTrackEvent: function(eventData) {
+        this.$gtm.push(eventData);
+      },
     },
   }
 </script>
@@ -65,7 +78,7 @@
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
 
   .map-icon {
-    color: #8300bf !important;
+    color: #8300bf;
   }
 
   .background-popper.el-popover.el-popper,

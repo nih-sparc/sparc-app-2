@@ -55,12 +55,14 @@ jobs:
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2, 3, 4]
-
     steps:
+      - name: Cleanup pre-installed tools
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - uses: actions-cool/check-user-permission@main
         id: checkUser
         with:
@@ -81,6 +83,7 @@ jobs:
       - name: Automated Run Testing when Pull Request
         if: steps.checkUser.outputs.require-result == 'true'
         uses: cypress-io/github-action@v6
+        timeout-minutes: 30
         env:
           ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
         with:
@@ -88,7 +91,7 @@ jobs:
           start: yarn preview
           wait-on: ${{ secrets.ROOT_URL }}
           record: true
-          parallel: true
+          tag: PR
 
       - name: Skip tests
         if: steps.checkUser.outputs.require-result == 'false'

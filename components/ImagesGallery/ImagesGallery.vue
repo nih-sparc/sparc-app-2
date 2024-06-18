@@ -42,8 +42,6 @@ import { useMainStore } from '../../store'
 
 import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 
-import { failMessage } from '@/utils/notification-messages'
-
 /**
  * Get data for objects that have a data specific viewer.
  * @param {Number} datasetId
@@ -103,14 +101,14 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
           }
         }
 
-        // Default species flatmap
+        // Generic species flatmap
         let speciesData = {
           taxo,
           id: datasetId,
           version: datasetVersion,
           species: species
         }
-        // Add uberonid and organ to the default flatmap if match the anatomy and taxonomy
+        // Add uberonid and organ to the generic flatmap if anatomy and taxonomy are matched
         scicrunchData.organs.forEach(organ => {
           if (foundAnatomy.includes(organ.curie)) {
             let organData = {
@@ -121,14 +119,12 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             flatmapData.push(organData)
           }
         })
-        // Use the default species flatmap when the anatomy and taxonomy not match
+        // Use the generic species flatmap when the anatomy and taxonomy not match
+        // No entity on the anatomical structure
         if (flatmapData.length === 0) {
           flatmapData.push(speciesData)
         }
         scicrunchData['flatmaps'] = flatmapData
-      } else {
-        // Use the rat flatmap when no entity on the anatomical structure as generic flatmap
-        scicrunchData['flatmaps'] = [{ taxo: Uberons.species['rat'] }]
       }
     }
   } catch (e) {

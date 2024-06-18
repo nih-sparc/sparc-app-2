@@ -30,7 +30,7 @@
                 name: 'contact-us',
                 query: {
                   type: 'bug',
-                  source_url: this.$route.fullPath
+                  source_url: $route.fullPath
                 }
               }"
             >

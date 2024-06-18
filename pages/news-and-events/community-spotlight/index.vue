@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ searchTypes[2].label }}</Title>
+    <Meta name="og:title" hid="og:title" :content="searchTypes[2].label" />
+    <Meta name="twitter:title" :content="searchTypes[2].label" />
+    <Meta name="description" hid="description" :content="`Browse ${searchTypes[2].label}`" />
+    <Meta name="og:description" hid="og:description" :content="`Browse ${searchTypes[2].label}`" />
+    <Meta name="twitter:description" :content="`Browse ${searchTypes[2].label}`" />
+  </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" title="Community Spotlight" />
     <div class="container">
@@ -46,12 +54,14 @@
               :md="6"
               :lg="6"
             >
-              <community-spotlight-facet-menu
-                ref="communitySpotlightFacetMenu"
-                class="community-spotlight-facet-menu"
-                :anatomical-structures="anatomicalStructures"
-                @community-spotlight-selections-changed="onPaginationPageChange(1)"
-              />
+              <client-only>
+                <community-spotlight-facet-menu
+                  ref="communitySpotlightFacetMenu"
+                  class="community-spotlight-facet-menu"
+                  :anatomical-structures="anatomicalStructures"
+                  @community-spotlight-selections-changed="onPaginationPageChange(1)"
+                />
+              </client-only>
             </el-col>
             <el-col
               :sm='24'
@@ -61,27 +71,33 @@
               <div class="search-heading mt-32 mb-16">
                 <div class="label1" v-show="communitySpotlightItems.items.length">
                   {{ communitySpotlightItems.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="communitySpotlightItems.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="communitySpotlightItems.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
                 <span class="label1">
                   Sort
-                  <sort-menu
-                    :options="sortOptions"
-                    :selected-option="selectedSortOption"
-                    @update-selected-option="onSortOptionChange"
-                  />
+                  <client-only>
+                    <sort-menu
+                      :options="sortOptions"
+                      :selected-option="selectedSortOption"
+                      @update-selected-option="onSortOptionChange"
+                    />
+                  </client-only>
                 </span>
               </div>
               <div class="subpage">
                 <template v-if="communitySpotlightItems.items.length > 0">
-                  <community-spotlight-item
-                    v-for="(item, index) in communitySpotlightItems.items"
-                    :key="index"
-                    :story="getLinkedItems(item)"
-                  />
+                  <client-only>
+                    <community-spotlight-item
+                      v-for="(item, index) in communitySpotlightItems.items"
+                      :key="index"
+                      :story="getLinkedItems(item)"
+                    />
+                  </client-only>
                 </template>
                 <template v-else>
                   <div class="no-results-container">
@@ -89,27 +105,33 @@
                     <hr />
                   </div>
                 </template>
-                <alternative-search-results-news
-                  ref="altSearchResults"
-                  :search-had-results="communitySpotlightItems.items.length > 0"
-                  @vue:mounted="altResultsMounted"
-                />
+                <client-only>
+                  <alternative-search-results-news
+                    ref="altSearchResults"
+                    :search-had-results="communitySpotlightItems.items.length > 0"
+                    @vue:mounted="altResultsMounted"
+                  />
+                </client-only>
               </div>
               <div class="search-heading">
                 <div class="label1" v-if="communitySpotlightItems.items.length">
                   {{ communitySpotlightItems.total }} Results | Showing
-                  <pagination-menu
-                    :page-size="communitySpotlightItems.limit"
-                    @update-page-size="onPaginationLimitChange"
-                  />
+                  <client-only>
+                    <pagination-menu
+                      :page-size="communitySpotlightItems.limit"
+                      @update-page-size="onPaginationLimitChange"
+                    />
+                  </client-only>
                 </div>
-                <pagination
-                  v-if="communitySpotlightItems.limit < communitySpotlightItems.total"
-                  :selected="curSearchPage"
-                  :page-size="communitySpotlightItems.limit"
-                  :total-count="communitySpotlightItems.total"
-                  @select-page="onPaginationPageChange"
-                />
+                <client-only>
+                  <pagination
+                    v-if="communitySpotlightItems.limit < communitySpotlightItems.total"
+                    :selected="curSearchPage"
+                    :page-size="communitySpotlightItems.limit"
+                    :total-count="communitySpotlightItems.total"
+                    @select-page="onPaginationPageChange"
+                  />
+                </client-only>
               </div>
             </el-col>
           </el-row>
@@ -197,7 +219,7 @@ export default {
   async setup() {
     const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
-    const communitySpotlightItems = await fetchCommunitySpotlightItems(route.query.search, undefined, undefined, undefined, 10, 0)
+    const communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, undefined, undefined, undefined, 10, 0)
     // get all the available pre-defined values for creating the facet menu
     let anatomicalStructures = {}
     await $contentfulClient.getContentType('communitySpotlight').then(contentType => {
@@ -218,21 +240,6 @@ export default {
           }
         }
       })
-    })
-    useHead({
-      title: searchTypes[2].label,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: searchTypes[2].label,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: `Browse ${searchTypes[2].label}`
-        },
-      ]
     })
 
     return {
@@ -264,7 +271,8 @@ export default {
   watch: {
     '$route.query': {
       handler: async function() {
-        this.communitySpotlightItems = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
+        const { $contentfulClient } = useNuxtApp()
+        this.communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
         this.$refs.altSearchResults?.retrieveAltTotals()
       },
       immediate: true
@@ -290,9 +298,10 @@ export default {
      * @param {Number} page
      */
     async onPaginationPageChange(page) {
+      const { $contentfulClient } = useNuxtApp()
       const { limit } = this.communitySpotlightItems
       const offset = (page - 1) * limit
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
       this.communitySpotlightItems = response
     },
     /**
@@ -300,13 +309,15 @@ export default {
      * @param {Number} limit
      */
     async onPaginationLimitChange(limit) {
+      const { $contentfulClient } = useNuxtApp()
       const newLimit = limit === 'View All' ? this.communitySpotlightItems.total : limit
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
       this.communitySpotlightItems = response
     },
     async onSortOptionChange(option) {
+      const { $contentfulClient } = useNuxtApp()
       this.selectedSortOption = option
-      const response = await fetchCommunitySpotlightItems(this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
+      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
       this.communitySpotlightItems = response
     },
     // The community spotlight item component needs to use the properties off the actual success stories/fireside chats

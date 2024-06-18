@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>SPARC Profile</Title>
+    <Meta name="og:title" hid="og:title" content="SPARC Profile" />
+    <Meta name="twitter:title" content="SPARC Profile" />
+    <Meta name="description" hid="description" content="The SPARC Portal account allows you to fully utilize portal functionality." />
+    <Meta name="og:description" hid="og:description" content="The SPARC Portal account allows you to fully utilize portal functionality." />
+    <Meta name="twitter:description" content="The SPARC Portal account allows you to fully utilize portal functionality." />
+  </Head>
   <div>
     <template v-if="!userToken">
       <login-modal 
@@ -89,17 +97,19 @@
             <div class="datasets-container-title">
               <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
               <span>
-                <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
-                  <template v-slot:reference>
-                    <svgo-icon-help class="icon-help" />
-                  </template>
-                  <div>
-                    My published Datasets relates to all Datasets, Computational and Anatomical models where you have
-                    been
-                    associated to the dataset using your ORCID number. If there are datasets that you feel should be
-                    linked to you please contact curation@sparc.science
-                  </div>
-                </el-popover>
+                <client-only>
+                  <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                    <template v-slot:reference>
+                      <svgo-icon-help class="icon-help" />
+                    </template>
+                    <div>
+                      My published Datasets relates to all Datasets, Computational and Anatomical models where you have
+                      been
+                      associated to the dataset using your ORCID number. If there are datasets that you feel should be
+                      linked to you please contact curation@sparc.science
+                    </div>
+                  </el-popover>
+                </client-only>
               </span>
             </div>
             <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
@@ -108,16 +118,18 @@
             <div class="datasets-container-title">
               <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
               <span>
-                <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
-                  <template v-slot:reference>
-                    <svgo-icon-help class="icon-help" />
-                  </template>
-                  <div>
-                    In order to publish a dataset on the SPARC Portal your submission must first be approved by the
-                    curation team. If there are dataset requests that you think are missing please contact
-                    curation@sparc.science
-                  </div>
-                </el-popover>
+                <client-only>
+                  <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                    <template v-slot:reference>
+                      <svgo-icon-help class="icon-help" />
+                    </template>
+                    <div>
+                      In order to publish a dataset on the SPARC Portal your submission must first be approved by the
+                      curation team. If there are dataset requests that you think are missing please contact
+                      curation@sparc.science
+                    </div>
+                  </el-popover>
+                </client-only>
               </span>
             </div>
             <div v-loading="submissionsLoading">
@@ -264,23 +276,6 @@ export default {
     }
     return {
       downloadsSummary
-    }
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'The SPARC Portal account allows you to fully utilize portal functionality.'
-        },
-      ]
     }
   },
   computed: {

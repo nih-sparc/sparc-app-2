@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ resource.fields.name }}</Title>
+    <Meta name="og:title" hid="og:title" :content="resource.fields.name" />
+    <Meta name="twitter:title" :content="resource.fields.name" />
+    <Meta name="description" hid="description" :content="resource.fields.description" />
+    <Meta name="og:description" hid="og:description" :content="resource.fields.description" />
+    <Meta name="twitter:description" :content="resource.fields.description" />
+  </Head>
   <div class="resources">
     <tools-and-resources-page :page="resource" :content="resource.fields.longDescription" :breadcrumb="breadcrumb"
       :hero-title="resource.fields.name" :hero-summary="resource.fields.description" type="resource">
@@ -19,13 +27,15 @@
           </div>
         </div>
         <div class="truncated">
-          <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
-            <template #item>
-              <div class="heading1 truncated">
-                {{ resource.fields.name }}
-              </div>
-            </template>
-          </sparc-tooltip>
+          <client-only>
+            <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
+              <template #item>
+                <div class="heading1 truncated">
+                  {{ resource.fields.name }}
+                </div>
+              </template>
+            </sparc-tooltip>
+          </client-only>
           <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
             SPARC
           </span>
@@ -70,7 +80,7 @@
       </div>
     </tools-and-resources-page>
     <div v-if="showOsparcServices" id="osparcServicesContainer" class="container">
-      <osparc-services />
+      <client-only><osparc-services /></client-only>
     </div>
     <div class="container">
       <nuxt-link class="back-link" to="/tools-and-resources/tools">
@@ -104,21 +114,6 @@ export default {
       label: isTool ? 'Tools' : 'Resources',
       path: isTool ? 'tools' : 'resources'
     }
-    useHead({
-      title: resource.fields.name,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: resource.fields.name,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: resource.fields.description ? resource.fields.description : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-        },
-      ]
-    })
     return {
       resource,
       breadcrumb: [

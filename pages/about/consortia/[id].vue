@@ -1,24 +1,39 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="overview" />
+    <Meta name="og:description" hid="og:description" :content="overview" />
+    <Meta name="twitter:description" :content="overview" />
+  </Head>
   <div :style="consortiaStyle" class="pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
-      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" />
+      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links />
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
-        <!--<paper class="row-item" :text="parseMarkdown(whatWeDo)" :button-text="whatWeDoButtonText"
-          :button-link="whatWeDoButtonLink" />-->
         <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
           :button-link="ourResearchButtonLink" />
       </div>
-      <div v-if="featuredDataset?.title" class="featured-dataset-container p-16 mt-32">
-        <div class="mb-16">Here is a dataset you might be interested in:</div>
+      <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
+        <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
           :banner="featuredDataset.banner" :link="featuredDatasetLink" button-text="View Dataset" />
       </div>
-      <div v-if="highlights.length > 0" class="gallery-items-container p-32 mt-32">
-        <div class="heading1 mb-16">Highlights</div>
+      <div v-if="highlights.length > 0" class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">Highlights</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
+      </div>
+      <div v-if="learnMore.length > 0" class="subpage">
+        <div class="heading2 mb-16">Learn More</div>
+        <template v-for="(item, index) in learnMore" :key="index">
+          <div>
+            <learn-more-card :about-details-item="item" />
+            <hr v-if="learnMore.length > 1 && index != learnMore.length - 1" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -29,6 +44,7 @@ import { ref } from 'vue'
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 
 import marked from '@/mixins/marked'
 import { pathOr, propOr, isEmpty } from 'ramda'
@@ -39,7 +55,8 @@ export default {
   components: {
     Paper,
     Gallery,
-    ProjectsAndDatasetsCard
+    ProjectsAndDatasetsCard,
+    LearnMoreCard
   },
 
   mixins: [marked],
@@ -98,21 +115,6 @@ export default {
     }).catch(() => {
       highlights.value = []
     })
-    useSeoMeta({
-      title: consortiaItem.fields.title,
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: consortiaItem.fields.title,
-        },
-        {
-          hid: 'description',
-          name: 'description',
-          content: consortiaItem.fields.overview ? consortiaItem.fields.overview : 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
-        },
-      ]
-    })
     return {
       consortiaItem,
       featuredDataset,
@@ -141,6 +143,9 @@ export default {
     },
     whatWeDoButtonLink() {
       return pathOr('', ['fields', 'whatWeDoButtonLink'], this.consortiaItem)
+    },
+    learnMore() {
+      return pathOr([], ['fields', 'learnMore'], this.consortiaItem)
     },
     ourResearch() {
       return pathOr('', ['fields', 'ourResearch'], this.consortiaItem)
@@ -191,7 +196,7 @@ export default {
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .featured-dataset-container {
   border: solid $lineColor1 1px;
-  background-color: $background;
+  background-color: white;
 }
 
 .row-item {
@@ -247,4 +252,10 @@ export default {
     color: var(--button-and-link-color) !important;
   }
 }
+:deep(.btn-copy-permalink) {
+  path {
+    fill: var(--button-and-link-color) !important;
+  }
+}
+
 </style>

@@ -3,9 +3,7 @@
     <breadcrumb :breadcrumb="breadcrumb" :title="heroTitle" />
     <page-hero class="py-24">
       <h1>{{ heroTitle }}</h1>
-      <p>
-        {{ heroSummary }}
-      </p>
+      <client-only><p v-html="parseMarkdown(heroSummary)" /></client-only>
     </page-hero>
     <div class="container">
       <div class="subpage mb-32">

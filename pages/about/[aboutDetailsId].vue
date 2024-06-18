@@ -1,9 +1,14 @@
 <template>
+  <Head>
+    <Title>{{ aboutDetailsItem.fields.title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="aboutDetailsItem.fields.title" />
+    <Meta name="twitter:title" :content="aboutDetailsItem.fields.title" />
+    <Meta name="description" hid="description" :content="aboutDetailsItem.fields.summary" />
+    <Meta name="og:description" hid="og:description" :content="aboutDetailsItem.fields.summary" />
+    <Meta name="twitter:description" :content="aboutDetailsItem.fields.summary" />
+  </Head>
   <div>
-    <breadcrumb
-      :breadcrumb="breadcrumb"
-      :title="aboutDetailsItem.fields.title"
-    />
+    <breadcrumb :breadcrumb="breadcrumb" :title="aboutDetailsItem.fields.title" />
     <page-hero class="py-24">
       <h1>{{ aboutDetailsItem.fields.title }}</h1>
       <p>{{ aboutDetailsItem.fields.summary }}</p>
@@ -18,14 +23,12 @@
         <share-links />
       </div>
       <div v-if="aboutDetailsItem.fields.learnMore" class="subpage">
-        <h1 class="heading1 mb-16">Learn More</h1>
+        <div class="heading2 mb-16">Learn More</div>
         <template v-for="(item, index) in aboutDetailsItem.fields.learnMore" :key="item + index">
           <div>
-            <learn-more-card
-              :about-details-item="item"
-              :parent-path="aboutDetailsItem.fields.slug"
-            />
-            <hr v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
+            <learn-more-card :about-details-item="item" :parent-path="aboutDetailsItem.fields.slug" />
+            <hr
+              v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
           </div>
         </template>
       </div>
@@ -94,18 +97,7 @@ export default {
           return items[0]
         }
       })
-    
-      useSeoMeta({
-        title: aboutDetailsItem.fields.title,
-        meta: [
-          {
-            hid: 'og:title',
-            property: 'og:title',
-            content: aboutDetailsItem.fields.title,
-          },
-        ]
-      })
-      return { aboutDetailsItem }
+    return { aboutDetailsItem }
   }
 }
 </script>

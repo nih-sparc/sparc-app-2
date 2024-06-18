@@ -27,6 +27,64 @@
 
     <el-form-item
       class="mt-32"
+      prop="individualFileSize"
+      label="The approximate size of the largest individual file? *"
+    >
+      <sparc-radio
+        :value="form.individualFileSize"
+        @input="form.individualFileSize = $event.target.value"
+        label="<220GB"
+        display="< 220 GB"
+      />
+      <sparc-radio
+        :value="form.individualFileSize"
+        @input="form.individualFileSize = $event.target.value"
+        label="≥220GB"
+        display="≥ 220 GB"
+      />
+    </el-form-item>
+
+    <el-form-item
+      class="mt-32"
+      prop="datasetSize"
+      label="The approximate total size of the dataset? *"
+    >
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="<5GB"
+        display="< 5 GB"
+        :disabled="isOversized"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="5-50GB"
+        display="5 - 50GB"
+        :disabled="isOversized"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="50-500GB"
+        display="50 - 500GB"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="500GB-TB"
+        display="500GB - TB"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label=">TB"
+        display="> TB"
+      />
+    </el-form-item>
+
+    <el-form-item
+      class="mt-32"
       prop="publishedManuscript"
       label="Has data been published in a manuscript? *"
     >
@@ -114,6 +172,8 @@ export default {
       form: {
         captchaToken: '',
         detailedDescription: '',
+        individualFileSize: '',
+        datasetSize: '',
         shortDescription: '',
         publishedManuscript: '',
         manuscriptDoi: '',
@@ -177,6 +237,22 @@ export default {
           }
         ],
 
+        individualFileSize: [
+          {
+            required: true,
+            message: 'Please select one option',
+            trigger: 'change'
+          }
+        ],
+
+        datasetSize: [
+          {
+            required: true,
+            message: 'Please select one option',
+            trigger: 'change'
+          }
+        ],
+
         publishedManuscript: [
           {
             required: true,
@@ -217,6 +293,12 @@ export default {
     populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
+  computed: {
+    isOversized: function() {
+      return this.form.individualFileSize === '≥220GB'
+    },
+  },
+
   methods: {
     /**
      * Send form to endpoint
@@ -228,6 +310,8 @@ export default {
         <b>Short description:</b><br>${this.form.shortDescription}<br><br>
         <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
         <b>Has a published manuscript:</b><br>${this.form.publishedManuscript === 'Yes' ? this.form.manuscriptDoi : this.form.publishedManuscript}<br><br>
+        <b>The approximate largest individual file size:</b><br>${this.form.individualFileSize}<br><br>
+        <b>The approximate dataset total size:</b><br>${this.form.datasetSize}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}
@@ -270,6 +354,11 @@ export default {
     },
     profileEmail() {
       this.form.user.email = this.profileEmail
+    },
+    isOversized(value) {
+      if (value && (this.form.datasetSize === '<5GB' || this.form.datasetSize === '5-50GB')) {
+        this.form.datasetSize = ''
+      }
     }
   }
 }

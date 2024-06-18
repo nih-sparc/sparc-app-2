@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div class="subpage-col about-page-border">
-      <template class="subpage-row">
+    <div class="subpage-col about-page-border p-24">
+      <div class="subpage-row">
         <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
-        <div class="about-page-text" v-html="text" />
-      </template>
+        <div class="subpage-col">
+          <div class="about-page-text" v-html="text" />
+          <div v-if="showShareLinks">
+            <share-links />
+          </div>
+        </div>
+      </div>
       <NuxtLink v-if="buttonText != '' && buttonLinkExternal == ''" class="margin-top-auto" :to="buttonLink"
         :target="newTab ? '_blank' : '_self'">
         <el-button class="secondary">
@@ -23,8 +28,12 @@
 </template>
 
 <script>
+import ShareLinks from '@/components/ShareLinks/ShareLinks'
 export default {
   name: 'Paper',
+  components: {
+    ShareLinks
+  },
   props: {
     text: {
       type: String,
@@ -54,6 +63,10 @@ export default {
       type: String,
       default: null
     },
+    showShareLinks: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>
@@ -65,7 +78,6 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   background-color: white;
-  padding: 2rem;
 
   @media screen and (max-width: 767px) {
     margin-top: 0;
@@ -103,5 +115,8 @@ export default {
   height: 8rem;
   object-fit: contain;
   border: solid $lineColor1 1px;
+}
+:deep(img) {
+  max-width: 100%;
 }
 </style>

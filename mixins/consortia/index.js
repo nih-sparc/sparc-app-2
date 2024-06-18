@@ -13,7 +13,7 @@ export default {
       const consortiaItem =
         await this.$contentfulClient.getEntries({
           content_type: this.$config.public.ctf_consortia_content_type_id,
-          'fields.title': consortiaId
+          'fields.title[match]': consortiaId
         }).then(response => {
           return propOr([], 'items', response)[0]
         }).catch(() => { })

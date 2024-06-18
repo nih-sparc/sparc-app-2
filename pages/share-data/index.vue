@@ -1,4 +1,12 @@
 <template>
+  <Head>
+    <Title>{{ title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="title" />
+    <Meta name="twitter:title" :content="title" />
+    <Meta name="description" hid="description" :content="summary" />
+    <Meta name="og:description" hid="og:description" :content="summary" />
+    <Meta name="twitter:description" :content="summary" />
+  </Head>
   <div class="page-data pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
@@ -15,7 +23,7 @@
         </div>
       </div>
       <div v-if="learnMore" class="subpage px-32 mb-0">
-        <div class="heading1 mb-16">Learn More</div>
+        <div class="heading2 mb-16">Learn More</div>
         <div v-for="(item, i) in learnMore" :key="item.sys.id">
           <learn-more-card :about-details-item="item" :parent-path="slug" />
           <hr v-if="i < learnMore.length - 1" />
