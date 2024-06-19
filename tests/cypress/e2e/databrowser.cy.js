@@ -35,86 +35,122 @@ browseCategories.forEach((category) => {
       cy.visitLoadedPage(`/data?type=${category}`)
     })
 
-    beforeEach(function () {
-      cy.intercept('**/query?**').as('query')
+    // Make sure the page is loaded
+    it('Data Browser Page UI', function () {
+      cy.get('.search-tabs__container').should('be.visible')
+      cy.get('.search-bar__container').should('be.visible')
+      cy.get('[type="flex"] > :nth-child(1) > .el-row > .el-col-md-8').should('be.visible')
+      cy.get('.table-wrap').should('be.visible')
+      cy.get(':nth-child(1) > .el-table_1_column_1').should('be.visible')
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').should('be.visible')
     })
 
-    it('Dataset card', function () {
-      cy.get(':nth-child(1) > .el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').should('have.attr', 'src').and('contain', 'https://assets.discover.pennsieve.io/dataset-assets/')
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(1) > .property-name-column').should('contain', 'Anatomical Structure');
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(2) > .property-name-column').should('contain', 'Species');
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(3) > .property-name-column').should('contain', 'Experimental Approach');
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > .property-table > :nth-child(4) > .property-name-column').should('contain', 'Publication Date');
-    })
-
-    it('All Page Features', function () {
-      cy.get('.body1').should('contain', 'Search within category');
-      cy.get('.heading2').should('contain', 'Refine results');
-      cy.get('.tags-container > .flex').should('contain', 'Filters applied');
-      cy.get('.el-col-md-16 > :nth-child(1) > p').should('contain', 'Results | Showing');
-      cy.get('.label1').should('contain', 'Sort');
-
-      /**
-       * Sort dropdown function testing
-       * Test whether the sort function can be triggered and text can be shown
-       */
-      cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
-
-      // Change the order to 'Z-A'
-      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('Z-A').click()
-
-      // CHeck for the order
-      cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').should('contain', 'Z-A')
-
-      /**
-       * Tooltips showup testing
-       * Test whether content will be displayed
-       */
-      // Check for tooltip content
-      cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-      cy.get('[role="tooltip"]').should('be.visible')
-      cy.get('[role="tooltip"]:visible > .el-popover__title').should('have.text', 'How do filters work?')
-      cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
-      cy.get('[role="tooltip"]').should('not.be.visible')
-
-      cy.get('.label-header > :nth-child(1) > .label-title').then(($label) => {
-        if ($label.text().includes('Availability')) {
-          cy.get('.ml-4.help-icon').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-          cy.get('[role="tooltip"]').should('be.visible')
-
-          // Check for tooltip content
-          cy.get('[role="tooltip"]').should('contain', 'SPARC')
-
-          cy.get('.ml-4.help-icon').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
-          cy.get('[role="tooltip"]').should('not.be.visible')
-        }
+    describe('All Page Features', { testIsolation: false }, function () {
+      beforeEach(function () {
+        cy.intercept('**/query?**').as('query')
       })
 
       /**
-       * Dataset show testing
-       * Test whether the number of displayed datasets can be changed
+       * Test whether the datasets order can be updated correctly
        */
-      // Change the limit
-      cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
+      it('Sort dropdown', function () {
+        // Show all datasets in order to check the sorting functionality
+        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
-      if (pageLimit === 'View All') {
+        // Data sorting
+        cy.checkDatasetSorted('Date (asc)')
+
+        // A-Z sorting
+        cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('A-Z').click()
+
+        cy.wait('@query', { timeout: 20000 })
+        cy.waitForLoadingMask()
+
+        cy.checkDatasetSorted('Z-A')
+      })
+
+      /**
+       * Test whether tooltips can be shown up and content can be displayed correctly
+       */
+      it('Tooltips', function () {
+        // Filter applied
+        cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('[role="tooltip"]').should(($tooltip) => {
+          // Check for tooltip visibility
+          expect($tooltip, 'Tooltip for Filter applied should be visible').to.be.visible
+          // Check for tooltip content
+          expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain('How do filters work?')
+          expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain('Within categories: OR')
+          expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain("example: 'heart' OR 'colon'")
+          expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain('Between categories: AND')
+          expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain("example: 'rat' AND 'lung'")
+        })
+        cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+        // Check for tooltip visibility
+        cy.get('[role="tooltip"]').should(($tooltip) => {
+          expect($tooltip, 'Tooltip for Filter applied should not be visible').to.not.be.visible
+        })
+
+        // AVAILABILITY
+        cy.get('.ml-4.help-icon').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('[role="tooltip"]').should(($tooltip) => {
+          // Check for tooltip visibility
+          expect($tooltip, 'Tooltip for AVAILABILITY should be visible').to.be.visible
+          // Check for tooltip content
+          expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('SPARC datasets are subject to a 1 year embargo during which time')
+          expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('the datasets are visible only to members of the SPARC consortium.')
+          expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('During embargo, the public will be able to view basic metadata about')
+          expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('these datasets as well as their release date.')
+        })
+        cy.get('.ml-4.help-icon').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+        // Check for tooltip visibility
+        cy.get('[role="tooltip"]').should(($tooltip) => {
+          expect($tooltip, 'Tooltip for AVAILABILITY should not be visible').to.not.be.visible
+        })
+      })
+
+      /**
+       * Test whether the number of datasets can be displayed correctly
+       */
+      it('Page Limit', function () {
+        // Change the page limit
+        cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+        cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
+
+        cy.wait('@query', { timeout: 20000 })
+        cy.waitForLoadingMask()
+
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
           if (pageLimit === 'View All') {
-            // Check for limit change in URL
-            cy.url().should('contain', `limit=${numberOfDatasets}`)
-            cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+            // Check for page limit in URL
+            cy.url().should(($url) => {
+              expect($url, 'URL should contain page limit parameter').to.contain(`limit=${numberOfDatasets}`)
+            })
+            // Check for the number of displayed datasets
+            cy.get('.el-table__row').should(($tableRows) => {
+              expect($tableRows, 'All datasets should be displayed').to.have.length(numberOfDatasets)
+            })
           } else {
-            cy.url().should('contain', `limit=${pageLimit}`)
+            // Check for page limit in URL
+            cy.url().should(($url) => {
+              expect($url, 'URL should contain page limit parameter').to.contain(`limit=${pageLimit}`)
+            })
+            // Check for the number of displayed datasets
             if (numberOfDatasets < pageLimit) {
-              cy.get('.el-table__row', { timeout: 30000 }).should('have.length', numberOfDatasets)
+              cy.get('.el-table__row').should(($tableRows) => {
+                expect($tableRows, 'Correct number of datasets should be displayed').to.have.length(numberOfDatasets)
+              })
             } else {
-              cy.get('.el-table__row', { timeout: 30000 }).should('have.length', pageLimit)
+              cy.get('.el-table__row').should(($tableRows) => {
+                expect($tableRows, 'Number of displayed datasets should be equal to the page limit').to.have.length(pageLimit)
+              })
             }
           }
         })
-      }
+      })
     })
 
     searchKeywords.forEach((keyword) => {

@@ -65,6 +65,26 @@ Cypress.Commands.add('visitLoadedPage', (url) => {
 
 })
 
+/**
+ * Databrowser commands
+ */
+Cypress.Commands.add('checkDatasetSorted', (sort) => {
+  cy.get('.el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').as('datasetImgs')
+  cy.get('@datasetImgs').first().invoke('attr', 'alt').then((alt) => {
+    cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
+    cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sort).click()
+
+    if (sort === 'Z-A') {
+      cy.wait('@query', { timeout: 20000 })
+    }
+    cy.waitForLoadingMask()
+
+    cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
+      expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
+    })
+  })
+})
+
 Cypress.Commands.add('findGalleryCard', (text, dir) => {
   let direction = '.btn-next'
   const clickNextPageButton = () => {
