@@ -4,6 +4,8 @@ on:
   schedule:
     - cron: "0 0 * * 1"
 
+  workflow_dispatch:
+
 env:
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
   SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
@@ -50,6 +52,20 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
+  latest-deployment-sha:
+    runs-on: ubuntu-latest
+
+    outputs:
+      latest-sha: ${{ steps.deployment.outputs.deployment_sha }}
+
+    steps:
+      - name: Get Latest Deployment
+        id: deployment
+        uses: KowalskiTom/get-github-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: sparc-app-prod
+
   scheduled-cypress-run-production:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
@@ -64,6 +80,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.latest-deployment-sha.outputs.latest-sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
