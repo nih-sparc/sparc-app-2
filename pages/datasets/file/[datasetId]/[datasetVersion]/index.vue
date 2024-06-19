@@ -79,6 +79,11 @@ export default {
       route.params.datasetVersion
     )
 
+    let packageType =
+      file.packageType == 'Image' ? 'Image' : // Biolucida
+        file.packageType == 'Unsupported' ? 'Unsupported' : // Segmentation
+          'Others' // All other types of files, e.g. plot, video, timeseries, etc.
+
     // We should just be able to do as below and pull the source package id from file, but there are sometimes discrepancies between the pennsieve file sourcePackageId and the biolucida image data sourcePackageId returned from sparc.biolucida.net
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
@@ -86,7 +91,7 @@ export default {
     try {
       const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
       const imagesData = biolucidaSearchResults['dataset_images']
-      if (imagesData != undefined) {
+      if (packageType == 'Image' && imagesData != undefined) {
         await Promise.all(imagesData.map(async image => {
           const imageInfo = await biolucida.getImageInfo(image.image_id)
           if (imageInfo['name'] == file.name)
@@ -102,7 +107,7 @@ export default {
 
     let biolucidaData = {}
     try {
-      if (sourcePackageId != "") {
+      if (packageType == 'Image' && sourcePackageId != "") {
         await $axios.get(`${config.public.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`).then(({ data }) => {
           biolucidaData = data
         })
@@ -117,7 +122,7 @@ export default {
     const expectedScicrunchIdentifier = sourcePackageId != undefined ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
-      if (expectedScicrunchIdentifier != "") {
+      if (packageType == 'Others' && expectedScicrunchIdentifier != "") {
         const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(expectedScicrunchIdentifier)
         const result = pathOr([], ['data', 'result'], scicrunchResponse)
         scicrunchData = result?.length > 0 ? result[0] : []
@@ -133,9 +138,11 @@ export default {
     // })
     // segmentationData = segmentationData?.length > 0 ? matchedSegmentationData[0] : {}*/
     try {
-      await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
-        segmentationData = data
-      })
+      if (packageType == 'Unsupported') {
+        await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
+          segmentationData = data
+        })
+      }
     } catch(e) {
       console.log(`Error retrieving segmentation data (possibly because there is none for this file): ${e}`)
     }
@@ -172,7 +179,6 @@ export default {
         })
     }
 
-    let packageType = "None"
     if (sourcePackageId !== 'details') {
       packageType = file.packageType
     }
