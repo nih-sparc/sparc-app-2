@@ -1,14 +1,15 @@
+import { retryableBefore } from "../support/retryableBefore.js"
+
 describe('Homepage', { testIsolation: false }, function () {
-  before(function () {
-    cy.visit('')
-
-    cy.waitForLoadingMask()
-
+  retryableBefore(function () {
+    cy.visitLoadedPage('')
   })
 
   beforeEach(function () {
     cy.intercept('**/query?**').as('query')
   })
+
+  it(`Portal Target is ${Cypress.config().baseUrl}`, function () { })
 
   it('Navigation Bar', function () {
     // Check for navigation bar
@@ -119,13 +120,10 @@ describe('Homepage', { testIsolation: false }, function () {
 
       cy.get('.el-col-sm-16 > .heading2').should('contain', title)
     })
-    cy.go('back')
-
-    cy.waitForLoadingMask()
-
   })
 
   it('Homepage news', function () {
+    cy.visitLoadedPage('')
     // Check for content title
     cy.get('.featured-datasets > .heading2').should('contain', 'News & Upcoming Events')
 
