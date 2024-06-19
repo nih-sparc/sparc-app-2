@@ -109,7 +109,6 @@ jobs:
           env: sparc-app-prod
 
   quality-control-cypress-run:
-    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
