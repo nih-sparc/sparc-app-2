@@ -51,6 +51,20 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   return true
 })
 
+Cypress.Commands.add('waitForLoadingMask', () => {
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+  cy.wait(5000)
+
+})
+
+Cypress.Commands.add('visitLoadedPage', (url) => {
+  cy.visit(url)
+
+  cy.waitForLoadingMask()
+
+})
+
 Cypress.Commands.add('findGalleryCard', (text, dir) => {
   let direction = '.btn-next'
   const clickNextPageButton = () => {
@@ -102,13 +116,6 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
     })
   }
   clickNeuron()
-})
-
-Cypress.Commands.add('waitForLoadingMask', () => {
-  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-  cy.wait(5000)
-
 })
 
 Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
