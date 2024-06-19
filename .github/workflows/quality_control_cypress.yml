@@ -3,13 +3,6 @@ name: Quality Control Cypress Testing
 on:
   workflow_dispatch:
     inputs:
-      PORTAL_TARGET:
-        type: "choice"
-        description: "Define portal target"
-        required: true
-        options:
-          - "Staging"
-          - "Production"
       PAGE_LIMIT:
         type: "choice"
         description: "Define the number of displayed datasets per page"
@@ -30,7 +23,7 @@ on:
       MULTIPLE_FILTER_FACETS:
         description: "Define multiple facets for filtering"
         required: true
-        default: "Heart, Adult"
+        default: "Pig, Heart"
       DATASET_IDS:
         description: "Define dataset ids"
         required: true
@@ -101,6 +94,20 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
+  latest-deployment-sha:
+    runs-on: ubuntu-latest
+
+    outputs:
+      latest-sha: ${{ steps.deployment.outputs.deployment_sha }}
+
+    steps:
+      - name: Get Latest Deployment
+        id: deployment
+        uses: KowalskiTom/get-github-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: sparc-app-prod
+
   quality-control-cypress-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
@@ -115,26 +122,15 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.latest-deployment-sha.outputs.latest-sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.17.1
 
-      - name: Manual Run Testing against Staging
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Staging' }}
-        env:
-          ROOT_URL: "https://staging.sparc.science"
-        uses: cypress-io/github-action@v6
-        timeout-minutes: 30
-        with:
-          wait-on: ${{ env.ROOT_URL }}
-          record: true
-          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
-
-      - name: Manual Run Testing against Production
-        if: ${{ github.event.inputs.PORTAL_TARGET == 'Production' }}
+      - name: Manual Run QC Testing against Production
         env:
           ROOT_URL: "https://sparc.science"
         uses: cypress-io/github-action@v6
@@ -143,4 +139,4 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
-          tag: QC-${{github.event.inputs.PORTAL_TARGET}}
+          tag: QC
