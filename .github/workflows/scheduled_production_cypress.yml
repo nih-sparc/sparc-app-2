@@ -56,11 +56,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      latest-sha: ${{ steps.latest-deployment-sha.outputs.sha }}
+      latest-sha: ${{ steps.latest-deployment-sha.outputs.deployment-sha }}
 
-    permissions:
-      deployments: read
-      contents: read
     steps:
       - name: Checkout
         id: checkout
@@ -68,17 +65,13 @@ jobs:
 
       - name: Get sha of latest deployment in main branch
         id: latest-deployment-sha
-        uses: vrnithinkumar/latest-deployment-sha@v1.0.0
+        uses: go-fjords/get-active-deployment-action@v0.0.3
         with:
-          repo_owner: nih-sparc
-          repo_name: sparc-app-2
           environment: sparc-app-prod
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Print latest deployment sha
         id: output
-        run: echo "${{ steps.latest-deployment-sha.outputs.sha }}"
+        run: echo "${{ steps.latest-deployment-sha.outputs.deployment-sha }}"
 
   scheduled-cypress-run-production:
     runs-on: ubuntu-latest
