@@ -53,7 +53,6 @@ env:
 
 jobs:
   scheduled-cypress-run-staging:
-    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
 
     steps:
