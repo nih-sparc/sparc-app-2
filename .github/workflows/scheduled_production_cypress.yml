@@ -52,22 +52,38 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  latest-deployment-sha:
+  latest-deployment:
     runs-on: ubuntu-latest
 
     outputs:
-      latest-sha: ${{ steps.deployment.outputs.deployment_sha }}
+      latest-sha: ${{ steps.latest-deployment-sha.outputs.sha }}
 
+    permissions:
+      deployments: read
+      contents: read
     steps:
-      - name: Get Latest Deployment
-        id: deployment
-        uses: KowalskiTom/get-github-deployment@v1
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Get sha of latest deployment in main branch
+        id: latest-deployment-sha
+        uses: vrnithinkumar/latest-deployment-sha@v1.0.0
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          env: sparc-app-prod
+          repo_owner: nih-sparc
+          repo_name: sparc-app-2
+          environment: sparc-app-prod
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print latest deployment sha
+        id: output
+        run: echo "${{ steps.latest-deployment-sha.outputs.sha }}"
 
   scheduled-cypress-run-production:
     runs-on: ubuntu-latest
+
+    needs: latest-deployment
 
     steps:
       - name: Cleanup pre-installed tools
@@ -80,7 +96,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.latest-deployment-sha.outputs.latest-sha }}
+          ref: ${{ needs.latest-deployment.outputs.latest-sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
