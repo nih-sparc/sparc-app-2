@@ -37,6 +37,9 @@ browseCategories.forEach((category) => {
 
     // Make sure the page is loaded
     it('Data Browser Page UI', function () {
+      // Wait in case the page is still loading
+      cy.waitForLoadingMask()
+
       cy.get('.search-tabs__container').should('be.visible')
       cy.get('.search-bar__container').should('be.visible')
       cy.get('[type="flex"] > :nth-child(1) > .el-row > .el-col-md-8').should('be.visible')
@@ -57,6 +60,9 @@ browseCategories.forEach((category) => {
         // Show all datasets in order to check the sorting functionality
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+
+        cy.wait('@query', { timeout: 20000 })
+        cy.waitForLoadingMask()
 
         // Data sorting
         cy.checkDatasetSorted('Date (asc)')
@@ -118,9 +124,10 @@ browseCategories.forEach((category) => {
         // Change the page limit
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
-
-        cy.wait('@query', { timeout: 20000 })
-        cy.waitForLoadingMask()
+        if (pageLimit !== 10 && pageLimit !== 'View All') {
+          cy.wait('@query', { timeout: 20000 })
+          cy.waitForLoadingMask()
+        }
 
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
