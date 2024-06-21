@@ -227,12 +227,13 @@ datasetIds.forEach(datasetId => {
           cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then((value) => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
+          cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+            cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
+              cy.get('.mt-8 > a').click()
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
-            cy.get('.mt-8 > a').click()
-            cy.url({ timeout: 30000 }).should('contain', 'projects')
+              cy.waitForLoadingMask()
 
-            cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+              cy.url().should('contain', 'projects')
               // Check for the title and the institution 
               cy.get('.row > .heading2').should('contain', title.trim());
               cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
