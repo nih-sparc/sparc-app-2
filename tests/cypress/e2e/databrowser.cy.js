@@ -160,55 +160,77 @@ browseCategories.forEach((category) => {
       })
     })
 
-    searchKeywords.forEach((keyword) => {
+    describe('Keyword Search', { testIsolation: false }, function () {
+      beforeEach(function () {
+        cy.intercept('**/query?**').as('query')
+      })
 
-      it(`Keyword Search - ${keyword}`, function () {
-        cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
+      searchKeywords.forEach((keyword) => {
+        it(`${keyword}`, function () {
+          cy.url().then((url) => {
+            if (!url.includes(`data?type=${category}`)) {
+              cy.go('back')
+              cy.waitForLoadingMask()
+            }
+          })
 
-        // Type keyword
-        cy.get('.el-input__inner').clear()
-        cy.get('.el-input__inner').type(keyword)
+          // Searching keyword
+          cy.get('.el-input__inner').clear()
+          cy.get('.el-input__inner').type(keyword)
+          // Check for clear search icon after typing
+          cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').should(($icon) => {
+            expect($icon, 'Clear search icon should be visible').to.be.visible
+          })
+          cy.get('.search-text').click()
 
-        // Check for clear search icon
-        cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').should('be.visible')
+          cy.wait(5000)
+          cy.wait('@query', { timeout: 20000 }).then((intercept) => {
+            if (intercept.response.body.hits.length === 0) {
+              // Empty text should show up if no result
+              cy.get('.el-table__empty-text').should(($text) => {
+                expect($text, 'Empty message should be displayed').to.contain('No Results')
+              })
+            } else {
+              // Show all datasets in order to check the sorting functionality
+              cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+              cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
-        // Click search button
-        cy.get('.search-text').click()
+              cy.wait('@query', { timeout: 20000 })
+              cy.waitForLoadingMask()
 
-        cy.waitForLoadingMask()
+              // Check for keyword in table
+              cy.get('.table-wrap').then(($table) => {
+                const keywordExistInTable = $table.text().toLowerCase().includes(keyword.toLowerCase())
+                if (keywordExistInTable) {
+                  cy.get('b').contains(new RegExp(keyword, 'i')).should(($keyword) => {
+                    expect($keyword, 'Highlighted keyword should exist in table').to.exist
+                  })
+                  // Check for keyword in URL
+                  cy.url().should(($url) => {
+                    expect($url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
+                  })
+                } else {
+                  cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > a').click()
 
-        // Check for keyword in URL
-        cy.url().should('contain', keyword)
+                  cy.wait('@query', { timeout: 20000 })
+                  cy.waitForLoadingMask()
 
-        cy.wait('@query', { timeout: 20000 })
-        cy.waitForLoadingMask()
-
-        // Check for result
-        cy.get(':nth-child(1) > p').then(($result) => {
-          if ($result.text().includes(' 0 Results | Showing')) {
-            // Empty text should exist if no result
-            cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
-          } else {
-            cy.get('.table-wrap').then(($content) => {
-              const keywordExist = $content.text().toLowerCase().includes(keyword.toLowerCase())
-              if (keywordExist) {
-                // Check for keyword
-                cy.wrap($content).contains(new RegExp(keyword, 'i')).should('exist')
-
-                // Check for highlighted keyword
-                cy.get('b').contains(new RegExp(keyword, 'i')).should('exist')
-              } else {
-                // *** Ignore when keyword cannot be found or
-                // *** Find some other solutions in the future
-              }
-            })
-          }
+                  cy.get('.details-container').then(($detail) => {
+                    const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
+                    if (keywordExistInDetail) {
+                      cy.contains(new RegExp(keyword, 'i')).should(($keyword) => {
+                        expect($keyword, 'Keyword should exist in detail page').to.exist
+                      })
+                    } else {
+                      throw new Error('Keyword not found in displayed datasets')
+                    }
+                  })
+                  cy.go('back')
+                }
+              })
+            }
+          })
         })
-        // Clear search input
-        cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
-
-        // *** There are situations that dataset cards do not show the (highlighted) keywords
-        // *** Just in case this happens for all the displayed dataset cards, extra tests may need to be added
       })
     })
 
