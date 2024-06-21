@@ -65,6 +65,15 @@ Cypress.Commands.add('visitLoadedPage', (url) => {
 
 })
 
+Cypress.Commands.add('forceGoBack', (link) => {
+  cy.url().then((url) => {
+    if (!url.includes(link)) {
+      cy.go('back')
+      cy.waitForLoadingMask()
+    }
+  })
+})
+
 /**
  * Databrowser commands
  */
@@ -82,6 +91,59 @@ Cypress.Commands.add('checkDatasetSorted', (sort) => {
     cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
       expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
     })
+  })
+})
+
+Cypress.Commands.add('checkFacetCheckbox', (factArray, action, checkbox) => {
+  factArray.forEach((facet) => {
+    // Check the matched facet checkbox
+    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+        const isChecked = $checkbox.hasClass('is-checked')
+        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
+        if (action === 'check' && !isChecked) {
+          cy.wrap($label).click()
+        } else if (action === 'uncheck' && (isChecked || isIndeterminate)) {
+          cy.wrap($label).click() // If isIndeterminate after this click checkbox will turn to isChecked
+          if (isIndeterminate) {
+            cy.wrap($label).click() // One more click to uncheck
+          }
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('closeFacetTag', (factArray, checkbox) => {
+  factArray.forEach((facet) => {
+    // Check the matched facet checkbox
+    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+        const isChecked = $checkbox.hasClass('is-checked')
+        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
+        // Close all facet tags in filters applied box
+        if (isChecked) {
+          cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
+        }
+        if (isIndeterminate) {
+          cy.get('.el-card__body > .capitalize > .el-tag__close').each(($close) => {
+            cy.wrap($close).click()
+          })
+        }
+      })
+    })
+  })
+})
+
+Cypress.Commands.add('checkInitialisedFilter', () => {
+  cy.get('.el-card__body > .capitalize').should(($card) => {
+    expect($card, 'Facet should not be applied').to.not.exist
+  })
+  cy.get('.no-facets').should(($facetbox) => {
+    expect($facetbox, 'No facets should be applied').to.contain('No filters applied')
+  })
+  cy.url().should((url) => {
+    expect(url, 'URL should not contain selected facet IDs').to.not.contain(`selectedFacetIds`)
   })
 })
 
@@ -136,30 +198,4 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
     })
   }
   clickNeuron()
-})
-
-Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
-  factArray.forEach((facet) => {
-    // Check the matched facet checkbox
-    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
-      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
-        const isChecked = $checkbox.hasClass('is-checked')
-        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
-        if (action === 'check' && !isChecked) {
-          cy.wrap($label).click()
-        } else if (action === 'uncheck' && (isChecked || isIndeterminate)) {
-          cy.wrap($label).click() // If isIndeterminate after this click checkbox will turn to isChecked
-          if (isIndeterminate) {
-            cy.wrap($label).click() // One more click to uncheck
-          }
-        }
-      })
-    })
-  })
-})
-
-Cypress.Commands.add('checkFilterCleared', () => {
-  cy.get('.el-card__body > .capitalize').should('not.exist')
-  cy.get('.no-facets').should('contain', 'No filters applied')
-  cy.url().should('not.contain', 'selectedFacetIds')
 })
