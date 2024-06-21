@@ -52,21 +52,30 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.1.1.tgz#ba71363f35a8e566dbfeefd67b174130fdba2e57"
-  integrity sha512-EDAZ2Q19WVgNapOZ5DYuZn4jcJPjinWa1I6FhWo0VWUDXS6coI4Um4f4GhDwm5xYqP43l2fWXiNSDmYyCgVpBA==
+"@abi-software/flatmap-viewer@^2.9.4":
+  version "2.9.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.9.4.tgz#55d2b4838692d62c2124c9ed755a758608e398fc"
+  integrity sha512-jg3aOtARBPG7U2h+0qdakjCGCWgYjFyqS2E1eqg1Pgqfk/yDUp4q73IqtNB6j1tC6qreCZw3r3/2YAbpUcgQwA==
   dependencies:
-    "@abi-software/flatmap-viewer" "2.8.9"
-    "@abi-software/sparc-annotation" "0.3.1"
-    "@abi-software/svg-sprite" "1.0.0"
-    "@element-plus/icons-vue" "^2.3.1"
-    css-element-queries "^1.2.2"
-    element-plus "2.5.5"
-    mitt "^3.0.1"
-    pinia "^2.1.7"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.15"
+    "@deck.gl/core" "^8.9.35"
+    "@deck.gl/layers" "^8.9.35"
+    "@deck.gl/mapbox" "^8.9.35"
+    "@mapbox/mapbox-gl-draw" "^1.4.3"
+    "@turf/area" "^6.5.0"
+    "@turf/bbox" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
+    "@turf/projection" "^6.5.0"
+    bezier-js "^6.1.0"
+    colord "^2.9.3"
+    core-js "^3.37.0"
+    graphology "^0.25.4"
+    graphology-operators "^1.6.0"
+    graphology-shortest-path "^2.1.0"
+    html-es6cape "^2.0.2"
+    maplibre-gl ">=4.3.0"
+    mathjax-full "^3.2.2"
+    minisearch "^2.2.1"
+    polylabel "^1.1.0"
 
 "@abi-software/flatmapvuer@^0.6.1-vue3.8":
   version "0.6.1-vue3.10"
@@ -100,6 +109,22 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
+"@abi-software/flatmapvuer@^1.1.2-alpha-6":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.1.3.tgz#1a27132c8ebd343e57f1e8d8407721fb41b4f4f7"
+  integrity sha512-U6xlhUzr+ARg6YhKd7j9xXmlst1x4UwxtUkBTxK/8KotJTrOfbkW/+9hrfvsIVqWDB8DTpA7LpurynVmA/7A3w==
+  dependencies:
+    "@abi-software/flatmap-viewer" "^2.9.4"
+    "@abi-software/sparc-annotation" "0.3.1"
+    "@abi-software/svg-sprite" "1.0.0"
+    "@element-plus/icons-vue" "^2.3.1"
+    css-element-queries "^1.2.2"
+    element-plus "2.5.5"
+    mitt "^3.0.1"
+    pinia "^2.1.7"
+    unplugin-vue-components "^0.26.0"
+    vue "^3.4.15"
+
 "@abi-software/gallery@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-1.1.0.tgz#9cff52335c8fad488efe4b8daa30193f4f9a928b"
@@ -110,10 +135,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.3.13"
 
-"@abi-software/map-side-bar@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.2.0.tgz#588ebb3f30251e94624bfc264c4a83f31ce34ebc"
-  integrity sha512-PtMmmixNpRME8uYswJ9XsLkSEMgmx+66G/aQps/5se/M4cj0Rqg5CZ6ZVbi83vxzAJGte+87NQbBgMMtZ2uJpQ==
+"@abi-software/map-side-bar@^2.2.1-alpha-3":
+  version "2.2.1-alpha-3"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.2.1-alpha-3.tgz#719a9364dc2f8e3d08e34c1ed4c64bc17d666be0"
+  integrity sha512-UZHW7davYE60cGGe2ima7YQXUZx996zw0mBLSBjvHIEZv2ShRUcSDQwD4jJfbv+v6QmZkQKJL0ZoUJgOEDRUVg==
   dependencies:
     "@abi-software/gallery" "^1.1.0"
     "@abi-software/svg-sprite" "^1.0.0"
@@ -126,15 +151,15 @@
     vue "^3.3.13"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.1.1.tgz#7512875bf27717f9da2368e1f74d2952a65a8edb"
-  integrity sha512-ZUyrjW9feZwAvoz+31QHAWp5emz+YX90A2xmr/O5rbno2Iitfz00Wqj2PZQBnq98bUZGuncLJPzFQU/vudPocA==
+"@abi-software/mapintegratedvuer@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.2.0.tgz#6f24d08dcf3593b6952a4518f206679ca8e88e27"
+  integrity sha512-5cjz1wpYfN2Zzav1zvDVT+0LK3+10nMUafjXCHrWzoblqSS2Wx/pog0wmEYXz5DK9rZtr/c7ruAQeBEWB9cXrA==
   dependencies:
-    "@abi-software/flatmapvuer" "1.1.1"
-    "@abi-software/map-side-bar" "^2.2.0"
+    "@abi-software/flatmapvuer" "^1.1.2-alpha-6"
+    "@abi-software/map-side-bar" "^2.2.1-alpha-3"
     "@abi-software/plotvuer" "1.0.0"
-    "@abi-software/scaffoldvuer" "^1.1.0"
+    "@abi-software/scaffoldvuer" "^1.2.0-beta.0"
     "@abi-software/simulationvuer" "1.0.0"
     "@abi-software/svg-sprite" "1.0.0"
     "@element-plus/icons-vue" "^2.3.1"
@@ -171,10 +196,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.1.0.tgz#688479903513d188e756a9068e5c43b0e13878ee"
-  integrity sha512-VWVOriMv9OgStly+rLIVv0gA8EaGhX52DbkLxAjbM7ZjCKkEREVDRXkEWhRR+RQfcxm2Nc+HM10S+fi+AHoBOQ==
+"@abi-software/scaffoldvuer@^1.2.0-beta.0":
+  version "1.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.2.0-beta.0.tgz#5e22f9dc24bdd9ce16586c25ab34a80749faca17"
+  integrity sha512-jA7+Eu6Sbxme2jk8j4EolYQ+z1miWgi3UfFYTrn0Y3mpGqtQBB770Ypl2x1DuXqzFbVodStiPIL8ZXe13N+hLw==
   dependencies:
     "@abi-software/flatmapvuer" "^1.1.0"
     "@abi-software/sparc-annotation" "^0.3.1"
@@ -190,7 +215,7 @@
     vue "^3.4.15"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.6.0"
+    zincjs "^1.7.0"
 
 "@abi-software/simulationvuer@1.0.0":
   version "1.0.0"
@@ -4530,6 +4555,20 @@
     sort-object "^3.0.3"
     tinyqueue "^2.0.3"
 
+"@maplibre/maplibre-gl-style-spec@^20.3.0":
+  version "20.3.0"
+  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-style-spec/-/maplibre-gl-style-spec-20.3.0.tgz#7ab199c26a737dbc63e99e43e91eb05c51d83a1b"
+  integrity sha512-eSiQ3E5LUSxAOY9ABXGyfNhout2iEa6mUxKeaQ9nJ8NL1NuaQYU7zKqzx/LEYcXe1neT4uYAgM1wYZj3fTSXtA==
+  dependencies:
+    "@mapbox/jsonlint-lines-primitives" "~2.0.2"
+    "@mapbox/unitbezier" "^0.0.1"
+    json-stringify-pretty-compact "^4.0.0"
+    minimist "^1.2.8"
+    quickselect "^2.0.0"
+    rw "^1.3.3"
+    sort-object "^3.0.3"
+    tinyqueue "^2.0.3"
+
 "@math.gl/core@3.6.3", "@math.gl/core@^3.5.0", "@math.gl/core@^3.6.2":
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/@math.gl/core/-/core-3.6.3.tgz#a6bf796ed421093099749d609de8d99a3ac20a53"
@@ -6829,6 +6868,11 @@
   dependencies:
     "@types/emscripten" "^1.39.6"
     tslib "^1.13.0"
+
+"@yomguithereal/helpers@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@yomguithereal/helpers/-/helpers-1.1.1.tgz#185dfb0f88ca2beec53d0adf6eed15c33b1c549d"
+  integrity sha512-UYvAq/XCA7xoh1juWDYsq3W0WywOB+pz8cgVnE1b45ZfdMhBvHDrgmSFG3jXeZSr2tMTYLGHFHON+ekG05Jebg==
 
 "@zadigetvoltaire/nuxt-gtm@^0.0.13":
   version "0.0.13"
@@ -11983,6 +12027,44 @@ graphemer@^1.4.0:
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
 
+graphology-indices@^0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/graphology-indices/-/graphology-indices-0.17.0.tgz#b93ad32162ff8b09814547aedb101248f0fcbd2e"
+  integrity sha512-A7RXuKQvdqSWOpn7ZVQo4S33O0vCfPBnUSf7FwE0zNCasqwZVUaCXePuWo5HBpWw68KJcwObZDHpFk6HKH6MYQ==
+  dependencies:
+    graphology-utils "^2.4.2"
+    mnemonist "^0.39.0"
+
+graphology-operators@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/graphology-operators/-/graphology-operators-1.6.0.tgz#daad1600219ad47a3005504f252f80d9b402ad09"
+  integrity sha512-yfnVNsFd6plBw7r6Td4luGlNoQn9MKI56EZ/NcFcRmvu/D1R8eWHjpipNUdBjl5MVV8iSW8e/XuY8YsjRDnLoA==
+  dependencies:
+    graphology-utils "^2.0.0"
+
+graphology-shortest-path@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/graphology-shortest-path/-/graphology-shortest-path-2.1.0.tgz#b5c5a568e7c86b24cbfd2042f9d84f2a54e0b331"
+  integrity sha512-KbT9CTkP/u72vGEJzyRr24xFC7usI9Es3LMmCPHGwQ1KTsoZjxwA9lMKxfU0syvT/w+7fZUdB/Hu2wWYcJBm6Q==
+  dependencies:
+    "@yomguithereal/helpers" "^1.1.1"
+    graphology-indices "^0.17.0"
+    graphology-utils "^2.4.3"
+    mnemonist "^0.39.0"
+
+graphology-utils@^2.0.0, graphology-utils@^2.4.2, graphology-utils@^2.4.3:
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/graphology-utils/-/graphology-utils-2.5.2.tgz#4d30d6e567d27c01f105e1494af816742e8d2440"
+  integrity sha512-ckHg8MXrXJkOARk56ZaSCM1g1Wihe2d6iTmz1enGOz4W/l831MBCKSayeFQfowgF8wd+PQ4rlch/56Vs/VZLDQ==
+
+graphology@^0.25.4:
+  version "0.25.4"
+  resolved "https://registry.yarnpkg.com/graphology/-/graphology-0.25.4.tgz#e528a64555ac1f392a9d965321ada5b2b843efe1"
+  integrity sha512-33g0Ol9nkWdD6ulw687viS8YJQBxqG5LWII6FI6nul0pq6iM2t5EKquOTFDbyTblRB3O9I+7KX4xI8u5ffekAQ==
+  dependencies:
+    events "^3.3.0"
+    obliterator "^2.0.2"
+
 graphql@15.8.0:
   version "15.8.0"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.8.0.tgz#33410e96b012fa3bdb1091cc99a94769db212b38"
@@ -14081,6 +14163,39 @@ maplibre-gl@>=4.1.0:
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.3"
 
+maplibre-gl@>=4.3.0:
+  version "4.4.1"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-4.4.1.tgz#823c55817cbdf6f85d0078c489b86f0dcbe310ba"
+  integrity sha512-tD+wn8qWSLCGhABKBrbewmgFfyopZDz+fkYXeOM8vdBhnf126DvMPyaYGGoKvoF4QuswCsgikETd2c39wK+OQw==
+  dependencies:
+    "@mapbox/geojson-rewind" "^0.5.2"
+    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/tiny-sdf" "^2.0.6"
+    "@mapbox/unitbezier" "^0.0.1"
+    "@mapbox/vector-tile" "^1.3.1"
+    "@mapbox/whoots-js" "^3.1.0"
+    "@maplibre/maplibre-gl-style-spec" "^20.3.0"
+    "@types/geojson" "^7946.0.14"
+    "@types/geojson-vt" "3.2.5"
+    "@types/junit-report-builder" "^3.0.2"
+    "@types/mapbox__point-geometry" "^0.1.4"
+    "@types/mapbox__vector-tile" "^1.3.4"
+    "@types/pbf" "^3.0.5"
+    "@types/supercluster" "^7.1.3"
+    earcut "^2.2.4"
+    geojson-vt "^3.2.1"
+    gl-matrix "^3.4.3"
+    global-prefix "^3.0.0"
+    kdbush "^4.0.2"
+    murmurhash-js "^1.0.0"
+    pbf "^3.2.1"
+    potpack "^2.0.0"
+    quickselect "^2.0.0"
+    supercluster "^8.0.1"
+    tinyqueue "^2.0.3"
+    vt-pbf "^3.1.3"
+
 marked@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
@@ -14468,6 +14583,13 @@ mlly@1.4.0, mlly@^1.2.0, mlly@^1.3.0, mlly@^1.4.2, mlly@^1.5.0, mlly@^1.6.0, mll
     pathe "^1.1.1"
     pkg-types "^1.0.3"
     ufo "^1.1.2"
+
+mnemonist@^0.39.0:
+  version "0.39.8"
+  resolved "https://registry.yarnpkg.com/mnemonist/-/mnemonist-0.39.8.tgz#9078cd8386081afd986cca34b52b5d84ea7a4d38"
+  integrity sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==
+  dependencies:
+    obliterator "^2.0.1"
 
 mouse-change@^1.4.0:
   version "1.4.0"
@@ -15202,6 +15324,11 @@ object.values@^1.1.6, object.values@^1.1.7:
     call-bind "^1.0.2"
     define-properties "^1.2.0"
     es-abstract "^1.22.1"
+
+obliterator@^2.0.1, obliterator@^2.0.2:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/obliterator/-/obliterator-2.0.4.tgz#fa650e019b2d075d745e44f1effeb13a2adbe816"
+  integrity sha512-lgHwxlxV1qIg1Eap7LgIeoBWIMFibOjbrYPIPJZcI1mmGAI2m3lNYpK12Y+GBdPQ0U1hRwSord7GIaawz962qQ==
 
 ofetch@^1.3.3:
   version "1.3.3"
@@ -20079,10 +20206,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.6.0.tgz#0a001e47b64df7dc0c880bebbe5c6f8a3aab41bf"
-  integrity sha512-DivECiavVIAGe2DETbyD7+3urvhDDN0Lc06G942rJZtU+KO2mY/st5ygXrRf/9CD2YebZLwBmOlsC1ijd2FewA==
+zincjs@^1.7.0:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.8.1.tgz#51459cf93977e10b070122496815f2e1963bdca7"
+  integrity sha512-FJd5h6M7K4swuQWY1ZLK9yUOiCsLnZ300WLZxW3MxxXba3tZWuYJ94vFKOe+cZ9Hlylb0Y8T8wn3KF3V6CWwYg==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
