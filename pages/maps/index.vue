@@ -12,7 +12,8 @@ export default {
     } else {
       newPath = route.href.replace('/maps', '/apps/maps')
     }
-    await navigateTo(newPath, { redirectCode: 301 })
+    const router = useRouter()
+    await router.replace({ path: newPath })
   }
 }
 </script>
