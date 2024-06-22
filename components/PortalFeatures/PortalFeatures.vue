@@ -1,5 +1,5 @@
 <template>
-  <div class="section-container container py-32">
+  <div class="section-container container pt-32 pb-56">
     <div class="heading2 mb-32">{{ title }}</div>
     <div v-if="maxSet" class="max-set-row" :style="`grid-template-columns: repeat(${maxPerRow}, 1fr)`">
       <div 

@@ -29,9 +29,11 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Featured data', function () {
     // Check for content title
-    cy.get('.featured-data > h2').should('have.text', 'Find Data by Category')
+    cy.get('.featured-data > .categories-container > h2').should('have.text', 'Find by')
 
-    cy.get('.data-wrap > a:visible').as('category')
+    cy.wait(5000)
+
+    cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').as('category')
 
     cy.get('@category').each(($cat) => {
       cy.wrap($cat).should('have.attr', 'href').and('contain', 'selectedFacetIds')
@@ -47,20 +49,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.waitForLoadingMask()
 
     // Check for the number of categories
-    cy.get('@category').should('have.length', 6)
-
-    // Show more categories
-    cy.get('.featured-data > .el-button').should('have.text', 'View More')
-    cy.get('.featured-data > .el-button > span').click()
-
-    // Check for the number of categories after showing more
-    cy.get('@category').should('have.length.above', 6)
-
-    // Show less categories
-    cy.get('.featured-data > .el-button > span').should('have.text', 'View Less')
-    cy.get('.featured-data > .el-button > span').click()
-
-    // Check for the number of categories after showing less
     cy.get('@category').should('have.length', 6)
   })
 
@@ -92,7 +80,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Projects and datasets', function () {
     // Check for content title
-    cy.get(':nth-child(6) > .section-container > .heading2').should('contain', 'Resources & Datasets')
+    cy.get('.section-container.py-32 > .heading2').should('contain', 'Resources & Datasets')
 
     // Check for card description
     cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'you might be interested in:')
@@ -120,6 +108,9 @@ describe('Homepage', { testIsolation: false }, function () {
 
       cy.get('.el-col-sm-16 > .heading2').should('contain', title)
     })
+    cy.go('back')
+
+    cy.waitForLoadingMask()
   })
 
   it('Homepage news', function () {

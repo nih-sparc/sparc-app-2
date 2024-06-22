@@ -146,13 +146,9 @@ describe('User stories', function () {
     categories.forEach((category) => {
 
       it(`Filter datasets by ${category}`, function () {
-        // Expand all cateories
-        cy.get('.featured-data > .el-button > span').click();
-        cy.get('.data-wrap').should('be.visible');
-
         // Check for category exist
         const regex = new RegExp(category, 'i')
-        cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
+        cy.get('.data-wrap > .data-item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });
