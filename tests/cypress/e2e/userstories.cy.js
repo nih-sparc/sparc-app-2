@@ -7,10 +7,7 @@ const categories = ['stomach', 'lung']
 describe('User stories', function () {
   describe('Should find segmentation in the gallery', { testIsolation: false }, function () {
     beforeEach('Loading Datasets', function () {
-      cy.intercept('**/query?**').as('query');
-      cy.visit('');
-
-      cy.wait('@query', { timeout: 20000 });
+      cy.visitLoadedPage('');
 
       // Navigate to 'Data&Models' page
       cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').click();
@@ -49,10 +46,7 @@ describe('User stories', function () {
 
   describe('Should open scaffold through the gallery', { testIsolation: false }, function () {
     beforeEach('Loading Anatomical Models', function () {
-      cy.intercept('**/query?**').as('query');
-      cy.visit('');
-
-      cy.wait('@query', { timeout: 20000 });
+      cy.visitLoadedPage('');
 
       // Navigate to 'Data&Models' page
       cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').click();
@@ -103,7 +97,6 @@ describe('User stories', function () {
             cy.visit(`/maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${version}`);
 
             cy.wait('@query', { timeout: 20000 });
-            cy.waitForLoadingMask()
 
             // Search dataset id
             cy.get('.search-input > .el-input__wrapper > .el-input__inner').clear();
@@ -137,7 +130,7 @@ describe('User stories', function () {
 
             // cy.get('@datasetCards').contains(/View Dataset/i).click();
             // Alternative solution
-            cy.visit(`/datasets/${datasetId}?type=dataset`);
+            cy.visitLoadedPage(`/datasets/${datasetId}?type=dataset`);
           })
         })
       })
@@ -147,24 +140,15 @@ describe('User stories', function () {
   describe('Should find data by category', { testIsolation: false }, function () {
     beforeEach('Visit homepage', function () {
       cy.intercept('**/query?**').as('query');
-      cy.visit('');
-
-      // Wait for 'href' ready for click
-      cy.wait(5000)
-      cy.waitForLoadingMask()
-
+      cy.visitLoadedPage('');
     })
 
     categories.forEach((category) => {
 
       it(`Filter datasets by ${category}`, function () {
-        // Expand all cateories
-        cy.get('.featured-data > .el-button > span').click();
-        cy.get('.data-wrap').should('be.visible');
-
         // Check for category exist
         const regex = new RegExp(category, 'i')
-        cy.get('.data-wrap > .featured-data__item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
+        cy.get('.data-wrap > .data-item > .mb-0.mt-8').contains(regex).should('exist').as('facetsCategory');
         cy.get('@facetsCategory').click();
 
         cy.wait('@query', { timeout: 20000 });

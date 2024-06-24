@@ -11,6 +11,7 @@ export default (fields = {}) => {
     featuredData: fields.featuredData || [],
     newsAndEvents: fields.newsAndEvents || [],
     portalFeatures: fields.portalFeatures || [],
+    exploreData: fields.exploreData || [],
     featuredProject: fields.featuredProject || {},
     datasetSectionTitle: fields.datasetSectionTitle || 'Here is a dataset you might be interested in: ',
     title: fields.title || ''
