@@ -272,7 +272,7 @@ export default {
         // Added route name check bc clicking on Data & Models header link was causing this to still fire after navigating to the data page
         if (!this.$route.query.consortiaType && this.$route.name == 'about-projects') {
           this.$router.push({
-            query: {consortiaType: this.consortiaType['id'] }
+            query: {consortiaType: this.consortiaType.id }
           })
         } else {
           this.searchData = {
@@ -291,20 +291,17 @@ export default {
       handler: function () {
         this.searchQuery = this.$route.query.search
         this.fetchResults()
-      },
-      immediate: true
+      }
     },
     '$route.query.projectsSort': {
       handler: function (option) {
         this.fetchResults()
-      },
-      immediate: true
+      }
     },
     '$route.query.selectedProjectsAnatomicalFocusIds': {
       handler: function (option) {
         this.fetchResults()
-      },
-      immediate: true
+      }
     },
   },
 
@@ -321,7 +318,6 @@ export default {
         limit: Number(this.$route.query.limit || this.searchData.limit),
         search: this.$route.query.search || ''
       }
-
       this.searchData = { ...this.searchData, ...queryParams }
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
