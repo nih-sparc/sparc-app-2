@@ -4,36 +4,36 @@ import { resolve } from 'pathe'
 export default defineNuxtConfig({
   app: {
     head: {
-      title: 'SPARC Portal',
+      title: 'Epilepsy.Science - Advancing Epilepsy Research Worldwide',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           hid: 'description',
           name: 'description',
-          content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.',
+          content: 'Progressing Epilepsy research around the globe',
         },
         {
           hid: 'keywords',
           name: 'keywords',
-          content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
+          content: 'Epilepsy, University of Pennsylvania, Harvard University, University of Pennsylvania Hospital, Massachusetts General Hospital'
         },
         // default social cards information for site sharing url's
-        { hid: 'og:type', property: 'og:type', content: 'website' },
-        { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
-        { hid: 'og:description', property: 'og:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' },
-        { hid: 'og:image', property: 'og:image',
-          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
-        },
-        { hid: 'og:image:secure_url', property: 'og:image:secure_url',
-          content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
-        },
-        { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
-        { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:site', content: '@sparc_science' },
-        { name: 'twitter:title', content: 'SPARC Portal' },
-        { name: 'twitter:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
-        { name: 'twitter:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' }
+      { hid: 'og:type', property: 'og:type', content: 'website' },
+      { hid: 'og:title', property: 'og:title', content: 'Epilepsy.Science' },
+      { hid: 'og:description', property: 'og:description', content: 'Advancing Epilepsy Research through Open Science' },
+      { hid: 'og:image', property: 'og:image',
+        content: 'http://images.ctfassets.net/erzgaqq17mnz/46BUPtc8c1AJXcI8kpHrN4/8b2a49b4f55525c675330c6f4c9a55a9/epilepsy.science.png'
+      },
+      { hid: 'og:image:secure_url', property: 'og:image:secure_url',
+        content: 'http://images.ctfassets.net/erzgaqq17mnz/46BUPtc8c1AJXcI8kpHrN4/8b2a49b4f55525c675330c6f4c9a55a9/epilepsy.science.png'
+      },
+      { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'epilepsy.science' },
+      { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:site', content: '@epilepsy_science' },
+      { name: 'twitter:title', content: 'Epilepsy.Science' },
+      { name: 'twitter:image', content: 'http://images.ctfassets.net/erzgaqq17mnz/46BUPtc8c1AJXcI8kpHrN4/8b2a49b4f55525c675330c6f4c9a55a9/epilepsy.science.png' },
+      { name: 'twitter:description', content: 'Advancing Epilepsy Research through Open Science' }
       ],
       link: [
         {

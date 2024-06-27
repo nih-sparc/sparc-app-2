@@ -1,6 +1,9 @@
 {
-  "name": "nuxt-app",
-  "private": false,
+  "name": "epilepsy-science-app-2",
+  "version": "2.0.0",
+  "description": "Epilepsy.Science",
+  "author": "Epilepsy.Science Development Team",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
