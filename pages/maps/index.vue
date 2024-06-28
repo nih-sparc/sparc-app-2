@@ -2,7 +2,7 @@
 import { pathOr, isEmpty } from 'ramda'
 import { infoMessage } from '@/utils/notification-messages'
 export default {
-  async setup() {
+  setup() {
     const route = useRoute()
     const emptyParam = pathOr('', ['query'], route)
     let newPath = ''
@@ -13,7 +13,7 @@ export default {
       newPath = route.href.replace('/maps', '/apps/maps')
     }
     const router = useRouter()
-    await router.replace({ path: newPath })
+    router.replace({ path: newPath })
   }
 }
 </script>
