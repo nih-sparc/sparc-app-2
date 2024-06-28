@@ -170,7 +170,8 @@ export default {
       if (focusQuery) {
         newPath += `&selectedProjectsAnatomicalFocusIds=${focusQuery}`
       }
-      return navigateTo(newPath)
+      const router = useRouter()
+      await router.replace({ path: newPath })
     }
     const { $algoliaClient } = useNuxtApp()
     const algoliaSortOptions = [
