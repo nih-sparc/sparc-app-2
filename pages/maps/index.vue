@@ -4,16 +4,16 @@ import { infoMessage } from '@/utils/notification-messages'
 export default {
   setup() {
     const route = useRoute()
-    const emptyParam = pathOr('', ['query'], route)
+    const query = pathOr('', ['query'], route)
     let newPath = ''
-    if (isEmpty(emptyParam)) {
+    if (isEmpty(query)) {
       newPath = route.href.replace('/maps', '/apps')
       infoMessage('All available map viewers have now been integrated with SPARC Apps and can be found below!')
     } else {
-      newPath = route.href.replace('/maps', '/apps/maps')
+      newPath = route.href.replace('/maps', `/apps/maps?${query}`)
     }
     const router = useRouter()
-    router.replace({ path: newPath })
+    router.replace({ path: newPath, query: query })
   }
 }
 </script>
