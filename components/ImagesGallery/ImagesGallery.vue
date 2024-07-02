@@ -438,9 +438,6 @@ export default {
             ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
               const id = segmentation.identifier
               let file_path = segmentation.dataset.path
-              // patch for discrepancy between file paths containing spaces and/or commas and the s3 path. s3 paths appear to use underscores instead
-              file_path = file_path.replaceAll(' ', '_')
-              file_path = file_path.replaceAll(',', '_')
               const link = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
 
               this.getSegmentationThumbnail(items, {
