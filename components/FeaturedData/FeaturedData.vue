@@ -99,6 +99,9 @@ export default {
           (contentfulFields.containsSearch && contentfulFields.containsSearch.some(keyword => normStr(organ.label).includes(normStr(keyword))))
       )
       organFacets.forEach(organFacet => {
+        if (organFacet == undefined || organFacet.children == undefined) {
+          return
+        }
         if (organFacet.children.length == 0) {
           return
         }

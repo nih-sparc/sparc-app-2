@@ -114,6 +114,27 @@
             </div>
             <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
           </div>
+
+          <div class="section heading2 p-16 mt-16">
+            <div class="datasets-container-title">
+              <span class="heading2 mb-16">In Progress Datasets ({{ inProgressDatasets.length }})</span>
+              <span>
+                <client-only>
+                  <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                    <template v-slot:reference>
+                      <svgo-icon-help class="icon-help" />
+                    </template>
+                    <div>
+                      In Progress Datasets relates to all Datasets, Computational and Anatomical models that you have created on Pennsieve and are not yet published. If there are datasets that you feel should be
+                      linked to you please contact curation@sparc.science
+                    </div>
+                  </el-popover>
+                </client-only>
+              </span>
+            </div>
+            <gallery v-loading="inProgressDatasetsLoading" galleryItemType="inProgressDatasets" :items="inProgressDatasets" />
+          </div>
+
           <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
@@ -246,6 +267,8 @@ export default {
       datasetSubmissions: [],
       showDatasetSubmissionModal: false,
       datasetsLoading: true,
+      inProgressDatasets: [],
+      inProgressDatasetsLoading: true,
       submissionsLoading: true,
       questions: [],
       defaultForm: {},
@@ -305,10 +328,11 @@ export default {
     orcid: {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
+          await this.fetchOrganizations()
           this.fetchPublishedDatasets(newValue)
+          this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
-          this.fetchOrganizations()
         }
       },
       immediate: true
@@ -343,6 +367,31 @@ export default {
         }).finally(() => {
           this.datasetsLoading = false
         })
+    },
+    async fetchInProgressDatasets() {
+      let orgIntIds = []
+      this.organizations.forEach(org => {
+        orgIntIds.push(org.intId)
+      })
+
+      for (let id of orgIntIds) {
+        try {
+          await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${id}&api_key=${this.userToken}`)
+
+          let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/paginated?onlyMyDatasets=true&publicationStatus=draft&api_key=${this.userToken}`)
+          const datasets = data.datasets
+
+          datasets.forEach(async dataset => { 
+            let datasetId = dataset.content.id
+            let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/${datasetId}/banner?api_key=${this.userToken}`)
+            this.inProgressDatasets.push({
+              ...dataset,
+              banner: data.banner
+            })
+          })
+        } catch(e) {}
+      }
+      this.inProgressDatasetsLoading = false
     },
     async fetchDatasetSubmissions() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
