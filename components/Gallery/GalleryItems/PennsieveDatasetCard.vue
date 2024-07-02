@@ -95,6 +95,6 @@ a {
   text-decoration: none;
 }
 .logo {
-  width: 4rem;
+  width: 6rem;
 }
 </style>
