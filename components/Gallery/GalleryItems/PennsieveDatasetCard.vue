@@ -17,13 +17,13 @@
 
 <script>
 import { pathOr, propOr } from 'ramda'
-import { mapState } from 'pinia'
-import { useMainStore } from '../../store/index.js'
 import { getOrganizationInfo } from '@/static/js/organizations'
 import { failMessage } from '@/utils/notification-messages'
+import PennsieveOrganizations from '@/mixins/pennsieve-organizations'
 
 export default {
   name: 'PennsieveDatasetCard',
+  mixins: [PennsieveOrganizations],
   props: {
     item: {
       type: Object,
@@ -35,7 +35,6 @@ export default {
     },
   },
   computed: {
-    ...mapState(useMainStore, ['userToken']),
     banner() {
       return propOr('', 'banner', this.item)
     },

@@ -83,11 +83,8 @@
               <div class="org-container">
                 <template v-for="organization in organizations" :key="organization.id">
                   <repository-card 
-                    :thumbnailUrl="organization.logo"
-                    :description="getOrganizationDescription(organization)" 
-                    :status="organization.status"
-                    :buttonLink="getButtonLink(organization)" 
-                />
+                    :organizationInfo="organization"
+                  />
                 </template>
               </div>
             </div>
@@ -443,12 +440,6 @@ export default {
         this.hasError = true
         return []
       })
-    },
-    getOrganizationDescription(org) {
-      return `Open the ${org.name} workspace in Pennsieve`
-    },
-    getButtonLink(org) {
-      return `${this.$config.public.PENNSIEVE_URL}/${org.id}/datasets`
     },
     getDownloadsCount(id) {
       let numDownloads = 0
