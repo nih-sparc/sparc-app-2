@@ -517,13 +517,23 @@ export default {
       immediate: true,
       handler: function(biolucidaData) {
         const biolucida2DItems = pathOr([], ['dataset_info','biolucida-2d'], biolucidaData)
+        const biolucida3DItems = pathOr([], ['dataset_info','biolucida-3d'], biolucidaData)
         let items = []
         const baseRoute = this.$router.options.base || '/'
         if ('dataset_images' in biolucidaData) {
+          const validBiolucidaData = biolucidaData.dataset_images.filter(bObject => {
+            if (
+              biolucida2DItems.some(b2DItem => pathOr("", ['biolucida','identifier'], b2DItem) == bObject.image_id) ||
+              biolucida3DItems.some(b3DItem => pathOr("", ['biolucida','identifier'], b3DItem) == bObject.image_id)
+            ) {
+              return bObject
+            }
+          })
+          const uniqueBiolucidaData = validBiolucidaData.filter((bObject, index) => {
+            return index === validBiolucidaData.findIndex(bObject2 => bObject.image_id == bObject2.image_id);
+          })
           items.push(
-            ...Array.from(biolucidaData.dataset_images.filter((obj, index) => {
-              return index === biolucidaData.dataset_images.findIndex(o => obj.image_id === o.image_id);
-            }), dataset_image => {
+            ...Array.from(uniqueBiolucidaData, dataset_image => {
               let filePath = ""
               biolucida2DItems.forEach(biolucida2DItem => {
                 if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
