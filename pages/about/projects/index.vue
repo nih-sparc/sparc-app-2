@@ -281,11 +281,9 @@ export default {
             items: [],
             total: 0
           }
-          this.fetchConsortiaStyle(this.consortiaType.id)
           this.fetchResults()
         } 
-      },
-      immediate: true
+      }
     },
     '$route.query.search': {
       handler: function () {
@@ -307,6 +305,7 @@ export default {
 
   beforeMount: function () {
     this.windowWidth = window.innerWidth
+    this.fetchConsortiaStyle(this.consortiaType.id)
   },
   mounted: function () {
     if (!this.$route.query.consortiaType) {
