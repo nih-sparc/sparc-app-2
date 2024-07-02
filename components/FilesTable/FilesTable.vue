@@ -680,7 +680,10 @@ export default {
       const fileType = scope.row.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
 
-      const requestUrl = `${this.$config.public.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
+      const requestUrl = new URL(this.$config.public.portal_api + '/download')
+      requestUrl.searchParams.append('s3BucketName', s3BucketName)
+      requestUrl.searchParams.append('key', filePath)
+      requestUrl.searchParams.append('contentType', contentType)
 
       return this.$axios.get(requestUrl).then(({ data }) => {
         const url = data
