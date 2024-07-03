@@ -42,7 +42,7 @@
               <el-col :sm="24" :md="8" :lg="6">
                 <client-only>
                   <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                    @projects-selections-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
+                    @projects-selections-changed="onFacetSelectionChange" @vue:mounted="facetMenuMounted"
                     ref="projectsFacetMenu" />
                 </client-only>
               </el-col>
@@ -272,7 +272,7 @@ export default {
         // Added route name check bc clicking on Data & Models header link was causing this to still fire after navigating to the data page
         if (!this.$route.query.consortiaType && this.$route.name == 'about-projects') {
           this.$router.push({
-            query: {consortiaType: this.consortiaType.id }
+            query: { consortiaType: this.consortiaType.id }
           })
         } else {
           this.searchData = {
@@ -281,6 +281,7 @@ export default {
             items: [],
             total: 0
           }
+          this.fetchConsortiaStyle(this.consortiaType.id)
           this.fetchResults()
         } 
       }
