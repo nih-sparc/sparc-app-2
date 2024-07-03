@@ -7,23 +7,20 @@
     <div class="rehydration-modal-container">
       <div class="copy-container">
         <div class="heading3">
-          You are requesting rehydration for version {{ version }} of this
+          You are requesting temporary access for version {{ version }} of this
           dataset.
         </div>
         <p v-if="authenticatedUserEmail">
-          Once you submit your
-          <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">rehydration
-          request</a>, the version of the dataset you've
-          requested will be extracted into an S3 folder. An email notification
-          will be sent to <b>{{ authenticatedUserEmail }}</b> within 24 hours of initiating the process. The rehydrated
-          dataset will then be available for 14 days.
+          After submitting your request, the dataset version will be temporarily accessible in an S3 folder. 
+          An email notification from support@pennsieve.io will be sent to <b>{{ authenticatedUserEmail }}</b> once the restoration is complete within 24 hours. 
+          Access lasts for 14 days before automatic removal. 
+          Further details are available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>.
         </p>
         <p v-else>
-          Once you submit your <a href="https://docs.sparc.science/docs/requesting-access-to-older-versions-of-a-public-dataset">
-          rehydration request</a>, the version of the dataset you've
-          requested will be extracted into an S3 folder. An email notification
-          will be sent within 24 hours of initiating the process. The rehydrated
-          dataset will then be available for 14 days.
+          After submitting your request, the dataset version will be temporarily accessible in an S3 folder. 
+          You'll receive an email from support@pennsieve.io once the restoration is complete within 24 hours. 
+          Access lasts for 14 days before automatic removal. Further details are available in the 
+          <a href="https://docs.sparc.science/docs/accessing-public-datasets">SPARC Help Center</a>.
         </p>
       </div>
       <p>

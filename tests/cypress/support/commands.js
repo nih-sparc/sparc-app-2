@@ -45,10 +45,27 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('Source "markers" already exists.'))
     return false
+  if (err.message.includes('node already exist in the graph')) {
+    return false
+  }
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
   return true
+})
+
+Cypress.Commands.add('waitForLoadingMask', () => {
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+
+  cy.wait(5000)
+
+})
+
+Cypress.Commands.add('visitLoadedPage', (url) => {
+  cy.visit(url)
+
+  cy.waitForLoadingMask()
+
 })
 
 Cypress.Commands.add('findGalleryCard', (text, dir) => {
@@ -102,13 +119,6 @@ Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
     })
   }
   clickNeuron()
-})
-
-Cypress.Commands.add('waitForLoadingMask', () => {
-  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
-  cy.wait(5000)
-
 })
 
 Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {

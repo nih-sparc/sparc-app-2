@@ -171,7 +171,12 @@ export default {
     const route = useRoute()
     if (route.query.type == 'projects') {
       const focusQuery = route.query.selectedProjectsAnatomicalFocusIds
-      await navigateTo(`/about/projects?consortiaType=SPARC&selectedProjectsAnatomicalFocusIds=${focusQuery}`)
+      let newPath = '/about/projects?consortiaType=SPARC'
+      if (focusQuery) {
+        newPath += `&selectedProjectsAnatomicalFocusIds=${focusQuery}`
+      }
+      const router = useRouter()
+      await router.replace({ path: newPath })
     }
     const { $algoliaClient } = useNuxtApp()
     const algoliaSortOptions = [

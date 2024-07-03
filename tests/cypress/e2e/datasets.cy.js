@@ -1,3 +1,5 @@
+import { retryableBefore } from "../support/retryableBefore.js"
+
 /**
  * List of dataset ids
  */
@@ -6,20 +8,16 @@ const datasetIds = [...new Set(Cypress.env('DATASET_IDS').split(',').map(item =>
 datasetIds.forEach(datasetId => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
-    before(function () {
+    retryableBefore(function () {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
     beforeEach(function () {
       cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
-      cy.intercept('**/knowledge/query/**').as('flatmap')
       cy.intercept('**/query?**').as('query')
     })
 
     it("Gallery Tab", function () {
-
-      cy.waitForLoadingMask()
-
       // Should switch to 'Gallery'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
@@ -40,22 +38,16 @@ datasetIds.forEach(datasetId => {
             cy.wrap($card).contains('span', ' View ')
           });
 
-          // Only check for dataset when it has valid flatmap data
+          // Only check for dataset when it has valid organs data
           cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
 
             if (intercept.response.body.result[0].organs) {
-
-              cy.wait('@flatmap', { timeout: 20000 }).then((intercept) => {
-
-                if (intercept.response.body.values.length > 0) {
-                  cy.findGalleryCard('flatmap', 'prev');
-                  cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
-                }
-              })
+              cy.findGalleryCard('flatmap', 'prev');
+              cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
             }
           })
         } else {
-          cy.wrap($content).contains(/There was an error loading the gallery items|This dataset does not contain gallery items/);
+          cy.wrap($content).contains(/This dataset does not contain gallery items/);
         }
       });
     });
@@ -235,12 +227,13 @@ datasetIds.forEach(datasetId => {
           cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then((value) => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
+          cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+            cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
+              cy.get('.mt-8 > a').click()
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
-            cy.get('.mt-8 > a').click()
-            cy.url({ timeout: 30000 }).should('contain', 'projects')
+              cy.waitForLoadingMask()
 
-            cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+              cy.url().should('contain', 'projects')
               // Check for the title and the institution 
               cy.get('.row > .heading2').should('contain', title.trim());
               cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
@@ -426,6 +419,10 @@ datasetIds.forEach(datasetId => {
             cy.wrap($row).children('.el-col-pull-1').invoke('text').then((value) => {
               const version = value.match(/[0-9]+/i)[0]
               cy.wrap($row).children('.el-col-push-1').children('a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
+
+                // Wait after each request in case of conflict
+                cy.wait(5000)
+
                 cy.request(href).then((resp) => {
                   expect(resp.status).to.eq(200);
                   expect(resp.body).to.include(`datasets/${datasetId}/version/${version}`);

@@ -16,16 +16,9 @@ import { successMessage } from './utils/notification-messages'
 export default {
   async setup() {
     const nuxtApp = useNuxtApp()
-    const loading = ref(false)
+    const loading = ref(true)
     const loaded = ref(false)
     const logo = sparcLogoFast
-    nuxtApp.hook("page:start", () => {
-      setTimeout(() => {
-        if (!loaded.value) {
-          loading.value = true
-        }
-      }, 1000)
-    })
     nuxtApp.hook("page:finish", () => {
       loading.value = false
       loaded.value = true

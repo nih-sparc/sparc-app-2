@@ -3,7 +3,8 @@ export default {
   name: 'MetricsPage',
 
   async setup() {
-    await navigateTo("/about/metrics", { redirectCode: 301 })
+    const router = useRouter()
+    await router.replace({ path: "/about/metrics" })
   },
 }
 </script>

@@ -88,7 +88,8 @@ export default {
           return await $contentfulClient.getEntry(params.aboutDetailsId).then(async (response) => {
             const slug = pathOr("", ['fields', 'slug'], response)
             if (!isEmpty(slug)) {
-              await navigateTo(`/about/${slug}`)
+              const router = useRouter()
+              await router.replace({ path: `/about/${slug}` })
             }
             return response
           })

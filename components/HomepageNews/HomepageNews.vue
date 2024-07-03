@@ -237,9 +237,9 @@ h2 a:not(:hover) {
   text-decoration: none;
 }
 :deep(div.sparc-card) {
-  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
-    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
   }
   .sparc-card__content-wrap {
     flex: 7 0 0rem;
