@@ -338,32 +338,39 @@ export default {
   methods: {
     async fetchPublishedDatasets(orcid) {
       const filter = `contributors.curie:\"ORCID:${orcid}\"`
-      this.datasets = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
-        filters: filter,
-        hitsPerPage: 999
-      }).then(({ hits }) => {
+
+      try {
+        const { hits } = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
+          filters: filter,
+          hitsPerPage: 999
+        })
+
         let items = []
-        hits.forEach(async hit => {
-          const datasetName = pathOr('', ['item', 'name'], hit)
-          const datasetId = propOr('', 'objectID', hit)
-          const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
-          const numCitations = await this.getCitationsCount(pennsieveIdentifier)
-          const numDownloads = this.getDownloadsCount(datasetId)
-          items.push({
-            'name': datasetName,
-            'intId': datasetId,
-            'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
-            'numDownloads': numDownloads,
-            'numCitations': numCitations
-          })
-        })
-        return items
-      })
-        .catch(() => {
-          return []
-        }).finally(() => {
-          this.datasetsLoading = false
-        })
+
+        for (const hit of hits) {
+            const datasetName = pathOr('', ['item', 'name'], hit)
+            const datasetId = propOr('', 'objectID', hit)
+            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+
+            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
+
+            const numDownloads = this.getDownloadsCount(datasetId);
+
+            items.push({
+                'name': datasetName,
+                'intId': datasetId,
+                'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
+                'numDownloads': numDownloads,
+                'numCitations': numCitations
+            })
+        }
+
+        this.datasets = items
+      } catch (error) {
+        this.datasets = []
+      } finally {
+        this.datasetsLoading = false
+      }
     },
     async fetchInProgressDatasets() {
       let orgIntIds = []
@@ -416,11 +423,15 @@ export default {
     async getCitationsCount(id) {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
       const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
-      return await this.$axios.get(url, { headers }).then(({ data }) => {
-        return propOr('0', 'length', data)
-      }).catch(() => {
-        return 0
-      })
+
+      try {
+          const response = await this.$axios.get(url, { headers })
+          const count = response.data.length
+          
+          return count;
+      } catch (error) {
+          return 0
+      }
     },
     async fetchOrganizations() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }

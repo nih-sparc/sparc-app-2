@@ -1,5 +1,6 @@
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store/index.js'
+import { failMessage } from '@/utils/notification-messages'
 
 export default {
   computed: {

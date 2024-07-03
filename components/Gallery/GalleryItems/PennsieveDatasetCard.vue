@@ -8,7 +8,7 @@
         <div>
           {{ datasetTitle }}
         </div>
-        <el-button @click="launchPennsieve" class="secondary mt-8">Launch Pennsieve<svgo-icon-open class="open-icon"/><!--<a target="_blank" :href="link">Launch Pennsieve<svgo-icon-open class="open-icon" /></a>--></el-button>
+        <el-button @click="launchPennsieve" class="secondary mt-8">Launch Pennsieve<svgo-icon-open class="open-icon"/></el-button>
         <img v-if="organizationLogo != ''" class="logo mt-12" :src="organizationLogo" />
       </el-col>
     </el-row>
@@ -18,7 +18,6 @@
 <script>
 import { pathOr, propOr } from 'ramda'
 import { getOrganizationInfo } from '@/static/js/organizations'
-import { failMessage } from '@/utils/notification-messages'
 import PennsieveOrganizations from '@/mixins/pennsieve-organizations'
 
 export default {
