@@ -125,12 +125,12 @@ datasetIds.forEach(datasetId => {
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
 
       //Check 'Get Dataset' directs to files tab
-      cy.contains('.button-container span', 'Get Dataset').click()
+      cy.contains('.button-container span', 'Get').click()
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
 
       //Check 'Cite Dataset' directs to Cite tab
-      cy.contains('.button-container span', 'Cite Dataset').click()
+      cy.contains('.button-container span', 'Cite').click()
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
       cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
     });
