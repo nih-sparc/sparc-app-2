@@ -18,6 +18,7 @@
     "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "cypress": "13.9.0",
     "nuxt": "^3.8.2",
+    "nuxt-simple-robots": "^4.0.0-rc.19",
     "nuxt-svgo": "^3.5.6",
     "sass": "^1.66.1",
     "sitemap": "^7.1.1"
