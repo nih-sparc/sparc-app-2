@@ -6,6 +6,7 @@
     <Meta name="description" hid="description" :content="`Browse ${title}`" />
     <Meta name="og:description" hid="og:description" :content="`Browse ${title}`" />
     <Meta name="twitter:description" :content="`Browse ${title}`" />
+    <Meta name="robots" content="noindex, nofollow" />
   </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
