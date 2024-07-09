@@ -47,7 +47,6 @@ import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
  * @param {Number} datasetId
  */
 const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
-  let biolucidaImageData = {}
   let scicrunchData = {}
   let scicrunch_response = []
   let biolucida_response = []
@@ -59,18 +58,14 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
       biolucida_response = response
     })
 
-    if (biolucida_response.status === 'success') {
-      const scicrunchData = pathOr([], ['data','result'], scicrunch_response)
-      biolucidaImageData = biolucida_response
-      biolucidaImageData['discover_dataset_version'] = datasetVersion
-      biolucidaImageData['dataset_info'] = scicrunchData.length > 0 ? scicrunchData[0] : {}
-    }
-
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion
+      }
+      if (biolucida_response.status === 'success') {
+        scicrunchData['dataset_images'] = pathOr([], ['dataset_images'], biolucida_response)
       }
       // Check for flatmap data
       if (scicrunchData.organs) {
@@ -133,13 +128,11 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
       e
     )
     return {
-      biolucidaImageData: {},
       scicrunchData: {},
       hasError: true
     }
   }
   return {
-    biolucidaImageData,
     scicrunchData,
     hasError: false
   }
@@ -213,7 +206,6 @@ export default {
       timeseriesItems: [],
       timeseriesData: [],
       datasetScicrunch: {},
-      datasetBiolucida: {},
     }
   },
   computed: {
@@ -259,13 +251,12 @@ export default {
   },
   async created() {
     this.loading = true
-    const { biolucidaImageData, scicrunchData, hasError } = await getThumbnailData(
+    const { scicrunchData, hasError } = await getThumbnailData(
       this.datasetInfo.doi,
       this.datasetId,
       this.datasetInfo.version,
       this.datasetFacetsData
     )
-    this.datasetBiolucida = biolucidaImageData
     this.datasetScicrunch = scicrunchData
     this.hasError = hasError
 
@@ -324,6 +315,7 @@ export default {
       immediate: true,
       handler: function(scicrunchData) {
         let items = []
+        let bItems = []
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
@@ -510,38 +502,29 @@ export default {
           )
         }
         this.scicrunchItems = items
-      }
-    },
-    datasetBiolucida: {
-      deep: true,
-      immediate: true,
-      handler: function(biolucidaData) {
-        const biolucida2DItems = pathOr([], ['dataset_info','biolucida-2d'], biolucidaData)
-        let items = []
-        const baseRoute = this.$router.options.base || '/'
-        if ('dataset_images' in biolucidaData) {
+
+        if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
+          const biolucida2DItems = pathOr([],['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
-          const validBiolucidaData = biolucidaData.dataset_images.filter(bObject => {
-            const biolucidaItems = biolucida2DItems.concat(pathOr([], ['dataset_info','biolucida-3d'], biolucidaData))
-            return biolucidaItems.some(bItem => pathOr("", ['biolucida','identifier'], bItem) == bObject.image_id)
+          const biolucidaItems = biolucida2DItems.concat(pathOr([],['biolucida-3d'], scicrunchData)).filter((bObject) => {
+            return scicrunchData['dataset_images'].some(image => image.image_id == pathOr("", ['biolucida','identifier'], bObject))
           })
-          // Duplicate images ids may exist
-          const uniqueBiolucidaData = validBiolucidaData.filter((bObject, index) => {
-            return index == validBiolucidaData.findIndex(bObject2 => bObject.image_id == bObject2.image_id);
-          })
-          items.push(
-            ...Array.from(uniqueBiolucidaData, dataset_image => {
+          bItems.push(
+            ...Array.from(biolucidaItems, biolucida_item => {
               let filePath = ""
+              const dataset_image = scicrunchData['dataset_images'].find((image) => {
+                return image.image_id == pathOr("", ['biolucida','identifier'], biolucida_item)
+              })
               biolucida2DItems.forEach(biolucida2DItem => {
                 if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
                   filePath = "files/" + pathOr("", ['dataset','path'], biolucida2DItem)
                 }
               })
-              this.getThumbnailFromBiolucida(items, {
+              this.getThumbnailFromBiolucida(bItems, {
                 id: dataset_image.image_id,
                 fetchAttempts: 0
               })
-              this.getImageInfoFromBiolucida(items, {
+              this.getImageInfoFromBiolucida(bItems, {
                 id: dataset_image.image_id,
                 fetchAttempts: 0
               })
@@ -552,16 +535,16 @@ export default {
               // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
               let linkUrl = filePath != "" ?
                 baseRoute +
-                `datasets/file/${biolucidaData.discover_dataset_id}/${biolucidaData.discover_dataset_version}?path=${filePath}` :
+                `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
                 baseRoute +
                 'datasets/biolucidaviewer/' +
                 dataset_image.image_id +
                 '?view=' +
                 viewEncoding +
                 '&dataset_version=' +
-                biolucidaData.discover_dataset_version +
+                datasetVersion +
                 '&dataset_id=' +
-                biolucidaData.discover_dataset_id +
+                datasetId +
                 '&item_id=' +
                 dataset_image.sourcepkg_id
 
@@ -575,7 +558,7 @@ export default {
             })
           )
         }
-        this.biolucidaItems = items
+        this.biolucidaItems = bItems
       }
     }
   },
