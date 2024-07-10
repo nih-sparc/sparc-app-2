@@ -28,37 +28,33 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   beforeEach(function () {
-    cy.intercept('**/flatmap/**').as('flatmap')
-    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
-    cy.intercept('**/s3-resource/**').as('s3-resource')
     cy.intercept('**/query?**').as('query')
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.intercept('**/dataset_info/**').as('dataset_info')
     cy.intercept('**/datasets/**').as('datasets')
+    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
+    cy.intercept('**/s3-resource/**').as('s3-resource')
   })
 
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
-
-      cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-      cy.waitForLoadingMask()
-
       if (index === 0) {
+        cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
+        cy.waitForLoadingMask()
         loadedModels.add('Rat')
       }
 
       // Switch to the second flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true })
       cy.get('.el-select-dropdown__item').should('be.visible')
-      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-
-      if (!loadedModels.has(model)) {
-
-        cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-        cy.waitForLoadingMask()
-
-        loadedModels.add(model)
-      }
+      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
+        if (!loadedModels.has(model)) {
+          cy.wait(['@flatmap'], { timeout: 20000 })
+          cy.waitForLoadingMask()
+          loadedModels.add(model)
+        }
+      })
 
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
@@ -73,16 +69,15 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-
-    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-    cy.waitForLoadingMask()
-
     // Switch to the human related flatmap
-    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
-
-    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-    cy.waitForLoadingMask()
+    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
+      if (!loadedModels.has(threeDSyncView)) {
+        cy.wait(['@flatmap'], { timeout: 20000 })
+        cy.waitForLoadingMask()
+        loadedModels.add(threeDSyncView)
+      }
+    })
 
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
@@ -120,9 +115,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-
-      cy.waitForLoadingMask()
-
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
 
