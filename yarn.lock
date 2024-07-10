@@ -30,32 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@2.8.9":
-  version "2.8.9"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.8.9.tgz#9799a75617fa428d9f525fb900949c7228724e56"
-  integrity sha512-geaZ08yA5N4DkZV3mqQQRH851+jQG4dGeGDqz9cN9o03Q+UPI1qzGNWERKpkfzcPVCaF0KjQNFoHu9pIzg0S5Q==
-  dependencies:
-    "@deck.gl/core" "^8.9.35"
-    "@deck.gl/layers" "^8.9.35"
-    "@deck.gl/mapbox" "^8.9.35"
-    "@mapbox/mapbox-gl-draw" "^1.4.3"
-    "@turf/area" "^6.5.0"
-    "@turf/bbox" "^6.5.0"
-    "@turf/helpers" "^6.5.0"
-    "@turf/projection" "^6.5.0"
-    bezier-js "^6.1.0"
-    colord "^2.9.3"
-    core-js "^3.37.0"
-    html-es6cape "^2.0.2"
-    maplibre-gl ">=4.1.0"
-    mathjax-full "^3.2.2"
-    minisearch "^2.2.1"
-    polylabel "^1.1.0"
-
-"@abi-software/flatmap-viewer@^2.9.4":
-  version "2.9.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.9.4.tgz#55d2b4838692d62c2124c9ed755a758608e398fc"
-  integrity sha512-jg3aOtARBPG7U2h+0qdakjCGCWgYjFyqS2E1eqg1Pgqfk/yDUp4q73IqtNB6j1tC6qreCZw3r3/2YAbpUcgQwA==
+"@abi-software/flatmap-viewer@2.9.5":
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-2.9.5.tgz#7a09d0e037d5889347715d5c9db79413298e91d0"
+  integrity sha512-Sib5EghUvNmcTyEc4tuEDSE2UBwnBC+1qaVcaF69auwUBrcEH8A4x0kqjEd6TdUV0XF5rVnbov+addBDgdBEdg==
   dependencies:
     "@deck.gl/core" "^8.9.35"
     "@deck.gl/layers" "^8.9.35"
@@ -93,28 +71,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.1.0.tgz#eb4a75907cd90d4a7b28dc910ec56a5e10874ffc"
-  integrity sha512-xXso4MrdOrYbMTxV8aBgPxS9noDj0iqidY0Mv7y1x0KLasjwLJSdiqjoyYjf04bPKO3cL/bX3pV32jruE30mSA==
+"@abi-software/flatmapvuer@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.3.1.tgz#eac52b130d9577f9ac4407f003772ec5dbcf3714"
+  integrity sha512-LFfOO8/w2ijBuZ9z2Mrhp/0IxFV6JFBTf2pZU5pB/Ovr75Lfi9BJjWQ2tpAv0TH/7bZw1/SUFB/QbtV1t+X/qQ==
   dependencies:
-    "@abi-software/flatmap-viewer" "2.8.9"
-    "@abi-software/sparc-annotation" "0.3.1"
-    "@abi-software/svg-sprite" "1.0.0"
-    "@element-plus/icons-vue" "^2.3.1"
-    css-element-queries "^1.2.2"
-    element-plus "2.5.5"
-    mitt "^3.0.1"
-    pinia "^2.1.7"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.15"
-
-"@abi-software/flatmapvuer@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.2.0.tgz#e24b3afe7e2738d228570cbae9a2b723ef7790fa"
-  integrity sha512-0cXr7HOqYnQqHuyI1RaX8aa3kTFPGVgBLZ7Gww/pCGOuIusvy23NCTihlTzPQNXx3I8NBhL3CJnx6u7ur3r3gA==
-  dependencies:
-    "@abi-software/flatmap-viewer" "^2.9.4"
+    "@abi-software/flatmap-viewer" "2.9.5"
+    "@abi-software/map-utilities" "1.0.0"
     "@abi-software/sparc-annotation" "0.3.1"
     "@abi-software/svg-sprite" "1.0.0"
     "@element-plus/icons-vue" "^2.3.1"
@@ -135,10 +98,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.3.13"
 
-"@abi-software/map-side-bar@^2.2.1-alpha-3":
-  version "2.2.1-alpha-3"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.2.1-alpha-3.tgz#719a9364dc2f8e3d08e34c1ed4c64bc17d666be0"
-  integrity sha512-UZHW7davYE60cGGe2ima7YQXUZx996zw0mBLSBjvHIEZv2ShRUcSDQwD4jJfbv+v6QmZkQKJL0ZoUJgOEDRUVg==
+"@abi-software/map-side-bar@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.3.0.tgz#dcfe0af1a670bfad84acd6c5d4816a58cb50fcd8"
+  integrity sha512-kcQh3/eAgeB1fOePHBO20sP4NnwKtu28ggFEfQUiw14zOpiaJ3f+2aC3TZJwWC2mhittm+5eMl98TSaR6ET+9g==
   dependencies:
     "@abi-software/gallery" "^1.1.0"
     "@abi-software/svg-sprite" "^1.0.0"
@@ -151,19 +114,32 @@
     vue "^3.3.13"
     xss "^1.0.14"
 
-"@abi-software/mapintegratedvuer@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.2.1.tgz#92453e27bbb77b9135c15e871730f9e82b47ae27"
-  integrity sha512-V59O9qYnO8B0vi/9oiUr2kyji9NyRPRaXhhpoSIbavrvTbPZKatRD+iDYZBXlhDQggGefHeaoX+T7NqC7Bsd1w==
+"@abi-software/map-utilities@1.0.0", "@abi-software/map-utilities@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.0.0.tgz#ba09dfb9869f986dad9f8f9b0a66458d3998a5d1"
+  integrity sha512-TJiDVSXrL/u2s5FiUbaX5UQiwktoCQieRTnxi//2owDyEasqjIkK0GPUaLK+Ru3VQMbNfwFUvPd2Q2extW76cA==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.2.0"
-    "@abi-software/map-side-bar" "^2.2.1-alpha-3"
+    "@abi-software/svg-sprite" "^1.0.0"
+    "@element-plus/icons-vue" "^2.3.1"
+    element-plus "^2.7.3"
+    mitt "^3.0.1"
+    vue "^3.4.21"
+
+"@abi-software/mapintegratedvuer@1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.3.0.tgz#8531cd2740a40b5c5dc10302840545e3a116a5d2"
+  integrity sha512-SqeNz5/j2PQGJlIguIrp/kEwWIVPwakvkDv454+Dx8XGnfJHtaLP9XMfx6oVBHfdtDRreTUjP/OEEbgd6MeJ7g==
+  dependencies:
+    "@abi-software/flatmapvuer" "^1.3.1"
+    "@abi-software/map-side-bar" "^2.3.0"
+    "@abi-software/map-utilities" "^1.0.0"
     "@abi-software/plotvuer" "1.0.0"
-    "@abi-software/scaffoldvuer" "^1.2.1"
-    "@abi-software/simulationvuer" "1.0.0"
+    "@abi-software/scaffoldvuer" "^1.3.0"
+    "@abi-software/simulationvuer" "2.0.0"
     "@abi-software/svg-sprite" "1.0.0"
     "@element-plus/icons-vue" "^2.3.1"
     "@pinia/testing" "^0.1.3"
+    "@vitejs/plugin-vue" "^4.6.2"
     css-element-queries "^1.2.3"
     element-plus "^2.4.4"
     marked "^4.3.0"
@@ -196,12 +172,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.2.1.tgz#e264913ee61af4c3c40d6d48edbf64e220f3ef33"
-  integrity sha512-mtwkuMznxtYbRIa2klUSORe8x+UEEiUuOtqGc1MIN23OgfPZnx+rdFC4MgsdXguambGOkRMaHtV5MI/5VShd0g==
+"@abi-software/scaffoldvuer@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.3.0.tgz#9b3faf145cb5ed73fa9e92d717df3c256c03f515"
+  integrity sha512-+p9aldQfj/j4pLLbt4074UXCSgvmli+9tU0zSijTfa7A0uwuwRa6rXZ9+PC7UkOGgRHFRgNoHLegtXWMtl/9Tw==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.1.0"
+    "@abi-software/map-utilities" "^1.0.0"
     "@abi-software/sparc-annotation" "^0.3.1"
     "@abi-software/svg-sprite" "^1.0.0"
     "@element-plus/icons-vue" "^2.3.1"
@@ -215,16 +191,17 @@
     vue "^3.4.15"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.8.3"
+    zincjs "^1.9.0"
 
-"@abi-software/simulationvuer@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-1.0.0.tgz#c487e5c11ec982681049a65ec99d99a536853aeb"
-  integrity sha512-INi+ai+np6K3Oqanbm6/NovaylXolvjPGm/ztRai21Ic7fMmdtwr0FF42e2gg9SIOlzcfzx038SYi9+yFgt0Qw==
+"@abi-software/simulationvuer@2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.0.tgz#69665a0569d39f03614da2523a438c742b76eb32"
+  integrity sha512-Wy2PdhvY3zU3BuuL0pL91qStxZWG0vkSCn7VteRJoY2xZlMYPsdZst2x3jKFXk1dKZ2hofXQP9WPsVLEDWeB3Q==
   dependencies:
     "@abi-software/plotvuer" "^1.0.0"
     element-plus "^2.5.3"
     jsonschema "^1.4.0"
+    mathjs "^13.0.2"
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
@@ -2682,6 +2659,11 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.24.4.tgz#234487a110d89ad5a3ed4a8a566c36b9453e8c88"
   integrity sha512-zTvEBcghmeBma9QIGunWevvBAp4/Qu9Bdq+2k0Ot4fVMD6v3dsC9WOcRSKk7tRRyBM/53yKMJko9xOatGQAwSg==
 
+"@babel/parser@^7.24.7":
+  version "7.24.7"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.24.7.tgz#9a5226f92f0c5c8ead550b750f5608e766c8ce85"
+  integrity sha512-9uUYRm6OqQrCqQdG1iCBwBPZgN8ciDBro2nIOFaiRz1/BCxaI7CNvQbDHvsArAC7Tw9Hda/B3U+6ui9u4HWXPw==
+
 "@babel/plugin-bugfix-firefox-class-in-computed-class-key@^7.24.5":
   version "7.24.5"
   resolved "https://registry.yarnpkg.com/@babel/plugin-bugfix-firefox-class-in-computed-class-key/-/plugin-bugfix-firefox-class-in-computed-class-key-7.24.5.tgz#4c3685eb9cd790bcad2843900fe0250c91ccf895"
@@ -3462,6 +3444,13 @@
   version "7.23.9"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.9.tgz#47791a15e4603bb5f905bc0753801cf21d6345f7"
   integrity sha512-0CX6F+BI2s9dkUqr08KFrAIZgNFj75rdBU/DjCyYLIaV/quFjkk6T+EJ2LkZHyZTbEV4L5p97mNkUsHl2wLFAw==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.24.7":
+  version "7.24.7"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.7.tgz#f4f0d5530e8dbdf59b3451b9b3e594b6ba082e12"
+  integrity sha512-UwgBRMjJP+xv857DCngvqXI3Iq6J4v0wXmwc6sapg+zyhbwmQX67LUEFrkK5tbyJ30jGuG3ZvWpBiB9LCy1kWw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -4554,20 +4543,6 @@
     minimist "^1.2.8"
     rw "^1.3.3"
     sort-object "^3.0.3"
-
-"@maplibre/maplibre-gl-style-spec@^20.2.0":
-  version "20.2.0"
-  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-style-spec/-/maplibre-gl-style-spec-20.2.0.tgz#5ae301e061725eff8a7a3facc0637445b6886123"
-  integrity sha512-BTw6/3ysowky22QMtNDjElp+YLwwvBDh3xxnq1izDFjTtUERm5nYSihlNZ6QaxXb+6lX2T2t0hBEjheAI+kBEQ==
-  dependencies:
-    "@mapbox/jsonlint-lines-primitives" "~2.0.2"
-    "@mapbox/unitbezier" "^0.0.1"
-    json-stringify-pretty-compact "^4.0.0"
-    minimist "^1.2.8"
-    quickselect "^2.0.0"
-    rw "^1.3.3"
-    sort-object "^3.0.3"
-    tinyqueue "^2.0.3"
 
 "@maplibre/maplibre-gl-style-spec@^20.3.0":
   version "20.3.0"
@@ -6662,6 +6637,11 @@
     "@babel/plugin-transform-typescript" "^7.23.3"
     "@vue/babel-plugin-jsx" "^1.1.5"
 
+"@vitejs/plugin-vue@^4.6.2":
+  version "4.6.2"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-4.6.2.tgz#057d2ded94c4e71b94e9814f92dcd9306317aa46"
+  integrity sha512-kqf7SGFoG+80aZG6Pf+gsZIVvGSCKE98JbiWqcCV9cThtg91Jav0yvYFC9Zb+jKetNGF6ZKeoaxgZfND21fWKw==
+
 "@vitejs/plugin-vue@^5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-5.0.3.tgz#164b36653910d27c130cf6c945b4bd9bde5bcbee"
@@ -6732,6 +6712,17 @@
     estree-walker "^2.0.2"
     source-map-js "^1.0.2"
 
+"@vue/compiler-core@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.4.31.tgz#b51a76f1b30e9b5eba0553264dff0f171aedb7c6"
+  integrity sha512-skOiodXWTV3DxfDhB4rOf3OGalpITLlgCeOwb+Y9GJpfQ8ErigdBUHomBzvG78JoVE8MJoQsb+qhZiHfKeNeEg==
+  dependencies:
+    "@babel/parser" "^7.24.7"
+    "@vue/shared" "3.4.31"
+    entities "^4.5.0"
+    estree-walker "^2.0.2"
+    source-map-js "^1.2.0"
+
 "@vue/compiler-dom@3.4.15", "@vue/compiler-dom@^3.3.4":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@vue/compiler-dom/-/compiler-dom-3.4.15.tgz#753f5ed55f78d33dff04701fad4d76ff0cf81ee5"
@@ -6739,6 +6730,14 @@
   dependencies:
     "@vue/compiler-core" "3.4.15"
     "@vue/shared" "3.4.15"
+
+"@vue/compiler-dom@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-dom/-/compiler-dom-3.4.31.tgz#30961ca847f5d6ad18ffa26236c219f61b195f6b"
+  integrity sha512-wK424WMXsG1IGMyDGyLqB+TbmEBFM78hIsOJ9QwUVLGrcSk0ak6zYty7Pj8ftm7nEtdU/DGQxAXp0/lM/2cEpQ==
+  dependencies:
+    "@vue/compiler-core" "3.4.31"
+    "@vue/shared" "3.4.31"
 
 "@vue/compiler-sfc@3.4.15", "@vue/compiler-sfc@^3.2.47", "@vue/compiler-sfc@^3.4.13", "@vue/compiler-sfc@^3.4.15":
   version "3.4.15"
@@ -6755,6 +6754,21 @@
     postcss "^8.4.33"
     source-map-js "^1.0.2"
 
+"@vue/compiler-sfc@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.4.31.tgz#cc6bfccda17df8268cc5440842277f61623c591f"
+  integrity sha512-einJxqEw8IIJxzmnxmJBuK2usI+lJonl53foq+9etB2HAzlPjAS/wa7r0uUpXw5ByX3/0uswVSrjNb17vJm1kQ==
+  dependencies:
+    "@babel/parser" "^7.24.7"
+    "@vue/compiler-core" "3.4.31"
+    "@vue/compiler-dom" "3.4.31"
+    "@vue/compiler-ssr" "3.4.31"
+    "@vue/shared" "3.4.31"
+    estree-walker "^2.0.2"
+    magic-string "^0.30.10"
+    postcss "^8.4.38"
+    source-map-js "^1.2.0"
+
 "@vue/compiler-ssr@3.4.15":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@vue/compiler-ssr/-/compiler-ssr-3.4.15.tgz#a910a5b89ba4f0a776e40b63d69bdae2f50616cf"
@@ -6762,6 +6776,14 @@
   dependencies:
     "@vue/compiler-dom" "3.4.15"
     "@vue/shared" "3.4.15"
+
+"@vue/compiler-ssr@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-ssr/-/compiler-ssr-3.4.31.tgz#f62ffecdf15bacb883d0099780cf9a1e3654bfc4"
+  integrity sha512-RtefmITAje3fJ8FSg1gwgDhdKhZVntIVbwupdyZDSifZTRMiWxWehAOTCc8/KZDnBOcYQ4/9VWxsTbd3wT0hAA==
+  dependencies:
+    "@vue/compiler-dom" "3.4.31"
+    "@vue/shared" "3.4.31"
 
 "@vue/devtools-api@^6.0.0-beta.11":
   version "6.6.1"
@@ -6780,6 +6802,13 @@
   dependencies:
     "@vue/shared" "3.4.15"
 
+"@vue/reactivity@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/reactivity/-/reactivity-3.4.31.tgz#eda80e90c4f9d7659efe1f5ed99c2dfdc9e93d77"
+  integrity sha512-VGkTani8SOoVkZNds1PfJ/T1SlAIOf8E58PGAhIOUDYPC4GAmFA2u/E14TDAFcf3vVDKunc4QqCe/SHr8xC65Q==
+  dependencies:
+    "@vue/shared" "3.4.31"
+
 "@vue/runtime-core@3.4.15":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@vue/runtime-core/-/runtime-core-3.4.15.tgz#f81e2fd2108ea41a6d5c61c2462b11dfb754fdf0"
@@ -6787,6 +6816,14 @@
   dependencies:
     "@vue/reactivity" "3.4.15"
     "@vue/shared" "3.4.15"
+
+"@vue/runtime-core@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/runtime-core/-/runtime-core-3.4.31.tgz#ad3a41ad76385c0429e3e4dbefb81918494e10cf"
+  integrity sha512-LDkztxeUPazxG/p8c5JDDKPfkCDBkkiNLVNf7XZIUnJ+66GVGkP+TIh34+8LtPisZ+HMWl2zqhIw0xN5MwU1cw==
+  dependencies:
+    "@vue/reactivity" "3.4.31"
+    "@vue/shared" "3.4.31"
 
 "@vue/runtime-dom@3.4.15":
   version "3.4.15"
@@ -6797,6 +6834,16 @@
     "@vue/shared" "3.4.15"
     csstype "^3.1.3"
 
+"@vue/runtime-dom@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/runtime-dom/-/runtime-dom-3.4.31.tgz#bae7ad844f944af33699c73581bc36125bab96ce"
+  integrity sha512-2Auws3mB7+lHhTFCg8E9ZWopA6Q6L455EcU7bzcQ4x6Dn4cCPuqj6S2oBZgN2a8vJRS/LSYYxwFFq2Hlx3Fsaw==
+  dependencies:
+    "@vue/reactivity" "3.4.31"
+    "@vue/runtime-core" "3.4.31"
+    "@vue/shared" "3.4.31"
+    csstype "^3.1.3"
+
 "@vue/server-renderer@3.4.15":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.4.15.tgz#34438f998e6f6370fac78883a75efe136631957f"
@@ -6805,10 +6852,23 @@
     "@vue/compiler-ssr" "3.4.15"
     "@vue/shared" "3.4.15"
 
+"@vue/server-renderer@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.4.31.tgz#bbe990f793c36d62d05bdbbaf142511d53e159fd"
+  integrity sha512-D5BLbdvrlR9PE3by9GaUp1gQXlCNadIZytMIb8H2h3FMWJd4oUfkUTEH2wAr3qxoRz25uxbTcbqd3WKlm9EHQA==
+  dependencies:
+    "@vue/compiler-ssr" "3.4.31"
+    "@vue/shared" "3.4.31"
+
 "@vue/shared@3.4.15", "@vue/shared@^3.4.15":
   version "3.4.15"
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.4.15.tgz#e7d2ea050c667480cb5e1a6df2ac13bcd03a8f30"
   integrity sha512-KzfPTxVaWfB+eGcGdbSf4CWdaXcGDqckoeXUh7SB3fZdEtzPCK2Vq9B/lRRL3yutax/LWITz+SwvgyOxz5V75g==
+
+"@vue/shared@3.4.31":
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.4.31.tgz#af9981f57def2c3f080c14bf219314fc0dc808a0"
+  integrity sha512-Yp3wtJk//8cO4NItOPpi3QkLExAr/aLBGZMmTtW9WpdwBCJpRM6zj9WgWktXAl8IDIozwNMByT45JP3tO3ACWA==
 
 "@vuese/cli@^2.14.3":
   version "2.14.3"
@@ -8782,6 +8842,11 @@ compatx@^0.1.8:
   resolved "https://registry.yarnpkg.com/compatx/-/compatx-0.1.8.tgz#af6f61910ade6ce1073c0fdff23c786bcd75c026"
   integrity sha512-jcbsEAR81Bt5s1qOFymBufmCbXCXbk0Ql+K5ouj6gCyx2yHlu6AgmGIi9HxfKixpUDO5bCFJUHQ5uM6ecbTebw==
 
+complex.js@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/complex.js/-/complex.js-2.1.1.tgz#0675dac8e464ec431fb2ab7d30f41d889fb25c31"
+  integrity sha512-8njCHOTtFFLtegk6zQo0kkVX1rngygb/KQI6z1qZxlFI3scluC+LVTCFbrkWjBv4vvLlbQ9t88IPMC6k95VTTg==
+
 component-emitter@^1.2.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.1.tgz#ef1d5796f7d93f135ee6fb684340b26403c97d17"
@@ -10089,6 +10154,27 @@ element-plus@^2.5.3:
     memoize-one "^6.0.0"
     normalize-wheel-es "^1.2.0"
 
+element-plus@^2.7.3:
+  version "2.7.6"
+  resolved "https://registry.yarnpkg.com/element-plus/-/element-plus-2.7.6.tgz#09b2c9c1de46dcc6778d37a29d9c0948ce40d635"
+  integrity sha512-36sw1K23hYjgeooR10U6CiCaCp2wvOqwoFurADZVlekeQ9v5U1FhJCFGEXO6i/kZBBMwsE1c9fxjLs9LENw2Rg==
+  dependencies:
+    "@ctrl/tinycolor" "^3.4.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    "@floating-ui/dom" "^1.0.1"
+    "@popperjs/core" "npm:@sxzz/popperjs-es@^2.11.7"
+    "@types/lodash" "^4.14.182"
+    "@types/lodash-es" "^4.17.6"
+    "@vueuse/core" "^9.1.0"
+    async-validator "^4.2.5"
+    dayjs "^1.11.3"
+    escape-html "^1.0.3"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+    lodash-unified "^1.0.2"
+    memoize-one "^6.0.0"
+    normalize-wheel-es "^1.2.0"
+
 element-size@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/element-size/-/element-size-1.1.1.tgz#64e5f159d97121631845bcbaecaf279c39b5e34e"
@@ -10451,6 +10537,11 @@ escape-html@^1.0.3, escape-html@~1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
+
+escape-latex@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/escape-latex/-/escape-latex-1.2.0.tgz#07c03818cf7dac250cce517f4fda1b001ef2bca1"
+  integrity sha512-nV5aVWW1K0wEiUIEdZ4erkGGH8mDxGyxSeqPzRNtWP7ataw+/olFObw7hujFWlVjNsaDFw5VZ5NzVSIqRgfTiw==
 
 escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
@@ -13399,6 +13490,11 @@ jake@^10.8.5:
     filelist "^1.0.4"
     minimatch "^3.1.2"
 
+javascript-natural-sort@^0.7.1:
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/javascript-natural-sort/-/javascript-natural-sort-0.7.1.tgz#f9e2303d4507f6d74355a73664d1440fb5a0ef59"
+  integrity sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==
+
 jiti@^1.21.0:
   version "1.21.0"
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-1.21.0.tgz#7c97f8fe045724e136a397f7340475244156105d"
@@ -14252,39 +14348,6 @@ maplibre-gl@>=3.6.0:
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.3"
 
-maplibre-gl@>=4.1.0:
-  version "4.3.2"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-4.3.2.tgz#c5cfaf46067ba964b020fa6f3b0134cfc70c87fd"
-  integrity sha512-/oXDsb9I+LkjweL/28aFMLDZoIcXKNEhYNAZDLA4xgTNkfvKQmV/r0KZdxEMcVthincJzdyc6Y4N8YwZtHKNnQ==
-  dependencies:
-    "@mapbox/geojson-rewind" "^0.5.2"
-    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
-    "@mapbox/point-geometry" "^0.1.0"
-    "@mapbox/tiny-sdf" "^2.0.6"
-    "@mapbox/unitbezier" "^0.0.1"
-    "@mapbox/vector-tile" "^1.3.1"
-    "@mapbox/whoots-js" "^3.1.0"
-    "@maplibre/maplibre-gl-style-spec" "^20.2.0"
-    "@types/geojson" "^7946.0.14"
-    "@types/geojson-vt" "3.2.5"
-    "@types/junit-report-builder" "^3.0.2"
-    "@types/mapbox__point-geometry" "^0.1.4"
-    "@types/mapbox__vector-tile" "^1.3.4"
-    "@types/pbf" "^3.0.5"
-    "@types/supercluster" "^7.1.3"
-    earcut "^2.2.4"
-    geojson-vt "^3.2.1"
-    gl-matrix "^3.4.3"
-    global-prefix "^3.0.0"
-    kdbush "^4.0.2"
-    murmurhash-js "^1.0.0"
-    pbf "^3.2.1"
-    potpack "^2.0.0"
-    quickselect "^2.0.0"
-    supercluster "^8.0.1"
-    tinyqueue "^2.0.3"
-    vt-pbf "^3.1.3"
-
 maplibre-gl@>=4.3.0:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-4.4.1.tgz#823c55817cbdf6f85d0078c489b86f0dcbe310ba"
@@ -14359,6 +14422,21 @@ mathjax-full@^3.2.2:
     mhchemparser "^4.1.0"
     mj-context-menu "^0.6.1"
     speech-rule-engine "^4.0.6"
+
+mathjs@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-13.0.2.tgz#eb87e31a21d9ffc57e26ce98ddb14a4a07b13d91"
+  integrity sha512-8vK/+InU4FTphRTWsrnvRsgSjbyNupRQYDDIXLuEGDZtJsGdbA9dVV4HZ0amBQb+RXplRjVJNGZZfB0WoHWFWA==
+  dependencies:
+    "@babel/runtime" "^7.24.7"
+    complex.js "^2.1.1"
+    decimal.js "^10.4.3"
+    escape-latex "^1.2.0"
+    fraction.js "^4.3.7"
+    javascript-natural-sort "^0.7.1"
+    seedrandom "^3.0.5"
+    tiny-emitter "^2.1.0"
+    typed-function "^4.2.1"
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -17634,6 +17712,11 @@ scule@^1.3.0:
   resolved "https://registry.yarnpkg.com/scule/-/scule-1.3.0.tgz#6efbd22fd0bb801bdcc585c89266a7d2daa8fbd3"
   integrity sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==
 
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
+
 seek-bzip@^1.0.5:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/seek-bzip/-/seek-bzip-1.0.6.tgz#35c4171f55a680916b52a07859ecf3b5857f21c4"
@@ -18823,6 +18906,11 @@ timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
+tiny-emitter@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tiny-emitter/-/tiny-emitter-2.1.0.tgz#1d1a56edfc51c43e863cbb5382a72330e3555423"
+  integrity sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==
+
 tiny-invariant@^1.1.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.1.tgz#8560808c916ef02ecfd55e66090df23a4b7aa642"
@@ -19126,6 +19214,11 @@ typed-array-length@^1.0.4:
     call-bind "^1.0.2"
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
+
+typed-function@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/typed-function/-/typed-function-4.2.1.tgz#19aa51847aa2dea9ef5e7fb7641c060179a74426"
+  integrity sha512-EGjWssW7Tsk4DGfE+5yluuljS1OGYWiI1J6e8puZz9nTMM51Oug8CD5Zo4gWMsOhq5BI+1bF+rWTm4Vbj3ivRA==
 
 typedarray-pool@^1.1.0:
   version "1.2.0"
@@ -19961,6 +20054,17 @@ vue@^3.3.13, vue@^3.3.4, vue@^3.4.15:
     "@vue/server-renderer" "3.4.15"
     "@vue/shared" "3.4.15"
 
+vue@^3.4.21:
+  version "3.4.31"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-3.4.31.tgz#83a3c4dab8302b0e974b0d4b92a2f6a6378ae797"
+  integrity sha512-njqRrOy7W3YLAlVqSKpBebtZpDVg21FPoaq1I7f/+qqBThK9ChAIjkRWgeP6Eat+8C+iia4P3OYqpATP21BCoQ==
+  dependencies:
+    "@vue/compiler-dom" "3.4.31"
+    "@vue/compiler-sfc" "3.4.31"
+    "@vue/runtime-dom" "3.4.31"
+    "@vue/server-renderer" "3.4.31"
+    "@vue/shared" "3.4.31"
+
 vuex@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-4.1.0.tgz#aa1b3ea5c7385812b074c86faeeec2217872e36c"
@@ -20409,10 +20513,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.8.3.tgz#907b6db101abdef16fe352e4684a488188407ec3"
-  integrity sha512-jSeSNahPEpoF81R4wb3MBvjshBh4s7hKUgJVCclferkPmIGyKxcfy1qUnMPPxJBitoDkys2jlEA1EiySBOZqPA==
+zincjs@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.9.0.tgz#8ba2c5a4e8753a6f2870d86d3bc8814eefdc93a1"
+  integrity sha512-9YG/jqjVhZECRK85ak8H0MAFU4pyjp+ZbxnHI0zs4s/dOqlhVk/KczwB6aKupjtxGGFx0HK8ujoUJH+gT6K/1w==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
