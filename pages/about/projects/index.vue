@@ -42,8 +42,7 @@
               <el-col :sm="24" :md="8" :lg="6">
                 <client-only>
                   <projects-facet-menu :anatomicalFocusFacets="projectsAnatomicalFocusFacets"
-                    @projects-selections-changed="onFacetSelectionChange" @vue:mounted="facetMenuMounted"
-                    ref="projectsFacetMenu" />
+                    @projects-selections-changed="onFacetSelectionChange" ref="projectsFacetMenu" />
                 </client-only>
               </el-col>
               <el-col class="search-results-container" :sm="searchColSpan('sm')" :md="searchColSpan('md')"
@@ -282,24 +281,24 @@ export default {
             total: 0
           }
           this.fetchConsortiaStyle(this.consortiaType.id)
-          this.fetchResults()
+          this.fetchResults(1)
         } 
       }
     },
     '$route.query.search': {
       handler: function () {
         this.searchQuery = this.$route.query.search
-        this.fetchResults()
+        this.fetchResults(2)
       }
     },
     '$route.query.projectsSort': {
       handler: function (option) {
-        this.fetchResults()
+        this.fetchResults(3)
       }
     },
     '$route.query.selectedProjectsAnatomicalFocusIds': {
       handler: function (option) {
-        this.fetchResults()
+        this.fetchResults(4)
       }
     },
   },
@@ -334,14 +333,14 @@ export default {
       this.$router.replace({
         query: { ...this.$route.query, limit: newLimit, skip: 0 }
       })
-      this.fetchResults()
+      this.fetchResults(5)
     },
 
     facetMenuMounted: function () {
-      this.fetchResults()
+      this.fetchResults(6)
     },
 
-    fetchResults: function () {
+    fetchResults: function (origin) {
       this.isLoadingSearch = true
       var contentType = 'sparcAward'
       var consortiaType = this.$route.query.consortiaType
@@ -369,6 +368,15 @@ export default {
           })
           .finally(() => {
             this.isLoadingSearch = false
+            console.log('fetched', origin, {
+            content_type: contentType,
+            query: this.$route.query.search,
+            limit: this.searchData.limit,
+            skip: this.searchData.skip,
+            order: sortOrder,
+            'fields.focus[in]': anatomicalFocus,
+            'fields.program[in]': consortiaType
+          })
           })
       }
       this.$refs.altSearchResults?.retrieveAltTotals()
@@ -376,7 +384,7 @@ export default {
 
     onFacetSelectionChange: function () {
       this.searchData.skip = 0
-      this.fetchResults()
+      this.fetchResults(7)
     },
 
     onPaginationPageChange: function (page) {
@@ -387,7 +395,7 @@ export default {
         query: { ...this.$route.query, skip: offset }
       })
 
-      this.fetchResults()
+      this.fetchResults(8)
     },
 
     onResize: function (width) {
