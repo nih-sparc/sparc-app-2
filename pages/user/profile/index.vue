@@ -83,11 +83,8 @@
               <div class="org-container">
                 <template v-for="organization in organizations" :key="organization.id">
                   <repository-card 
-                    :thumbnailUrl="organization.logo"
-                    :description="getOrganizationDescription(organization)" 
-                    :status="organization.status"
-                    :buttonLink="getButtonLink(organization)" 
-                />
+                    :organizationInfo="organization"
+                  />
                 </template>
               </div>
             </div>
@@ -114,6 +111,27 @@
             </div>
             <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
           </div>
+
+          <div class="section heading2 p-16 mt-16">
+            <div class="datasets-container-title">
+              <span class="heading2 mb-16">In Progress Datasets ({{ inProgressDatasets.length }})</span>
+              <span>
+                <client-only>
+                  <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                    <template v-slot:reference>
+                      <svgo-icon-help class="icon-help" />
+                    </template>
+                    <div>
+                      In Progress Datasets relates to all Datasets, Computational and Anatomical models that you have created on Pennsieve and are not yet published. If there are datasets that you feel should be
+                      linked to you please contact curation@sparc.science
+                    </div>
+                  </el-popover>
+                </client-only>
+              </span>
+            </div>
+            <gallery v-loading="inProgressDatasetsLoading" galleryItemType="inProgressDatasets" :items="inProgressDatasets" />
+          </div>
+
           <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
@@ -246,6 +264,8 @@ export default {
       datasetSubmissions: [],
       showDatasetSubmissionModal: false,
       datasetsLoading: true,
+      inProgressDatasets: [],
+      inProgressDatasetsLoading: true,
       submissionsLoading: true,
       questions: [],
       defaultForm: {},
@@ -305,10 +325,11 @@ export default {
     orcid: {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
+          await this.fetchOrganizations()
           this.fetchPublishedDatasets(newValue)
+          this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
-          this.fetchOrganizations()
         }
       },
       immediate: true
@@ -317,32 +338,64 @@ export default {
   methods: {
     async fetchPublishedDatasets(orcid) {
       const filter = `contributors.curie:\"ORCID:${orcid}\"`
-      this.datasets = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
-        filters: filter,
-        hitsPerPage: 999
-      }).then(({ hits }) => {
+
+      try {
+        const { hits } = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
+          filters: filter,
+          hitsPerPage: 999
+        })
+
         let items = []
-        hits.forEach(async hit => {
-          const datasetName = pathOr('', ['item', 'name'], hit)
-          const datasetId = propOr('', 'objectID', hit)
-          const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
-          const numCitations = await this.getCitationsCount(pennsieveIdentifier)
-          const numDownloads = this.getDownloadsCount(datasetId)
-          items.push({
-            'name': datasetName,
-            'intId': datasetId,
-            'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
-            'numDownloads': numDownloads,
-            'numCitations': numCitations
-          })
-        })
-        return items
+
+        for (const hit of hits) {
+            const datasetName = pathOr('', ['item', 'name'], hit)
+            const datasetId = propOr('', 'objectID', hit)
+            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+
+            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
+
+            const numDownloads = this.getDownloadsCount(datasetId);
+
+            items.push({
+                'name': datasetName,
+                'intId': datasetId,
+                'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
+                'numDownloads': numDownloads,
+                'numCitations': numCitations
+            })
+        }
+
+        this.datasets = items
+      } catch (error) {
+        this.datasets = []
+      } finally {
+        this.datasetsLoading = false
+      }
+    },
+    async fetchInProgressDatasets() {
+      let orgIntIds = []
+      this.organizations.forEach(org => {
+        orgIntIds.push(org.intId)
       })
-        .catch(() => {
-          return []
-        }).finally(() => {
-          this.datasetsLoading = false
-        })
+
+      for (let id of orgIntIds) {
+        try {
+          await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${id}&api_key=${this.userToken}`)
+
+          let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/paginated?onlyMyDatasets=true&publicationStatus=draft&api_key=${this.userToken}`)
+          const datasets = data.datasets
+
+          datasets.forEach(async dataset => { 
+            let datasetId = dataset.content.id
+            let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/${datasetId}/banner?api_key=${this.userToken}`)
+            this.inProgressDatasets.push({
+              ...dataset,
+              banner: data.banner
+            })
+          })
+        } catch(e) {}
+      }
+      this.inProgressDatasetsLoading = false
     },
     async fetchDatasetSubmissions() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
@@ -370,11 +423,15 @@ export default {
     async getCitationsCount(id) {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
       const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
-      return await this.$axios.get(url, { headers }).then(({ data }) => {
-        return propOr('0', 'length', data)
-      }).catch(() => {
-        return 0
-      })
+
+      try {
+          const response = await this.$axios.get(url, { headers })
+          const count = response.data.length
+          
+          return count;
+      } catch (error) {
+          return 0
+      }
     },
     async fetchOrganizations() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
@@ -394,12 +451,6 @@ export default {
         this.hasError = true
         return []
       })
-    },
-    getOrganizationDescription(org) {
-      return `Open the ${org.name} workspace in Pennsieve`
-    },
-    getButtonLink(org) {
-      return `${this.$config.public.PENNSIEVE_URL}/${org.id}/datasets`
     },
     getDownloadsCount(id) {
       let numDownloads = 0

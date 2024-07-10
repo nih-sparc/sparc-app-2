@@ -176,7 +176,9 @@ export default {
     },
     getSearchResultsType(item) {
       return item !== undefined ? 
-        (item.types[0].name === 'computational model' ? 'simulation' : 'dataset') :
+        (item.types[0].name === 'computational model' ? 'simulation'
+          : item.types[0].name === 'device' ? 'device'
+          : 'dataset') :
         ''
     }
   }

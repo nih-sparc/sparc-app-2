@@ -57,7 +57,8 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     '@zadigetvoltaire/nuxt-gtm',
     '@nuxtjs/turnstile',
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
+    "nuxt-simple-robots"
   ],
   turnstile: {
     siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAATLCwNJ5HNQWRsX'
@@ -200,8 +201,29 @@ export default defineNuxtConfig({
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
+    sources: [
+      '/api/__sitemap__/urls'
+    ],
     xslColumns: [
       { label: 'URL', width: '100%' }
     ],
   },
+  robots: {
+    sitemap: 'https://sparc.science/sitemap.xml',
+    allow: ['/datasets'],
+    // provide simple disallow rules for all robots `user-agent: *`
+    // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
+    disallow: [
+      '/welcome', 
+      '/user', 
+      '/data', 
+      '/contact-us', 
+      '/help', 
+      '/signup', 
+      '/maps',
+      '/news-and-events/submit',
+      '/news-and-events/community-spotlight/submit'
+    ],
+    blockNonSeoBots: true
+  }
 })
