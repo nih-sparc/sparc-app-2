@@ -63,8 +63,56 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
       // Open a provenance card
-      cy.clickNeuron(coordinate, pixelChange)
+      cy.clickOnNeuron(coordinate, pixelChange)
 
+      cy.get('.maplibregl-popup-content > .tooltip-container > .main').as('ProvenanceCard')
+      // Check for the provenance card content
+      cy.get('@ProvenanceCard').within(() => {
+        cy.get('.title').should('exist')
+        cy.get('.subtitle').should('exist')
+        cy.get('.content-container').should('not.be.visible')
+        cy.get('#show-path-info').click()
+        cy.get('.content-container').should('be.visible')
+      })
+      // Check for the provenance card buttons
+      cy.get('@ProvenanceCard').then(($content) => {
+        if ($content.text().includes('Explore origin data')) {
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+          cy.get('#open-dendrites-button').click({ force: true })
+          cy.get('.box-card > .sidebar-container').should('be.visible')
+          cy.get('.box-card > .close-tab').click()
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+        }
+        if ($content.text().includes('Explore destination data')) {
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+          cy.get('.content-container > :nth-child(3) > .el-button').click({ force: true })
+          cy.get('.box-card > .sidebar-container').should('be.visible')
+          cy.get('.box-card > .close-tab').click()
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+        }
+        if ($content.text().includes('Search for data on components')) {
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+          cy.get('.content-container > [style=""]').click({ force: true })
+          cy.get('.box-card > .sidebar-container').should('be.visible')
+          cy.get('.box-card > .close-tab').click()
+          cy.get('.box-card > .sidebar-container').should('not.be.visible')
+        }
+        if ($content.text().includes('Open publications')) {
+          cy.window().then((window) => {
+            cy.stub(window, 'open').as('Open')
+          })
+          cy.get('#open-pubmed-button').click()
+          cy.get('@Open').should('have.been.calledOnceWithExactly', Cypress.sinon.match(/^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov(?:\/.*)/), '_blank')
+          cy.get('@Open').should('be.calledWith', Cypress.sinon.match.string).then((stub) => {
+            const url = stub.args[0][0]
+            const termUrl = decodeURIComponent(url.slice(url.indexOf("?term=")));
+            const invalidTermFound = ['pubmed', 'doi.org'].some(term => termUrl.includes(term))
+            expect(!invalidTermFound, 'Should not contain pubmed or doi.org').to.be.true
+          })
+        }
+      })
+      // Close the provenance card
+      cy.get('.maplibregl-popup-close-button').click({ force: true })
     })
   })
 
