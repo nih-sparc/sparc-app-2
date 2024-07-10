@@ -69,7 +69,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       // Open a provenance card
       cy.clickNeuron(coordinate, pixelChange)
 
-      cy.visit('/maps?type=ac')
     })
   })
 
@@ -116,7 +115,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     // Check for keyword(highlighted part) in displayed viewers
     cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should('exist')
 
-    cy.visit('/maps?type=ac')
   })
 
   scaffoldDatasetIds.forEach((datasetId) => {

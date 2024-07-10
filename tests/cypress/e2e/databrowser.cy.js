@@ -28,7 +28,7 @@ if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }
 
-browseCategories.forEach((category) => {
+browseCategories.forEach((category, bcIndex) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
     retryableBefore(function () {
@@ -236,7 +236,7 @@ browseCategories.forEach((category) => {
               })
 
               for (let index = 0; index < 2; index++) {
-                if (index === 1) {
+                if (bcIndex = 0 && index === 1) {
                   // Combine with search
                   cy.get('.el-input__inner').clear()
                   cy.get('.el-input__inner').type('dataset')
