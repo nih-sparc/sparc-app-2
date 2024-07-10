@@ -281,24 +281,24 @@ export default {
             total: 0
           }
           this.fetchConsortiaStyle(this.consortiaType.id)
-          this.fetchResults(1)
+          this.fetchResults()
         } 
       }
     },
     '$route.query.search': {
       handler: function () {
         this.searchQuery = this.$route.query.search
-        this.fetchResults(2)
+        this.fetchResults()
       }
     },
     '$route.query.projectsSort': {
       handler: function (option) {
-        this.fetchResults(3)
+        this.fetchResults()
       }
     },
     '$route.query.selectedProjectsAnatomicalFocusIds': {
       handler: function (option) {
-        this.fetchResults(4)
+        this.fetchResults()
       }
     },
   },
@@ -333,14 +333,14 @@ export default {
       this.$router.replace({
         query: { ...this.$route.query, limit: newLimit, skip: 0 }
       })
-      this.fetchResults(5)
+      this.fetchResults()
     },
 
     facetMenuMounted: function () {
-      this.fetchResults(6)
+      this.fetchResults()
     },
 
-    fetchResults: function (origin) {
+    fetchResults: function () {
       this.isLoadingSearch = true
       var contentType = 'sparcAward'
       var consortiaType = this.$route.query.consortiaType
@@ -368,15 +368,6 @@ export default {
           })
           .finally(() => {
             this.isLoadingSearch = false
-            console.log('fetched', origin, {
-            content_type: contentType,
-            query: this.$route.query.search,
-            limit: this.searchData.limit,
-            skip: this.searchData.skip,
-            order: sortOrder,
-            'fields.focus[in]': anatomicalFocus,
-            'fields.program[in]': consortiaType
-          })
           })
       }
       this.$refs.altSearchResults?.retrieveAltTotals()
@@ -384,7 +375,7 @@ export default {
 
     onFacetSelectionChange: function () {
       this.searchData.skip = 0
-      this.fetchResults(7)
+      this.fetchResults()
     },
 
     onPaginationPageChange: function (page) {
@@ -395,7 +386,7 @@ export default {
         query: { ...this.$route.query, skip: offset }
       })
 
-      this.fetchResults(8)
+      this.fetchResults()
     },
 
     onResize: function (width) {
