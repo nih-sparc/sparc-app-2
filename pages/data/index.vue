@@ -17,17 +17,19 @@
           Browse categories
         </div>
         <ul class="search-tabs">
-          <li v-for="search in searchTypes" :key="search.label">
-            <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
-                name: 'data',
-                query: {
-                  ...$route.query,
-                  type: search.type,
-                }
-              }">
-              {{ search.label }}
-            </nuxt-link>
-          </li>
+          <template v-for="search in searchTypes" :key="search.label">
+            <li v-if="(search.type == 'device' && showDeviceType) || search.type != 'device'">
+              <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
+                  name: 'data',
+                  query: {
+                    ...$route.query,
+                    type: search.type,
+                  }
+                }">
+                {{ search.label }}
+              </nuxt-link>
+            </li>
+          </template>
         </ul>
       </div>
       <div class="search-bar__container">
@@ -268,6 +270,9 @@ export default {
   },
 
   computed: {
+    showDeviceType() {
+      return this.$config.public.SHOW_DEVICE_TYPE == 'true'
+    },
     searchType: function () {
       const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
       const searchType = this.searchTypes.find(searchType => {
