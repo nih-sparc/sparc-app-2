@@ -1,15 +1,16 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
-// central coordinate { 'x': 768, 'y': 373 }
+// central coordinate around { 'x': 768, 'y': 373 }
 const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
 
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
-const taxonModels = [...new Set(Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item))]
+const taxonModels = stringToArray(Cypress.env('TAXON_MODELS'), ',')
 let loadedModels = new Set()
 
 /**
@@ -20,7 +21,7 @@ const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
 const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
-const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
+const scaffoldDatasetIds = stringToArray(Cypress.env('SCAFFOLD_DATASET_IDS'), ',')
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   retryableBefore(function () {

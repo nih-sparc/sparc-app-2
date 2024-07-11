@@ -1,4 +1,5 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 const browseCategories = ['dataset', 'model', 'simulation']
 
@@ -10,20 +11,20 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 /**
  * List of keywords
  */
-const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
+const searchKeywords = stringToArray(Cypress.env('SEARCH_KEYWORDS'), ',')
 
 let filterFacets = []
 /**
  * Single facet
  */
-const filterFacet = [...new Set(Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item))]
+const filterFacet = stringToArray(Cypress.env('FILTER_FACET'), ',')
 if (filterFacet && filterFacet.length === 1) {
   filterFacets.push(filterFacet)
 }
 /**
  * List of facets
  */
-const multipleFilterFacets = [...new Set(Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item))]
+const multipleFilterFacets = stringToArray(Cypress.env('MULTIPLE_FILTER_FACETS'), ',')
 if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }

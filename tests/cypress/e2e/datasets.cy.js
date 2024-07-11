@@ -1,9 +1,10 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 /**
  * List of dataset ids
  */
-const datasetIds = [...new Set(Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
+const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
 datasetIds.forEach(datasetId => {
 
