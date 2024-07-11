@@ -125,16 +125,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.3.2":
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.3.2.tgz#94f54210ffcd7abc76318533a9a9f4bf5bde20bf"
-  integrity sha512-GJldzUwtpX9OxBaMRHCY5yb4fqciQddH4VYD0gcCeoLTEn4JAAyMSnOV/70/iuEZ39B8qab5fIc3iuWW6Za5kQ==
+"@abi-software/mapintegratedvuer@1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.3.3.tgz#d910023f8d28557748639c0b010f5f5f089e2d4a"
+  integrity sha512-R5r1nHwhK3ju14ohOhQJV2L+aV4C53hp8JdBlgYG8AKkFFHbWf+6rxYLHPUIZk+htw8dSI0k2AzlsZdVKowMjg==
   dependencies:
     "@abi-software/flatmapvuer" "^1.3.1"
     "@abi-software/map-side-bar" "^2.3.1"
     "@abi-software/map-utilities" "^1.0.0"
     "@abi-software/plotvuer" "1.0.0"
-    "@abi-software/scaffoldvuer" "^1.3.0"
+    "@abi-software/scaffoldvuer" "^1.3.2"
     "@abi-software/simulationvuer" "1.0.0"
     "@abi-software/svg-sprite" "1.0.0"
     "@element-plus/icons-vue" "^2.3.1"
@@ -172,10 +172,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.3.0.tgz#9b3faf145cb5ed73fa9e92d717df3c256c03f515"
-  integrity sha512-+p9aldQfj/j4pLLbt4074UXCSgvmli+9tU0zSijTfa7A0uwuwRa6rXZ9+PC7UkOGgRHFRgNoHLegtXWMtl/9Tw==
+"@abi-software/scaffoldvuer@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.3.2.tgz#07d2c74de2a9d9851341d53828038bc2a037dc93"
+  integrity sha512-kV2JaYaLbG4AknJM7kh0vOG62d/Mu9Bf9IRPlwD5kGuNQ1SJzIuhDzSxyI922c5h46gcY7ywNJWR9jT7d/BXDQ==
   dependencies:
     "@abi-software/map-utilities" "^1.0.0"
     "@abi-software/sparc-annotation" "^0.3.1"
@@ -191,7 +191,7 @@
     vue "^3.4.15"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.9.0"
+    zincjs "^1.10.1"
 
 "@abi-software/simulationvuer@1.0.0":
   version "1.0.0"
@@ -20460,10 +20460,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.9.0.tgz#8ba2c5a4e8753a6f2870d86d3bc8814eefdc93a1"
-  integrity sha512-9YG/jqjVhZECRK85ak8H0MAFU4pyjp+ZbxnHI0zs4s/dOqlhVk/KczwB6aKupjtxGGFx0HK8ujoUJH+gT6K/1w==
+zincjs@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.10.1.tgz#ddb4687008fa7b3d25f7ef3f5a545c2506b0fb41"
+  integrity sha512-d64tWvuE54U4PcYRIBALdLbPavXbVEZmzYdoJblB7k6deFjEyB65fP01IxoRT24VhxXjyoaCfLCn8kERSNkrRA==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
