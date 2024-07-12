@@ -186,7 +186,7 @@ export default defineNuxtConfig({
         defer: true,
         compatibility: false,
         source: 'https://www.googletagmanager.com/gtm.js',
-        enabled: process.env.ROOT_URL == 'http://localhost:3000' || process.env.ROOT_URL == 'http://localhost:9083' ? false : true,
+        enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
         debug: true,
         loadScript: true,
         enableRouterSync: true,
