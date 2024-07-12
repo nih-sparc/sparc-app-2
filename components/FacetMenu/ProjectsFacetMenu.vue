@@ -80,6 +80,9 @@ export default {
     if (this.$route.query.selectedProjectsAnatomicalFocusIds) {
       this.defaultCheckedAnatomicalFocusIds = this.$route.query.selectedProjectsAnatomicalFocusIds.split(",")
     }
+    else {
+      this.$emit('projects-selections-changed')
+    }
   },
 
   methods: {

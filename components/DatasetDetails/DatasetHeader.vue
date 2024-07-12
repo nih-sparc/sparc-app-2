@@ -187,10 +187,10 @@ export default {
       return !this.embargoed && this.numCitations !== 0
     },
     numCitationsText: function() {
-      return this.showCitations ? `${this.numCitations}` : 'n/a'
+      return this.showCitations ? `${this.numCitations}` : 'N/A'
     },
     numDownloadsText: function() {
-      return this.embargoed ? 'n/a' : `${this.numDownloads}`
+      return this.embargoed ? 'N/A' : `${this.numDownloads}`
     }
   },
 

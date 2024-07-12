@@ -100,7 +100,7 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
     cy.wait(5000)
 
     cy.get('body').then(($body) => {
-      if ($body.find('.maplibregl-popup-close-button').length === 0) {
+      if ($body.find('.sidebar-container > .tab-container').length === 0) {
         coorX -= pixel
         clickOnNeuron()
       }

@@ -6,6 +6,7 @@
     <Meta name="description" hid="description" :content="`Browse ${title}`" />
     <Meta name="og:description" hid="og:description" :content="`Browse ${title}`" />
     <Meta name="twitter:description" :content="`Browse ${title}`" />
+    <Meta name="robots" content="noindex, nofollow" />
   </Head>
   <div class="page-data">
     <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
@@ -16,17 +17,19 @@
           Browse categories
         </div>
         <ul class="search-tabs">
-          <li v-for="search in searchTypes" :key="search.label">
-            <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
-                name: 'data',
-                query: {
-                  ...$route.query,
-                  type: search.type,
-                }
-              }">
-              {{ search.label }}
-            </nuxt-link>
-          </li>
+          <template v-for="search in searchTypes" :key="search.label">
+            <li v-if="(search.type == 'device' && showDeviceType) || search.type != 'device'">
+              <nuxt-link class="search-tabs__button" :class="{ active: search.type === $route.query.type }" :to="{
+                  name: 'data',
+                  query: {
+                    ...$route.query,
+                    type: search.type,
+                  }
+                }">
+                {{ search.label }}
+              </nuxt-link>
+            </li>
+          </template>
         </ul>
       </div>
       <div class="search-bar__container">
@@ -133,7 +136,8 @@ import SortMenu from '@/components/SortMenu/SortMenu.vue'
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   simulation: DatasetSearchResults,
-  model: DatasetSearchResults
+  model: DatasetSearchResults,
+  device: DatasetSearchResults
 }
 
 const searchTypes = [
@@ -148,6 +152,10 @@ const searchTypes = [
   {
     label: 'Computational Models',
     type: 'simulation',
+  },
+  {
+    label: 'Devices',
+    type: 'device'
   }
 ]
 
@@ -220,11 +228,12 @@ export default {
         total: 0
       },
       facets: [],
-      dataTypes: ['dataset', 'simulation', 'model'],
+      dataTypes: ['dataset', 'simulation', 'model', 'device'],
       humanReadableDataTypesLookup: {
         dataset: 'Datasets',
         model: 'Anatomical Models',
         simulation: 'Computational Models',
+        device: 'Devices'
       },
       resultCounts: {
         model: 0,
@@ -261,6 +270,9 @@ export default {
   },
 
   computed: {
+    showDeviceType() {
+      return this.$config.public.SHOW_DEVICE_TYPE == 'true'
+    },
     searchType: function () {
       const searchTypeQuery = pathOr('', ['query', 'type'], this.$route)
       const searchType = this.searchTypes.find(searchType => {
@@ -395,6 +407,7 @@ export default {
       const datasetsFilter =
         searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
           : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
+          : searchType === 'device' ? 'item.types.name:Device'
           : "item.types.name:Dataset"
 
       /* First we need to find only those facets that are relevant to the search query.
@@ -476,7 +489,8 @@ export default {
       const datasetsFilter =
         searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
           : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
-            : "item.types.name:Dataset"
+          : searchType === 'device' ? 'item.types.name:Device'
+          : "item.types.name:Dataset"
 
       var filters = this.$refs.datasetFacetMenu?.getFilters()
       filters = filters === undefined ?
