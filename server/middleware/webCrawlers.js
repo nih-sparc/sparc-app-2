@@ -22,6 +22,7 @@ export default defineEventHandler((event) => {
   if (firstPartOfRoute != '' && algoliaSearchPaths.includes(firstPartOfRoute)) {
     if (userAgent && botNames.some(botName => userAgent.indexOf(botName) !== -1)) {
       res.statusCode = 403
+      res.end('Bot detected, serving 403 response.')
     }
   }
 })
