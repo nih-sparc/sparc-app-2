@@ -9,7 +9,7 @@ export default defineEventHandler((event) => {
     'MicroMessenger', 'Kinza', 'TheWorld', 'YoudaoBot', 'Qwantify', 'Bleriot', 'WikiApiary', 'MegaIndex', 'MojeekBot', 'BLEXBot',
     'coccocbot', 'SEOkicks', 'SeznamBot', 'YandexImages', 'TweetmemeBot', 'Yeti', 'AhrefsBot', 'Bytespider', 'MJ12bot', 'TurnitinBot',
     'CCBot', 'Linguee\sBot', 'DotBot', 'SeznamBot', 'SemrushBot', 'Turnitin', 'YandexBot', 'mj12bot', 'Blexbot', 'OpenLinkProfiler',
-    'Ltx71', 'Rogerbot', 'Baiduspider']
+    'Ltx71', 'Rogerbot', 'Baiduspider', 'crawl']
 
   // Remove leading '/' if present
   let firstPartOfRoute = route?.length > 0 ? route.replace(/^\//, '') : ''
