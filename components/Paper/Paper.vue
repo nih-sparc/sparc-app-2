@@ -2,7 +2,7 @@
   <div>
     <div class="subpage-col about-page-border p-24">
       <div class="subpage-row">
-        <img v-if="logoSrc" class="logo-image mr-16 p-16" :src="logoSrc" />
+        <img v-if="logoSrc" class="logo-image mr-16" :src="logoSrc" />
         <div class="subpage-col">
           <div class="about-page-text" v-html="text" />
           <div v-if="showShareLinks">
