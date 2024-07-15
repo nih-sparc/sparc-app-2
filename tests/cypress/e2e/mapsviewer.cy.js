@@ -63,42 +63,24 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
+      
       // Open a provenance card
       cy.clickOnNeuron(coordinate, pixelChange)
 
-      cy.get('.maplibregl-popup-content > .tooltip-container > .main').as('ProvenanceCard')
-      // Check for the provenance card content
-      cy.get('@ProvenanceCard').within(() => {
-        cy.get('.title').should('exist')
-        cy.get('.subtitle').should('exist')
-        cy.get('.content-container').should('not.be.visible')
-        cy.get('#show-path-info').click()
-        cy.get('.content-container').should('be.visible')
-      })
-      // Check for the provenance card buttons
-      cy.get('@ProvenanceCard').then(($content) => {
-        if ($content.text().includes('Explore origin data')) {
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-          cy.get('#open-dendrites-button').click({ force: true })
-          cy.get('.box-card > .sidebar-container').should('be.visible')
-          cy.get('.box-card > .close-tab').click()
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-        }
-        if ($content.text().includes('Explore destination data')) {
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-          cy.get('.content-container > :nth-child(3) > .el-button').click({ force: true })
-          cy.get('.box-card > .sidebar-container').should('be.visible')
-          cy.get('.box-card > .close-tab').click()
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-        }
-        if ($content.text().includes('Search for data on components')) {
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-          cy.get('.content-container > [style=""]').click({ force: true })
-          cy.get('.box-card > .sidebar-container').should('be.visible')
-          cy.get('.box-card > .close-tab').click()
-          cy.get('.box-card > .sidebar-container').should('not.be.visible')
-        }
-        if ($content.text().includes('Open publications')) {
+      // Check for the sidebar tabs
+      cy.get('.title-text-table > .title-text').should('have.length', 2)
+      cy.get(':nth-child(2) > .title-text-table > .title-text').as('Connectivity')
+      cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+      cy.get('@ActiveTab').should('contain', 'Connectivity')
+
+      // Check for the provenance content
+      cy.get('.connectivity-info-title').within(($content) => {
+        cy.get('.block > .title').should('exist')
+        cy.get('.block > .subtitle').should('exist')
+        cy.get('.el-button').should('exist')
+
+        // Check for button click
+        if ($content.text().includes('Open publications in PubMed')) {
           cy.window().then((window) => {
             cy.stub(window, 'open').as('Open')
           })
@@ -112,8 +94,27 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           })
         }
       })
+
+      // Check for the provenance content
+      cy.get('.sidebar-container > .main > .content-container').then(($content) => {
+        cy.wrap($content).get('.attribute-title-container').should('exist')
+
+        // Check for button click
+        const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
+        buttonTexts.forEach((text) => {
+          if ($content.text().includes(text)) {
+            cy.contains(/Explore destination data/i).click({force: true})
+            cy.get('@ActiveTab').should('contain', 'Search')
+            cy.get('@Connectivity').click({force: true})
+            cy.get('@ActiveTab').should('contain', 'Connectivity')
+          }
+        })
+      })
+      
       // Close the provenance card
-      cy.get('.maplibregl-popup-close-button').click({ force: true })
+      cy.get('.active-tab > .el-button').click()
+      cy.get('.sidebar-container > .tab-container').should('not.exist')
+      cy.get('.close-tab > .el-icon').click()
     })
   })
 
