@@ -135,15 +135,6 @@ export default {
     whoWeAreButtonLink() {
       return pathOr('', ['fields', 'whoWeAreButtonLink'], this.consortiaItem)
     },
-    whatWeDo() {
-      return pathOr('', ['fields', 'whatWeDo'], this.consortiaItem)
-    },
-    whatWeDoButtonText() {
-      return pathOr('', ['fields', 'whatWeDoButtonText'], this.consortiaItem)
-    },
-    whatWeDoButtonLink() {
-      return pathOr('', ['fields', 'whatWeDoButtonLink'], this.consortiaItem)
-    },
     learnMore() {
       return pathOr([], ['fields', 'learnMore'], this.consortiaItem)
     },
