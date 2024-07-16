@@ -43,7 +43,8 @@ export default {
     const { $contentfulClient, $axios } = useNuxtApp()
     const consortias =
       await $contentfulClient.getEntries({
-        content_type: config.public.ctf_consortia_content_type_id
+        content_type: config.public.ctf_consortia_content_type_id,
+        order: 'fields.displayOrder'
       }).then(({ items }) => {
         return items
       }).catch(() => {
@@ -128,6 +129,7 @@ export default {
     font-size: 1em;
     font-weight: 700;
     color: #24245b;
+    width: 11rem;
 
     &:hover {
       text-decoration: underline;
