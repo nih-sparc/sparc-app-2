@@ -215,6 +215,8 @@ export default defineNuxtConfig({
     // provide simple disallow rules for all robots `user-agent: *`
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
     disallow: [
+      '/datasets',
+      '/data',
       '/welcome', 
       '/user', 
       '/contact-us', 
