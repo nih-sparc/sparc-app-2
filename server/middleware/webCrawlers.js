@@ -18,7 +18,7 @@ export default defineEventHandler((event) => {
     // Grab the first directory
     firstPartOfRoute = firstPartOfRoute.substring(0, index);
   }
-  // block all un-wanted bots and only return a 200 for googlebot so that client does not get rendered
+  // Block all un-wanted bots and only return a 200 for googlebot so that client does not get rendered
   if (firstPartOfRoute == '' || algoliaSearchPaths.includes(firstPartOfRoute)) {
     if (userAgent && botNames.some(botName => userAgent.indexOf(botName.toLowerCase()) !== -1)) {
       res.statusCode = 403
