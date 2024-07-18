@@ -1,15 +1,16 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
-// central coordinate { 'x': 768, 'y': 373 }
+// central coordinate around { 'x': 768, 'y': 373 }
 const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
 
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
-const taxonModels = [...new Set(Cypress.env('TAXON_MODELS').split(',').map(item => item.trim()).filter(item => item))]
+const taxonModels = stringToArray(Cypress.env('TAXON_MODELS'), ',')
 let loadedModels = new Set()
 
 /**
@@ -20,7 +21,7 @@ const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
 
 const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
-const scaffoldDatasetIds = [...new Set(Cypress.env('SCAFFOLD_DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
+const scaffoldDatasetIds = stringToArray(Cypress.env('SCAFFOLD_DATASET_IDS'), ',')
 
 describe('Maps Viewer', { testIsolation: false }, function () {
   retryableBefore(function () {
@@ -28,37 +29,33 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   beforeEach(function () {
-    cy.intercept('**/flatmap/**').as('flatmap')
-    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
-    cy.intercept('**/s3-resource/**').as('s3-resource')
     cy.intercept('**/query?**').as('query')
+    cy.intercept('**/flatmap/**').as('flatmap')
     cy.intercept('**/dataset_info/**').as('dataset_info')
     cy.intercept('**/datasets/**').as('datasets')
+    cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
+    cy.intercept('**/s3-resource/**').as('s3-resource')
   })
 
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
-
-      cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-      cy.waitForLoadingMask()
-
       if (index === 0) {
+        cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
+        cy.waitForLoadingMask()
         loadedModels.add('Rat')
       }
 
       // Switch to the second flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true })
       cy.get('.el-select-dropdown__item').should('be.visible')
-      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true })
-
-      if (!loadedModels.has(model)) {
-
-        cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-        cy.waitForLoadingMask()
-
-        loadedModels.add(model)
-      }
+      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
+        if (!loadedModels.has(model)) {
+          cy.wait(['@flatmap'], { timeout: 20000 })
+          cy.waitForLoadingMask()
+          loadedModels.add(model)
+        }
+      })
 
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
@@ -66,24 +63,71 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
       cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
+      
       // Open a provenance card
-      cy.clickNeuron(coordinate, pixelChange)
+      cy.clickOnNeuron(coordinate, pixelChange)
 
-      cy.visit('/maps?type=ac')
+      // Check for the sidebar tabs
+      cy.get('.title-text-table > .title-text').should('have.length', 2)
+      cy.get(':nth-child(2) > .title-text-table > .title-text').as('Connectivity')
+      cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+      cy.get('@ActiveTab').should('contain', 'Connectivity')
+
+      // Check for the provenance content
+      cy.get('.connectivity-info-title').within(($content) => {
+        cy.get('.block > .title').should('exist')
+        cy.get('.block > .subtitle').should('exist')
+        cy.get('.el-button').should('exist')
+
+        // Check for button click
+        if ($content.text().includes('Open publications in PubMed')) {
+          cy.window().then((window) => {
+            cy.stub(window, 'open').as('Open')
+          })
+          cy.get('#open-pubmed-button').click()
+          cy.get('@Open').should('have.been.calledOnceWithExactly', Cypress.sinon.match(/^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov(?:\/.*)/), '_blank')
+          cy.get('@Open').should('be.calledWith', Cypress.sinon.match.string).then((stub) => {
+            const url = stub.args[0][0]
+            const termUrl = decodeURIComponent(url.slice(url.indexOf("?term=")));
+            const invalidTermFound = ['pubmed', 'doi.org'].some(term => termUrl.includes(term))
+            expect(!invalidTermFound, 'Should not contain pubmed or doi.org').to.be.true
+          })
+        }
+      })
+
+      // Check for the provenance content
+      cy.get('.sidebar-container > .main > .content-container').then(($content) => {
+        cy.wrap($content).get('.attribute-title-container').should('exist')
+
+        // Check for button click
+        const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
+        buttonTexts.forEach((text) => {
+          if ($content.text().includes(text)) {
+            cy.contains(/Explore destination data/i).click({force: true})
+            cy.get('@ActiveTab').should('contain', 'Search')
+            cy.get('@Connectivity').click({force: true})
+            cy.get('@ActiveTab').should('contain', 'Connectivity')
+          }
+        })
+      })
+      
+      // Close the provenance card
+      cy.get('.active-tab > .el-button').click()
+      cy.get('.sidebar-container > .tab-container').should('not.exist')
+      cy.get('.close-tab > .el-icon').click()
     })
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-
-    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-    cy.waitForLoadingMask()
-
     // Switch to the human related flatmap
-    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger', { timeout: 30000 }).click()
     cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
-
-    cy.wait(['@flatmap', '@query', '@dataset_info', '@datasets'], { timeout: 20000 })
-    cy.waitForLoadingMask()
+    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
+      if (!loadedModels.has(threeDSyncView)) {
+        cy.wait(['@flatmap'], { timeout: 20000 })
+        cy.waitForLoadingMask()
+        loadedModels.add(threeDSyncView)
+      }
+    })
 
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
@@ -116,15 +160,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     // Check for keyword(highlighted part) in displayed viewers
     cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should('exist')
 
-    cy.visit('/maps?type=ac')
   })
 
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
-
-      cy.waitForLoadingMask()
-
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
 

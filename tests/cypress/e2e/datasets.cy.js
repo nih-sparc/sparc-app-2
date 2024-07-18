@@ -1,9 +1,10 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 /**
  * List of dataset ids
  */
-const datasetIds = [...new Set(Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
+const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
 datasetIds.forEach(datasetId => {
 
@@ -124,13 +125,13 @@ datasetIds.forEach(datasetId => {
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
 
-      //Check 'Get Dataset' directs to files tab
-      cy.contains('.button-container span', 'Get Dataset').click()
+      //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
+      cy.contains('.button-container span', 'Get').click()
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
       cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
 
-      //Check 'Cite Dataset' directs to Cite tab
-      cy.contains('.button-container span', 'Cite Dataset').click()
+      //Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
+      cy.contains('.button-container span', 'Cite').click()
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
       cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
     });
@@ -157,7 +158,7 @@ datasetIds.forEach(datasetId => {
       // Check for Experimental Design
       cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
       cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
-      cy.get('.dataset-description-info').within(($el) => {
+      cy.get('.dataset-description-info').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($el) => {
         if ($el.text().includes('https://doi.org/')) {
           cy.get('.link2').should('exist')
           cy.get('.link2').should('have.length.above', 0)
@@ -227,12 +228,13 @@ datasetIds.forEach(datasetId => {
           cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then((value) => {
             cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
           });
+          cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+            cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
+              cy.get('.mt-8 > a').click()
 
-          cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
-            cy.get('.mt-8 > a').click()
-            cy.url({ timeout: 30000 }).should('contain', 'projects')
+              cy.waitForLoadingMask()
 
-            cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
+              cy.url().should('contain', 'projects')
               // Check for the title and the institution 
               cy.get('.row > .heading2').should('contain', title.trim());
               cy.get(':nth-child(4) > .label4').should('contain', institution.trim());

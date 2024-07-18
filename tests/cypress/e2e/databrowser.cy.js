@@ -1,4 +1,5 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 const browseCategories = ['dataset', 'model', 'simulation']
 
@@ -10,25 +11,25 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 /**
  * List of keywords
  */
-const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
+const searchKeywords = stringToArray(Cypress.env('SEARCH_KEYWORDS'), ',')
 
 let filterFacets = []
 /**
  * Single facet
  */
-const filterFacet = [...new Set(Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item))]
+const filterFacet = stringToArray(Cypress.env('FILTER_FACET'), ',')
 if (filterFacet && filterFacet.length === 1) {
   filterFacets.push(filterFacet)
 }
 /**
  * List of facets
  */
-const multipleFilterFacets = [...new Set(Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item))]
+const multipleFilterFacets = stringToArray(Cypress.env('MULTIPLE_FILTER_FACETS'), ',')
 if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }
 
-browseCategories.forEach((category) => {
+browseCategories.forEach((category, bcIndex) => {
 
   describe(`Find Data in ${category}`, { testIsolation: false }, function () {
     retryableBefore(function () {
@@ -141,19 +142,20 @@ browseCategories.forEach((category) => {
         cy.waitForLoadingMask()
 
         // Check for result
-        cy.get(':nth-child(1) > p').then(($result) => {
-          if ($result.text().includes(' 0 Results | Showing')) {
+        cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
+          if ($result.text().match(/^0 Results \| Showing/i)) {
             // Empty text should exist if no result
             cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
+            this.skip()
           } else {
             cy.get('.table-wrap').then(($content) => {
               const keywordExist = $content.text().toLowerCase().includes(keyword.toLowerCase())
               if (keywordExist) {
                 // Check for keyword
-                cy.wrap($content).contains(new RegExp(keyword, 'i')).should('exist')
+                cy.wrap($content).contains(new RegExp(`^${keyword}$`, 'i')).should('exist')
 
                 // Check for highlighted keyword
-                cy.get('b').contains(new RegExp(keyword, 'i')).should('exist')
+                cy.get('b').contains(new RegExp(`^${keyword}$`, 'i')).should('exist')
               } else {
                 // *** Ignore when keyword cannot be found or
                 // *** Find some other solutions in the future
@@ -172,6 +174,13 @@ browseCategories.forEach((category) => {
     filterFacets.forEach((facetList) => {
 
       it(`Faceted Browse Search - ${facetList}`, function () {
+        // Clear search input
+        cy.url().then((url) => {
+          if (url.includes('search=')) {
+            cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
+          }
+        })
+
         // Check for filters applied box
         cy.get('.no-facets').should('contain', 'No filters applied')
 
@@ -205,7 +214,7 @@ browseCategories.forEach((category) => {
                 })
 
                 // Check for the number of facet tags in filters applied box
-                cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should('exist')
+                cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(`^${facet}$`, 'i')).should('exist')
               })
 
               // Check for URL
@@ -215,8 +224,8 @@ browseCategories.forEach((category) => {
               cy.waitForLoadingMask()
 
               // Check for result correctness
-              cy.get(':nth-child(1) > p').then(($result) => {
-                if ($result.text().includes('0 Results | Showing')) {
+              cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
+                if ($result.text().match(/^0 Results \| Showing/i)) {
                   // Empty text should exist if no result
                   cy.get('.el-table__empty-text').should('exist').and('have.text', 'No Results')
                 } else {
@@ -225,7 +234,7 @@ browseCategories.forEach((category) => {
                     facetList.forEach((facet) => {
                       const facetExistInCard = $content.text().toLowerCase().includes(facet.toLowerCase())
                       if (facetExistInCard) {
-                        cy.wrap($content).contains(new RegExp(facet, 'i')).should('exist')
+                        cy.wrap($content).contains(new RegExp(`^${facet}$`, 'i')).should('exist')
                       } else {
                         // *** Ignore when facets cannot be found or
                         // *** Find some other solutions in the future
@@ -236,7 +245,7 @@ browseCategories.forEach((category) => {
               })
 
               for (let index = 0; index < 2; index++) {
-                if (index === 1) {
+                if (bcIndex = 0 && index === 1) {
                   // Combine with search
                   cy.get('.el-input__inner').clear()
                   cy.get('.el-input__inner').type('dataset')

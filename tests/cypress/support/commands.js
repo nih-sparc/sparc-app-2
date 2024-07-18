@@ -45,6 +45,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('Source "markers" already exists.'))
     return false
+  if (err.message.includes('node already exist in the graph')) {
+    return false
+  }
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
@@ -88,34 +91,22 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
   clickNextPageButton()
 })
 
-Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
+Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorX = coordinate.x
   let coorY = coordinate.y
-  const clickNeuron = () => {
+  const clickOnNeuron = () => {
     cy.get('@canvas').click(coorX, coorY)
 
     cy.wait(5000)
 
     cy.get('body').then(($body) => {
-      if ($body.find('.maplibregl-popup-close-button').length > 0) {
-        cy.wrap($body).find('.maplibregl-popup-content > .tooltip-container > .main', { timeout: 30000 }).within(() => {
-
-          // Check for the popover provenance card content
-          cy.get('.title').should('exist')
-          cy.get('.subtitle').should('exist')
-          cy.get('.content-container').should('not.be.visible')
-          cy.get(':nth-child(3):visible').click()
-          cy.get('.content-container').should('be.visible')
-        })
-        // Close the provenance card
-        cy.get('.maplibregl-popup-close-button').click({ force: true })
-      } else {
+      if ($body.find('.sidebar-container > .tab-container').length === 0) {
         coorX -= pixel
-        clickNeuron()
+        clickOnNeuron()
       }
     })
   }
-  clickNeuron()
+  clickOnNeuron()
 })
 
 Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {

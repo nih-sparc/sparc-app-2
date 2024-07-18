@@ -21,38 +21,42 @@
       <div class="body1 mb-16">
         Status: <b>{{ status }}</b>
       </div>
-      <a :href="buttonLink" target="_blank">
-        <el-button class='secondary'>
-          Launch Pennsieve <svgo-icon-open class="open-icon" />
-        </el-button>
-      </a>
+      <el-button @click="launchPennsieve" class='secondary'>
+        Launch Pennsieve <svgo-icon-open class="open-icon" />
+      </el-button>
     </div>
   </el-card>
 </template>
 <script>
+import { propOr } from 'ramda'
+import PennsieveOrganizations from '@/mixins/pennsieve-organizations'
+
 export default {
   name: 'RepositoryCard',
+  mixins: [PennsieveOrganizations],
   props: {
     width: {
       type: Number,
       default: 13.8
     },
-    description: {
-      type: String,
-      default: null
+    organizationInfo: {
+      type: Object,
+      default: {}
     },
-    status: {
-      type: String,
-      default: null
+  },
+  computed: {
+    link() {
+      return `${this.$config.public.PENNSIEVE_URL}/${propOr('', 'id', this.organizationInfo)}/datasets`
     },
-    buttonLink: {
-      type: String,
-      default: null
+    thumbnailUrl() {
+      return propOr('', 'logo', this.organizationInfo)
     },
-    thumbnailUrl: {
-      type: String,
-      default: null
+    description() {
+      return `Open the ${propOr('', 'name', this.organizationInfo)} workspace in Pennsieve`
     },
+    status() {
+      return propOr('', 'status', this.organizationInfo)
+    }
   }
 }
 </script>
