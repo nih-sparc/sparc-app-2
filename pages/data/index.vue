@@ -443,7 +443,9 @@ export default {
                 'item.description',
                 'item.modalities',
                 'anatomy.organ',
-                'organisms.primary.species.name'
+                'organisms.primary.species.name',
+                'pennsieve.owner.first.name',
+                'pennsieve.owner.last.name'
               ],
               highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
               highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
