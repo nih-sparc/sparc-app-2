@@ -2,9 +2,9 @@
 export default {
   name: 'MetricsPage',
 
-  async setup() {
+  setup() {
     const router = useRouter()
-    await router.replace({ path: "/about/metrics" })
+    router.replace({ path: "/about/metrics" })
   },
 }
 </script>

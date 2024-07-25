@@ -1,10 +1,10 @@
 <script>
 export default {
-  async setup() {
+  setup() {
     const route = useRoute()
     const router = useRouter()
     const newPath = route.href.replace('/resources/', '/tools-and-resources/')
-    await router.replace({ path: newPath })
+    router.replace({ path: newPath })
   },
 }
 </script>
