@@ -235,7 +235,9 @@ export default {
   flex-direction: row;
   border: solid 1px $lineColor1;
   background: white;
-
+  .el-row {
+    width: 100%;
+  }
   :deep(.publications-container) {
     display: flex;
     a {
