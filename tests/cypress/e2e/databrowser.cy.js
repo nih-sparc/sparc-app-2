@@ -121,7 +121,7 @@ browseCategories.forEach((category, bcIndex) => {
     searchKeywords.forEach((keyword) => {
 
       it(`Keyword Search - ${keyword}`, function () {
-        cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria')
+        cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria. i.e. PI/Researcher name or other keywords.')
 
         // Type keyword
         cy.get('.el-input__inner').clear()
