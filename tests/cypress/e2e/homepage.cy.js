@@ -68,7 +68,7 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for button link
     cy.get(':nth-child(1) > .feature-container > .button-link').should('contain', 'Data and Models').and('have.attr', 'href', '/data?type=dataset')
     cy.get(':nth-child(2) > .feature-container > .button-link').should('contain', 'Maps').and('have.attr', 'href', '/apps/maps?type=ac')
-    cy.get(':nth-child(3) > .feature-container > .button-link').should('contain', 'Discover').and('have.attr', 'href').and('contain', '/resources')
+    cy.get(':nth-child(3) > .feature-container > .button-link').should('contain', 'Discover').and('have.attr', 'href').and('contain', '/tools-and-resources')
     cy.get(':nth-child(4) > .feature-container > .button-link').should('contain', 'Submit').and('have.attr', 'href', '/share-data')
   })
 
