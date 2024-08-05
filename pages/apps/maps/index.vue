@@ -259,7 +259,7 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
   return [uuid, state, successMessage, failMessage]
 }
 
-const openViewWithQuery = async (route, $axios, sparcApi, algoliaIndex, discover_api, $pennsieveApiClient) => {
+const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, discover_api, $pennsieveApiClient) => {
   //Open the map with specific view defined by the query.
   //First get the bucket and facets information if available
   let s3Bucket = undefined
@@ -300,6 +300,8 @@ const openViewWithQuery = async (route, $axios, sparcApi, algoliaIndex, discover
     return await processEntry(route)
   } else if (route.query.type === 'wholebody') {
     startingMap = "WholeBody"
+  } else {
+    router.replace({ ...router.currentRoute, query: { type: 'ac' } })
   }
 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
@@ -310,6 +312,7 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const router = useRouter()
     const route = useRoute()
     let startingMap = "AC"
     let organ_name = undefined
@@ -347,7 +350,7 @@ export default {
         successMessage,
         failMessage,
         facets
-      ] = await openViewWithQuery(route, $axios, options.sparcApi, algoliaIndex,
+      ] = await openViewWithQuery(router, route, $axios, options.sparcApi, algoliaIndex,
         config.public.discover_api_host, $pennsieveApiClient)
     }
 
