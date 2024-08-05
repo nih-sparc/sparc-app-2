@@ -302,6 +302,7 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
     startingMap = "WholeBody"
   } else {
     router.replace({ ...router.currentRoute, query: { type: 'ac' } })
+    failMessage = 'Invalid parameters were detected. Default parameters will now be used.'
   }
 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
