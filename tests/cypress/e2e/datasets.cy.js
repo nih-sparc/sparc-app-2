@@ -1,9 +1,10 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 /**
  * List of dataset ids
  */
-const datasetIds = [...new Set(Cypress.env('DATASET_IDS').split(',').map(item => item.trim()).filter(item => item))]
+const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
 datasetIds.forEach(datasetId => {
 
@@ -157,7 +158,7 @@ datasetIds.forEach(datasetId => {
       // Check for Experimental Design
       cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
       cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
-      cy.get('.dataset-description-info').within(($el) => {
+      cy.get('.dataset-description-info').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($el) => {
         if ($el.text().includes('https://doi.org/')) {
           cy.get('.link2').should('exist')
           cy.get('.link2').should('have.length.above', 0)

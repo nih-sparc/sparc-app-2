@@ -1,10 +1,10 @@
 <script>
 export default {
-  async setup() {
+  setup() {
     const route = useRoute()
     const newPath = route.href.replace('/about/get-involved', '/about')
     const router = useRouter()
-    await router.replace({ path: newPath })
+    router.replace({ path: newPath })
   }
 }
 </script>

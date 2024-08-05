@@ -91,35 +91,22 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
   clickNextPageButton()
 })
 
-Cypress.Commands.add('clickNeuron', (coordinate, pixel) => {
+Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorX = coordinate.x
   let coorY = coordinate.y
-  const clickNeuron = () => {
+  const clickOnNeuron = () => {
     cy.get('@canvas').click(coorX, coorY)
 
     cy.wait(5000)
 
     cy.get('body').then(($body) => {
-      if ($body.find('.sidebar-container > .tab-container').length > 0) {
-        cy.get('.sidebar-container', { timeout: 30000 }).within(() => {
-          cy.get('.title-text').should('have.length', 2)
-          cy.get('.active-tab > .title-text-table > .title-text').should('contain', 'Connectivity')
-
-          // Check for the provenance card content
-          cy.get('.title').should('exist')
-          cy.get('.subtitle').should('exist')
-          cy.get('.main > .content-container').should('exist')
-          cy.get('.main > .content-container > .block').should('have.length.above', 0)
-        })
-        // Close the provenance card
-        cy.get('.close-tab').click({ force: true })
-      } else {
+      if ($body.find('.sidebar-container > .tab-container').length === 0) {
         coorX -= pixel
-        clickNeuron()
+        clickOnNeuron()
       }
     })
   }
-  clickNeuron()
+  clickOnNeuron()
 })
 
 Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {

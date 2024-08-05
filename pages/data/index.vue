@@ -36,7 +36,7 @@
         <div class="body1 mb-8">
           Search within category
         </div>
-        <search-controls-contentful class="search-bar" placeholder="Enter search criteria" :path="$route.path"
+        <search-controls-contentful class="search-bar" placeholder="Enter search criteria. i.e. PI/Researcher name or other keywords." :path="$route.path"
           showSearchText />
       </div>
     </div>
@@ -443,7 +443,9 @@ export default {
                 'item.description',
                 'item.modalities',
                 'anatomy.organ',
-                'organisms.primary.species.name'
+                'organisms.primary.species.name',
+                'pennsieve.owner.first.name',
+                'pennsieve.owner.last.name'
               ],
               highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
               highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`

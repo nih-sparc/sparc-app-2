@@ -3,21 +3,47 @@
     <div class="heading2 mb-8">
       Dataset Citation
     </div>
-    <body>
-      To promote reproducibility and give credit to investigators who publish
-      their data, we recommend citing your usage of SPARC datasets. To make it
-      easy, the SPARC Portal provides the full data citation, including the
-      option of different formats, under the Cite tab of each dataset page. For
-      more Information, please see our
+    <div class="label4">
+      How to cite this dataset
+    </div>
+    <div class="mb-8">
+      To promote reproducibility and give credit to your colleagues who publish their data, we recommend the following practices for 
+      citing a SPARC Dataset. Please acknowledge the contributors, cite the dataset(s) that contained the files that you used, and 
+      include the SPARC Portal URL & RRID of your future publications. To make it easy, the SPARC Portal provides the full data 
+      citation, including the option of different citation formats below, to incorporate into your manuscript. For more Information, 
+      including examples of how to include multiple datasets and repositories, please see our
       <a
         href="https://docs.sparc.science/docs/instructions-for-sparc-investigators-to-cite-their-datasets-in-manuscripts-1"
         target="_blank"
       >
         Help page
       </a>
-      .
-    </body>
-    <br />
+    </div>
+    <div class="label4">
+      {{ materialsCitationType.label }}
+    </div>
+    <div class="info-citation mb-16 py-16 pl-16 pr-24">
+      <button class="copy-button" @click="handleCitationCopy(materialsCitationType)">
+        <img src="../../static/images/copyIcon.png" />
+      </button>
+      <div class="citation-text">
+        {{ materialsCitationType.citationText }}
+      </div>
+    </div>
+    <div class="label4">
+      {{ availabilityCitationType.label }}
+    </div>
+    <div class="info-citation mb-16 py-16 pl-16 pr-24">
+      <button class="copy-button" @click="handleCitationCopy(availabilityCitationType)">
+        <img src="../../static/images/copyIcon.png" />
+      </button>
+      <div class="citation-text">
+        {{ availabilityCitationType.citationText }}
+      </div>
+    </div>
+    <div class="heading2 mb-8">
+      References
+    </div>
     <div v-for="citationType in citationTypes" :key="citationType.type">
       <div class="label4 mb-8">{{citationType.label}}</div>
       <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
@@ -96,6 +122,23 @@ export default {
           citationText: ''
         }
       ]
+    }
+  },
+  computed: {
+    datasetUrl() {
+      return `${this.$config.public.ROOT_URL}/datasets/${this.$route.params.datasetId}`
+    },
+    materialsCitationType() {
+      return {
+        label: 'Materials and Methods',
+        citationText: `Data and experimental protocols associated with this study are available on the SPARC Portal (RRID: SCR_017041): ${ this.datasetUrl }`
+      }
+    },
+    availabilityCitationType() {
+      return {
+        label: 'Data Availability Statement',
+        citationText: `Data are publicly available on the SPARC Portal (RRID:SCR_017041) at the following the URL: ${ this.datasetUrl }`
+      }
     }
   },
   methods: {
