@@ -320,7 +320,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.el-dialog__headerbtn').click();
 
           // Check for files breadcrumb
-          cy.get('.inline > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
+          cy.get('.mb-16 > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
           cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
           cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
           cy.get('tbody').then(($ele) => {
