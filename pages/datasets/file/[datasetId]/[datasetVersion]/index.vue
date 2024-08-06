@@ -7,6 +7,11 @@
         <form ref="zipForm" method="POST" :action="zipitUrl">
           <input v-model="zipData" type="hidden" name="data" />
         </form>  
+        <span class="help-link" v-if="hasViewer && (activeTabId in helpers)">
+          <a :href="`https://docs.sparc.science/docs/${helpers[activeTabId].link}`" target="_blank">
+            Find out more about the {{ helpers[activeTabId].name }}
+          </a>
+        </span>
         <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
           <biolucida-viewer v-if="hasBiolucidaViewer" v-show="activeTabId === 'imageViewer'" :data="biolucidaData"
             :datasetInfo="datasetInfo" :file="file" />
@@ -225,7 +230,21 @@ export default {
       tabs: [],
       file: {},
       zipData: '',
-      zipitUrl: config.public.zipit_api_host
+      zipitUrl: config.public.zipit_api_host,
+      helpers: {
+        imageViewer: {
+          name: 'Biolucida Viewer',
+          link: 'image-viewer-overview'
+        },
+        segmentationViewer: {
+          name: 'Segmentation Viewer',
+          link: 'segmentation-viewer-overview'
+        },
+        plotViewer: {
+          name: 'Plot Viewer',
+          link: 'plot-viewer'
+        }
+      }
     }
   },
 
@@ -368,3 +387,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.help-link {
+  float: right;
+  @media screen and (max-width: 29rem) {
+    float: none;
+  }
+}
+</style>
