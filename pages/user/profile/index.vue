@@ -91,6 +91,27 @@
           </div>
 
           <div class="section heading2 p-16 mt-16">
+            Available Shortcuts
+            <div class="resource-container body1">
+              Map Annotation:
+              <template v-if="annotatorAuthenticated">
+                <span class="label4"><b>You are authenticated.</b></span>
+                <div class="body4">
+                  Explore the latest map updates and add annotations to enhance current maps.
+                </div>
+                <div class="mt-8">
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Annotate on AC</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Annotate on FC</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Annotate on WholeBody</el-button>
+                </div>
+              </template>
+              <template v-else>
+                <span class="label4"><b>You are unauthenticated.</b></span>
+              </template>
+            </div>
+          </div>
+
+          <div class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
               <span>
@@ -275,11 +296,13 @@ export default {
       submissionToRetract: '',
       showRetractConfirmationModal: false,
       organizations: [],
+      annotatorAuthenticated: false
     }
   },
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
+    const mainStore = useMainStore()
     let downloadsSummary = 0
 
     try {
@@ -294,8 +317,22 @@ export default {
     } catch (error) {
       return 0
     }
+
+    const headers = {
+      "Accept": "application/json; charset=utf-8",
+      "Cache-Control": "no-store"
+    }
+    let annotatorAuthenticated = false
+    const url = `${config.public.flatmap_api}annotator/authenticate?key=${mainStore.userToken}&session=`
+    annotatorAuthenticated = await $axios.get(url, { headers }).then(() => {
+      return true
+    }).catch(() => {
+      return false
+    })
+
     return {
-      downloadsSummary
+      downloadsSummary,
+      annotatorAuthenticated
     }
   },
   computed: {
@@ -556,6 +593,14 @@ export default {
         doi: "",
         citation_type: ""
       })
+    },
+    handleAnnotateButtonClicked(type) {
+      const link = document.createElement('a')
+      link.href = this.$config.public.ROOT_URL + `/apps/maps?type=${type}&mode=annotation`
+      link.target = '_blank'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
     }
   }
 }

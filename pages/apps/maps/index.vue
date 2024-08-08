@@ -323,6 +323,7 @@ export default {
     let facets = []
     let uuid = undefined
     let state = undefined
+    let viewingMode = route.query.mode
 
     const options = {
       sparcApi: config.public.portal_api,
@@ -365,7 +366,8 @@ export default {
       failMessage,
       facets,
       uuid,
-      state
+      state,
+      viewingMode
     }
   },
   data() {
@@ -432,10 +434,16 @@ export default {
         this._instance.setCurrentEntry(this.currentEntry)
       }
     },
+    changeViewingMode: function () {
+      if (this._instance && this.viewingMode) {
+        this._instance.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
+      }
+    },
     mapMounted: function () {
       this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
+      this.changeViewingMode()
     },
   },
 }
