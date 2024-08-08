@@ -36,7 +36,7 @@
         <div class="body1 mb-8">
           Search within category
         </div>
-        <search-controls-contentful class="search-bar" placeholder="Enter search criteria. i.e. PI/Researcher name or other keywords." :path="$route.path"
+        <search-controls-contentful class="search-bar" placeholder="Enter search criteria (e.g., researcher name or other keywords)" :path="$route.path"
           showSearchText />
       </div>
     </div>
