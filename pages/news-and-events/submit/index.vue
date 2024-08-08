@@ -1,7 +1,8 @@
 <script>
 export default {
-  async setup() {
-    await navigateTo("/contact-us?type=story", { redirectCode: 301 })
-  },
+  setup() {
+    const router = useRouter()
+    router.replace({ path: "/contact-us?type=story" })
+  }
 }
 </script>

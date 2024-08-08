@@ -1,7 +1,8 @@
 <script>
 export default {
-  async setup() {
-    await navigateTo("/news-and-events/community-spotlight?selectedSpotlightTypes=successStory", { redirectCode: 301 })
+  setup() {
+    const router = useRouter()
+    router.replace({ path: "/news-and-events/community-spotlight?selectedSpotlightTypes=successStory" })
   }
 }
 </script>

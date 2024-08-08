@@ -104,12 +104,16 @@ export default {
           propPath: '_highlightResult.item.modalities'
         },
         {
-          displayName: 'Publication Date',
-          propPath: 'pennsieve'
-        },
-        {
           displayName: 'Samples',
           propPath: 'item.statistics'
+        },
+        {
+          displayName: 'Principal Investigator',
+          propPath: '_highlightResult.pennsieve.owner'
+        },
+        {
+          displayName: 'Publication Date',
+          propPath: 'pennsieve'
         }
       ]
     }
@@ -133,6 +137,12 @@ export default {
           const organs = _.get(item, property.propPath)
           return organs
             ? organs.map(item => this.toTermUppercase(item.name.value)).join(', ')
+            : undefined
+        }
+        case 'Principal Investigator': {
+          const owner = _.get(item, property.propPath)
+          return owner
+            ? this.toTermUppercase(`${owner.first.name.value} ${this.toTermUppercase(owner.last.name.value)}`)
             : undefined
         }
         case 'Includes': {
@@ -176,7 +186,9 @@ export default {
     },
     getSearchResultsType(item) {
       return item !== undefined ? 
-        (item.types[0].name === 'computational model' ? 'simulation' : 'dataset') :
+        (item.types[0].name === 'computational model' ? 'simulation'
+          : item.types[0].name === 'device' ? 'device'
+          : 'dataset') :
         ''
     }
   }

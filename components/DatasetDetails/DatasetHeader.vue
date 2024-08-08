@@ -187,10 +187,10 @@ export default {
       return !this.embargoed && this.numCitations !== 0
     },
     numCitationsText: function() {
-      return this.showCitations ? `${this.numCitations}` : 'n/a'
+      return this.showCitations ? `${this.numCitations}` : 'N/A'
     },
     numDownloadsText: function() {
-      return this.embargoed ? 'n/a' : `${this.numDownloads}`
+      return this.embargoed ? 'N/A' : `${this.numDownloads}`
     }
   },
 
@@ -235,7 +235,9 @@ export default {
   flex-direction: row;
   border: solid 1px $lineColor1;
   background: white;
-
+  .el-row {
+    width: 100%;
+  }
   :deep(.publications-container) {
     display: flex;
     a {

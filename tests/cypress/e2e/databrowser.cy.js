@@ -1,4 +1,5 @@
 import { retryableBefore } from "../support/retryableBefore.js"
+import { stringToArray } from "../support/stringToArray.js"
 
 const browseCategories = ['dataset', 'model', 'simulation']
 
@@ -10,25 +11,25 @@ const pageLimit = Cypress.env('PAGE_LIMIT')
 /**
  * List of keywords
  */
-const searchKeywords = [...new Set(Cypress.env('SEARCH_KEYWORDS').split(',').map(item => item.trim()).filter(item => item))]
+const searchKeywords = stringToArray(Cypress.env('SEARCH_KEYWORDS'), ',')
 
 let filterFacets = []
 /**
  * Single facet
  */
-const filterFacet = [...new Set(Cypress.env('FILTER_FACET').split(',').map(item => item.trim()).filter(item => item))]
+const filterFacet = stringToArray(Cypress.env('FILTER_FACET'), ',')
 if (filterFacet && filterFacet.length === 1) {
   filterFacets.push(filterFacet)
 }
 /**
  * List of facets
  */
-const multipleFilterFacets = [...new Set(Cypress.env('MULTIPLE_FILTER_FACETS').split(',').map(item => item.trim()).filter(item => item))]
+const multipleFilterFacets = stringToArray(Cypress.env('MULTIPLE_FILTER_FACETS'), ',')
 if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }
 
-browseCategories.forEach((category) => {
+browseCategories.forEach((category, bcIndex) => {
   describe(`Browsing Data in ${category}`, { testIsolation: false }, function () {
     retryableBefore(function () {
       cy.visitLoadedPage(`/data?type=${category}`)
@@ -233,14 +234,20 @@ browseCategories.forEach((category) => {
         cy.intercept('**/query?**').as('query')
       })
 
-      filterFacets.forEach((facetList, index) => {
+      filterFacets.forEach((facetList, ffIndex) => {
         it(`${facetList}`, function () {
           cy.forceGoBack(`data?type=${category}`)
+          // Clear search input
+          cy.url().then((url) => {
+            if (url.includes('search=')) {
+              cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
+            }
+          })
 
           cy.checkInitialisedFilter()
 
           cy.wait(5000)
-          if (index === 0) {
+          if (ffIndex === 0) {
             cy.get('.label-content-container').should(($filter) => {
               expect($filter, 'Filter content should not be visible').to.not.be.visible
             })
@@ -300,7 +307,7 @@ browseCategories.forEach((category) => {
                       expect($text, 'Empty message should be displayed').to.contain('No Results')
                     })
                   } else {
-                    // Show all datasets in order to check the sorting functionality
+                    // Show all datasets
                     cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                     cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
@@ -343,32 +350,47 @@ browseCategories.forEach((category) => {
                 })
 
                 for (let index = 0; index < 2; index++) {
-                  if (index === 1) {
+                  if (bcIndex = 0 && index === 1) {
                     // Combine with search
                     cy.get('.el-input__inner').clear()
                     cy.get('.el-input__inner').type('dataset')
-                    cy.checkFacetCheckbox(facetList, 'check', $label)
+                    cy.filterCheckbox(facetList, 'check', $label)
                   }
-
+  
                   // Uncheck all
-                  cy.checkFacetCheckbox(facetList, 'uncheck', $label)
-                  cy.checkInitialisedFilter()
-
+                  cy.filterCheckbox(facetList, 'uncheck', $label)
+                  cy.checkFilterCleared()
+  
                   // Close all tags in order
-                  cy.checkFacetCheckbox(facetList, 'check', $label)
-                  cy.closeFacetTag(facetList, $label)
-                  cy.checkInitialisedFilter()
-
+                  cy.filterCheckbox(facetList, 'check', $label)
+                  facetList.forEach((facet) => {
+                    // Check the matched facet checkbox
+                    cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+                      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
+                        const isChecked = $checkbox.hasClass('is-checked')
+                        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
+                        // Close all facet tags in filters applied box
+                        if (isChecked) cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
+                        if (isIndeterminate) {
+                          cy.get('.el-card__body > .capitalize > .el-tag__close').each(($close) => {
+                            cy.wrap($close).click()
+                          })
+                        }
+                      })
+                    })
+                  })
+                  cy.checkFilterCleared()
+  
                   // Reset all
-                  cy.checkFacetCheckbox(facetList, 'check', $label)
+                  cy.filterCheckbox(facetList, 'check', $label)
                   cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                  cy.checkInitialisedFilter()
-
+                  cy.checkFilterCleared()
+  
                   // Close one child facet tag and then click reset all
-                  cy.checkFacetCheckbox(facetList, 'check', $label)
+                  cy.filterCheckbox(facetList, 'check', $label)
                   cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
                   cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                  cy.checkInitialisedFilter()
+                  cy.checkFilterCleared()
                 }
               } else {
                 this.skip()

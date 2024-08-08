@@ -84,6 +84,9 @@
   .background-popper.el-popover.el-popper,
   .open-map-popper.el-popover.el-popper {
     background: #fff !important;
+  }
+
+  .open-map-popper.el-popover.el-popper {
     width: unset !important;
   }
 
@@ -108,7 +111,7 @@
   color: #303133 !important;
   font-size: 12px;
   line-height: 1rem;
-  height: 1rem;
+  height: fit-content;
   padding: 10px;
 
   &.el-popper[x-placement^='top'] {

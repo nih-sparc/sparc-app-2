@@ -120,11 +120,9 @@ export default {
     try {
       const image_identifier = props.biolucidaData.biolucida_image_id
       const [
-        blv_info,
         xmp_metadata,
         readme_markdown
       ] = await Promise.all([
-        biolucida.getBLVLink(image_identifier),
         biolucida.getXMPInfo(image_identifier),
         fetch(props.datasetInfo.readme).then((response) => {
           return response.text()
@@ -133,10 +131,8 @@ export default {
 
       const html = MarkedMixin.methods.parseMarkdown(readme_markdown)
       const data_collection = extractSection(/data collect[^:]+:/i, html)
-      const blv_link = blv_info['link']
       return {
         data_collection,
-        blv_link,
         xmp_metadata
       }
     } catch (e) {

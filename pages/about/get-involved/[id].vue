@@ -1,9 +1,10 @@
 <script>
 export default {
-  async setup() {
+  setup() {
     const route = useRoute()
     const newPath = route.href.replace('/about/get-involved', '/about')
-    await navigateTo(newPath, { redirectCode: 301 })
+    const router = useRouter()
+    router.replace({ path: newPath })
   }
 }
 </script>

@@ -61,8 +61,8 @@
           </div>
           <div class="associated-datasets-container pr-16" :style="{ maxHeight: associatedDatasetsMaxHeight + 'px' }">
             <br />
-            <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4 ">
-              <dataset-card :id="dataset.id" />
+            <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4">
+              <dataset-card :id="Number(dataset.objectID)" />
             </div>
           </div>
         </el-col>
@@ -101,7 +101,7 @@ export default {
       })
       return {
         fields: project.fields,
-        associatedDatasets: propOr([], 'datasets', associatedDatasets),
+        associatedDatasets,
         associatedDatasetsMaxHeight: ref(0)
       }
     } catch (e) {

@@ -24,6 +24,19 @@
           Cite Scaffold
         </el-button>
       </template>
+      <template v-else-if="datasetTypeName === 'device'">
+        <template v-if="hasFiles">
+          <el-button
+            class="dataset-button"
+            @click="actionButtonClicked('files')"
+          >
+            Get Device
+          </el-button>
+        </template>
+        <el-button class="secondary" @click="actionButtonClicked('cite')">
+          Cite Device
+        </el-button>
+      </template>
       <template v-else-if="datasetTypeName === 'computational model'">
         <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
           View Simulation
@@ -68,15 +81,17 @@
           </sparc-tooltip>
         </a>
       </template>
-      <el-button
-        v-if="hasFiles"
-        @click="actionButtonClicked('files')"
-      >
-        Get Dataset
-      </el-button>
-      <el-button class="secondary" @click="actionButtonClicked('cite')">
-        Cite Dataset
-      </el-button>
+      <template v-else>
+        <el-button
+          v-if="hasFiles"
+          @click="actionButtonClicked('files')"
+        >
+          Get Dataset
+        </el-button>
+        <el-button class="secondary" @click="actionButtonClicked('cite')">
+          Cite Dataset
+        </el-button>
+      </template>
       <template v-if="sdsViewer">
         <a
           :href="sdsViewer"

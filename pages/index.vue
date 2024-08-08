@@ -16,25 +16,29 @@
       </template>
     </page-hero>
     <div class="secondary-background">
-      <featured-data :featured-data="featuredData" />
+      <client-only><sparc-numbers :explore-data="exploreData"/></client-only>
     </div>
     <hr />
     <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
-      <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
+      <client-only><featured-data :featured-data="featuredData" /></client-only>
     </div>
     <hr />
-    <homepage-news :news="newsAndEvents" />
+    <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     <hr />
     <div class="secondary-background">
-      <stay-connected />
+      <homepage-news :news="newsAndEvents" />
     </div>
+    <hr />
+    <stay-connected />
+    <hr />
   </div>
 </template>
 
 <script>
 import FeaturedData from '@/components/FeaturedData/FeaturedData.vue'
+import SparcNumbers from '@/components/SparcNumbers/SparcNumbers.vue'
 import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
@@ -51,6 +55,7 @@ export default {
 
   components: {
     FeaturedData,
+    SparcNumbers,
     HomepageNews,
     PortalFeatures,
     ProjectsAndDatasets,
@@ -170,6 +175,7 @@ export default {
   data: () => {
     return {
       featuredData: [],
+      exploreData: [],
       newsAndEvents: [],
       portalFeatures: [],
       featuredProject: {},

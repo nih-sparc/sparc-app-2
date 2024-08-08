@@ -13,32 +13,42 @@
     <div class="heading2 mb-8">
       Metadata
     </div>
-    <p class="mb-8"><strong>Experimental Design: </strong></p>
+    <template v-if="isDevice">
+      <p class="mb-8"><strong>Intended Use: </strong>{{ intendedUseText }}</p>
+      <p class="mb-8"><strong>Current Use: </strong>{{ currentUse }}</p>
+      <p class="mb-8"><strong>Device Type: </strong>{{ deviceType }}</p>
+      <p class="mb-8"><strong>Application: </strong>{{ deviceApplication }}</p>
+      <p class="mb-8"><strong>Device Target (disease or disorder): </strong> {{ deviceTarget }}</p>
+      <p class="mb-8"><strong>Target Population: </strong></p>
+    </template>
+    <template v-else>
+      <p class="mb-8"><strong>Experimental Design: </strong></p>
+      <div class="experimental-design-container mb-8">
+        <span class="experimental-design-section-text-column"><strong>Protocol Links: </strong></span>
+        <span v-if="datasetRecords.length !== 0">
+          <div v-for="record in datasetRecords" :key="record.id">
+            <a
+              class="link2"
+              :href="record.url"
+              target="_blank"
+            >
+              {{ record.url }}
+            </a>
+          </div> 
+        </span>
+        <span
+          v-else
+        >
+          N/A
+        </span>
+      </div>
+      <div class="experimental-design-container mb-16">
+        <span><strong>Experimental Approach: </strong>{{experimentalApproachText}}</span>
+      </div>
+      <p class="mb-8"><strong>Subject Information: </strong></p>
+    </template>
     <div class="experimental-design-container mb-8">
-      <span class="experimental-design-section-text-column"><strong>Protocol Links: </strong></span>
-      <span v-if="datasetRecords.length !== 0">
-        <div v-for="record in datasetRecords" :key="record.id">
-          <a
-            class="link2"
-            :href="record.url"
-            target="_blank"
-          >
-            {{ record.url }}
-          </a>
-        </div> 
-      </span>
-      <span
-        v-else
-      >
-        n/a
-      </span>
-    </div>
-    <div class="experimental-design-container mb-16">
-      <span><strong>Experimental Approach: </strong>{{experimentalApproachText}}</span>
-    </div>
-    <p class="mb-8"><strong>Subject Information: </strong></p>
-    <div class="experimental-design-container mb-8">
-      <span><strong>Anatomical structure: </strong>{{anatomicalStructureText}}</span>
+      <span><strong>Anatomical Structure: </strong>{{anatomicalStructureText}}</span>
     </div>
     <div class="experimental-design-container mb-8">
       <span><strong>Species: </strong>{{speciesText}}</span>
@@ -47,10 +57,10 @@
       <span><strong>Sex: </strong>{{sexText}}</span>
     </div>
     <div class="experimental-design-container mb-8">
-      <span><strong>Age range: </strong>{{ageRangeText}}</span>
+      <span><strong>Age Range: </strong>{{ageRangeText}}</span>
     </div>
-    <div class="experimental-design-container mb-16">
-      <span><strong>Number of samples: </strong>{{samplesMetadataText}}</span>
+    <div v-if="!isDevice" class="experimental-design-container mb-16">
+      <span><strong>Number of Samples: </strong>{{samplesMetadataText}}</span>
     </div>
     <div class="mb-16">
       <sparc-tooltip
@@ -101,7 +111,7 @@
       </span>
     </span>
     <span v-else>
-      <p>n/a</p>
+      <p>N/A</p>
     </span>
   </div>
 </template>
@@ -146,7 +156,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useMainStore, ['datasetFacetsData','datasetInfo', 'userToken']),
+    ...mapState(useMainStore, ['datasetFacetsData', 'datasetTypeName', 'datasetInfo', 'userToken']),
     EMBARGO_ACCESS() {
       return EMBARGO_ACCESS
     },
@@ -182,7 +192,37 @@ export default {
       {
         return `${this.numberSamples} samples from ${this.numberSubjects} subjects`
       }
-      return 'n/a'
+      return 'N/A'
+    },
+    intendedUseText() {
+      let intendedUse = _.get(this.datasetMetadataInfo, 'device.intendedUse[0].name', 'N/A')
+      if (intendedUse.length > 0)
+        intendedUse = intendedUse.charAt(0).toUpperCase() + intendedUse.slice(1)
+      return intendedUse
+    },
+    currentUse() {
+      let currentUse = _.get(this.datasetMetadataInfo, 'device.currentUse[0].name', 'N/A')
+      if (currentUse.length > 0)
+        currentUse = currentUse.charAt(0).toUpperCase() + currentUse.slice(1)
+      return currentUse
+    },
+    deviceType() {
+      let deviceType = _.get(this.datasetMetadataInfo, 'device.type[0].name', 'N/A')
+      if (deviceType.length > 0)
+        deviceType = deviceType.charAt(0).toUpperCase() + deviceType.slice(1)
+      return deviceType
+    },
+    deviceApplication() {
+      let deviceApplication = _.get(this.datasetMetadataInfo, 'device.application[0].description', 'N/A')
+      if (deviceApplication.length > 0)
+        deviceApplication = deviceApplication.charAt(0).toUpperCase() + deviceApplication.slice(1)
+      return deviceApplication
+    },
+    deviceTarget() {
+      let deviceTarget = _.get(this.datasetMetadataInfo, 'device.target[0].name', 'N/A')
+      if (deviceTarget.length > 0)
+        deviceTarget = deviceTarget.charAt(0).toUpperCase() + deviceTarget.slice(1)
+      return deviceTarget
     },
     /**
      * Gets dataset id
@@ -208,6 +248,9 @@ export default {
         url += `?api_key=${this.userToken}`
       }
       return url
+    },
+    isDevice() {
+      return this.datasetTypeName == 'device'
     }
   },
 
@@ -228,7 +271,7 @@ export default {
       const facet = this.datasetFacetsData.find(item => item.key === facetKey)
       if (facet === undefined || !facet.children)
       {
-        return 'n/a'
+        return 'N/A'
       }
       facet.children.forEach(child => {
         let childLabel = child.label.charAt(0).toUpperCase() + child.label.slice(1)

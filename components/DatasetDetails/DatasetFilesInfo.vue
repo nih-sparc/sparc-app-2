@@ -146,16 +146,14 @@
       <h2 class="heading2">
         Dataset Files
       </h2>
-      <div class="flex mb-16">
-        <span>
-          <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
-        </span>
-        <span class="dataset-link inline">
+        <div class="mb-16">
           <a href="https://docs.sparc.science/docs/navigating-a-sparc-dataset" class="dataset-link" target="_blank">
             How to navigate datasets
           </a>
-        </span>
-      </div>
+        </div>
+        <div class="mb-16">
+          <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
+        </div>
       <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch" />
     </div>
     <data-use-agreement-popup :show-dialog="showAgreementPopup" @agreement-loaded="agreementLoaded"
@@ -405,15 +403,6 @@ hr {
   @media (min-width: 64rem) {
     border-left: 1px solid $lineColor1
   }
-}
-.flex {
-  display: flex;
-  align-content: space-between;
-}
-
-.inline {
-  margin-left: auto;
-  display: inline-block;
 }
 
 .download-text-block {
