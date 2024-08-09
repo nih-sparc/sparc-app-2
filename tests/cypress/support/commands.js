@@ -56,22 +56,24 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 
 Cypress.Commands.add('waitForLoadingMask', () => {
   cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
-
   cy.wait(5000)
-
 })
 
 Cypress.Commands.add('visitLoadedPage', (url) => {
   cy.visit(url)
-
   cy.waitForLoadingMask()
-
 })
 
 Cypress.Commands.add('forceGoBack', (link) => {
   cy.url().then((url) => {
     if (!url.includes(link)) {
       cy.go('back')
+      cy.waitForLoadingMask()
+    }
+  })
+  cy.url().then((url) => {
+    if (url.includes('search=')) {
+      cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
       cy.waitForLoadingMask()
     }
   })
@@ -82,6 +84,7 @@ Cypress.Commands.add('forceGoBack', (link) => {
  */
 Cypress.Commands.add('checkDatasetSorted', (sort) => {
   cy.get('.el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').as('datasetImgs')
+  // Get first dataset image alt text
   cy.get('@datasetImgs').first().invoke('attr', 'alt').then((alt) => {
     cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
     cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sort).click()
@@ -91,6 +94,7 @@ Cypress.Commands.add('checkDatasetSorted', (sort) => {
     }
     cy.waitForLoadingMask()
 
+    // Get last dataset image alt text
     cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
       expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
     })
@@ -138,7 +142,7 @@ Cypress.Commands.add('closeFacetTag', (factArray, checkbox) => {
   })
 })
 
-Cypress.Commands.add('checkInitialisedFilter', () => {
+Cypress.Commands.add('checkFilterInitialised', () => {
   cy.get('.el-card__body > .capitalize').should(($card) => {
     expect($card, 'Facet should not be applied').to.not.exist
   })
@@ -178,9 +182,7 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorY = coordinate.y
   const clickOnNeuron = () => {
     cy.get('@canvas').click(coorX, coorY)
-
     cy.wait(5000)
-
     cy.get('body').then(($body) => {
       if ($body.find('.sidebar-container > .tab-container').length === 0) {
         coorX -= pixel
@@ -189,30 +191,4 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
     })
   }
   clickOnNeuron()
-})
-
-Cypress.Commands.add('filterCheckbox', (factArray, action, checkbox) => {
-  factArray.forEach((facet) => {
-    // Check the matched facet checkbox
-    cy.wrap(checkbox).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
-      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
-        const isChecked = $checkbox.hasClass('is-checked')
-        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
-        if (action === 'check' && !isChecked) {
-          cy.wrap($label).click()
-        } else if (action === 'uncheck' && (isChecked || isIndeterminate)) {
-          cy.wrap($label).click() // If isIndeterminate after this click checkbox will turn to isChecked
-          if (isIndeterminate) {
-            cy.wrap($label).click() // One more click to uncheck
-          }
-        }
-      })
-    })
-  })
-})
-
-Cypress.Commands.add('checkFilterCleared', () => {
-  cy.get('.el-card__body > .capitalize').should('not.exist')
-  cy.get('.no-facets').should('contain', 'No filters applied')
-  cy.url().should('not.contain', 'selectedFacetIds')
 })

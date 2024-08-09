@@ -167,8 +167,11 @@ browseCategories.forEach((category, bcIndex) => {
 
       searchKeywords.forEach((keyword) => {
         it(`${keyword}`, function () {
+          // In case previous test has been skipped
           cy.forceGoBack(`data?type=${category}`)
 
+          // Ckeck for placeholder
+          cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria (e.g., researcher name or other keywords)')
           // Searching keyword
           cy.get('.el-input__inner').clear()
           cy.get('.el-input__inner').type(keyword)
@@ -176,54 +179,58 @@ browseCategories.forEach((category, bcIndex) => {
           cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').should(($icon) => {
             expect($icon, 'Clear search icon should be visible').to.be.visible
           })
+
           cy.get('.search-text').click()
+
+          // Check for keyword in URL
+          cy.url().should((url) => {
+            expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
+          })
 
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
-            if (intercept.response.body.hits.length === 0) {
-              // Empty text should show up if no result
-              cy.get('.el-table__empty-text').should(($text) => {
-                expect($text, 'Empty message should be displayed').to.contain('No Results')
-              })
-            } else {
-              // Show all datasets in order to check the sorting functionality
-              cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-              cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+            cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
+              if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
+                // Empty text should show up if no result
+                cy.get('.el-table__empty-text').should(($text) => {
+                  expect($text, 'Empty message should be displayed').to.contain('No Results')
+                })
+              } else {
+                // Show all datasets in order to check the sorting functionality
+                cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+                cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
-              cy.wait('@query', { timeout: 20000 })
-              cy.waitForLoadingMask()
+                cy.wait('@query', { timeout: 20000 })
+                cy.waitForLoadingMask()
 
-              // Check for keyword in table
-              cy.get('.table-wrap').then(($table) => {
-                const keywordExistInTable = $table.text().toLowerCase().includes(keyword.toLowerCase())
-                if (keywordExistInTable) {
-                  cy.get('b').contains(new RegExp(keyword, 'i')).should(($keyword) => {
-                    expect($keyword, 'Highlighted keyword should exist in table').to.exist
-                  })
-                  // Check for keyword in URL
-                  cy.url().should((url) => {
-                    expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
-                  })
-                } else {
-                  cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > a').click()
+                // Check for keyword in table
+                cy.get('.table-wrap').then(($table) => {
+                  const keywordExistInTable = $table.text().toLowerCase().includes(keyword.toLowerCase())
+                  if (keywordExistInTable) {
+                    cy.get('b').contains(new RegExp(keyword, 'i')).should(($keyword) => {
+                      expect($keyword, 'Highlighted keyword should exist in table').to.exist
+                    })
+                  } else {
+                    cy.get('.img-dataset > img').first().click()
 
-                  cy.wait('@query', { timeout: 20000 })
-                  cy.waitForLoadingMask()
-                
-                  cy.get('.details-container').then(($detail) => {
-                    const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
-                    if (keywordExistInDetail) {
-                      cy.contains(new RegExp(keyword, 'i')).should(($keyword) => {
-                        expect($keyword, 'Keyword should exist in detail page').to.exist
-                      })
-                    } else {
-                      this.skip()
-                    }
-                  })
-                  cy.go('back')
-                }
-              })
-            }
+                    cy.wait('@query', { timeout: 20000 })
+                    cy.waitForLoadingMask()
+
+                    cy.get('.details-container').then(($detail) => {
+                      const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
+                      if (keywordExistInDetail) {
+                        cy.contains(new RegExp(keyword, 'i')).should(($keyword) => {
+                          expect($keyword, 'Keyword should exist in detail page').to.exist
+                        })
+                      } else {
+                        this.skip()
+                      }
+                    })
+                    cy.go('back')
+                  }
+                })
+              }
+            })
           })
         })
       })
@@ -236,17 +243,11 @@ browseCategories.forEach((category, bcIndex) => {
 
       filterFacets.forEach((facetList, ffIndex) => {
         it(`${facetList}`, function () {
+          // In case previous test has been skipped
           cy.forceGoBack(`data?type=${category}`)
-          // Clear search input
-          cy.url().then((url) => {
-            if (url.includes('search=')) {
-              cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
-            }
-          })
-
-          cy.checkInitialisedFilter()
 
           cy.wait(5000)
+          cy.checkFilterInitialised()
           if (ffIndex === 0) {
             cy.get('.label-content-container').should(($filter) => {
               expect($filter, 'Filter content should not be visible').to.not.be.visible
@@ -294,103 +295,87 @@ browseCategories.forEach((category, bcIndex) => {
 
                 // Check for URL
                 cy.url().should((url) => {
-                  expect(url, 'URL should contain selected facet IDs').to.contain(`selectedFacetIds=`)
+                  expect(url, 'URL should contain facet ids parameter').to.contain(`selectedFacetIds=`)
                 })
 
-                cy.wait('@query', { timeout: 20000 })
-                cy.waitForLoadingMask()
-
+                cy.wait(5000)
                 cy.wait('@query', { timeout: 20000 }).then((intercept) => {
-                  if (intercept.response.body.hits.length === 0) {
-                    // Empty text should show up if no result
-                    cy.get('.el-table__empty-text').should(($text) => {
-                      expect($text, 'Empty message should be displayed').to.contain('No Results')
-                    })
-                  } else {
-                    // Show all datasets
-                    cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-                    cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
-                    cy.wait('@query', { timeout: 20000 })
-                    cy.waitForLoadingMask()
-
-                    // Check for facets exist in dataset card
-                    cy.get('.table-wrap').then(($content) => {
-                      facetList.forEach((facet) => {
-                        const facetExistInTable = $content.text().toLowerCase().includes(facet.toLowerCase())
-                        if (facetExistInTable) {
-                          cy.get('.property-table').contains(new RegExp(facet, 'i')).should(($facet) => {
-                            expect($facet, 'Facet should exist in table').to.exist
-                          })
-                          // Check for keyword in URL
-                          cy.url().should((url) => {
-                            expect(url, 'URL should contain facet ids parameter').to.contain('selectedFacetIds')
-                          })
-                        } else {
-                          cy.get(':nth-child(1) > .el-table_1_column_2 > .cell > :nth-child(1) > a').click()
-
-                          cy.wait('@query', { timeout: 20000 })
-                          cy.waitForLoadingMask()
-                        
-                          cy.get('.details-container').then(($detail) => {
-                            const facetExistInDetail = $detail.text().toLowerCase().includes(facet.toLowerCase())
-                            if (facetExistInDetail) {
-                              cy.contains(new RegExp(facet, 'i')).should(($facet) => {
-                                expect($facet, 'Keyword should exist in detail page').to.exist
-                              })
-                            } else {
-                              this.skip()
-                            }
-                          })
-                          cy.go('back')
-                        }
+                  cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
+                    if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
+                      // Empty text should show up if no result
+                      cy.get('.el-table__empty-text').should(($text) => {
+                        expect($text, 'Empty message should be displayed').to.contain('No Results')
                       })
-                    })
-                  }
+                    } else {
+                      // Show all datasets
+                      cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+                      cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+
+                      cy.wait('@query', { timeout: 20000 })
+                      cy.waitForLoadingMask()
+
+                      // Check for facets exist in dataset card
+                      cy.get('.table-wrap').then(($content) => {
+                        facetList.forEach((facet) => {
+                          const facetExistInTable = $content.text().toLowerCase().includes(facet.toLowerCase())
+                          if (facetExistInTable) {
+                            cy.get('.property-table').contains(new RegExp(facet, 'i')).should(($facet) => {
+                              expect($facet, 'Facet should exist in table').to.exist
+                            })
+                          } else {
+                            cy.get('.img-dataset > img').first().click()
+
+                            cy.wait('@query', { timeout: 20000 })
+                            cy.waitForLoadingMask()
+
+                            cy.get('.details-container').then(($detail) => {
+                              const facetExistInDetail = $detail.text().toLowerCase().includes(facet.toLowerCase())
+                              if (facetExistInDetail) {
+                                cy.contains(new RegExp(facet, 'i')).should(($facet) => {
+                                  expect($facet, 'Facet should exist in detail page').to.exist
+                                })
+                              } else {
+                                this.skip()
+                              }
+                            })
+                            cy.go('back')
+                          }
+                        })
+                      })
+                    }
+                  })
                 })
 
-                for (let index = 0; index < 2; index++) {
-                  if (bcIndex = 0 && index === 1) {
-                    // Combine with search
-                    cy.get('.el-input__inner').clear()
-                    cy.get('.el-input__inner').type('dataset')
-                    cy.filterCheckbox(facetList, 'check', $label)
+                // Uncheck all
+                cy.checkFacetCheckbox(facetList, 'uncheck', $label)
+                cy.checkFilterInitialised()
+
+                // Only test dataset category and multiple facets case
+                if (bcIndex === 0 && ffIndex === 1) {
+                  for (let index = 0; index < 2; index++) {
+                    if (index === 1) {
+                      // Combine with search
+                      cy.get('.el-input__inner').clear()
+                      cy.get('.el-input__inner').type('dataset')
+                      cy.checkFacetCheckbox(facetList, 'check', $label)
+                    }
+
+                    // Close all tags in order
+                    cy.checkFacetCheckbox(facetList, 'check', $label)
+                    cy.closeFacetTag(facetList, $label)
+                    cy.checkFilterInitialised()
+
+                    // Reset all
+                    cy.checkFacetCheckbox(facetList, 'check', $label)
+                    cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                    cy.checkFilterInitialised()
+
+                    // Close one child facet tag and then click reset all
+                    cy.checkFacetCheckbox(facetList, 'check', $label)
+                    cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
+                    cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                    cy.checkFilterInitialised()
                   }
-  
-                  // Uncheck all
-                  cy.filterCheckbox(facetList, 'uncheck', $label)
-                  cy.checkFilterCleared()
-  
-                  // Close all tags in order
-                  cy.filterCheckbox(facetList, 'check', $label)
-                  facetList.forEach((facet) => {
-                    // Check the matched facet checkbox
-                    cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
-                      cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
-                        const isChecked = $checkbox.hasClass('is-checked')
-                        const isIndeterminate = $checkbox.children().hasClass('is-indeterminate')
-                        // Close all facet tags in filters applied box
-                        if (isChecked) cy.get('.el-card__body > .capitalize').contains(new RegExp(`^${facet}$`, 'i')).siblings().click()
-                        if (isIndeterminate) {
-                          cy.get('.el-card__body > .capitalize > .el-tag__close').each(($close) => {
-                            cy.wrap($close).click()
-                          })
-                        }
-                      })
-                    })
-                  })
-                  cy.checkFilterCleared()
-  
-                  // Reset all
-                  cy.filterCheckbox(facetList, 'check', $label)
-                  cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                  cy.checkFilterCleared()
-  
-                  // Close one child facet tag and then click reset all
-                  cy.filterCheckbox(facetList, 'check', $label)
-                  cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
-                  cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                  cy.checkFilterCleared()
                 }
               } else {
                 this.skip()
