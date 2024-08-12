@@ -95,18 +95,31 @@
             <div class="resource-container body1">
               Map Annotation:
               <template v-if="annotatorAuthenticated">
-                <span class="label4"><b>You are authenticated.</b></span>
+                  <span class="label4"><b>You are authenticated.</b></span>
+                  <span class="help-link">
+                    <a href="https://docs.sparc.science/docs/sparc-portal-annotation-tool" target="_blank">
+                      Find out more about the annotator
+                    </a>
+                  </span>
                 <div class="body4">
-                  Explore the latest map updates and add annotations to enhance current maps.
+                  Explore the latest map updates and add annotations to enhance current maps. 
+                  e.g. The Anatomical Connectivity (AC) flatmaps, the Functional Connectivity (FC) flatmap and the Whole-body (3D) models.
                 </div>
                 <div class="mt-8">
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Annotate on AC</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Annotate on FC</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Annotate on WholeBody</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Annotate on AC Map</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Annotate on FC Map</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Annotate on 3D Body</el-button>
                 </div>
               </template>
               <template v-else>
                 <span class="label4"><b>You are unauthenticated.</b></span>
+                <div class="body4">
+                  The annotation feature is currently accessible to a select group of users. 
+                  If you're interested in contributing, please contact the MAP team to request access.
+                </div>
+                <div class="mt-8">
+                  <el-button class='secondary' @click="requestAnnotationAccess">Request access</el-button>
+                </div>
               </template>
             </div>
           </div>
@@ -601,6 +614,8 @@ export default {
       document.body.appendChild(link)
       link.click()
       link.remove()
+    },
+    requestAnnotationAccess() {
     }
   }
 }
@@ -687,5 +702,8 @@ a {
 }
 :deep(.main-content-container) {
   border: unset !important;
+}
+.help-link {
+  float: right;
 }
 </style>
