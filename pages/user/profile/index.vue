@@ -115,10 +115,8 @@
                 <span class="label4"><b>You are unauthenticated.</b></span>
                 <div class="body4">
                   The annotation feature is currently accessible to a select group of users. 
-                  If you're interested in contributing, please contact the MAP team to request access.
-                </div>
-                <div class="mt-8">
-                  <el-button class='secondary' @click="requestAnnotationAccess">Request access</el-button>
+                  If you're interested in contributing, please contact the 
+                  <a href="https://docs.sparc.science/docs/map-core" target="_blank">MAP-Core</a> team to request access.
                 </div>
               </template>
             </div>
@@ -614,8 +612,6 @@ export default {
       document.body.appendChild(link)
       link.click()
       link.remove()
-    },
-    requestAnnotationAccess() {
     }
   }
 }
