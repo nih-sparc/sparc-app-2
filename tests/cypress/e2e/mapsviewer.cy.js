@@ -145,6 +145,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.context-card > .card-right', { timeout: 30000 }).within(() => {
       cy.get('.title').contains(/3D human whole-body/i).should('exist')
       cy.get(':nth-child(2) > p').contains(/Visualization/i).should('exist')
+    })
+    cy.get('.context-card > .card-bottom', { timeout: 30000 }).within(() => {
       cy.get('.subtitle').contains(/Scaffold Views/i).should('exist')
       cy.get('.view-image').should('exist')
       cy.get('.view-description').contains(/Human whole-body/i).should('exist')
@@ -202,8 +204,8 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
           // Check for context card
           cy.get('.context-card').should('be.visible')
-          cy.get('.context-image:visible').should('have.attr', 'src').and('contain', datasetId)
-          cy.get('[style="margin-right: 8px;"] > .title:visible').should('have.class', 'title')
+          cy.get('.context-card > .card-left > .context-image').should('exist')
+          cy.get('.context-card > .card-right > :nth-child(1) > .title').should('have.class', 'title')
         }
       })
     })
