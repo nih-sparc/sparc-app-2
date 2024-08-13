@@ -59,27 +59,6 @@
         <el-button class="secondary" @click="actionButtonClicked('cite')">
           Cite Model
         </el-button>
-        <a
-          v-if="canViewSimulation || canRunSimulation"
-          href="https://osparc.io/"
-          target="_blank"
-        >
-          <sparc-tooltip
-            placement="left-center"
-          >
-            <template #data>
-              oSPARC simulations may offer<br />additional functionality, such as<br />more parameters, if you create<br />an account at
-              <a class="ospac-tooltip" href="https://osparc.io/">
-                osparc.io
-              </a>
-            </template>
-            <template #item>
-              <el-button style="width: 100%;" class="secondary">
-                Go to oSPARC
-              </el-button>
-            </template>
-          </sparc-tooltip>
-        </a>
       </template>
       <template v-else>
         <el-button
