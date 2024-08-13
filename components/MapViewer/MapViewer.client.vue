@@ -10,7 +10,7 @@
       :useHelpModeDialog="true"
       @updateShareLinkRequested="$emit('updateShareLinkRequested')"
       @isReady="$emit('isReady')"
-      @mapLoaded="$emit('mapLoaded')"
+      @mapLoaded="$emit('mapLoaded', $event)"
       @trackEvent="onTrackEvent"
     />
   </div>

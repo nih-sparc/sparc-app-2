@@ -434,9 +434,9 @@ export default {
         this._instance.setCurrentEntry(this.currentEntry)
       }
     },
-    changeViewingMode: function () {
-      if (this._instance && this.viewingMode) {
-        this._instance.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
+    changeViewingMode: function (map) {
+      if (this.viewingMode) {
+        map.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
       }
     },
     viewerMounted: function () {
@@ -444,8 +444,8 @@ export default {
       this.currentEntryUpdated()
       this.facetsUpdated()
     },
-    mapMounted: function () {
-      this.changeViewingMode()
+    mapMounted: function (map) {
+      this.changeViewingMode(map)
     },
   },
 }
