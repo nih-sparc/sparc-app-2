@@ -23,7 +23,7 @@
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
       <MapViewer class="mapviewer" ref="mapviewer" :state="state" :starting-map="startingMap" :options="options"
-        :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="mapMounted" />
+        :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="viewerMounted" @mapLoaded="mapMounted" />
     </div>
   </div>
 </template>
@@ -439,10 +439,12 @@ export default {
         this._instance.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
       }
     },
-    mapMounted: function () {
+    viewerMounted: function () {
       this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
+    },
+    mapMounted: function () {
       this.changeViewingMode()
     },
   },
