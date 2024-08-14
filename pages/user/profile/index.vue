@@ -88,33 +88,29 @@
                 </template>
               </div>
             </div>
-          </div>
-
-          <div class="section heading2 p-16 mt-16">
-            Available Shortcuts
             <div class="resource-container body1">
-              Map Annotation:
+              Map Annotation Tool:
               <template v-if="annotatorAuthenticated">
-                  <span class="label4"><b>You are authenticated.</b></span>
+                  <span class="label4"><b>You are registered.</b></span>
                   <span class="help-link">
                     <a href="https://docs.sparc.science/docs/sparc-portal-annotation-tool" target="_blank">
                       Find out more about the annotator
                     </a>
                   </span>
                 <div class="body4">
-                  Explore the latest map updates and add annotations to enhance current maps. 
-                  e.g. The Anatomical Connectivity (AC) flatmaps, the Functional Connectivity (FC) flatmap and the Whole-body (3D) models.
+                  The Map Annotation Tool is built in to the Maps functionality within the SPARC Portal. The Tool allows you to add annotations to 2D and 3D anatomical models.
+                  View Maps guide <a href="https://docs.sparc.science/docs/introduction-to-maps" target="_blank">here</a>.
                 </div>
                 <div class="mt-8">
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Annotate on AC Map</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Annotate on FC Map</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Annotate on 3D Body</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Launch AC Map in Annotation Mode</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Launch FC Map in Annotation Mode</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Launch 3D Body in Annotation Mode</el-button>
                 </div>
               </template>
               <template v-else>
-                <span class="label4"><b>You are unauthenticated.</b></span>
+                <span class="label4"><b>You are not registered.</b></span>
                 <div class="body4">
-                  The annotation feature is currently accessible to a select group of users. 
+                  The Map Annotation Tool is currently accessible to limited users. 
                   If you're interested in contributing, please contact the 
                   <a href="https://docs.sparc.science/docs/map-core" target="_blank">MAP-Core</a> team to request access.
                 </div>
