@@ -23,7 +23,7 @@
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
       <MapViewer class="mapviewer" ref="mapviewer" :state="state" :starting-map="startingMap" :options="options"
-        :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="mapMounted" />
+        :share-link="shareLink" @updateShareLinkRequested="updateUUID" @isReady="viewerMounted" @mapLoaded="mapMounted" />
     </div>
   </div>
 </template>
@@ -323,6 +323,7 @@ export default {
     let facets = []
     let uuid = undefined
     let state = undefined
+    let viewingMode = route.query.mode
 
     const options = {
       sparcApi: config.public.portal_api,
@@ -365,7 +366,8 @@ export default {
       failMessage,
       facets,
       uuid,
-      state
+      state,
+      viewingMode
     }
   },
   data() {
@@ -432,10 +434,18 @@ export default {
         this._instance.setCurrentEntry(this.currentEntry)
       }
     },
-    mapMounted: function () {
+    changeViewingMode: function (map) {
+      if (this.viewingMode) {
+        map.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
+      }
+    },
+    viewerMounted: function () {
       this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
+    },
+    mapMounted: function (map) {
+      this.changeViewingMode(map)
     },
   },
 }

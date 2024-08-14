@@ -88,6 +88,34 @@
                 </template>
               </div>
             </div>
+            <div class="resource-container body1">
+              Map Annotation Tool:
+              <template v-if="annotatorAuthenticated">
+                  <span class="label4"><b>You are registered.</b></span>
+                  <span class="help-link">
+                    <a href="https://docs.sparc.science/docs/sparc-portal-annotation-tool" target="_blank">
+                      Find out more about the annotator
+                    </a>
+                  </span>
+                <div class="body4">
+                  The Map Annotation Tool is built in to the Maps functionality within the SPARC Portal. The Tool allows you to add annotations to 2D and 3D anatomical models.
+                  View Maps guide <a href="https://docs.sparc.science/docs/introduction-to-maps" target="_blank">here</a>.
+                </div>
+                <div class="mt-8">
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Launch AC Map in Annotation Mode</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Launch FC Map in Annotation Mode</el-button>
+                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Launch 3D Body in Annotation Mode</el-button>
+                </div>
+              </template>
+              <template v-else>
+                <span class="label4"><b>You are not registered.</b></span>
+                <div class="body4">
+                  The Map Annotation Tool is currently accessible to limited users. 
+                  If you're interested in contributing, please contact the 
+                  <a href="https://docs.sparc.science/docs/map-core" target="_blank">MAP-Core</a> team to request access.
+                </div>
+              </template>
+            </div>
           </div>
 
           <div class="section heading2 p-16 mt-16">
@@ -275,11 +303,13 @@ export default {
       submissionToRetract: '',
       showRetractConfirmationModal: false,
       organizations: [],
+      annotatorAuthenticated: false
     }
   },
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
+    const mainStore = useMainStore()
     let downloadsSummary = 0
 
     try {
@@ -294,8 +324,22 @@ export default {
     } catch (error) {
       return 0
     }
+
+    const headers = {
+      "Accept": "application/json; charset=utf-8",
+      "Cache-Control": "no-store"
+    }
+    let annotatorAuthenticated = false
+    const url = `${config.public.flatmap_api}annotator/authenticate?key=${mainStore.userToken}&session=`
+    annotatorAuthenticated = await $axios.get(url, { headers }).then(() => {
+      return true
+    }).catch(() => {
+      return false
+    })
+
     return {
-      downloadsSummary
+      downloadsSummary,
+      annotatorAuthenticated
     }
   },
   computed: {
@@ -538,6 +582,14 @@ export default {
         doi: "",
         citation_type: ""
       })
+    },
+    handleAnnotateButtonClicked(type) {
+      const link = document.createElement('a')
+      link.href = this.$config.public.ROOT_URL + `/apps/maps?type=${type}&mode=annotation`
+      link.target = '_blank'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
     }
   }
 }
@@ -624,5 +676,8 @@ a {
 }
 :deep(.main-content-container) {
   border: unset !important;
+}
+.help-link {
+  float: right;
 }
 </style>
