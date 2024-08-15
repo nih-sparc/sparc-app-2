@@ -99,7 +99,20 @@
                   </span>
                 <div class="body4">
                   The Map Annotation Tool is built in to the Maps functionality within the SPARC Portal. The Tool allows you to add annotations to 2D and 3D anatomical models.
-                  View Maps guide <a href="https://docs.sparc.science/docs/introduction-to-maps" target="_blank">here</a>.
+                  <span class="help-link">
+                    <client-only>
+                      <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                        <template v-slot:reference>
+                          <svgo-icon-help class="icon-help" />
+                        </template>
+                        <div>
+                          The Anatomical Connectivity (AC) flatmaps show physical connectivity derived from SCKAN in an anatomical schematic context.<br>
+                          The Functional Connectivity (FC) flatmap provides a visualization of semantic connectivity for a mammalian body.<br>
+                          The 3D whole-body shows physical connectivity derived from SCKAN in an anatomically realistic context.<br>
+                        </div>
+                      </el-popover>
+                    </client-only>
+                  </span>
                 </div>
                 <div class="mt-8">
                   <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Launch AC Map in Annotation Mode</el-button>
