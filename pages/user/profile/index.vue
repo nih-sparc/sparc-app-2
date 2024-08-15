@@ -115,9 +115,11 @@
                   </span>
                 </div>
                 <div class="mt-8">
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('ac')">Launch AC Map in Annotation Mode</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('fc')">Launch FC Map in Annotation Mode</el-button>
-                  <el-button class='secondary' @click="handleAnnotateButtonClicked('wholebody')">Launch 3D Body in Annotation Mode</el-button>
+                  <template v-for="(value, key) in AnnotatorMaps" :key="key">
+                    <el-button class='secondary' @click="handleAnnotateButtonClicked(key)">
+                      Launch {{ value }} <br class="line-break"> in Annotation Mode <svgo-icon-open class="open-icon" />
+                    </el-button>
+                  </template>
                 </div>
               </template>
               <template v-else>
@@ -316,7 +318,12 @@ export default {
       submissionToRetract: '',
       showRetractConfirmationModal: false,
       organizations: [],
-      annotatorAuthenticated: false
+      annotatorAuthenticated: false,
+      AnnotatorMaps: {
+        'ac': 'AC Map',
+        'fc': 'FC Map',
+        'wholebody': '3D Body',
+      },
     }
   },
   async setup() {
@@ -692,5 +699,15 @@ a {
 }
 .help-link {
   float: right;
+}
+.line-break {
+  display: none;
+  @media screen and (max-width: 24rem) {
+    display: inline;
+  }
+}
+.open-icon {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>
