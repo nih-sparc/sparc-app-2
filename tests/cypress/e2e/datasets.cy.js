@@ -302,8 +302,8 @@ datasetIds.forEach(datasetId => {
           })
 
           // Check for help link
-          cy.get('.aws-download-column > :nth-child(1) > a').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
-          cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
+          cy.get('.aws-download-column > :nth-child(1) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
+          cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
 
           //Find the download file button
           cy.contains('.el-table__row', 'dataset_description.xlsx').should('have.length', 1).as('datasetDescription');
