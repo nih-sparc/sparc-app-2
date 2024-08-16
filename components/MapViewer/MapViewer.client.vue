@@ -83,8 +83,20 @@
   }
 
   .background-popper.el-popover.el-popper,
-  .open-map-popper.el-popover.el-popper {
+  .open-map-popper.el-popover.el-popper,
+  .context-card-popover.el-popover.el-popper {
     background: #fff !important;
+
+    .el-popper__arrow::before {
+      background-color: #fff !important;
+    }
+  }
+
+  .context-card-popover {
+    .flatmap-context-card,
+    .context-card-container.context-card {
+      border-radius: 4px;
+    }
   }
 
   .open-map-popper.el-popover.el-popper {
