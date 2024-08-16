@@ -91,6 +91,13 @@
     }
   }
 
+  .context-card-popover {
+    .flatmap-context-card,
+    .context-card-container.context-card {
+      border-radius: 4px;
+    }
+  }
+
   .open-map-popper.el-popover.el-popper {
     width: unset !important;
   }
