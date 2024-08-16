@@ -68,8 +68,9 @@
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col left-column">
           <div v-if="!isDatasetSizeLarge">
             <div><span class="label4">Option 1 - Direct download: </span>Download a zip archive of all the files and
-              metadata directly to your computer free of charge. Please note that the files will be compressed upon
-              download.</div>
+              metadata directly to your computer, free of charge. <span class="label4">Note:</span> Files will be compressed prior to downloading the archive.
+            </div>
+            <div class="mt-24">If you only need certain files or folders, select and download them from the <span class="label4">Dataset Files</span> listing.</div>
             <a :href="downloadUrl">
               <el-button @click="sendGtmEvent" class="my-16">Download Full Dataset</el-button>
             </a>
@@ -78,6 +79,7 @@
             <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of
               charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS.
             </div>
+            <div class="mt-24">If you only need certain files or folders, select and download them from the <span class="label4">Dataset Files</span> listing.</div>
             <sparc-tooltip placement="left-center">
               <template #data>
                 <div>
@@ -97,10 +99,9 @@
         </el-col>
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
-            <span class="label4">Option 2 - AWS download: </span>
-            Download or transfer the dataset to your AWS Account. The files and metadata are stored in an AWS S3
-            Requester Pays bucket. You can learn more about downloading data from AWS on our
-            <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">Help Page</a>.
+            <span class="label4">Option 2 - AWS S3:</span>
+            Download or transfer using Amazon AWS S3. Quickly obtain dataset hiles from our S3 bucket with your AWS account at Amazon's
+            <a href="https://aws.amazon.com/s3/pricing/" target="_blank">nominally priced usage rates</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
             <template v-if="isLatestVersion || !showRehydrationFeature">
@@ -135,10 +136,8 @@
             </template>
           </div>
           <div>
-            * Requester Pays means that any costs associated with downloading the data will be charged to your AWS
-            account.
-            For transfer pricing information, visit the <a href="https://aws.amazon.com/s3/pricing/" target="blank">AWS
-              Pricing documentation.</a>
+            * See our <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="blank">Help page</a> for information on
+            AWS S3 and links to tutorials. AWS required for 5GB and over.
           </div>
         </el-col>
       </el-row>
