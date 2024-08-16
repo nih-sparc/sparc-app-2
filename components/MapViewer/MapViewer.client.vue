@@ -82,8 +82,13 @@
   }
 
   .background-popper.el-popover.el-popper,
-  .open-map-popper.el-popover.el-popper {
+  .open-map-popper.el-popover.el-popper,
+  .context-card-popover.el-popover.el-popper {
     background: #fff !important;
+
+    .el-popper__arrow::before {
+      background-color: #fff !important;
+    }
   }
 
   .open-map-popper.el-popover.el-popper {
