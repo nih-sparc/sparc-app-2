@@ -21,7 +21,7 @@
         <!--If not a project then we assume it is a tool/resource since it must be one or the other-->
         <template v-else>
           <div class="body2 mb-16">Here is a resource you might be interested in:</div>
-          <projects-and-datasets-card 
+          <projects-and-datasets-card
             v-if="projectOrResource.fields"
             :title="projectOrResource.fields.name" 
             :description="projectOrResource.fields.description" 
