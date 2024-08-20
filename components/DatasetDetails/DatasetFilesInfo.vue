@@ -100,7 +100,7 @@
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
             <span class="label4">Option 2 - AWS S3:</span>
-            Download or transfer using Amazon AWS S3. Quickly obtain dataset hiles from our S3 bucket with your AWS account at Amazon's
+            Download or transfer using Amazon AWS S3. Quickly obtain dataset files from our S3 bucket with your AWS account at Amazon's
             <a href="https://aws.amazon.com/s3/pricing/" target="_blank">nominally priced usage rates</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
