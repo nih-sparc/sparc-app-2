@@ -15,7 +15,7 @@
         {{ heroSummary }}
       </div>
     </page-hero>
-    <div class="container pt-32">
+    <div v-if="eventDetailsItem" class="container pt-32">
       <div class="subpage">
         <div class="header mb-32">
           <h2>Event Details</h2>
@@ -62,12 +62,11 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const router = useRouter()
     try {
       const page = await getEventPage(route.params.eventId)
-      const eventDetailsItem = pathOr(null, ['fields','eventDetails'], page)
-      if (isEmpty(eventDetailsItem)) {
-        router.push(`/news-and-events/events/${route.params.eventId}`)
+      const eventDetailsItem = pathOr(null, ['fields', 'eventDetails'], page)
+      if (isEmpty(eventDetailsItem) || eventDetailsItem == null) {
+        navigateTo(`/news-and-events/events/${route.params.eventId}`, { redirectCode: 301 })
       }
       return { 
         page,
@@ -115,8 +114,8 @@ export default {
      * Compute and convert the date the article was created
      * @returns {String}
      */
-    updatedDate: function() {
-      return format(parseISO(this.eventDetailsItem.sys.updatedAt), 'MM/dd/yyyy')
+    updatedDate: function () {
+      return this.eventDetailsItem ? format(parseISO(this.eventDetailsItem?.sys.updatedAt), 'MM/dd/yyyy') : undefined
     },
     breadcrumb: function() {
       return [
