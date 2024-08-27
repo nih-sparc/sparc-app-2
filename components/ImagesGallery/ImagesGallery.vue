@@ -54,9 +54,17 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
     await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
     })
-    await biolucida.searchDataset(datasetId).then(response => {
-      biolucida_response = response
-    })
+    // Inner try-catch for biolucida request errors
+    try {
+      await biolucida.searchDataset(datasetId).then(response => {
+        biolucida_response = response
+      })
+    } catch (error) {
+      console.error(
+        'Hit error in the biolucida request. ( pages/_datasetId.vue ). Error: ',
+        error
+      )
+    }
 
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
