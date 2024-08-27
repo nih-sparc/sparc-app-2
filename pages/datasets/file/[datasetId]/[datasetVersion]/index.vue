@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <div class="pb-32">
+    <div class="pb-32 page-data">
       <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
       <div class="container">
         <h1 hidden>File viewer for {{ file.path }}</h1>
@@ -25,6 +25,18 @@
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />
       </div>
+      <div v-if="hasRelatedDatasets" class="container">
+        <div class="subpage">
+          <div class="heading3 mb-16">Find related images from other datasets
+            <sparc-tooltip content="Find images among other datasets that share the same award id" placement="bottom-center">
+              <template #item>
+                <svgo-icon-help class="help-icon"/>
+              </template>
+            </sparc-tooltip>
+          </div>
+          <gallery galleryItemType="relatedDatasets" :items="relatedDatasets" :cardWidth="12" />
+        </div>
+      </div>
     </div>
   </client-only>
 </template>
@@ -41,6 +53,7 @@ import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
+import Gallery from '@/components/Gallery/Gallery.vue'
 
 import { extractS3BucketName } from '@/utils/common'
 
@@ -54,7 +67,8 @@ export default {
     SegmentationViewer,
     PlotViewer,
     VideoViewer,
-    FileViewerMetadata
+    FileViewerMetadata,
+    Gallery
   },
 
   mixins: [
@@ -67,7 +81,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $axios, $pennsieveApiClient } = useNuxtApp()
+    const { $axios, $pennsieveApiClient, $algoliaClient } = useNuxtApp()
     const url = `${config.public.discover_api_host}/datasets/${route.params.datasetId}`
     var datasetUrl = route.params.datasetVersion ? `${url}/versions/${route.params.datasetVersion}` : url
     let datasetInfo = {}
@@ -198,6 +212,35 @@ export default {
       hasPlotViewer ? 'plotViewer' :
       hasVideoViewer ? 'videoViewer' : ''
 
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const { supportingAwards } = await algoliaIndex.getObject(route.params.datasetId)
+    const awardIds = supportingAwards.map(award => award.identifier).filter(identifier => identifier != undefined)
+    let relatedDatasets = []
+    try {
+      relatedDatasets = await Promise.all(
+        awardIds.map(async (awardId) => {
+          const { data } = await $axios.get(`${config.public.portal_api}/project/${awardId}`)
+          return data
+        })
+      )
+      relatedDatasets = relatedDatasets.flat()
+    } catch (error) {
+        console.error('Error fetching related datasets:', error)
+    }
+    relatedDatasets = relatedDatasets.map((dataset) => {
+      const datasetId = propOr('', 'objectID', dataset)
+      const datasetName = pathOr('', ['pennsieve', 'name'], dataset)
+      const datasetDescription = pathOr('', ['pennsieve', 'description'], dataset)
+      const datasetBanner = pathOr('', ['pennsieve', 'banner', 'uri'], dataset)
+
+      return {
+        'name': datasetName,
+        'description': datasetDescription,
+        'id': datasetId,
+        'banner': datasetBanner
+      }
+    })
+
     return {
       biolucidaData,
       videoData,
@@ -215,7 +258,8 @@ export default {
       signedUrl,
       packageType,
       activeTabId,
-      datasetInfo
+      datasetInfo,
+      relatedDatasets
     }
   },
 
@@ -257,6 +301,9 @@ export default {
     },
     readme: function() {
       return propOr('', 'readme', this.datasetInfo)
+    },
+    hasRelatedDatasets() {
+      return !isEmpty(this.relatedDatasets)
     },
     breadcrumb: function() {
       return [
@@ -388,11 +435,21 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
+.page-data {
+  background-color: $background;
+}
 .help-link {
   float: right;
   @media screen and (max-width: 29rem) {
     float: none;
   }
+}
+.help-icon {
+  color: $purple;
+    height: 1.5rem;
+    width: 1.5rem;
 }
 </style>
