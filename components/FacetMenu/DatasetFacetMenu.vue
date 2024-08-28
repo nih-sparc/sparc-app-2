@@ -86,6 +86,7 @@ export default {
         'item.modalities.keyword',
         'attributes.subject.sex.value',
         'attributes.subject.ageCategory.value',
+        'pennsieve.organization.name',
         'availability'
       ] :
       [
@@ -94,12 +95,13 @@ export default {
         'item.modalities.keyword',
         'attributes.subject.sex.value',
         'attributes.subject.ageCategory.value',
+        'pennsieve.organization.name',
         'availability'
       ]
 
     const visibleModelsAndSimulationsFacetCategories = config.public.SHOW_HIERARCHAL_FACETS === 'true' ?
-      ['anatomy.organ.category.name', 'anatomy.organ.subcategory.name', 'availability', 'organisms.primary.species.name'] :
-      ['anatomy.organ.name', 'availability', 'organisms.primary.species.name']
+      ['anatomy.organ.category.name', 'anatomy.organ.subcategory.name', 'pennsieve.organization.name', 'availability', 'organisms.primary.species.name'] :
+      ['anatomy.organ.name', 'pennsieve.organization.name', 'availability', 'organisms.primary.species.name']
 
     return {
       visibleDatasetsFacetCategories,
