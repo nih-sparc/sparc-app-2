@@ -58,7 +58,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.container.p-32 > .heading2').should(($title) => {
       expect($title, 'Title should contain specific content').to.contain('SPARC by the numbers')
     })
-
     // Check for consortia
     cy.get('.container.p-32 > .body1 > b > .heading2').first().then(($el) => {
       const numberOfConsortia = parseInt($el.text())
@@ -68,7 +67,6 @@ describe('Homepage', { testIsolation: false }, function () {
         expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/about/consortia/')
       })
     })
-
     // Check for contributor
     cy.get('.container.p-32 > .body1 > b > .heading2').last().then(($el) => {
       const numberOfContributor = parseInt($el.text())
@@ -86,7 +84,6 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.feature-container').should(($feature) => {
       expect($feature, 'Correct number of feature items should be displayed').to.have.length(4)
     })
-
     // Check for feature card
     cy.get(':nth-child(1) > .feature-container').within(() => {
       cy.get('.icon').should(($icon) => {
@@ -102,7 +99,6 @@ describe('Homepage', { testIsolation: false }, function () {
         expect($button, 'Feature card should have a button').to.exist
       })
     })
-
     // Check for button link
     cy.get(':nth-child(1) > .feature-container > .button-link').should(($feature) => {
       expect($feature, 'Feature card button should have correct text').to.contain('Data and Models')
@@ -126,19 +122,16 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.categories-container > .heading2').should(($title) => {
       expect($title, 'Title should contain specific content').to.have.text('Find by')
     })
-
     // Check for categories selection item
     cy.get('.categories-container > .categories-select').click()
     cy.get('.el-select-dropdown > .el-scrollbar > .el-select-dropdown__wrap > .el-select-dropdown__list > .el-select-dropdown__item').should(($dropdown) => {
       expect($dropdown, 'Dropdown should have at least one item').to.have.length.above(0)
     })
     cy.get('.categories-container > .categories-select').click()
-
     cy.wait(5000)
     cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').should(($card) => {
       expect($card, 'Featured card should contain correct href').to.have.attr('href').to.contain('/data?type=dataset&selectedFacetIds=')
     })
-
     // Check for pagination
     cy.get('.sparc-design-system-pagination').should(($pagination) => {
       expect($pagination, 'Pagination should exist').to.exist
@@ -153,13 +146,11 @@ describe('Homepage', { testIsolation: false }, function () {
   })
 
   it('Resources and datasets', function () {
-    // Check for content title
+    // Check for title
     cy.get('.section-container.py-32 > .heading2').should('contain', 'Resources & Datasets')
-
     // Check for card description
     cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'Here is a resource you might be interested in:')
     cy.get('.row > :nth-child(2) > .mb-16').should('have.text', 'Featured Datasets')
-
     // Check for card content
     cy.get(':nth-child(1) > .card-container').within(() => {
       cy.get('.subpage-row > :nth-child(1) > .image-container > .banner-image').should('exist')
@@ -167,42 +158,35 @@ describe('Homepage', { testIsolation: false }, function () {
       cy.get('.subpage-row > :nth-child(2) > .dataset-description').should('exist')
       cy.get('.subpage-row > :nth-child(2) > .button-link > .el-button').should('exist')
     })
-
     // Check for title redirect link
     cy.get(':nth-child(1) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').should('have.attr', 'href').and('contain', '/resources/')
     cy.get(':nth-child(2) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').should('have.attr', 'href').and('contain', '/datasets/')
-
     // Check for card 'view all' link
     cy.get('.row > :nth-child(1) > .view-all-link').should('contain', 'View All Tools & Resources').and('have.attr', 'href', '/tools-and-resources/tools')
     cy.get(':nth-child(2) > .view-all-link').should('contain', 'View All Datasets').and('have.attr', 'href', '/data?type=dataset')
   })
 
   it('News and upcoming events', function () {
-    // Check for content title
+    // Check for title
     cy.get('.featured-datasets > .heading2').should(($title) => {
       expect($title, 'Title should contain specific content').to.contain('News & Upcoming Events')
     })
-
     // Check for card image
     cy.get('.sparc-card__image').should(($image) => {
       expect($image, 'Card should have an image').to.exist
     })
-
     // Check for card title
     cy.get('h3 > a').should(($title) => {
       expect($title, 'Card should have a title').to.exist
     })
-
     // Check for card description
     cy.get('.markdown-text > p').should(($description) => {
       expect($description, 'Card should have a description').to.exist
     })
-
     // Check for card button
     cy.get(':nth-child(2) > .el-button').should(($button) => {
       expect($button, 'Card should have a button').to.contain('Learn More')
     })
-
     // Check for card 'view all' link
     cy.get('.sparc-card__content-wrap__content > .view-all-link').should(($link) => {
       expect($link, 'Card should have a view all link').to.contain('View All News & Events')
@@ -211,11 +195,10 @@ describe('Homepage', { testIsolation: false }, function () {
   })
 
   it('Stay connected', function () {
-    // Check for content title
+    // Check for title
     cy.get('.subheader').should(($title) => {
       expect($title, 'Title should contain specific content').to.contain('Stay Connected')
     })
-
     // Check for content
     cy.get('.newsletter-wrap > .heading2').should(($title) => {
       expect($title, 'Title should contain specific content').to.contain('Sign up for the SPARC Newsletter')
