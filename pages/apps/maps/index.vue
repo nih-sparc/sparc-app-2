@@ -127,13 +127,11 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
   //Old link may contain the for_species as undefined
   let failMessage = undefined
   let successMessage = undefined
+  const target = flatmaps.speciesMap[taxo]
   if (
-    route.query.for_species &&
-    route.query.for_species !== 'undefined'
+    for_species && for_species !== 'undefined'
   ) {
-    if (
-      route.query.for_species !== flatmaps.speciesMap[taxo]
-    ) {
+    if (for_species !== target) {
       failMessage = `Sorry! A flatmap for ${for_species} species does not yet exist. The ${organ_name} of a rat has been shown instead.`
     } else if (!organ) {
       failMessage = `Sorry! Applicable entity is not yet available. A generic flatmap for ${for_species} species has been shown instead.`
@@ -141,11 +139,12 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
   } else if (route.query.fid) {
     successMessage = "A flatmap's unique id is provided, a legacy map may be displayed instead."
   } else {
-    failMessage = 'Sorry! Species information cannot be found. '
-    if (organ) {
-      failMessage += `The ${organ_name} of a rat has been shown instead.`
-    } else {
-      failMessage += 'A generic rat flatmap has been shown instead.'
+    if (!target) {
+      if (organ) {
+        failMessage += `The ${organ_name} of a rat has been shown instead.`
+      } else {
+        failMessage += 'A generic rat flatmap has been shown instead.'
+      }
     }
   }
   return { successMessage, failMessage }
