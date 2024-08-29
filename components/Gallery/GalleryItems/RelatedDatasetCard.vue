@@ -13,7 +13,7 @@
       >
         {{ datasetTitle }}
       </nuxt-link>-->
-      <div>
+      <div class="description-container mb-4">
         {{ datasetDescription }}
       </div>
       <nuxt-link
@@ -78,9 +78,17 @@ export default {
 .banner-image {
   display: block;
   width: 100%;
-  max-height: 200px;
+  max-height: 150px;
+  object-fit: contain;
 }
 .dataset-name {
   overflow-wrap: anywhere;
+}
+.description-container {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 6;
 }
 </style>
