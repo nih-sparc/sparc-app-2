@@ -167,6 +167,18 @@ const getOrganizationNames = async (algoliaIndex) => {
   }
 }
 
+// get contributors from Algolia and replace the list retrieved from Pennsieve because the Pennsieve list is based off
+// the user's Pennsieve account names instead of the dataset_description.xlsx file which is the point of truth. Refer to
+// the following tickets: https://www.wrike.com/open.htm?id=1257276600 and https://www.wrike.com/open.htm?id=1215925574
+const getContributorsFromAlgolia = async (algoliaIndex, id) => {
+  try {
+    const response = await algoliaIndex.getObject(id)
+    return response?.contributors
+  } catch (error) {
+    return []
+  }
+}
+
 const tabs = [
   {
     label: 'Abstract',
@@ -225,7 +237,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary, sparcOrganizationNames] = await Promise.all([
+      let [datasetDetails, versions, downloadsSummary, sparcOrganizationNames, algoliaContributors] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -235,10 +247,18 @@ export default {
         ),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
-        getOrganizationNames(algoliaIndex)
+        getOrganizationNames(algoliaIndex),
+        getContributorsFromAlgolia(algoliaIndex, datasetId)
       ])
-      
+      const datasetDetailsContributors = algoliaContributors?.map(contributor => {
+        return {
+          firstName: contributor.first.name,
+          lastName: contributor.last.name,
+          orcid: contributor.curie?.replace('ORCID:', '')
+        }
+      })
       datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
+      datasetDetails.contributors = datasetDetailsContributors
       const latestVersion = compose(propOr(1, 'version'), head)(versions)
       store.setDatasetInfo({ ...datasetDetails, 'latestVersion': latestVersion })
       store.setDatasetFacetsData(datasetFacetsData)
@@ -250,17 +270,17 @@ export default {
           name: propOr('', 'organizationName', datasetDetails)
         }
       ]
-      const contributors = datasetDetails?.contributors?.map(contributor => {
-        const sameAs = contributor.orcid
-          ? `http://orcid.org/${contributor.orcid}`
+      const contributors = algoliaContributors?.map(contributor => {
+        const sameAs = contributor.curie
+          ? `http://orcid.org/${contributor.curie.replace('ORCID:', '')}`
           : null
 
         return {
           '@type': 'Person',
           sameAs,
-          givenName: contributor.firstName,
-          familyName: contributor.lastName,
-          name: `${contributor.firstName} ${contributor.lastName}`
+          givenName: contributor.first?.name,
+          familyName: contributor.last?.name,
+          name: `${contributor.first?.name} ${contributor.last?.name}`
         }
       })
 

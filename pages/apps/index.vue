@@ -16,7 +16,7 @@
       </p>
     </page-hero>
     <portal-features :features="appEntries" :title="appsSectionTitle" :icon-is-top-element="false" :max-per-row="3" />
-    <div class="container" :style="'text-align: center; margin-top: 1rem;'" v-html="parseMarkdown(footer)" />
+    <div class="container" :style="'text-align: center; margin-top: 1rem; margin-bottom: 2rem;'" v-html="parseMarkdown(footer)" />
   </div>
 </template>
 

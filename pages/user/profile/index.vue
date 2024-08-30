@@ -88,6 +88,49 @@
                 </template>
               </div>
             </div>
+            <div class="resource-container body1">
+              Map Annotation Tool:
+              <template v-if="annotatorAuthenticated">
+                  <span class="label4"><b>You are registered.</b></span>
+                  <span class="help-link">
+                    <a href="https://docs.sparc.science/docs/sparc-portal-annotation-tool" target="_blank">
+                      Find out more about the annotator
+                    </a>
+                  </span>
+                <div class="body4">
+                  The Map Annotation Tool is built in to the Maps functionality within the SPARC Portal. The Tool allows you to add annotations to 2D and 3D anatomical models.
+                  <span class="help-link">
+                    <client-only>
+                      <el-popover width="fit-content" trigger="hover" :append-to-body=false popper-class="popover">
+                        <template v-slot:reference>
+                          <svgo-icon-help class="icon-help" />
+                        </template>
+                        <div>
+                          The Anatomical Connectivity (AC) flatmaps show physical connectivity derived from SCKAN in an anatomical schematic context.<br>
+                          The Functional Connectivity (FC) flatmap provides a visualization of semantic connectivity for a mammalian body.<br>
+                          The 3D whole-body shows physical connectivity derived from SCKAN in an anatomically realistic context.<br>
+                        </div>
+                      </el-popover>
+                    </client-only>
+                  </span>
+                </div>
+                <div class="mt-8">
+                  <template v-for="(value, key) in AnnotatorMaps" :key="key">
+                    <el-button class='secondary' @click="handleAnnotateButtonClicked(key)">
+                      Launch {{ value }} <br class="line-break"> in Annotation Mode <svgo-icon-open class="open-icon" />
+                    </el-button>
+                  </template>
+                </div>
+              </template>
+              <template v-else>
+                <span class="label4"><b>You are not registered.</b></span>
+                <div class="body4">
+                  The Map Annotation Tool is currently accessible to limited users. 
+                  If you're interested in contributing, please contact the 
+                  <a href="https://docs.sparc.science/docs/map-core" target="_blank">MAP-Core</a> team to request access.
+                </div>
+              </template>
+            </div>
           </div>
 
           <div class="section heading2 p-16 mt-16">
@@ -275,11 +318,18 @@ export default {
       submissionToRetract: '',
       showRetractConfirmationModal: false,
       organizations: [],
+      annotatorAuthenticated: false,
+      AnnotatorMaps: {
+        'ac': 'AC Map',
+        'fc': 'FC Map',
+        'wholebody': '3D Body',
+      },
     }
   },
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
+    const mainStore = useMainStore()
     let downloadsSummary = 0
 
     try {
@@ -294,8 +344,22 @@ export default {
     } catch (error) {
       return 0
     }
+
+    const headers = {
+      "Accept": "application/json; charset=utf-8",
+      "Cache-Control": "no-store"
+    }
+    let annotatorAuthenticated = false
+    const url = `${config.public.flatmap_api}annotator/authenticate?key=${mainStore.userToken}&session=`
+    annotatorAuthenticated = await $axios.get(url, { headers }).then(() => {
+      return true
+    }).catch(() => {
+      return false
+    })
+
     return {
-      downloadsSummary
+      downloadsSummary,
+      annotatorAuthenticated
     }
   },
   computed: {
@@ -326,8 +390,7 @@ export default {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
-          this.fetchPublishedDatasets(newValue)
-          this.fetchInProgressDatasets()
+          this.fetchUserDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
         }
@@ -336,43 +399,7 @@ export default {
     },
   },
   methods: {
-    async fetchPublishedDatasets(orcid) {
-      const filter = `contributors.curie:\"ORCID:${orcid}\"`
-
-      try {
-        const { hits } = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
-          filters: filter,
-          hitsPerPage: 999
-        })
-
-        let items = []
-
-        for (const hit of hits) {
-            const datasetName = pathOr('', ['item', 'name'], hit)
-            const datasetId = propOr('', 'objectID', hit)
-            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
-
-            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
-
-            const numDownloads = this.getDownloadsCount(datasetId);
-
-            items.push({
-                'name': datasetName,
-                'intId': datasetId,
-                'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
-                'numDownloads': numDownloads,
-                'numCitations': numCitations
-            })
-        }
-
-        this.datasets = items
-      } catch (error) {
-        this.datasets = []
-      } finally {
-        this.datasetsLoading = false
-      }
-    },
-    async fetchInProgressDatasets() {
+    async fetchUserDatasets() {
       let orgIntIds = []
       this.organizations.forEach(org => {
         orgIntIds.push(org.intId)
@@ -382,20 +409,41 @@ export default {
         try {
           await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${id}&api_key=${this.userToken}`)
 
-          let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/paginated?onlyMyDatasets=true&publicationStatus=draft&api_key=${this.userToken}`)
-          const datasets = data.datasets
+          let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/paginated?onlyMyDatasets=true&api_key=${this.userToken}`)
+          const publishedDatasets = data.datasets.filter(dataset => dataset.publication.status == 'completed')
+          const inProgressDatasets = data.datasets.filter(dataset => dataset.publication.status != 'completed')
 
-          datasets.forEach(async dataset => { 
+          for (let dataset of inProgressDatasets) {
             let datasetId = dataset.content.id
             let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/${datasetId}/banner?api_key=${this.userToken}`)
             this.inProgressDatasets.push({
               ...dataset,
               banner: data.banner
             })
-          })
-        } catch(e) {}
+          }
+
+          for (let dataset of publishedDatasets) {
+            const intId = pathOr('', ['content', 'intId'], dataset)
+            const datasetName = pathOr('', ['content', 'name'], dataset)
+            const pennsieveIdentifier = pathOr('', ['content', 'id'], dataset)
+
+            let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/${pennsieveIdentifier}/banner?api_key=${this.userToken}`)
+            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
+            const numDownloads = this.getDownloadsCount(intId)
+
+            this.datasets.push({
+              'name': datasetName,
+              'intId': intId,
+              'banner': data.banner,
+              'numDownloads': numDownloads,
+              'numCitations': numCitations
+            })
+          }
+        } catch (e) {
+        }
       }
       this.inProgressDatasetsLoading = false
+      this.datasetsLoading = false
     },
     async fetchDatasetSubmissions() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
@@ -425,12 +473,10 @@ export default {
       const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
 
       try {
-          const response = await this.$axios.get(url, { headers })
-          const count = response.data.length
-          
-          return count;
+        const { data } = await this.$axios.get(url, { headers })
+        return data.length
       } catch (error) {
-          return 0
+        return 0
       }
     },
     async fetchOrganizations() {
@@ -556,6 +602,14 @@ export default {
         doi: "",
         citation_type: ""
       })
+    },
+    handleAnnotateButtonClicked(type) {
+      const link = document.createElement('a')
+      link.href = this.$config.public.ROOT_URL + `/apps/maps?type=${type}&mode=annotation`
+      link.target = '_blank'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
     }
   }
 }
@@ -642,5 +696,18 @@ a {
 }
 :deep(.main-content-container) {
   border: unset !important;
+}
+.help-link {
+  float: right;
+}
+.line-break {
+  display: none;
+  @media screen and (max-width: 24rem) {
+    display: inline;
+  }
+}
+.open-icon {
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>

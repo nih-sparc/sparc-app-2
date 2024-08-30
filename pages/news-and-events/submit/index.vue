@@ -1,8 +1,8 @@
 <script>
 export default {
-  async setup() {
+  setup() {
     const router = useRouter()
-    await router.replace({ path: "/contact-us?type=story" })
+    router.replace({ path: "/contact-us?type=story" })
   }
 }
 </script>

@@ -95,17 +95,21 @@ export default {
         ''
       )
       const [
+        blv_info,
         view_info,
         image_info,
       ] = await Promise.all([
+        biolucida.getBLVLink(image_identifier),
         biolucida.decodeViewParameter(viewId),
         biolucida.getImageInfo(image_identifier),
       ])
+      const blv_link = props.data.blv_link ? props.data.blv_link : blv_info['link']
       const BASE_URL = `blv:${config.public.BL_SERVER_URL}`
       const queryParameters = `image_id=${image_identifier}&type=${view_info[1]}${view_info[2]}&filename=${image_info.name}`
       const webNeurolucidaLink = BASE_URL + '/image_view?' + queryParameters
 
       return {
+        blv_link,
         webNeurolucidaLink
       }
     } catch (e) {
@@ -120,7 +124,7 @@ export default {
   },
   methods: {
     launchViewer() {
-      window.open(this.data.blv_link, '_blank')
+      window.open(this.blv_link, '_blank')
     },
     launchNL360C() {
       biolucida

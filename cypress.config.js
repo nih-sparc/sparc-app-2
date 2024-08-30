@@ -8,6 +8,7 @@ export default defineConfig({
   retries: 2,
   e2e: {
     baseUrl: process.env.ROOT_URL ? process.env.ROOT_URL : 'http://localhost:3000',
+    blockHosts: ["*google-analytics.com"],
     experimentalStudio: true,
     projectId: process.env.CYPRESS_PROJECT_ID,
     specPattern: "tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",

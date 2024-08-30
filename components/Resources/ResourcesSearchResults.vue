@@ -12,7 +12,18 @@
       class="resources-search-results__items"
     >
       <div class="resources-search-results__items--image">
-        <img v-show="data.fields.logo" :src="getBannerImage(data)" />
+        <router-link
+          v-if="data.fields.requiresDetailsPage"
+          :to="{
+            name: 'resources-resourceId',
+            params: { resourceId: data.sys.id }
+          }"
+        >
+          <img v-show="data.fields.logo" :src="getBannerImage(data)" />
+        </router-link>
+        <a v-else :href="data.fields.url" target="blank">
+          <img v-show="data.fields.logo" :src="getBannerImage(data)" />
+        </a>
       </div>
       <div class="resources-search-results__items--content">
         <router-link

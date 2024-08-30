@@ -3,19 +3,7 @@
     <div class="heading2">
       SPARC by the numbers
     </div>
-    <div class="body1">
-      The SPARC Portal currently supports <b><span class="heading2">{{ consortias.length }}</span></b> consortia. Visit
-      the consortia pages to find out more about them:
-    </div>
-    <div class="data-wrap py-16">
-      <nuxt-link v-for="item in consortias" :key="item.sys.id" class="consortia-item"
-        :to="`/about/consortia/${item.fields.slug}`">
-        <img :src="logoUrl(item)" :alt="`Logo for ${item.fields.title}`" />
-        <p class="mb-0 mt-8">
-          {{ item.fields.title }}
-        </p>
-      </nuxt-link>
-    </div>
+    <Consortias />
     <div class="body1">
       We have <b><span class="heading2">{{ totalContributors }}</span></b> total contributors. Explore the data to
       find out what amazing research we have:
@@ -35,21 +23,16 @@
 <script>
 import { pathOr } from 'ramda'
 import { getPreviousDate } from '@/utils/common'
+import Consortias from '@/components/Consortias/Consortias.vue'
 
 export default {
   name: 'SparcNumbers',
+  components: {
+    Consortias
+  },
   async setup() {
     const config = useRuntimeConfig()
-    const { $contentfulClient, $axios } = useNuxtApp()
-    const consortias =
-      await $contentfulClient.getEntries({
-        content_type: config.public.ctf_consortia_content_type_id,
-        order: 'fields.displayOrder'
-      }).then(({ items }) => {
-        return items
-      }).catch(() => {
-        return []
-      })
+    const { $axios } = useNuxtApp()
     let currentMonth = new Date().getMonth() + 1
     currentMonth = currentMonth.toString().padStart(2, "0")
     const currentYear = new Date().getFullYear()
@@ -73,7 +56,6 @@ export default {
           })
       })
     return {
-      consortias,
       totalContributors
     }
   },
@@ -84,9 +66,6 @@ export default {
     }
   },
   methods: {
-    logoUrl: function (item) {
-      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], item)
-    },
     imageUrl: function (item) {
       return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
     },
