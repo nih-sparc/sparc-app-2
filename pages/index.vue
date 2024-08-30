@@ -43,7 +43,7 @@ import HomepageNews from '@/components/HomepageNews/HomepageNews.vue'
 import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
 import ProjectsAndDatasets from '@/components/ProjectsAndDatasets/ProjectsAndDatasets.vue'
 import StayConnected from '@/components/StayConnected/StayConnected.vue'
-
+import { failMessage } from '@/utils/notification-messages'
 import marked from '@/mixins/marked/index'
 import getHomepageFields from '@/utils/homepageFields'
 import { useMainStore } from '../store/index.js'
@@ -120,27 +120,41 @@ export default {
         }
       ]
     })
-    return Promise.all([
-      $contentfulClient.getEntry(config.public.ctf_home_page_id)
-    ]).then(async ([homepage]) => {
+    try {
+      const homepage = await $contentfulClient.getEntry(config.public.ctf_home_page_id)
+
       let fields = getHomepageFields(homepage.fields)
       const datasetSectionTitle = homepage.fields.datasetSectionTitle
-      const url = `${config.public.portal_api}/get_featured_dataset`
-      await $axios.get(url).then(({data}) => {
-        const datasets = data?.datasets
-        fields = { ...fields, 'featuredDataset': { 'title': datasets[0].name, 'description': datasets[0].description, 'banner': datasets[0].banner, 'id': datasets[0].id }, 'datasetSectionTitle': datasetSectionTitle }
-      })
-      if (pathOr(undefined, ["featuredProject","fields","institution"], fields) != undefined) {
-        const institutionId = pathOr("", ["featuredProject","fields","institution","sys","id"], fields)
-        await $contentfulClient.getEntry(institutionId).then(( response ) => {
-          fields.featuredProject.fields = { ...fields.featuredProject.fields, 'banner': response.fields.logo.fields?.file.url }
-        })
+
+      const { data } = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
+      const datasets = data?.datasets
+      if (datasets != undefined && datasets.length > 0) {
+        const featuredDataset = {
+          title: datasets[0].name,
+          description: datasets[0].description,
+          banner: datasets[0].banner,
+          id: datasets[0].id,
+        }
+        fields = { ...fields, featuredDataset, datasetSectionTitle }
       }
+
+      const institutionId = pathOr(undefined, ["featuredProject", "fields", "institution", "sys", "id"], fields)
+
+      if (institutionId) {
+        const institutionResponse = await $contentfulClient.getEntry(institutionId)
+        fields.featuredProject.fields.banner = institutionResponse.fields.logo.fields?.file.url
+      }
+
+      if (datasets == undefined || datasets.length <= 0 || homepage == undefined || fields == undefined) {
+        failMessage("Some services are temporarily unavailable, which may cause certain pages to load incompletely.")
+      }
+
       return fields
-    }).catch(e => {
-      console.error(e);
-      return { contentfulError: true }
-    })
+    } catch (error) {
+      console.error(error)
+      failMessage("Some services are temporarily unavailable, which may cause certain pages to load incompletely.")
+      return
+    }
   },
   
   watch: {

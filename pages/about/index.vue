@@ -16,19 +16,9 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-24 mt-32">
+      <div :v-if="whoWeSupport?.length > 0" class="who-we-support-container p-24 mt-32">
         <div class="heading2">Who We Support</div>
-        <div class="body1 mb-16">The SPARC Portal currently supports {{ whoWeSupport.length }} consortia. Visit the
-          consortia page to find out more about them.</div>
-        <div class="data-wrap">
-          <nuxt-link v-for="item in whoWeSupport" :key="item.sys.id" class="who-we-support-item"
-            :to="`/about/consortia/${item.fields.slug}`">
-            <img :src="logoUrl(item)" :alt="`Logo for ${item.fields.title}`" />
-            <p class="mb-0 mt-8">
-              {{ item.fields.title }}
-            </p>
-          </nuxt-link>
-        </div>
+        <Consortias />
         <nuxt-link to="/about/projects">
           <el-button class="secondary">
             View All Projects
@@ -68,6 +58,7 @@
 <script>
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
+import Consortias from '~/components/Consortias/Consortias.vue'
 
 import marked from '@/mixins/marked'
 import { getPreviousDate } from '@/utils/common'
@@ -92,6 +83,7 @@ export default {
   name: 'AboutPage',
 
   components: {
+    Consortias,
     Paper,
     Gallery
   },
@@ -291,6 +283,11 @@ export default {
   width: 100%;
   display: flex;
 }
+:deep(img) {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 .who-we-support-item {
   color: #000;
   text-decoration: none;
@@ -306,7 +303,6 @@ export default {
   img {
     background: #fff;
     border-radius: 50%;
-    display: block;
     margin-bottom: 8px;
     width: 128px;
     border: solid 1px #c0c4cc;
