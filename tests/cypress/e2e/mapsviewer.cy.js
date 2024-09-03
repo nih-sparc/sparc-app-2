@@ -46,15 +46,18 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         loadedModels.add('Rat')
       }
 
-      // Switch to the second flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true })
-      cy.get('.el-select-dropdown__item').should('be.visible')
-      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
-        if (!loadedModels.has(model)) {
-          cy.wait(['@flatmap'], { timeout: 20000 })
-          cy.waitForLoadingMask()
-          loadedModels.add(model)
-        }
+      // Switch to the different flatmap
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
+        cy.get('.el-select-dropdown__item:visible').should(($dropdown) => {
+          expect($dropdown, 'Dropdown should have multiple items').to.have.length(6)
+        })
+        cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
+          if (!loadedModels.has(model)) {
+            cy.wait('@flatmap', { timeout: 20000 })
+            cy.waitForLoadingMask()
+            loadedModels.add(model)
+          }
+        })
       })
 
       // Hide organs and outlines
@@ -62,24 +65,32 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true });
       cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
 
-      cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
-      
       // Open a provenance card
+      // Not able to click on a specific neuron. Click on different coordinates instead.
       cy.clickOnNeuron(coordinate, pixelChange)
 
       // Check for the sidebar tabs
-      cy.get('.title-text-table > .title-text').should('have.length', 2)
+      cy.get('.title-text-table > .title-text').should(($title) => {
+        expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+      })
       cy.get(':nth-child(2) > .title-text-table > .title-text').as('Connectivity')
       cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
-      cy.get('@ActiveTab').should('contain', 'Connectivity')
+      cy.get('@ActiveTab').should(($tab) => {
+        expect($tab, 'Active tab should be Connectivity after clicking on a neuron').to.have.text('Connectivity')
+      })
 
       // Check for the provenance content
       cy.get('.connectivity-info-title').within(($content) => {
-        cy.get('.block > .title').should('exist')
-        cy.get('.block > .subtitle').should('exist')
-        cy.get('.el-button').should('exist')
-
-        // Check for button click
+        cy.get('.block > .title').should(($title) => {
+          expect($title, 'The provenance card should have the neuron name').to.exist
+        })
+        cy.get('.block > .subtitle').should(($description) => {
+          expect($description, 'The provenance card should have the neuron description').to.exist
+        })
+        cy.get('.el-button').should(($button) => {
+          expect($button, 'The provenance card should have the button to open publications in PubMed').to.exist
+        })
+        // Check for PubMed button click
         if ($content.text().includes('Open publications in PubMed')) {
           cy.window().then((window) => {
             cy.stub(window, 'open').as('Open')
@@ -95,71 +106,99 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         }
       })
 
-      // Check for the provenance content
+      // Check for the provenance button click
       cy.get('.sidebar-container > .main > .content-container').then(($content) => {
-        cy.wrap($content).get('.attribute-title-container').should('exist')
-
+        cy.wrap($content).get('.attribute-title-container').should(($title) => {
+          expect($title, 'The provenance sections should have titles').to.exist
+          expect($title, 'The provenance should have multiple sections').to.have.length.greaterThan(0)
+        })
         // Check for button click
         const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
         buttonTexts.forEach((text) => {
           if ($content.text().includes(text)) {
-            cy.contains(/Explore destination data/i).click({force: true})
-            cy.get('@ActiveTab').should('contain', 'Search')
-            cy.get('@Connectivity').click({force: true})
-            cy.get('@ActiveTab').should('contain', 'Connectivity')
+            cy.contains(new RegExp(text, 'i')).click({ force: true })
+            cy.get('@ActiveTab').should(($tab) => {
+              expect($tab, 'Active tab should be Search after clicking on the button').to.contain('Search')
+            })
+            cy.get('@Connectivity').click({ force: true })
+            cy.get('@ActiveTab').should(($tab) => {
+              expect($tab, 'Active tab should be Connectivity after clicking on the Connectivity tab').to.contain('Connectivity')
+            })
           }
         })
       })
-      
+
       // Close the provenance card
       cy.get('.active-tab > .el-button').click()
-      cy.get('.sidebar-container > .tab-container').should('not.exist')
+      cy.get('.sidebar-container > .tab-container').should(($tab) => {
+        expect($tab, 'The tab container should not exist').to.not.exist
+      })
       cy.get('.close-tab > .el-icon').click()
     })
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
     // Switch to the human related flatmap
-    cy.get('.el-select-dropdown__item').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
+      cy.get('.el-select-dropdown__item:visible').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
       if (!loadedModels.has(threeDSyncView)) {
-        cy.wait(['@flatmap'], { timeout: 20000 })
+        cy.wait('@flatmap', { timeout: 20000 })
         cy.waitForLoadingMask()
         loadedModels.add(threeDSyncView)
       }
     })
 
     // Open the 3D view in a split viewer
-    cy.get('.settings-group > :nth-child(1):visible').contains(/Open new map/i).should('exist')
-    cy.get('.settings-group > :nth-child(1):visible').click()
-    cy.get('.open-map-popper:visible > :nth-child(4) > .el-button').contains(/Open Sync Map/i).should('exist')
-    cy.get('.open-map-popper:visible > :nth-child(4) > .el-button').click()
+    cy.get('.settings-group > :nth-child(1):visible').as('newMapIcon')
+    cy.get('@newMapIcon').contains(/Open new map/i).should(($icon) => {
+      expect($icon, 'The new map icon should exist').to.exist
+    })
+    cy.get('@newMapIcon').click()
+    cy.get('.open-map-popper:visible > :nth-child(4) > .el-button').as('syncMapButton')
+    cy.get('@syncMapButton').contains(/Open Sync Map/i).should(($button) => {
+      expect($button, 'The sync map button should exist').to.exist
+    })
+    cy.get('@syncMapButton').click()
 
     cy.wait(['@get_body_scaffold_info', '@s3-resource'], { timeout: 20000 })
 
     // Check for the number of displayed viewers
-    cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should('have.length', 2)
+    cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
+      expect($toolbar, 'Should have two toolbar').to.have.length(2)
+    })
 
     // Check for 3D view's content card detail
-    cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should('exist')
+    cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should(($image) => {
+      expect($image, 'The 3D view content card should have an image').to.exist
+    })
     cy.get('.context-card > .card-right', { timeout: 30000 }).within(() => {
-      cy.get('.title').contains(/3D human whole-body/i).should('exist')
-      cy.get(':nth-child(2) > p').contains(/Visualization/i).should('exist')
-      cy.get('.subtitle').contains(/Scaffold Views/i).should('exist')
-      cy.get('.view-image').should('exist')
-      cy.get('.view-description').contains(/Human whole-body/i).should('exist')
+      cy.get('.title').contains(/3D human whole-body/i).should(($title) => {
+        expect($title, 'The 3D view content card title should contain correct content').to.exist
+      })
+      cy.get(':nth-child(2) > p').contains(/Visualization/i).should(($description) => {
+        expect($description, 'The 3D view content card description should contain correct content').to.exist
+      })
+    })
+    cy.get('.subtitle').contains(/Scaffold Views/i).should(($title) => {
+      expect($title, 'The 3D view content card subtitle should contain correct content').to.exist
+    })
+    cy.get('.view-image').should('exist')
+    cy.get('.view-image').should(($image) => {
+      expect($image, 'The 3D view content card should have an scaffold view image').to.exist
+    })
+    cy.get('.view-description').contains(/Human whole-body/i).should(($description) => {
+      expect($description, 'The 3D view content card should have an scaffold view description').to.exist
     })
 
     // Close the pathway sidebar
     cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button > .el-icon').click()
-
     // Search keyword in displayed viewers
     cy.get('.el-autocomplete > .el-input > .el-input__wrapper').type(searchInMap)
     cy.get('.search-container > .map-icon > use').click()
-
     // Check for keyword(highlighted part) in displayed viewers
-    cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should('exist')
-
+    cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
+      expect($tooltip, 'The tooltip should contain the search keyword').to.exist
+    })
   })
 
   scaffoldDatasetIds.forEach((datasetId) => {
