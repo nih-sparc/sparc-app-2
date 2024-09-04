@@ -40,23 +40,20 @@ browseCategories.forEach((category, bcIndex) => {
       // Wait in case the page is still loading
       cy.waitForLoadingMask()
 
-      cy.get('.search-tabs__container').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
+      cy.get('.search-tabs__container').should(($tabs) => {
+        expect($tabs, 'Search tabs tab should be loaded').to.be.visible
       })
-      cy.get('.search-bar__container').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
+      cy.get('.search-bar__container').should(($bar) => {
+        expect($bar, 'Search bar should be loaded').to.be.visible
       })
-      cy.get('[type="flex"] > :nth-child(1) > .el-row > .el-col-md-8').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
+      cy.get('.facet-menu').should(($menu) => {
+        expect($menu, 'Facet menu should be loaded').to.be.visible
       })
-      cy.get('.table-wrap').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
+      cy.get('.table-wrap').should(($table) => {
+        expect($table, 'Table should be loaded').to.be.visible
       })
-      cy.get(':nth-child(1) > .el-table_1_column_1').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
-      })
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').should(($el) => {
-        expect($el, 'ELement should be loaded').to.be.visible
+      cy.get('.cell').should(($cells) => {
+        expect($cells, 'Table cells should be loaded').to.be.visible
       })
     })
 
@@ -131,10 +128,7 @@ browseCategories.forEach((category, bcIndex) => {
         // Change the page limit
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
-        if (pageLimit !== 10 && pageLimit !== 'View All') {
-          cy.wait('@query', { timeout: 20000 })
-          cy.waitForLoadingMask()
-        }
+        cy.waitForLoadingMask()
 
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
@@ -277,9 +271,9 @@ browseCategories.forEach((category, bcIndex) => {
           })
 
           // Check for filter
-          cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($label) => {
+          cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node1) => {
             let facetsArray = []
-            cy.wrap($label).each($span => facetsArray.push($span.text().toLowerCase())).then(() => {
+            cy.wrap($node1).each($span => facetsArray.push($span.text().toLowerCase())).then(() => {
               let facetIsObserved = true
               facetList.forEach((facet) => {
                 facetIsObserved = facetIsObserved && facetsArray.includes(facet.toLowerCase())
@@ -287,7 +281,7 @@ browseCategories.forEach((category, bcIndex) => {
               if (facetIsObserved) {
                 facetList.forEach((facet) => {
                   // Check the matched facet checkbox
-                  cy.wrap($label).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
+                  cy.wrap($node1).contains(new RegExp(`^${facet}$`, 'i')).then(($label) => {
                     cy.wrap($label).parent().siblings('.el-checkbox').then(($checkbox) => {
                       if (!$checkbox.hasClass('is-checked')) {
                         cy.wrap($label).click()
@@ -326,7 +320,7 @@ browseCategories.forEach((category, bcIndex) => {
                         facetList.forEach((facet) => {
                           const facetExistInTable = $content.text().toLowerCase().includes(facet.toLowerCase())
                           if (facetExistInTable) {
-                            cy.get('.property-table').contains(new RegExp(facet, 'i')).should(($facet) => {
+                            cy.get('.cell').contains(new RegExp(facet, 'i')).should(($facet) => {
                               expect($facet, 'Facet should exist in table').to.exist
                             })
                           } else {
@@ -353,37 +347,40 @@ browseCategories.forEach((category, bcIndex) => {
                   })
                 })
 
-                // Uncheck all
-                cy.checkFacetCheckbox(facetList, 'uncheck', $label)
-                cy.checkFilterInitialised()
+                // Don't use $node1 variable to avoid selector issue in case previous test has accessed the detail page
+                cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node2) => {
+                  // Uncheck all
+                  cy.checkFacetCheckbox(facetList, 'uncheck', $node2)
+                  cy.checkFilterInitialised()
 
-                // Only test dataset category and multiple facets case
-                if (bcIndex === 0 && ffIndex === 1) {
-                  for (let index = 0; index < 2; index++) {
-                    if (index === 1) {
-                      // Combine with search
-                      cy.get('.el-input__inner').clear()
-                      cy.get('.el-input__inner').type('dataset')
-                      cy.checkFacetCheckbox(facetList, 'check', $label)
+                  // Only test dataset category and multiple facets case
+                  if (bcIndex === 0 && ffIndex === 1) {
+                    for (let index = 0; index < 2; index++) {
+                      if (index === 1) {
+                        // Combine with search
+                        cy.get('.el-input__inner').clear()
+                        cy.get('.el-input__inner').type('dataset')
+                        cy.checkFacetCheckbox(facetList, 'check', $node2)
+                      }
+
+                      // Close all tags in order
+                      cy.checkFacetCheckbox(facetList, 'check', $node2)
+                      cy.closeFacetTag(facetList, $node2)
+                      cy.checkFilterInitialised()
+
+                      // Reset all
+                      cy.checkFacetCheckbox(facetList, 'check', $node2)
+                      cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                      cy.checkFilterInitialised()
+
+                      // Close one child facet tag and then click reset all
+                      cy.checkFacetCheckbox(facetList, 'check', $node2)
+                      cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
+                      cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
+                      cy.checkFilterInitialised()
                     }
-
-                    // Close all tags in order
-                    cy.checkFacetCheckbox(facetList, 'check', $label)
-                    cy.closeFacetTag(facetList, $label)
-                    cy.checkFilterInitialised()
-
-                    // Reset all
-                    cy.checkFacetCheckbox(facetList, 'check', $label)
-                    cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                    cy.checkFilterInitialised()
-
-                    // Close one child facet tag and then click reset all
-                    cy.checkFacetCheckbox(facetList, 'check', $label)
-                    cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
-                    cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
-                    cy.checkFilterInitialised()
                   }
-                }
+                })
               } else {
                 this.skip()
               }
