@@ -61,9 +61,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       })
 
       // Hide organs and outlines
-      cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
+      cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
+      cy.get('@settingIcon').click({ waitForAnimations: false })
       cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true });
-      cy.get('.settings-group > :nth-child(2):visible').click({ waitForAnimations: false })
+      cy.get('@settingIcon').click({ waitForAnimations: false })
 
       // Open a provenance card
       // Not able to click on a specific neuron. Click on different coordinates instead.
@@ -129,11 +130,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       })
 
       // Close the provenance card
-      cy.get('.active-tab > .el-button').click()
+      cy.get('.active-tab > .el-button').as('closeTabButton').click()
       cy.get('.sidebar-container > .tab-container').should(($tab) => {
         expect($tab, 'The tab container should not exist').to.not.exist
       })
-      cy.get('.close-tab > .el-icon').click()
+      cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
     })
   })
 
@@ -191,10 +192,10 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     })
 
     // Close the pathway sidebar
-    cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button > .el-icon').click()
+    cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button').click()
     // Search keyword in displayed viewers
     cy.get('.el-autocomplete > .el-input > .el-input__wrapper').type(searchInMap)
-    cy.get('.search-container > .map-icon > use').click()
+    cy.get('.search-container > .map-icon > use').as('mapSearchIcon').click()
     // Check for keyword(highlighted part) in displayed viewers
     cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
       expect($tooltip, 'The tooltip should contain the search keyword').to.exist
@@ -203,47 +204,62 @@ describe('Maps Viewer', { testIsolation: false }, function () {
 
   scaffoldDatasetIds.forEach((datasetId) => {
 
-    it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
+    it(`Context card for scaffold dataset ${datasetId}`, function () {
       // Open the sidebar
-      cy.get('.open-tab > .el-icon').click()
+      cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
 
       // Search dataset id
-      cy.get('.search-input > .el-input__wrapper').clear()
-      cy.get('.search-input > .el-input__wrapper').type(datasetId)
-      cy.get('.header > .el-button > span').click()
+      cy.get('.search-input > .el-input__wrapper').as('searchBox')
+      cy.get('@searchBox').clear()
+      cy.get('@searchBox').type(datasetId)
+      cy.get('.header > .el-button > span').as('sidebarSearchButton').click()
 
-      cy.wait('@query', { timeout: 20000 })
-      cy.waitForLoadingMask()
+      cy.wait(5000)
+      cy.wait('@query', { timeout: 20000 }).then((intercept) => {
+        cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
+          if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
+            // Empty text should show up if no result
+            cy.get('.error-feedback').should(($text) => {
+              expect($text, 'Empty result message should be displayed').to.contain('No results found')
+            })
+          } else {
+            cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
+            cy.waitForLoadingMask()
 
-      cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
-        const noResult = $result.text() === '0 results | Showing'
-        if (noResult) {
-          // Error message should exist if no result
-          cy.get('.error-feedback').should('exist')
-          cy.get('.error-feedback').contains(/No results found/i).should('exist')
-        } else {
+            // Check for search result and the tag 'Scaffold'
+            cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).as('datasetCards')
+            cy.get('@datasetCards').contains(datasetId).should(($card) => {
+              expect($card, 'The search result should contain the specific dataset card').to.exist
+            })
+            cy.get('@datasetCards').filter(`:contains(${datasetId})`).within(() => {
+              cy.get('.badges-container > .container', { timeout: 30000 }).as('scaffoldTags')
+              cy.get('@scaffoldTags').contains(/Scaffold/i).should(($tag) => {
+                expect($tag, 'The dataset card should contain the scaffold tag').to.exist
+              })
+              cy.get('@scaffoldTags').contains(/Scaffold/i).click()
+            })
+            // Check for button text
+            cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).click()
 
-          cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
+            cy.wait('@s3-resource', { timeout: 20000 })
+            cy.waitForLoadingMask()
 
-          // Check for search result and the tag 'Scaffold'
-          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(datasetId).should('exist')
-          cy.get('.dataset-card-container > .dataset-card').filter(`:contains(${datasetId})`).within(() => {
-            cy.get('.badges-container > .container', { timeout: 30000 }).contains(/Scaffold/i).should('exist')
-            cy.get('.badges-container > .container').contains(/Scaffold/i).click()
-          })
-
-          cy.waitForLoadingMask()
-
-          // Check for button text
-          cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).should('exist').click()
-
-          cy.waitForLoadingMask()
-
-          // Check for context card
-          cy.get('.context-card').should('be.visible')
-          cy.get('.context-image:visible').should('have.attr', 'src').and('contain', datasetId)
-          cy.get('[style="margin-right: 8px;"] > .title:visible').should('have.class', 'title')
-        }
+            // Check for context card
+            cy.get('.context-card').should(($card) => {
+              expect($card, 'The context card should be displayed').to.be.visible
+            })
+            cy.get('.context-image').should(($image) => {
+              expect($image, 'The context card should have an image').to.exist
+              expect($image, 'The context card should have an image').to.have.attr('src').to.contain('/s3-resource/')
+            })
+            cy.get('.card-right > :nth-child(1) > .title').should(($title) => {
+              expect($title, 'The context card should have a title class').to.have.class('title')
+            })
+            cy.get('.card-right > :nth-child(1) > :nth-child(2) > :nth-child(1)').should(($description) => {
+              expect($description, 'The context card should have a description').to.exist
+            })
+          }
+        })
       })
     })
   })
