@@ -27,11 +27,11 @@ async function generateDatasetIds(config) {
 
 export default async function dynamicConfig(config) {
     for (const env in DYNAMICENVS) {
-        if (!config.env[env]) {
+        if (!config.env[env] || config.env[env] === 'randompick') {
             config.env[env] = randomAssign(DYNAMICENVS[env].value, DYNAMICENVS[env].number)
         }
     }
-    if (!config.env.DATASET_IDS) {
+    if (!config.env.DATASET_IDS || config.env.DATASET_IDS === 'randompick') {
         config.env.DATASET_IDS = await generateDatasetIds(config)
     }
     return config
@@ -40,15 +40,15 @@ export default async function dynamicConfig(config) {
 const DYNAMICENVS = {
     'PAGE_LIMIT': { 'value': '10, 20, 50, View All', 'number': 1 }, // fixed, no need to change
     'SEARCH_KEYWORDS': {
-        'value': 'Vagus, Spine, Heart, Microscopy, Electrophysiology, Pig',
+        'value': 'Brainstem, Lung, Rat, Liver, Brain, Human',
         'number': 2
     },
     'FILTER_FACET': {
-        'value': 'Central Nervous System, Brain, Human, Connectivity, Male, Adult',
+        'value': 'Tissue, Rat, Anatomy, Female, Embryo',
         'number': 1 // fixed, no need to change
     },
     'MULTIPLE_FILTER_FACETS': {
-        'value': 'Central Nervous System, Brain, Human, Connectivity, Male, Adult',
+        'value': 'Central Nervous System, Human, Connectivity, Male, Adult',
         'number': 2
     },
     'TAXON_MODELS': {
@@ -61,7 +61,7 @@ const DYNAMICENVS = {
         'number': 1 // fixed, no need to change
     },
     'SCAFFOLD_DATASET_IDS': {
-        'value': '150, 155, 292, 102, 223',
+        'value': '136, 307, 292, 328, 155, 102, 227, 147, 186, 167, 112, 156, 174, 173, 217, 99, 219, 100, 154, 105, 146, 223, 218, 98, 166, 101, 76, 103, 232, 95, 259, 182, 134, 104, 172, 94, 170, 144',
         'number': 2
     },
 }
