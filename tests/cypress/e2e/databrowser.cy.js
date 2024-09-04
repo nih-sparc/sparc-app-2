@@ -40,12 +40,24 @@ browseCategories.forEach((category, bcIndex) => {
       // Wait in case the page is still loading
       cy.waitForLoadingMask()
 
-      cy.get('.search-tabs__container').should('be.visible')
-      cy.get('.search-bar__container').should('be.visible')
-      cy.get('[type="flex"] > :nth-child(1) > .el-row > .el-col-md-8').should('be.visible')
-      cy.get('.table-wrap').should('be.visible')
-      cy.get(':nth-child(1) > .el-table_1_column_1').should('be.visible')
-      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').should('be.visible')
+      cy.get('.search-tabs__container').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
+      cy.get('.search-bar__container').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
+      cy.get('[type="flex"] > :nth-child(1) > .el-row > .el-col-md-8').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
+      cy.get('.table-wrap').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
+      cy.get(':nth-child(1) > .el-table_1_column_1').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
+      cy.get(':nth-child(1) > .el-table_1_column_2 > .cell').should(($el) => {
+        expect($el, 'ELement should be loaded').to.be.visible
+      })
     })
 
     describe('All Page Features', { testIsolation: false }, function () {
@@ -61,19 +73,12 @@ browseCategories.forEach((category, bcIndex) => {
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
-        cy.wait('@query', { timeout: 20000 })
-        cy.waitForLoadingMask()
-
-        // Data sorting
+        // Publish date sorting
         cy.checkDatasetSorted('Date (asc)')
 
         // A-Z sorting
         cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('A-Z').click()
-
-        cy.wait('@query', { timeout: 20000 })
-        cy.waitForLoadingMask()
-
         cy.checkDatasetSorted('Z-A')
       })
 
@@ -82,7 +87,8 @@ browseCategories.forEach((category, bcIndex) => {
        */
       it('Tooltips', function () {
         // Filter applied
-        cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').as('helpIcon1')
+        cy.get('@helpIcon1').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
         cy.get('[role="tooltip"]').should(($tooltip) => {
           // Check for tooltip visibility
           expect($tooltip, 'Tooltip for Filter applied should be visible').to.be.visible
@@ -93,14 +99,15 @@ browseCategories.forEach((category, bcIndex) => {
           expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain('Between categories: AND')
           expect($tooltip, 'Tooltip for Filter applied should contain correct content').to.contain("example: 'rat' AND 'lung'")
         })
-        cy.get('.nuxt-icon.nuxt-icon--fill.help-icon.el-tooltip__trigger.el-tooltip__trigger').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+        cy.get('@helpIcon1').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
         // Check for tooltip visibility
         cy.get('[role="tooltip"]').should(($tooltip) => {
           expect($tooltip, 'Tooltip for Filter applied should not be visible').to.not.be.visible
         })
 
         // AVAILABILITY
-        cy.get('.ml-4.help-icon').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('.ml-4.help-icon').as('helpIcon2')
+        cy.get('@helpIcon2').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
         cy.get('[role="tooltip"]').should(($tooltip) => {
           // Check for tooltip visibility
           expect($tooltip, 'Tooltip for AVAILABILITY should be visible').to.be.visible
@@ -110,7 +117,7 @@ browseCategories.forEach((category, bcIndex) => {
           expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('During embargo, the public will be able to view basic metadata about')
           expect($tooltip, 'Tooltip for AVAILABILITY should contain correct content').to.contain('these datasets as well as their release date.')
         })
-        cy.get('.ml-4.help-icon').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+        cy.get('@helpIcon2').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
         // Check for tooltip visibility
         cy.get('[role="tooltip"]').should(($tooltip) => {
           expect($tooltip, 'Tooltip for AVAILABILITY should not be visible').to.not.be.visible
@@ -168,10 +175,13 @@ browseCategories.forEach((category, bcIndex) => {
       searchKeywords.forEach((keyword) => {
         it(`${keyword}`, function () {
           // In case previous test has been skipped
-          cy.forceGoBack(`data?type=${category}`)
+          cy.restoreUrlState(`data?type=${category}`)
 
           // Ckeck for placeholder
-          cy.get('.el-input__inner').should('have.attr', 'placeholder', 'Enter search criteria (e.g., researcher name or other keywords)')
+          cy.get('.el-input__inner').should(($input) => {
+            expect($input, 'Placeholder should be visible').to.have.attr('placeholder', 'Enter search criteria (e.g., researcher name or other keywords)')
+          })
+
           // Searching keyword
           cy.get('.el-input__inner').clear()
           cy.get('.el-input__inner').type(keyword)
@@ -179,9 +189,7 @@ browseCategories.forEach((category, bcIndex) => {
           cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').should(($icon) => {
             expect($icon, 'Clear search icon should be visible').to.be.visible
           })
-
           cy.get('.search-text').click()
-
           // Check for keyword in URL
           cy.url().should((url) => {
             expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
@@ -193,7 +201,7 @@ browseCategories.forEach((category, bcIndex) => {
               if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
                 // Empty text should show up if no result
                 cy.get('.el-table__empty-text').should(($text) => {
-                  expect($text, 'Empty message should be displayed').to.contain('No Results')
+                  expect($text, 'Empty result message should be displayed').to.contain('No Results')
                 })
               } else {
                 // Show all datasets in order to check the sorting functionality
@@ -244,10 +252,11 @@ browseCategories.forEach((category, bcIndex) => {
       filterFacets.forEach((facetList, ffIndex) => {
         it(`${facetList}`, function () {
           // In case previous test has been skipped
-          cy.forceGoBack(`data?type=${category}`)
+          cy.restoreUrlState(`data?type=${category}`)
 
           cy.wait(5000)
           cy.checkFilterInitialised()
+
           if (ffIndex === 0) {
             cy.get('.label-content-container').should(($filter) => {
               expect($filter, 'Filter content should not be visible').to.not.be.visible
@@ -259,7 +268,6 @@ browseCategories.forEach((category, bcIndex) => {
             expect($filter, 'Filter content should be visible').to.be.visible
             expect($filter, 'Filter content should be ready').to.have.length.greaterThan(0)
           })
-
           // Expand nested facet menu item
           cy.get('.el-icon.el-tree-node__expand-icon:visible').not('.is-leaf').each(($ele) => {
             const isExpanded = $ele.hasClass('expanded')
@@ -292,10 +300,9 @@ browseCategories.forEach((category, bcIndex) => {
                     expect($card, 'Facet tag should be displayed in filters applied box').to.exist
                   })
                 })
-
                 // Check for URL
                 cy.url().should((url) => {
-                  expect(url, 'URL should contain facet ids parameter').to.contain(`selectedFacetIds=`)
+                  expect(url, 'URL should contain facet ids parameter').to.contain('selectedFacetIds=')
                 })
 
                 cy.wait(5000)
@@ -304,7 +311,7 @@ browseCategories.forEach((category, bcIndex) => {
                     if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
                       // Empty text should show up if no result
                       cy.get('.el-table__empty-text').should(($text) => {
-                        expect($text, 'Empty message should be displayed').to.contain('No Results')
+                        expect($text, 'Empty result message should be displayed').to.contain('No Results')
                       })
                     } else {
                       // Show all datasets
