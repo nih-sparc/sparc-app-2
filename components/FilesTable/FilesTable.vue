@@ -114,7 +114,15 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="fileType" label="File type" width="280" sortable>
+        <el-table-column 
+          prop="fileType" 
+          label="File type" 
+          width="280" 
+          sortable
+          :filters="getFileTypeFilters(data)"
+          :filter-method="fileTypeFilterStatus"
+          filter-placement="top-start"
+        >
           <template v-slot="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -635,7 +643,8 @@ export default {
     /**
      * When the path query changes get files.
      */
-    pathQueryChanged: function() {
+    pathQueryChanged: function () {
+      this.$refs.table.clearFilter()
       this.getFiles()
     },
 
@@ -978,6 +987,25 @@ export default {
       const uri = file.uri
       return uri.substring(uri.indexOf('files/'))
     },
+    getFileTypeFilters: function (data) {
+      let fileTypeLabels = [...new Set(data.map(item => item.fileType ? item.fileType : item.type))]
+      return fileTypeLabels.map((label) => {
+        if (label == 'Directory') {
+          return {
+            text: 'Folder',
+            value: label
+          }
+        } else {
+          return {
+            text: label,
+            value: label
+          }
+        }
+      })
+    },
+    fileTypeFilterStatus: function (value, row, col) {
+      return row.fileType ? row.fileType == value : row.type == value
+    }
   }
 }
 </script>
