@@ -55,7 +55,9 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 Cypress.Commands.add('waitForLoadingMask', () => {
-  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('not.exist')
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Loading mask should not exist').to.not.exist
+  })
   cy.wait(5000)
 })
 
@@ -64,7 +66,10 @@ Cypress.Commands.add('visitLoadedPage', (url) => {
   cy.waitForLoadingMask()
 })
 
-Cypress.Commands.add('forceGoBack', (link) => {
+/**
+ * Databrowser commands
+ */
+Cypress.Commands.add('restoreUrlState', (link) => {
   cy.url().then((url) => {
     if (!url.includes(link)) {
       cy.go('back')
@@ -79,21 +84,18 @@ Cypress.Commands.add('forceGoBack', (link) => {
   })
 })
 
-/**
- * Databrowser commands
- */
 Cypress.Commands.add('checkDatasetSorted', (sort) => {
+  cy.wait('@query', { timeout: 20000 })
+  cy.waitForLoadingMask()
   cy.get('.el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').as('datasetImgs')
   // Get first dataset image alt text
   cy.get('@datasetImgs').first().invoke('attr', 'alt').then((alt) => {
     cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
     cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sort).click()
-
     if (sort === 'Z-A') {
       cy.wait('@query', { timeout: 20000 })
     }
     cy.waitForLoadingMask()
-
     // Get last dataset image alt text
     cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
       expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
@@ -154,6 +156,9 @@ Cypress.Commands.add('checkFilterInitialised', () => {
   })
 })
 
+/**
+ * datasets commands
+ */
 Cypress.Commands.add('findGalleryCard', (text, dir) => {
   let direction = '.btn-next'
   const clickNextPageButton = () => {
@@ -177,13 +182,18 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
   clickNextPageButton()
 })
 
+/**
+ * mapsviewer commands
+ */
 Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorX = coordinate.x
   let coorY = coordinate.y
+  cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
   const clickOnNeuron = () => {
     cy.get('@canvas').click(coorX, coorY)
     cy.wait(5000)
     cy.get('body').then(($body) => {
+      // Keep clicking until the sidebar is opened
       if ($body.find('.sidebar-container > .tab-container').length === 0) {
         coorX -= pixel
         clickOnNeuron()
