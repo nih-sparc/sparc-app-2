@@ -181,6 +181,14 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
   }
   clickNextPageButton()
 })
+Cypress.Commands.add('backToDetailPage', (datasetId) => {
+  cy.url().then((url) => {
+    if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+      cy.go('back')
+      cy.waitForLoadingMask()
+    }
+  })
+})
 
 /**
  * mapsviewer commands

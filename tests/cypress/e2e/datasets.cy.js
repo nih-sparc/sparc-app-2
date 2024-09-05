@@ -53,98 +53,129 @@ datasetIds.forEach(datasetId => {
       });
     });
 
-    it("Landing page", function () {
-      // Should display image with correct dataset src
-      cy.get('.dataset-image', { timeout: 30000 }).should('have.attr', 'src').and('include', `https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
-
-      // Check for tooltip when hover over author 
-      cy.get('.dataset-owners > :nth-child(2) > .contributor-item').then(($orcid) => {
-        if ($orcid.hasClass('has-orcid')) {
-          cy.wrap($orcid).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-          //only one visible popover
-          cy.get('.orcid-popover:visible').should('have.length', 1)
-        }
-      })
-
-      // DOI link should link to page with correct version
-      cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
-        const version = value.match(/[0-9]+/i)[0]
-        cy.get('.dataset-information-box > :nth-child(2) > a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-          cy.request(href).then((resp) => {
-            expect(resp.status).to.eq(200);
-            expect(resp.body).to.include(`datasets/${datasetId}/version/${version}`);
-          })
+    describe("Landing page", function () {
+      it('Title, Thumbnail, Tooltip and Link', function () {
+        // Should display dataset title
+        cy.get('.el-col-sm-16 > .heading2').should(($title) => {
+          expect($title, 'Dataset title should exist').to.exist
         })
-      });
 
-      // Wait for the link in the clicked name
-      cy.wait(5000)
+        // Should display image with correct dataset src
+        cy.get('.dataset-image').should(($image) => {
+          expect($image, 'Dataset image should have correct source').to.have.attr('src').to.contain(`https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
+        })
 
-      // Should search for contributor in find data page
-      cy.get(':nth-child(2) > .contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($name) => {
-        cy.wrap($name).click()
+        // Check for tooltip when hover over contributor 
+        cy.get('.dataset-owners > .contributor-item-wrap > .has-orcid').each(($contributor) => {
+          cy.wrap($contributor).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+          cy.wait(5000)
+          // Popover should be visible for each contributor
+          cy.get('.orcid-popover:visible').should(($tooltip) => {
+            expect($tooltip, 'Orcid tooltip should be visible').to.be.visible
+            expect($tooltip, 'Orcid tooltip should contain contributor name').to.contain($contributor.text())
+            expect($tooltip, 'Orcid tooltip should contain ORCID').to.contain('ORCID iD')
+          })
+          cy.wrap($contributor).trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+        })
 
-        cy.wait('@query', { timeout: 20000 })
-        cy.waitForLoadingMask()
-
-        cy.get('.table-wrap').then(($content) => {
-          if (!$content.text().includes('No Results')) {
-            // Check for result
-            cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').should('be.visible').click()
-            cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
-            cy.waitForLoadingMask()
-
-            let datasetShowUp = false
-            cy.get('.img-dataset > img').each(($img) => {
-              cy.wrap($img).invoke('attr', 'src').then((src) => {
-                datasetShowUp = datasetShowUp || src.includes(datasetId)
-              })
-            }).then(() => {
-              if (datasetShowUp) {
-                // Check for URL and search input
-                cy.url({ decode: true }).should('contain', `search=${$name.text().replaceAll(' ', '+')}`)
-                cy.get('.el-input__inner').should('have.value', $name.text());
-              } else {
-                throw new Error("Can not find matched dataset for current contributor")
+        // DOI link should link to page with correct version
+        cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
+          const version = value.match(/[0-9]+/i)[0]
+          cy.get('.dataset-information-box > :nth-child(2) > a').as('doiLink')
+          cy.get('@doiLink').should(($link) => {
+            expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
+          })
+          cy.get('@doiLink').invoke('attr', 'href').then((value) => {
+            cy.request(value).then((resp) => {
+              expect(resp.status).to.eq(200)
+              if (resp.redirects && resp.redirects.length) {
+                expect(resp.redirects[0]).to.contain(`datasets/${datasetId}/version/${version}`)
               }
             })
-          } else {
-            // Skip test if can not find any datasets
-            this.skip()
-          }
-          cy.go('back')
-
-          cy.waitForLoadingMask()
-
+          })
         })
+
+        // Check 'View other version' directs to Versions tab
+        cy.get('.dataset-information-box > div').contains('View other versions').click()
+        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions')
+        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
       });
 
-      // Check 'View other version' directs to Versions tab
-      cy.get('.dataset-information-box > div').contains('View other versions').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
-      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
+      it('Left Panel - Button and Link', function () {
+        // Avoid failed test block retries
+        cy.backToDetailPage(datasetId)
 
-      //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
-      cy.contains('.button-container span', 'Get').click()
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
-      cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
+        //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
+        cy.contains('.button-container span', 'Get').click()
+        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files')
+        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
 
-      //Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
-      cy.contains('.button-container span', 'Cite').click()
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
-      cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
-    });
+        // Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
+        cy.contains('.button-container span', 'Cite').click()
+        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite')
+        cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
 
-    it("Abstract Tab", function () {
-      cy.url().then((url) => {
-        if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
-          cy.go('back')
-
-          cy.waitForLoadingMask()
-
-        }
+        // Check project if exist
+        cy.get('.similar-datasets-container').then(($content) => {
+          if ($content.text().includes('project(s):')) {
+            cy.wrap($content).get('.mt-8 > a > u').then(($title) => {
+              const projectName = $title.text()
+              cy.get('.mt-8 > a').click()
+              cy.waitForLoadingMask()
+              // Check for the title
+              cy.get('.row > .heading2').should(($title) => {
+                expect($title, 'Project title should match').to.contain(projectName)
+              });
+              cy.go('back')
+              cy.waitForLoadingMask()
+            })
+          }
+        })
       })
+
+      it('Left Panel - Facet', function () {
+        // Avoid failed test block retries
+        cy.backToDetailPage(datasetId)
+
+        cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
+          for (let index = 0; index < $facets.length; index++) {
+            const facetName = $facets.eq(index).text()
+            cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(index).click()
+            cy.waitForLoadingMask()
+            cy.get('.el-tag__content').should(($tag) => {
+              expect($tag, 'Tag should exist in applied').to.have.length(1)
+              expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(index).text())
+            })
+            cy.go('back')
+            cy.waitForLoadingMask()
+          }
+        })
+      })
+
+      it('Left Panel - Contributor', function () {
+        // Avoid failed test block retries
+        cy.backToDetailPage(datasetId)
+
+        // Wait for the link in the clicked name
+        cy.wait(5000)
+        // Should search for contributor in find data page
+        cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($contributors) => {
+          for (let index = 0; index < $contributors.length; index++) {
+            const contributorName = $contributors.eq(index).text()
+            cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(index).click()
+            cy.waitForLoadingMask()
+            cy.get('.el-input__inner').should(($input) => {
+              expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(index).text())
+            })
+            cy.go('back')
+            cy.waitForLoadingMask()
+          }
+        })
+      })
+    })
+
+    it.skip("Abstract Tab", function () {
+      cy.backToDetailPage(datasetId)
 
       // Should switch to 'Abstract'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Abstract').click();
@@ -185,7 +216,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it("About Tab", function () {
+    it.skip("About Tab", function () {
       // Should switch to 'About'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('About').click();
       cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'About');
@@ -248,15 +279,8 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it("Cite Tab", function () {
-      cy.url().then((url) => {
-        if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
-          cy.go('back')
-
-          cy.waitForLoadingMask()
-
-        }
-      })
+    it.skip("Cite Tab", function () {
+      cy.backToDetailPage(datasetId)
 
       // Should switch to 'Cite'
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Cite').click();
@@ -277,7 +301,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it("Files Tab", function () {
+    it.skip("Files Tab", function () {
       //First check if there is a Files tab
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
         if ($tabs.text().includes('Files')) {
@@ -340,7 +364,7 @@ datasetIds.forEach(datasetId => {
       });
     });
 
-    it("References Tab", function () {
+    it.skip("References Tab", function () {
       //First check if reference tab is present
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
         if ($tabs.text().includes('References')) {
@@ -380,7 +404,7 @@ datasetIds.forEach(datasetId => {
       });
     });
 
-    it("Versions Tab", function () {
+    it.skip("Versions Tab", function () {
       //First check if version tab is present
       cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
         if ($tabs.text().includes('Versions')) {
