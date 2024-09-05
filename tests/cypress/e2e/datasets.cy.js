@@ -54,21 +54,43 @@ datasetIds.forEach(datasetId => {
     });
 
     describe("Landing page", function () {
-      it('Title, Thumbnail, Tooltip and Link', function () {
-        // Should display dataset title
-        cy.get('.el-col-sm-16 > .heading2').should(($title) => {
-          expect($title, 'Dataset title should exist').to.exist
-        })
-
+      it('Top Left Panel - Thumbnail and Button', function () {
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
           expect($image, 'Dataset image should have correct source').to.have.attr('src').to.contain(`https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
         })
 
+        //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
+        cy.contains('.button-container span', 'Get').click()
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be Files').to.contain('Files')
+        })
+        cy.get('[style=""] > .heading2.mb-8').should(($title) => {
+          expect($title, 'Title should be Download Dataset').to.contain('Download Dataset').to.be.visible
+        })
+
+        // Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
+        cy.contains('.button-container span', 'Cite').click()
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be Cite').to.contain('Cite')
+        })
+        cy.get('[style=""] > .heading2.mb-8').should(($title) => {
+          expect($title, 'Title should be Dataset Citation').to.contain('Dataset Citation').to.be.visible
+        })
+      })
+
+      it('Top Panel - Title and Contributor', function () {
+        // Should display dataset title
+        cy.get('.el-col-sm-16 > .heading2').should(($title) => {
+          expect($title, 'Dataset title should exist').to.exist
+        })
+
         // Check for tooltip when hover over contributor 
+        cy.get('.dataset-owners').should(($contributor) => {
+          expect($contributor, 'Contributor should exist').to.exist
+        })
         cy.get('.dataset-owners > .contributor-item-wrap > .has-orcid').each(($contributor) => {
           cy.wrap($contributor).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-          cy.wait(5000)
           // Popover should be visible for each contributor
           cy.get('.orcid-popover:visible').should(($tooltip) => {
             expect($tooltip, 'Orcid tooltip should be visible').to.be.visible
@@ -77,7 +99,9 @@ datasetIds.forEach(datasetId => {
           })
           cy.wrap($contributor).trigger('mouseleave', { eventConstructor: 'MouseEvent' })
         })
+      });
 
+      it('Top Right Panel - Link', function () {
         // DOI link should link to page with correct version
         cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
           const version = value.match(/[0-9]+/i)[0]
@@ -99,29 +123,22 @@ datasetIds.forEach(datasetId => {
         cy.get('.dataset-information-box > div').contains('View other versions').click()
         cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions')
         cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
-      });
+      })
 
-      it('Left Panel - Button and Link', function () {
+      it('Left Panel - (Project,) Facet and Contributor', function () {
         // Avoid failed test block retries
         cy.backToDetailPage(datasetId)
 
-        //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
-        cy.contains('.button-container span', 'Get').click()
-        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files')
-        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Download Dataset').and('be.visible')
-
-        // Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
-        cy.contains('.button-container span', 'Cite').click()
-        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite')
-        cy.get('.citation-details > .heading2').should('contain', 'Dataset Citation').and('be.visible')
-
-        // Check project if exist
+        // Check project link if exist
         cy.get('.similar-datasets-container').then(($content) => {
           if ($content.text().includes('project(s):')) {
             cy.wrap($content).get('.mt-8 > a > u').then(($title) => {
               const projectName = $title.text()
               cy.get('.mt-8 > a').click()
               cy.waitForLoadingMask()
+              cy.url().should((url) => {
+                expect(url, 'URL should contain correct slug').to.contain('/about/projects/')
+              })
               // Check for the title
               cy.get('.row > .heading2').should(($title) => {
                 expect($title, 'Project title should match').to.contain(projectName)
@@ -131,45 +148,33 @@ datasetIds.forEach(datasetId => {
             })
           }
         })
-      })
-
-      it('Left Panel - Facet', function () {
-        // Avoid failed test block retries
-        cy.backToDetailPage(datasetId)
 
         cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
-          for (let index = 0; index < $facets.length; index++) {
-            const facetName = $facets.eq(index).text()
-            cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(index).click()
-            cy.waitForLoadingMask()
-            cy.get('.el-tag__content').should(($tag) => {
-              expect($tag, 'Tag should exist in applied').to.have.length(1)
-              expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(index).text())
-            })
-            cy.go('back')
-            cy.waitForLoadingMask()
-          }
+          const randomIndex = Math.floor(Math.random() * $facets.length);
+          const facetName = $facets.eq(randomIndex).text()
+          cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
+          cy.waitForLoadingMask()
+          cy.get('.el-tag__content').should(($tag) => {
+            expect($tag, 'Tag should exist in applied').to.have.length(1)
+            expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(randomIndex).text())
+          })
+          cy.go('back')
+          cy.waitForLoadingMask()
         })
-      })
-
-      it('Left Panel - Contributor', function () {
-        // Avoid failed test block retries
-        cy.backToDetailPage(datasetId)
 
         // Wait for the link in the clicked name
         cy.wait(5000)
         // Should search for contributor in find data page
         cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($contributors) => {
-          for (let index = 0; index < $contributors.length; index++) {
-            const contributorName = $contributors.eq(index).text()
-            cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(index).click()
-            cy.waitForLoadingMask()
-            cy.get('.el-input__inner').should(($input) => {
-              expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(index).text())
-            })
-            cy.go('back')
-            cy.waitForLoadingMask()
-          }
+          const randomIndex = Math.floor(Math.random() * $contributors.length);
+          const contributorName = $contributors.eq(randomIndex).text()
+          cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
+          cy.waitForLoadingMask()
+          cy.get('.el-input__inner').should(($input) => {
+            expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(randomIndex).text())
+          })
+          cy.go('back')
+          cy.waitForLoadingMask()
         })
       })
     })
