@@ -181,6 +181,7 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
   }
   clickNextPageButton()
 })
+
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
   cy.url().then((url) => {
     if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
@@ -188,6 +189,37 @@ Cypress.Commands.add('backToDetailPage', (datasetId) => {
       cy.waitForLoadingMask()
     }
   })
+})
+
+Cypress.Commands.add('checkGalleyCardState', () => {
+  const clickNextPageButton = () => {
+    cy.get('.el-card > .el-card__body').each(($card) => {
+      cy.wrap($card).within(() => {
+        cy.get('.details > .el-button').then(($button) => {
+          if (!$button.text().includes('flatmap')) {
+            cy.get('.cursor-pointer > .thumbnail').should(($image) => {
+              expect($image, 'Image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
+            })
+            cy.get('.details > .el-tooltip__trigger > .title').should(($title) => {
+              expect($title, 'Title should exist').to.not.have.text('')
+            })
+            cy.get('.details > .el-button').should(($button) => {
+              expect($button, 'View button should exist').to.contain('View')
+            })
+          }
+        })
+      })
+    })
+    cy.get('.btn-next').then(($button) => {
+      if ($button.is(":disabled")) {
+        cy.get('.el-pager > .number').first().click()
+      } else {
+        cy.wrap($button).click()
+        clickNextPageButton()
+      }
+    })
+  }
+  clickNextPageButton()
 })
 
 /**

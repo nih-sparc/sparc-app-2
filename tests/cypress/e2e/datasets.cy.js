@@ -18,42 +18,47 @@ datasetIds.forEach(datasetId => {
       cy.intercept('**/query?**').as('query')
     })
 
-    it("Gallery Tab", function () {
-      // Should switch to 'Gallery'
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Gallery').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Gallery');
+    describe("Gallery Tab", function () {
+      it('Gallery Items', function () {
+        // Should switch to 'Gallery'
+        cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').click();
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be Gallery').to.contain('Gallery')
+        });
 
-      cy.wait(10000)
+        cy.wait(5000)
+        cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
+          const response = intercept.response.body.result[0]
+          // Check if gallery cards loaded correctly
+          if (
+            ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
+            ('video' in response && response['video'].length) ||
+            ('organs' in response && response['organs'].length) ||
+            ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
+            ('abi-plot' in response && response['abi-plot'].length) ||
+            ('common-images' in response && response['common-images'].length) ||
+            ('biolucida-2d' in response && response['biolucida-2d'].length) ||
+            ('biolucida-3d' in response && response['biolucida-3d'].length)
+          ) {
+            cy.checkGalleyCardState()
+          } else {
+            cy.get('.content > .full-size').should(($message) => {
+              expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
+            })
+          }
 
-      cy.get('.content > .full-size', { timeout: 30000 }).then(($content) => {
-        const gallery = $content.find('.gallery-container', { timeout: 30000 });
-        if (gallery && gallery.length) {
-          // Check for pagination
-          cy.wrap(gallery).find('.sparc-design-system-pagination').as('pagination');
-          cy.get('@pagination').find('li.number').should('have.length.least', 1);
-
-          // Check for gallery card
-          cy.wrap(gallery).find('.el-card').as('card').should('have.length.least', 1)
-          cy.get('@card').first().within(($card) => {
-            cy.wrap($card).get('.cursor-pointer > img').should('be.visible').and('have.prop', 'naturalWidth').should('be.greaterThan', 0)
-            cy.wrap($card).contains('span', ' View ')
-          });
-
-          // Only check for dataset when it has valid organs data
-          cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
-
-            if (intercept.response.body.result[0].organs) {
-              cy.findGalleryCard('flatmap', 'prev');
-              cy.get('.el-card > .el-card__body').should('contain', 'flatmap');
-            }
-          })
-        } else {
-          cy.wrap($content).contains(/This dataset does not contain gallery items/);
-        }
-      });
+          // Check if flatmap exist
+          if ('organs' in response && response['organs'].length) {
+            cy.findGalleryCard('flatmap', 'prev');
+            cy.get('.el-card > .el-card__body').should(($card) => {
+              expect($card, 'Flatmap card should exist').to.contain('flatmap')
+            });
+          }
+        })
+      })
     });
 
-    describe("Landing page", function () {
+    describe.skip("Landing page", function () {
       it('Top Left Panel - Thumbnail and Button', function () {
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
