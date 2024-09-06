@@ -13,12 +13,12 @@ datasetIds.forEach(datasetId => {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
-    beforeEach(function () {
-      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
-      cy.intercept('**/query?**').as('query')
-    })
+    describe("Gallery Tab", { testIsolation: false }, function () {
+      beforeEach(function () {
+        cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+        cy.waitForPageLoading()
+      })
 
-    describe("Gallery Tab", function () {
       it('Gallery Items', function () {
         // Should switch to 'Gallery'
         cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').click();
@@ -58,7 +58,12 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe.skip("Landing page", function () {
+    describe("Landing page", { testIsolation: false }, function () {
+      beforeEach(function () {
+        cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+        cy.waitForPageLoading()
+      })
+
       it('Top Left Panel - Thumbnail and Button', function () {
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
@@ -140,7 +145,7 @@ datasetIds.forEach(datasetId => {
             cy.wrap($content).get('.mt-8 > a > u').then(($title) => {
               const projectName = $title.text()
               cy.get('.mt-8 > a').click()
-              cy.waitForLoadingMask()
+              cy.waitForPageLoading()
               cy.url().should((url) => {
                 expect(url, 'URL should contain correct slug').to.contain('/about/projects/')
               })
@@ -149,7 +154,7 @@ datasetIds.forEach(datasetId => {
                 expect($title, 'Project title should match').to.contain(projectName)
               });
               cy.go('back')
-              cy.waitForLoadingMask()
+              cy.waitForPageLoading()
             })
           }
         })
@@ -158,13 +163,13 @@ datasetIds.forEach(datasetId => {
           const randomIndex = Math.floor(Math.random() * $facets.length);
           const facetName = $facets.eq(randomIndex).text()
           cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
-          cy.waitForLoadingMask()
+          cy.waitForPageLoading()
           cy.get('.el-tag__content').should(($tag) => {
             expect($tag, 'Tag should exist in applied').to.have.length(1)
             expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(randomIndex).text())
           })
           cy.go('back')
-          cy.waitForLoadingMask()
+          cy.waitForPageLoading()
         })
 
         // Wait for the link in the clicked name
@@ -174,12 +179,12 @@ datasetIds.forEach(datasetId => {
           const randomIndex = Math.floor(Math.random() * $contributors.length);
           const contributorName = $contributors.eq(randomIndex).text()
           cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
-          cy.waitForLoadingMask()
+          cy.waitForPageLoading()
           cy.get('.el-input__inner').should(($input) => {
             expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(randomIndex).text())
           })
           cy.go('back')
-          cy.waitForLoadingMask()
+          cy.waitForPageLoading()
         })
       })
     })
@@ -273,7 +278,7 @@ datasetIds.forEach(datasetId => {
             cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
               cy.get('.mt-8 > a').click()
 
-              cy.waitForLoadingMask()
+              cy.waitForPageLoading()
 
               cy.url().should('contain', 'projects')
               // Check for the title and the institution 
@@ -281,7 +286,7 @@ datasetIds.forEach(datasetId => {
               cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
               cy.go('back')
 
-              cy.waitForLoadingMask()
+              cy.waitForPageLoading()
 
             })
           })

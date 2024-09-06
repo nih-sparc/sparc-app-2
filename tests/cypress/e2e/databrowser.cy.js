@@ -32,36 +32,37 @@ if (multipleFilterFacets && multipleFilterFacets.length > 1) {
 browseCategories.forEach((category, bcIndex) => {
   describe(`Browsing Data in ${category}`, { testIsolation: false }, function () {
     retryableBefore(function () {
-      cy.visitLoadedPage(`/data?type=${category}`)
+      cy.visit(`/data?type=${category}`)
     })
 
-    // Make sure the page is loaded
-    it('Data Browser Page UI', function () {
-      // Wait in case the page is still loading
-      cy.waitForLoadingMask()
+    beforeEach(function () {
+      cy.intercept('**/query?**').as('query')
+      cy.waitForPageLoading()
+    })
 
-      cy.get('.search-tabs__container').should(($tabs) => {
-        expect($tabs, 'Search tabs tab should be loaded').to.be.visible
-      })
-      cy.get('.search-bar__container').should(($bar) => {
-        expect($bar, 'Search bar should be loaded').to.be.visible
-      })
-      cy.get('.facet-menu').should(($menu) => {
-        expect($menu, 'Facet menu should be loaded').to.be.visible
-      })
-      cy.get('.table-wrap').should(($table) => {
-        expect($table, 'Table should be loaded').to.be.visible
-      })
-      cy.get('.cell').should(($cells) => {
-        expect($cells, 'Table cells should be loaded').to.be.visible
+    describe('Data Browser', { testIsolation: false }, function () {
+      // Make sure the page is loaded
+      it('Page UI', function () {
+        // Wait in case the page is still loading
+        cy.get('.search-tabs__container').should(($tabs) => {
+          expect($tabs, 'Search tabs tab should be loaded').to.be.visible
+        })
+        cy.get('.search-bar__container').should(($bar) => {
+          expect($bar, 'Search bar should be loaded').to.be.visible
+        })
+        cy.get('.facet-menu').should(($menu) => {
+          expect($menu, 'Facet menu should be loaded').to.be.visible
+        })
+        cy.get('.table-wrap').should(($table) => {
+          expect($table, 'Table should be loaded').to.be.visible
+        })
+        cy.get('.cell').should(($cells) => {
+          expect($cells, 'Table cells should be loaded').to.be.visible
+        })
       })
     })
 
     describe('All Page Features', { testIsolation: false }, function () {
-      beforeEach(function () {
-        cy.intercept('**/query?**').as('query')
-      })
-
       /**
        * Test whether the datasets order can be updated correctly
        */
@@ -128,7 +129,9 @@ browseCategories.forEach((category, bcIndex) => {
         // Change the page limit
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
-        cy.waitForLoadingMask()
+
+        cy.wait('@query', { timeout: 20000 })
+        cy.waitForBrowserLoading()
 
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
@@ -162,11 +165,9 @@ browseCategories.forEach((category, bcIndex) => {
     })
 
     describe('Keyword Search', { testIsolation: false }, function () {
-      beforeEach(function () {
-        cy.intercept('**/query?**').as('query')
-      })
 
       searchKeywords.forEach((keyword) => {
+
         it(`${keyword}`, function () {
           // In case previous test has been skipped
           cy.restoreUrlState(`data?type=${category}`)
@@ -203,7 +204,7 @@ browseCategories.forEach((category, bcIndex) => {
                 cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
                 cy.wait('@query', { timeout: 20000 })
-                cy.waitForLoadingMask()
+                cy.waitForBrowserLoading()
 
                 // Check for keyword in table
                 cy.get('.table-wrap').then(($table) => {
@@ -216,7 +217,7 @@ browseCategories.forEach((category, bcIndex) => {
                     cy.get('.img-dataset > img').first().click()
 
                     cy.wait('@query', { timeout: 20000 })
-                    cy.waitForLoadingMask()
+                    cy.waitForPageLoading()
 
                     cy.get('.details-container').then(($detail) => {
                       const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
@@ -239,11 +240,9 @@ browseCategories.forEach((category, bcIndex) => {
     })
 
     describe('Faceted Browse Search', { testIsolation: false }, function () {
-      beforeEach(function () {
-        cy.intercept('**/query?**').as('query')
-      })
 
       filterFacets.forEach((facetList, ffIndex) => {
+
         it(`${facetList}`, function () {
           // In case previous test has been skipped
           cy.restoreUrlState(`data?type=${category}`)
@@ -313,7 +312,7 @@ browseCategories.forEach((category, bcIndex) => {
                       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
 
                       cy.wait('@query', { timeout: 20000 })
-                      cy.waitForLoadingMask()
+                      cy.waitForBrowserLoading()
 
                       // Check for facets exist in dataset card
                       cy.get('.table-wrap').then(($content) => {
@@ -327,7 +326,7 @@ browseCategories.forEach((category, bcIndex) => {
                             cy.get('.img-dataset > img').first().click()
 
                             cy.wait('@query', { timeout: 20000 })
-                            cy.waitForLoadingMask()
+                            cy.waitForPageLoading()
 
                             cy.get('.details-container').then(($detail) => {
                               const facetExistInDetail = $detail.text().toLowerCase().includes(facet.toLowerCase())

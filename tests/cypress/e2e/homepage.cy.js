@@ -2,7 +2,8 @@ import { retryableBefore } from "../support/retryableBefore.js"
 
 describe('Homepage', { testIsolation: false }, function () {
   retryableBefore(function () {
-    cy.visitLoadedPage('')
+    cy.visit('')
+    cy.waitForPageLoading()
   })
 
   it(`Testing Portal Target: ${Cypress.config().baseUrl}`, function () { })

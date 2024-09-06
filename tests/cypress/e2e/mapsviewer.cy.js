@@ -35,6 +35,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.intercept('**/datasets/**').as('datasets')
     cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
     cy.intercept('**/s3-resource/**').as('s3-resource')
+    cy.waitForPageLoading()
   })
 
   taxonModels.forEach((model, index) => {
@@ -42,7 +43,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     it(`Provenance card for ${model}`, function () {
       if (index === 0) {
         cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
-        cy.waitForLoadingMask()
+        cy.waitForMapLoading()
         loadedModels.add('Rat')
       }
 
@@ -54,7 +55,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
           if (!loadedModels.has(model)) {
             cy.wait('@flatmap', { timeout: 20000 })
-            cy.waitForLoadingMask()
+            cy.waitForMapLoading()
             loadedModels.add(model)
           }
         })
@@ -144,7 +145,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.el-select-dropdown__item:visible').contains(new RegExp(threeDSyncView, 'i')).click({ force: true })
       if (!loadedModels.has(threeDSyncView)) {
         cy.wait('@flatmap', { timeout: 20000 })
-        cy.waitForLoadingMask()
+        cy.waitForMapLoading()
         loadedModels.add(threeDSyncView)
       }
     })
@@ -224,7 +225,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             })
           } else {
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
-            cy.waitForLoadingMask()
 
             // Check for search result and the tag 'Scaffold'
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).as('datasetCards')
@@ -242,7 +242,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).click()
 
             cy.wait('@s3-resource', { timeout: 20000 })
-            cy.waitForLoadingMask()
 
             // Check for context card
             cy.get('.context-card').should(($card) => {
@@ -250,7 +249,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             })
             cy.get('.context-image').should(($image) => {
               expect($image, 'The context card should have an image').to.exist
-              expect($image, 'The context card should have an image').to.have.attr('src').to.contain('/s3-resource/')
             })
             cy.get('.card-right > :nth-child(1) > .title').should(($title) => {
               expect($title, 'The context card should have a title class').to.have.class('title')

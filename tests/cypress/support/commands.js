@@ -54,16 +54,25 @@ Cypress.on('uncaught:exception', (err, runnable) => {
   return true
 })
 
-Cypress.Commands.add('waitForLoadingMask', () => {
-  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
-    expect($loadingMask, 'Loading mask should not exist').to.not.exist
+Cypress.Commands.add('waitForBrowserLoading', () => {
+  cy.get('.el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Browser loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
 
-Cypress.Commands.add('visitLoadedPage', (url) => {
-  cy.visit(url)
-  cy.waitForLoadingMask()
+Cypress.Commands.add('waitForPageLoading', () => {
+  cy.get('.loading-container', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Page loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForMapLoading', () => {
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Map loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
 })
 
 /**
@@ -73,29 +82,28 @@ Cypress.Commands.add('restoreUrlState', (link) => {
   cy.url().then((url) => {
     if (!url.includes(link)) {
       cy.go('back')
-      cy.waitForLoadingMask()
+      cy.waitForPageLoading()
     }
   })
   cy.url().then((url) => {
     if (url.includes('search=')) {
       cy.get('.nuxt-icon.nuxt-icon--fill.body1.close-icon').click()
-      cy.waitForLoadingMask()
+      cy.waitForPageLoading()
     }
   })
 })
 
 Cypress.Commands.add('checkDatasetSorted', (sort) => {
-  cy.wait('@query', { timeout: 20000 })
-  cy.waitForLoadingMask()
+  cy.waitForBrowserLoading()
+
   cy.get('.el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').as('datasetImgs')
   // Get first dataset image alt text
   cy.get('@datasetImgs').first().invoke('attr', 'alt').then((alt) => {
     cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
     cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sort).click()
-    if (sort === 'Z-A') {
-      cy.wait('@query', { timeout: 20000 })
-    }
-    cy.waitForLoadingMask()
+
+    cy.waitForBrowserLoading()
+
     // Get last dataset image alt text
     cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
       expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
@@ -186,7 +194,7 @@ Cypress.Commands.add('backToDetailPage', (datasetId) => {
   cy.url().then((url) => {
     if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
       cy.go('back')
-      cy.waitForLoadingMask()
+      cy.waitForPageLoading()
     }
   })
 })
