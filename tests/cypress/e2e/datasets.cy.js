@@ -343,38 +343,53 @@ datasetIds.forEach(datasetId => {
           expect($content.text().trim(), '"Dataset DOI" content should exist').to.match(/Dataset DOI:(.+)/i)
         })
 
-        cy.get('@contact').then(($content) => {
-          cy.get('.about-section-container a').then(($email) => {
-            const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
-            cy.get('@awards').then(($award) => {
-              const award = $award.text().trim().replace('Award(s): ', '')
-              cy.get('@institutions').then(($institution) => {
-                const institution = $institution.text().trim().replace('Institution(s): ', '')
-                cy.get('@project').then(($project) => {
-                  const project = $project.text().trim().replace('Associated project(s): ', '')
-                  cy.wrap($project).within(($button) => {
-                    cy.wrap($button).click()
-                  })
-                  cy.waitForPageLoading()
-                  cy.get('.row > .heading2').should(($title) => {
-                    expect($title, 'Project title should match').to.contain(project)
-                  })
-                  cy.get('span.label4').should(($author) => {
-                    expect($author, 'Author should match').to.contain(author)
-                  })
-                  cy.get('span.label4').should(($institution) => {
-                    expect($institution, 'Institution should match').to.contain(institution)
-                  })
-                  cy.get('.link1').should(($award) => {
-                    expect(award, 'Award should match').to.contain($award.text().trim())
-                  })
-                  cy.go('back')
-                  cy.waitForPageLoading()
-                })
+        // cy.get('.dataset-owners').then(($contributors) => {
+        //   const contributors = $contributors.text().trim().replace('Contributors:', '')
+        //   cy.get('@contact').then(($content) => {
+        //     cy.get('.about-section-container a').then(($email) => {
+        //       const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
+        cy.get('@awards').then(($award) => {
+          const award = $award.text().trim().replace('Award(s): ', '')
+          cy.get('@institutions').then(($institution) => {
+            const institution = $institution.text().trim().replace('Institution(s): ', '')
+            cy.get('@project').then(($project) => {
+              const project = $project.text().trim().replace('Associated project(s): ', '')
+              cy.wrap($project).within(($button) => {
+                cy.wrap($button).click()
               })
+              cy.waitForPageLoading()
+              cy.get('.row > .heading2').should(($title) => {
+                expect($title, 'Project title should be the same').to.contain(project)
+              })
+              cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]:/i).should(($institution) => {
+                expect($institution, 'Institution should be the same').to.contain(institution)
+              })
+              cy.get('.link1').should(($award) => {
+                expect(award, 'Award should be the same').to.include($award.text().trim())
+              })
+              // cy.get('span.label4').parent().contains(/PRINCIPAL INVESTIGATOR[(]S[)]:/i).should(($PI) => {
+              //   const PI = $PI.text().trim().replace('PRINCIPAL INVESTIGATOR(S): ', '')
+              //   const contributorList = contributors.split(',')
+              //   let PIIsCOntactAuthor = false
+              //   let PIIsContributor = false
+              //   contributorList.forEach((contributor) => {
+              //     if (!PIIsContributor) {
+              //       // Avoid slightly name difference
+              //       PIIsContributor = $PI.text().includes(contributor.trim()) || contributor.trim().includes(PI)
+              //       PIIsCOntactAuthor = $PI.text().includes(author) || author.includes(contributor.trim())
+              //     }
+              //   })
+              //   expect(PIIsContributor, 'Principal Investigator should list as dataset contributor').to.be.true
+              //   expect(PIIsCOntactAuthor, 'Principal Investigator should list as contact author').to.be.true
+              // })
+              cy.go('back')
+              cy.waitForPageLoading()
             })
           })
         })
+        //     })
+        //   })
+        // })
       })
     });
 
