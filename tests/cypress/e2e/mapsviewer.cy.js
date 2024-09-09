@@ -112,7 +112,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.sidebar-container > .main > .content-container').then(($content) => {
         cy.wrap($content).get('.attribute-title-container').should(($title) => {
           expect($title, 'The provenance sections should have titles').to.exist
-          expect($title, 'The provenance should have multiple sections').to.have.length.greaterThan(0)
+          expect($title.length, 'The provenance should have multiple sections').to.be.greaterThan(0)
         })
         // Check for button click
         const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']

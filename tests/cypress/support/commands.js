@@ -183,6 +183,7 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
       }
     })
   }
+  // prev: from end to start, next: from start to end
   if (dir === 'prev') {
     cy.get('.el-pager > .number').last().click()
     direction = '.btn-prev'

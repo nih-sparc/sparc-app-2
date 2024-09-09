@@ -259,7 +259,7 @@ browseCategories.forEach((category, bcIndex) => {
           cy.get('.expand-all-container > .el-link > .el-link__inner').click()
           cy.get('.label-content-container').should(($filter) => {
             expect($filter, 'Filter content should be visible').to.be.visible
-            expect($filter, 'Filter content should be ready').to.have.length.greaterThan(0)
+            expect($filter.length, 'Filter content should be ready').to.be.greaterThan(0)
           })
           // Expand nested facet menu item
           cy.get('.el-icon.el-tree-node__expand-icon:visible').not('.is-leaf').each(($ele) => {
