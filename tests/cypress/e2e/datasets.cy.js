@@ -279,66 +279,102 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it.skip("About Tab", function () {
-      // Should switch to 'About'
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('About').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'About');
+    describe("About Tab", function () {
+      it("Content and Link", function () {
+        // Avoid failed test block new retries
+        cy.backToDetailPage(datasetId)
 
-      // Check for content
-      cy.get('.dataset-about-info > .mb-16').contains(/Title: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/First Published: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Last Published: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .about-section-container').contains(/Contact Author: (.+)/i).within(($el) => {
-        // Check for email link exist
-        cy.wrap($el).get(':nth-child(2) > :nth-child(2) > a').should('have.attr', 'href').and('include', 'mailto:');
-      })
-      cy.get('.dataset-about-info > .mb-16').contains(/Award[(]s[)]: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Funding Program[(]s[)]: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Associated project[(]s[)]: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Institution[(]s[)]: (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Version (.+) Revision (.+): (.+)/i).should('exist')
-      cy.get('.dataset-about-info > .mb-16').contains(/Dataset DOI: (.+)/i).should('exist')
+        // Should switch to 'About'
+        cy.get('#datasetDetailsTabsContainer > .style1').contains('About').click();
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be About').to.contain('About')
+        });
 
-      /**
-       * Contact Author may not be the contributor
-       * If should be, uncomment following code
-       * =========================================
-       */
+        // Check for content
+        cy.get('.dataset-about-info .label4').contains(/Title:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Title" content should exist').to.match(/Title:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/First Published:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"First Published" content should exist').to.match(/First Published:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/Last Published:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Last Published" content should exist').to.match(/Last Published:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/Contact Author:/i).parent().as('contact')
+        cy.get('@contact').should(($content) => {
+          expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/i)
+        })
+        // Check for email href exist
+        cy.get('@contact').then(($content) => {
+          cy.get('.about-section-container a').then(($email) => {
+            const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
+            cy.get('.dataset-owners').then(($owners) => {
+              expect($owners.text(), `Contact author ${author} should be in owners list`).to.contain(author)
+            })
+            expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)
+          })
+        })
 
-      // //match author to contributors
-      // cy.get('.about-section-container > :nth-child(2) > :nth-child(1)').invoke('text').then((value) => {
-      //   const author = new RegExp(value.replace(/\s+/, ' '), 'i')
-      //   cy.get('.similar-datasets-container').contains(author);
-      // })
+        cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]:/i).parent().as('awards')
+        cy.get('@awards').should(($content) => {
+          expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/i)
+        })
+        cy.get('@awards').within(() => {
+          cy.get('a').then(($award) => {
+            expect($award, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
+          })
+        })
+        cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Funding Programs" content should exist').to.match(/Funding Program[(]s[)]:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]:/i).parent().as('project')
+        cy.get('@project').should(($content) => {
+          expect($content.text().trim(), '"Associated projects" content should exist').to.match(/Associated project[(]s[)]:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]:/i).parent().as('institutions')
+        cy.get('@institutions').should(($content) => {
+          expect($content.text().trim(), '"Institutions" content should exist').to.match(/Institution[(]s[)]:(.+)/i)
+        })
 
-      /**
-       * =========================================
-       */
+        cy.get('.dataset-about-info .label4').contains(/Version [0-9]+ Revision [0-9]+:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Version" content should exist').to.match(/Version [0-9]+ Revision [0-9]+:(.+)/i)
+        })
+        cy.get('.dataset-about-info .label4').contains(/Dataset DOI:/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Dataset DOI" content should exist').to.match(/Dataset DOI:(.+)/i)
+        })
 
-      // Ignore tests if project not exist
-      cy.get('.similar-datasets-container').then(($content) => {
-        if ($content.text().includes('project(s):')) {
-          //Match award link to associated project
-          cy.get(':nth-child(11) > :nth-child(2) > a').invoke('attr', 'href').then((value) => {
-            cy.get(':nth-child(8) > :nth-child(2) > a').should('have.attr', 'href', value);
-          });
-          cy.wrap($content).get('.mt-8 > a > u').invoke('text').then((title) => {
-            cy.get('.dataset-about-info').contains(/Institution[(]s[)]: (.+)/i).children().not('.label4').invoke('text').then((institution) => {
-              cy.get('.mt-8 > a').click()
-
-              cy.waitForPageLoading()
-
-              cy.url().should('contain', 'projects')
-              // Check for the title and the institution 
-              cy.get('.row > .heading2').should('contain', title.trim());
-              cy.get(':nth-child(4) > .label4').should('contain', institution.trim());
-              cy.go('back')
-
-              cy.waitForPageLoading()
-
+        cy.get('@contact').then(($content) => {
+          cy.get('.about-section-container a').then(($email) => {
+            const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
+            cy.get('@awards').then(($award) => {
+              const award = $award.text().trim().replace('Award(s): ', '')
+              cy.get('@institutions').then(($institution) => {
+                const institution = $institution.text().trim().replace('Institution(s): ', '')
+                cy.get('@project').then(($project) => {
+                  const project = $project.text().trim().replace('Associated project(s): ', '')
+                  cy.wrap($project).within(($button) => {
+                    cy.wrap($button).click()
+                  })
+                  cy.waitForPageLoading()
+                  cy.get('.row > .heading2').should(($title) => {
+                    expect($title, 'Project title should match').to.contain(project)
+                  })
+                  cy.get('span.label4').should(($author) => {
+                    expect($author, 'Author should match').to.contain(author)
+                  })
+                  cy.get('span.label4').should(($institution) => {
+                    expect($institution, 'Institution should match').to.contain(institution)
+                  })
+                  cy.get('.link1').should(($award) => {
+                    expect(award, 'Award should match').to.contain($award.text().trim())
+                  })
+                  cy.go('back')
+                  cy.waitForPageLoading()
+                })
+              })
             })
           })
-        }
+        })
       })
     });
 
