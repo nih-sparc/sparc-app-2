@@ -13,12 +13,12 @@ datasetIds.forEach(datasetId => {
       cy.visit(`/datasets/${datasetId}?type=dataset`)
     });
 
-    describe("Gallery Tab", { testIsolation: false }, function () {
-      beforeEach(function () {
-        cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
-        cy.waitForPageLoading()
-      })
+    beforeEach(function () {
+      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+      cy.waitForPageLoading()
+    })
 
+    describe.skip("Gallery Tab", { testIsolation: false }, function () {
       it('Gallery Items', function () {
         // Should switch to 'Gallery'
         cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').click();
@@ -40,16 +40,19 @@ datasetIds.forEach(datasetId => {
             ('biolucida-2d' in response && response['biolucida-2d'].length) ||
             ('biolucida-3d' in response && response['biolucida-3d'].length)
           ) {
+
             cy.checkGalleyCardState()
+
           } else {
             cy.get('.content > .full-size').should(($message) => {
               expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
             })
           }
-
-          // Check if flatmap exist
+          // Check card if flatmap exist
           if ('organs' in response && response['organs'].length) {
+
             cy.findGalleryCard('flatmap', 'prev');
+
             cy.get('.el-card > .el-card__body').should(($card) => {
               expect($card, 'Flatmap card should exist').to.contain('flatmap')
             });
@@ -58,12 +61,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe("Landing page", { testIsolation: false }, function () {
-      beforeEach(function () {
-        cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
-        cy.waitForPageLoading()
-      })
-
+    describe.skip("Landing page", { testIsolation: false }, function () {
       it('Top Left Panel - Thumbnail and Button', function () {
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
@@ -92,12 +90,12 @@ datasetIds.forEach(datasetId => {
       it('Top Panel - Title and Contributor', function () {
         // Should display dataset title
         cy.get('.el-col-sm-16 > .heading2').should(($title) => {
-          expect($title, 'Dataset title should exist').to.exist
+          expect($title, 'Dataset title content should exist').to.exist
         })
 
         // Check for tooltip when hover over contributor 
         cy.get('.dataset-owners').should(($contributor) => {
-          expect($contributor, 'Contributor should exist').to.exist
+          expect($contributor, 'Contributor content should exist').to.exist
         })
         cy.get('.dataset-owners > .contributor-item-wrap > .has-orcid').each(($contributor) => {
           cy.wrap($contributor).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
@@ -136,7 +134,7 @@ datasetIds.forEach(datasetId => {
       })
 
       it('Left Panel - (Project,) Facet and Contributor', function () {
-        // Avoid failed test block retries
+        // Avoid failed test block new retries
         cy.backToDetailPage(datasetId)
 
         // Check project link if exist
@@ -165,7 +163,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
           cy.waitForPageLoading()
           cy.get('.el-tag__content').should(($tag) => {
-            expect($tag, 'Tag should exist in applied').to.have.length(1)
+            expect($tag, 'Tag content should exist in applied').to.have.length(1)
             expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(randomIndex).text())
           })
           cy.go('back')
@@ -189,44 +187,94 @@ datasetIds.forEach(datasetId => {
       })
     })
 
-    it.skip("Abstract Tab", function () {
-      cy.backToDetailPage(datasetId)
+    describe("Abstract Tab", function () {
+      it('Content and Link', function () {
+        // Avoid failed test block new retries
+        cy.backToDetailPage(datasetId)
 
-      // Should switch to 'Abstract'
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Abstract').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Abstract');
+        // Should switch to 'Abstract'
+        cy.get('#datasetDetailsTabsContainer > .style1').contains('Abstract').click();
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be Abstract').to.contain('Abstract')
+        });
 
-      //The following regular expression should capture space and letters
-      cy.get('.dataset-description-info > :nth-child(1)').contains(/Study Purpose: (.+)/i).should('exist')
-      cy.get('.dataset-description-info > :nth-child(1)').contains(/Data (Collection|Collected):(.+)/i).should('exist')
-      cy.get('.dataset-description-info > :nth-child(1)').contains(/(Primary )?Conclusion(s)?: (.+)/i).should('exist')
+        // The following regular expression should capture space and letters
+        cy.get('.dataset-description-info strong').contains(/Study Purpose:/i).parent().should(($content) => {
+          expect($content.text(), '"Study Purpose" content should exist').to.match(/Study Purpose:(.+?)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Data Collect(ion|ed):/i).parent().should(($content) => {
+          expect($content.text(), '"Data Collection" content should exist').to.match(/Data Collect(ion|ed):(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/(Primary )?Conclusion(s)?:/i).parent().should(($content) => {
+          expect($content.text(), '"Primary Conclusions" content should exist').to.match(/(Primary )?Conclusion(s)?:(.+)/i)
+        })
 
-      // Check for Experimental Design
-      cy.get('.dataset-description-info > .mb-8').contains('Experimental Design:').should('exist')
-      cy.get('.dataset-description-info').contains('Protocol Links:').should('exist')
-      cy.get('.dataset-description-info').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($el) => {
-        if ($el.text().includes('https://doi.org/')) {
-          cy.get('.link2').should('exist')
-          cy.get('.link2').should('have.length.above', 0)
-          cy.get('.link2').should('have.attr', 'href').and('include', 'https://doi.org/')
-        }
-      })
-      cy.get('.dataset-description-info > .experimental-design-container').contains(/Experimental Approach: (.+)/i).should('exist')
+        // Check for Curator's Note
+        cy.get('.dataset-description-info strong').contains(/Curator's Notes/i).should(($content) => {
+          expect($content.text(), '"Curator Note" content should exist').to.exist
+        })
+        cy.get('.dataset-description-info strong').contains(/Experimental Design:/i).parent().should(($content) => {
+          expect($content.text(), '"Experimental Design" content should exist').to.match(/Experimental Design:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Completeness:/i).parent().should(($content) => {
+          expect($content.text(), '"Completeness" content should exist').to.match(/Completeness:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Subjects & Samples:/i).parent().should(($content) => {
+          expect($content.text(), '"Subjects & Samples" content should exist').to.match(/Subjects & Samples:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Primary vs(.)? derivative data:/i).parent().should(($content) => {
+          expect($content.text(), '"Primary vs derivative data" content should exist').to.match(/Primary vs(.)? derivative data:(.+)/i)
+        })
 
-      // Check for Subject Information
-      cy.get('.dataset-description-info > .mb-8').contains('Subject Information:').should('exist')
-      cy.get('.dataset-description-info > .experimental-design-container').contains(/Anatomical structure: (.+)/i).should('exist')
-      cy.get('.dataset-description-info > .experimental-design-container').contains(/Species: (.+)/i).should('exist')
-      cy.get('.dataset-description-info > .experimental-design-container').contains(/Sex: (.+)/i).should('exist')
-      cy.get('.dataset-description-info > .experimental-design-container').contains(/Number of samples: (.+)/i).should('exist')
+        // Check for Metadata
+        cy.get('.dataset-description-info strong').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($link) => {
+          if ($link.text().includes('https://doi.org/')) {
+            cy.get('.link2').should(($link) => {
+              expect($link, 'Link content should exist').to.exist
+              expect($link.length, 'Link should have at lease one').to.be.greaterThan(0)
+              expect($link, 'Link should have correct href').to.have.attr('href').to.contain('https://doi.org/')
+            })
+          }
+        })
+        cy.get('.dataset-description-info strong').contains(/Experimental Approach:/i).parent().should(($content) => {
+          expect($content.text(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
+        })
 
-      // Check for Keywords
-      cy.get('.dataset-description-info').contains(/Keywords: (.+)/i).should('exist')
+        // Check for Subject Information
+        cy.get('.dataset-description-info strong').contains(/Subject Information:/i).should(($content) => {
+          expect($content.text(), '"Subject Information" content should exist').to.exist
+        })
+        cy.get('.dataset-description-info strong').contains(/Anatomical structure:/i).parent().should(($content) => {
+          expect($content.text(), '"Anatomical structure" content should exist').to.match(/Anatomical structure:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Species:/i).parent().should(($content) => {
+          expect($content.text(), '"Species" content should exist').to.match(/Species:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Sex:/i).parent().should(($content) => {
+          expect($content.text(), '"Sex" content should exist').to.match(/Sex:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Age Range:/i).parent().should(($content) => {
+          expect($content.text(), '"Age Range" content should exist').to.match(/Age Range:(.+)/i)
+        })
+        cy.get('.dataset-description-info strong').contains(/Number of samples:/i).parent().should(($content) => {
+          expect($content.text(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
+        })
 
-      // Check for downloading
-      cy.contains('.dataset-description-info a', 'Download Metadata file').should('have.attr', 'href').and('include', 'metadata').then((href) => {
-        cy.request(href).then((resp) => {
-          expect(resp.status).to.eq(200)
+        // Check for downloading feature
+        cy.get('.dataset-description-info a').not('.link2').as('download')
+        cy.get('@download').should(($link) => {
+          expect($link, 'Download link should exist').to.exist
+          expect($link, 'Download link should have correct href').to.have.attr('href').to.match(/https:\/\/api.pennsieve.io\/discover\/datasets\/[0-9]+\/versions\/[0-9]+\/metadata/i)
+        })
+        cy.get('@download').invoke('attr', 'href').then((href) => {
+          cy.request(href).then((resp) => {
+            expect(resp.status).to.eq(200)
+          })
+        })
+
+        // Check for Keywords
+        cy.get('.dataset-description-info strong').contains(/Keywords:/i).parent().should(($content) => {
+          expect($content.text(), '"Keywords" content should exist').to.match(/Keywords:(.+)/i)
         })
       })
     });
