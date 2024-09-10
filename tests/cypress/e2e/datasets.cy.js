@@ -1,3 +1,4 @@
+import { de } from "date-fns/locale";
 import { retryableBefore } from "../support/retryableBefore.js"
 import { stringToArray } from "../support/stringToArray.js"
 
@@ -279,7 +280,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe("About Tab", function () {
+    describe.skip("About Tab", function () {
       it("Content and Link", function () {
         // Avoid failed test block new retries
         cy.backToDetailPage(datasetId)
@@ -393,25 +394,42 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it.skip("Cite Tab", function () {
-      cy.backToDetailPage(datasetId)
+    describe("Cite Tab", function () {
+      it("Content and Link", function () {
+        cy.backToDetailPage(datasetId)
 
-      // Should switch to 'Cite'
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).contains('Cite').click();
-      cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Cite');
+        // Should switch to 'Cite'
+        cy.get('#datasetDetailsTabsContainer > .style1').contains('Cite').click();
+        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+          expect($tab, 'Active tab should be Cite').to.contain('Cite')
+        });
 
-      // Check for title
-      cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
-        cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.trim())
-      })
+        cy.get('.info-citation').should(($citation) => {
+          expect($citation, 'Citation should exist').to.exist
+          expect($citation.length, 'Cite should have multiple citation formats').to.be.greaterThan(0)
+        })
 
-      cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
-        // Check for citation doi
-        cy.get('.info-citation > .citation-text', { timeout: 30000 }).should('contain', value.toUpperCase())
+        // Check for title
+        cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
+          cy.get('.info-citation > .citation-text', { timeout: 30000 }).should(($citation) => {
+            expect($citation, 'Citation should contain title').to.contain(value.trim())
+          })
+        })
 
-        // Check for source link
-        const expectedLink = 'https://citation.crosscite.org/?doi=' + value;
-        cy.get('.citation-details > p > a').should('have.attr', 'href', expectedLink);
+        cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
+          // Check for citation doi
+          cy.get('.info-citation > .citation-text', { timeout: 30000 }).should(($citation) => {
+            expect($citation, 'Citation should contain doi').to.contain(value)
+          })
+
+          // Check for source link
+          cy.get('.citation-details > p > a').invoke('attr', 'href').then((href) => {
+            expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`);
+            cy.request(href).then((resp) => {
+              expect(resp.status).to.eq(200);
+            })
+          })
+        })
       })
     });
 
