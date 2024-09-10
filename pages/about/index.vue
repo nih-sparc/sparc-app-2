@@ -16,7 +16,7 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSpport?.length > 0" class="who-we-support-container p-24 mt-32">
+      <div :v-if="whoWeSupport?.length > 0" class="who-we-support-container p-24 mt-32">
         <div class="heading2">Who We Support</div>
         <Consortias />
         <nuxt-link to="/about/projects">
@@ -283,6 +283,11 @@ export default {
   width: 100%;
   display: flex;
 }
+:deep(img) {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 .who-we-support-item {
   color: #000;
   text-decoration: none;
@@ -298,7 +303,6 @@ export default {
   img {
     background: #fff;
     border-radius: 50%;
-    display: block;
     margin-bottom: 8px;
     width: 128px;
     border: solid 1px #c0c4cc;

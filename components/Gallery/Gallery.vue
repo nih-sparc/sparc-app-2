@@ -23,6 +23,8 @@
                 :width="cardWidth" @card-clicked="cardClicked" />
               <component v-else-if="galleryItemType === 'inProgressDatasets'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item" :item="item" />
+              <component v-else-if="galleryItemType === 'relatedDatasets'" :is="galleryItemComponent" :width="cardWidth"
+                :key="item.id" :item="item" />
             </template>
           </span>
         </template>
@@ -43,6 +45,7 @@ import DatasetCard from '~/components/Gallery/GalleryItems/DatasetCard.vue'
 import FileViewerCard from '~/components/Gallery/GalleryItems/FileViewerCard.vue'
 import FeaturedDataCard from '~/components/Gallery/GalleryItems/FeaturedDataCard.vue'
 import PennsieveDatasetCard from '~/components/Gallery/GalleryItems/PennsieveDatasetCard.vue'
+import RelatedDatasetCard from '~/components/Gallery/GalleryItems/RelatedDatasetCard.vue'
 
 import { defaultTo } from 'ramda'
 import { ref } from 'vue'
@@ -54,7 +57,8 @@ const galleryItemComponents = {
   datasets: DatasetCard,
   fileViewer: FileViewerCard,
   featuredData: FeaturedDataCard,
-  inProgressDatasets: PennsieveDatasetCard
+  inProgressDatasets: PennsieveDatasetCard,
+  relatedDatasets: RelatedDatasetCard
 }
 
 function convertRemToPixels(rem) {
@@ -66,7 +70,7 @@ function convertRemToPixels(rem) {
 
 export default {
   name: 'Gallery',
-  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard, FileViewerCard, FeaturedDataCard },
+  components: { DatasetCard, ResourceCard, MetricsCard, HighlightCard, FileViewerCard, FeaturedDataCard, RelatedDatasetCard },
   props: {
     items: {
       type: Array,

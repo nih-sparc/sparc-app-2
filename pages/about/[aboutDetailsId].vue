@@ -129,4 +129,9 @@ export default {
 :deep(img) {
   max-width: 100%;
 }
+:deep(img) {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>

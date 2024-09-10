@@ -442,9 +442,9 @@ datasetIds.forEach(datasetId => {
           cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
 
           // Check for content
-          cy.get('[style=""] > .heading2.mb-8').should('have.text', 'Download Dataset');
-          cy.get('.left-column > :nth-child(1) > div > .label4').should('have.text', 'Option 1 - Direct download: ');
-          cy.get('.aws-download-column > :nth-child(1) > .label4').should('have.text', 'Option 2 - AWS download: ');
+          cy.get('#datasetDetailsTabsContainer > div > div:nth-child(4) > div.heading2.mb-8').should('have.text', 'Download Dataset');
+          cy.get('#datasetDetailsTabsContainer .left-column > div > div:nth-child(1) > span:nth-child(1)').should('have.text', 'Option 1 - Direct download: ');
+          cy.get('.aws-download-column > :nth-child(1) > .label4').should('have.text', 'Option 2 - AWS S3:');
 
           // Check for download full dataset button
           cy.get('.left-column .el-button').contains('Download Full Dataset').should('be.visible');
@@ -458,8 +458,8 @@ datasetIds.forEach(datasetId => {
           })
 
           // Check for help link
-          cy.get('.aws-download-column > :nth-child(1) > a').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
-          cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
+          cy.get('.aws-download-column > :nth-child(1) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
+          cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
 
           //Find the download file button
           cy.contains('.el-table__row', 'dataset_description.xlsx').should('have.length', 1).as('datasetDescription');

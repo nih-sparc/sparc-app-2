@@ -10,6 +10,17 @@
             <strong>Data collection:</strong>
             {{ description }}
           </p>
+          <hr />
+        </div>
+        <div class="filter-container mb-16">
+          <span>
+            Filter gallery: 
+          </span>
+          <multi-select
+            class="filter-dropdown"
+            :options="galleryFilterOptions"
+            @selection-changed="galleryFilterChanged"
+          />
         </div>
         <gallery
           class="file-viewer-gallery"
@@ -54,9 +65,17 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
     await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
     })
-    await biolucida.searchDataset(datasetId).then(response => {
-      biolucida_response = response
-    })
+    // Inner try-catch for biolucida request errors
+    try {
+      await biolucida.searchDataset(datasetId).then(response => {
+        biolucida_response = response
+      })
+    } catch (error) {
+      console.error(
+        'Hit error in the biolucida request. ( pages/_datasetId.vue ). Error: ',
+        error
+      )
+    }
 
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
@@ -206,6 +225,8 @@ export default {
       timeseriesItems: [],
       timeseriesData: [],
       datasetScicrunch: {},
+      galleryFilterOptions: [],
+      selectedGalleryFilter: []
     }
   },
   computed: {
@@ -238,8 +259,23 @@ export default {
     thumbnails() {
       return this.datasetThumbnailData
     },
+    isGalleryFilterSet() {
+      return this.selectedGalleryFilter.length > 0 && this.selectedGalleryFilter[0] != 'showAll'
+    },
     galleryItems() {
-      return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
+      if (this.isGalleryFilterSet) {
+        const items = this.biolucidaItems.concat(this.scicrunchItems).filter(item => {
+          return this.selectedGalleryFilter.some(filter => {
+            const index = filter[0]
+            const label = this.galleryFilterOptions.find(option => option.value == index)?.label
+            return label.includes(item.type)
+          })
+        })
+        return items
+      }
+      else {
+        return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
+      }
     },
     hasDescription() {
       return this.description !== ''
@@ -556,6 +592,17 @@ export default {
           )
         }
         this.biolucidaItems = bItems
+
+        const galleryItems = this.scicrunchItems.concat(this.biolucidaItems)
+        const filterLabels = [...new Set(galleryItems.map(item => item.type))]
+        const labelCounts = galleryItems.reduce((counts, item) => {
+          counts[item.type] = (counts[item.type] || 0) + 1;
+          return counts;
+        }, {});
+        this.galleryFilterOptions = filterLabels.map((type, index) => ({
+          value: index,
+          label: `${type} (${labelCounts[type]})`
+        }))
       }
     }
   },
@@ -816,6 +863,9 @@ export default {
         }
       )
     },
+    galleryFilterChanged(newVal) {
+      this.selectedGalleryFilter = newVal
+    },
     onResize() {
       this.maxWidth = this.$el.clientWidth
       // this.$emit('resize', this.$el.clientWidth)
@@ -914,6 +964,18 @@ a.next {
 .loading-gallery {
   overflow: hidden;
   min-height: 4rem;
+}
+
+hr {
+  border-top: none;
+}
+
+.filter-container {
+  text-align: right;
+}
+
+.filter-dropdown {
+  display: inline-block;
 }
 
 :deep(.one-item .card-line) {

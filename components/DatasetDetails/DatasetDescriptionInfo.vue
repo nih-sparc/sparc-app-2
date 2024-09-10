@@ -62,6 +62,22 @@
     <div v-if="!isDevice" class="experimental-design-container mb-16">
       <span><strong>Number of Samples: </strong>{{samplesMetadataText}}</span>
     </div>
+    <div class="mb-16" v-if="sdsVersion != undefined">
+      <span>
+        <strong>SDS Version: 
+        </strong>{{sdsVersion}}
+        <sparc-tooltip
+          placement="left-center"
+        >
+        <template #item>
+          <svgo-icon-help class="help-icon"/>
+        </template>
+          <template #data>
+            The version of the <a href="https://docs.sparc.science/docs/sparc-dataset-structure">SPARC Dataset Structure</a> used when publishing this dataset.
+          </template>
+        </sparc-tooltip>
+      </span>
+    </div>
     <div class="mb-16">
       <sparc-tooltip
         v-if="datasetInfo.embargo"
@@ -238,6 +254,9 @@ export default {
     versionId: function() {
       return propOr(0, 'version', this.datasetInfo)
     },
+    sdsVersion: function () {
+      return _.get(this.datasetMetadataInfo.item, 'sds_version')
+    },
     /**
      * Computes the API url for downloading the metadata of a dataset
      * @returns {String}
@@ -294,6 +313,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 .dataset-description-info {
   overflow-wrap: anywhere;
   word-wrap: normal;
@@ -326,6 +347,11 @@ export default {
     .experimental-design-section-text-column {
       min-width: 6.75rem;
     }
+  }
+  .help-icon {
+    color: $purple;
+    height: 1.5rem;
+    width: 1.5rem;
   }
 }
 </style>

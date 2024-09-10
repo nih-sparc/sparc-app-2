@@ -45,6 +45,12 @@ export const facetPropPathMapping = [
     facetPropPath: 'attributes.subject.ageCategory.value',
     facetSubpropPath: 'attributes.subject.ageCategory.subcategory.name'
   },
+  {
+    label: 'Funding Program',
+    id: 'pennsieve.organization',
+    facetPropPath: 'pennsieve.organization.name',
+    facetSubpropPath: 'pennsieve.organization.subCategory.name'
+  },
 ]
 
 export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMapping : Array<{id: string, facetPropPath: string, facetSubpropPath: string, label: string}>, filters : string) {
