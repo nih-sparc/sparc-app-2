@@ -1,4 +1,3 @@
-import { de } from "date-fns/locale";
 import { retryableBefore } from "../support/retryableBefore.js"
 import { stringToArray } from "../support/stringToArray.js"
 
@@ -120,8 +119,8 @@ datasetIds.forEach(datasetId => {
           cy.get('@doiLink').should(($link) => {
             expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
           })
-          cy.get('@doiLink').invoke('attr', 'href').then((value) => {
-            cy.request(value).then((resp) => {
+          cy.get('@doiLink').invoke('attr', 'href').then((href) => {
+            cy.request(href).then((resp) => {
               expect(resp.status).to.eq(200)
               if (resp.redirects && resp.redirects.length) {
                 expect(resp.redirects[0]).to.contain(`datasets/${datasetId}/version/${version}`)
@@ -191,7 +190,7 @@ datasetIds.forEach(datasetId => {
     })
 
     describe.skip("Abstract Tab", function () {
-      it('Content and Link', function () {
+      it('Content, Link and Button', function () {
         // Avoid failed test block new retries
         cy.backToDetailPage(datasetId)
 
@@ -276,8 +275,8 @@ datasetIds.forEach(datasetId => {
         })
 
         // Check for Keywords
-        cy.get('.dataset-description-info strong').contains(/Keywords:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Keywords" content should exist').to.match(/Keywords:(.+)/i)
+        cy.get('.keywords').should(($content) => {
+          expect($content.length, '"Keywords" content should exist').to.be.greaterThan(0)
         })
       })
     });
@@ -426,7 +425,8 @@ datasetIds.forEach(datasetId => {
 
           // Check for source link
           cy.get('.citation-details > p > a').invoke('attr', 'href').then((href) => {
-            expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`);
+            expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`)
+            expect(href, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
             cy.request(href).then((resp) => {
               expect(resp.status).to.eq(200);
             })
