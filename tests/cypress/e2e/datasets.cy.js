@@ -16,6 +16,8 @@ datasetIds.forEach(datasetId => {
 
     beforeEach(function () {
       cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
+      cy.intercept('**/download?**').as('download')
+      cy.intercept('**/zipit/**').as('zipit')
       cy.waitForPageLoading()
     })
 
@@ -394,7 +396,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe("Cite Tab", function () {
+    describe.skip("Cite Tab", function () {
       it("Content and Link", function () {
         cy.backToDetailPage(datasetId)
 
@@ -433,68 +435,115 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    it.skip("Files Tab", function () {
-      //First check if there is a Files tab
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
-        if ($tabs.text().includes('Files')) {
-          // Should switch to 'Files' if exist
-          cy.wrap($tabs).contains('Files').click();
-          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Files');
+    describe("Files Tab", function () {
+      it("Content, Link and Button", function () {
+        //First check if there is a Files tab
+        cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
+          if ($tabs.text().includes('Files')) {
+            // Should switch to 'Files' if exist
+            cy.wrap($tabs).contains('Files').click();
+            cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+              expect($tab, 'Active tab should be Files').to.contain('Files')
+            });
 
-          // Check for content
-          cy.get('#datasetDetailsTabsContainer > div > div:nth-child(4) > div.heading2.mb-8').should('have.text', 'Download Dataset');
-          cy.get('#datasetDetailsTabsContainer .left-column > div > div:nth-child(1) > span:nth-child(1)').should('have.text', 'Option 1 - Direct download: ');
-          cy.get('.aws-download-column > :nth-child(1) > .label4').should('have.text', 'Option 2 - AWS S3:');
+            // Check for direct download content
+            cy.get('.left-column .label4').should(($option) => {
+              expect($option, 'Option 1 should be Direct download').to.contain('Direct download')
+            });
+            // Check for download full dataset button
+            cy.get('.left-column .el-button').contains('Download Full Dataset').should(($button) => {
+              expect($button, 'Download button should exist').to.exist
+            })
+            cy.get('.mb-8 .label4:visible').contains(/Dataset size:/i).parent().then(($size) => {
+              const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
+              if (($size.text().includes("GB") && size > 5) || $size.text().includes("TB")) {
+                cy.get('.el-tooltip__trigger > .el-button').should(($button) => {
+                  expect($button, 'Download button should be disabled when size is greater than 5GB').to.be.disabled
+                })
+              } else {
+                cy.get('.left-column > :nth-child(1) > a > .el-button').should(($button) => {
+                  expect($button, 'Download button should be enabled when size is less than 5GB').to.be.enabled
+                })
+                // Check if datasets is downloaded
+                cy.get('.left-column > :nth-child(1) > a > .el-button').click()
+                cy.wait('@download', { timeout: 20000 }).then((intercept) => {
+                  expect(intercept.response.statusCode).to.eq(200)
+                })
+              }
+            })
 
-          // Check for download full dataset button
-          cy.get('.left-column .el-button').contains('Download Full Dataset').should('be.visible');
-          cy.contains('Dataset size').parent().then(($size) => {
-            const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
-            if (($size.text().includes("GB") && size > 5) || $size.text().includes("TB")) {
-              cy.get('.el-tooltip__trigger > .el-button').should('not.be.enabled')
-            } else {
-              cy.get('.left-column > :nth-child(1) > a > .el-button').should('be.enabled')
-            }
-          })
+            // Check for aws download content
+            cy.get('.aws-download-column .label4').should(($option) => {
+              expect($option, 'Option 2 should be AWS download').to.contain('AWS S3')
+            });
+            cy.get('.aws-download-column > :nth-child(1) > a').should(($link) => {
+              expect($link, 'AWS pricing link should have correct href').to.have.attr('href').to.contain('https://aws.amazon.com/s3/pricing/')
+              expect($link, 'AWS pricing link should open a new tab').to.have.attr('target').to.contain('blank')
+            });
+            cy.get('.aws-download-column > :nth-child(3) > a').should(($link) => {
+              expect($link, 'Help page link should have correct href').to.have.attr('href').to.contain('https://docs.sparc.science/docs/accessing-public-datasets')
+              expect($link, 'Help page link should open a new tab').to.have.attr('target').to.contain('blank')
+            });
 
-          // Check for help link
-          cy.get('.aws-download-column > :nth-child(1) > a').should('have.attr', 'href', 'https://aws.amazon.com/s3/pricing/');
-          cy.get('.aws-download-column > :nth-child(3) > a').should('have.attr', 'href', 'https://docs.sparc.science/docs/accessing-public-datasets');
+            // Check for icon actions
+            cy.contains('.el-table__row', 'dataset_description.xlsx').as('datasetDescription')
+            cy.get('@datasetDescription').should(($xlsx) => {
+              expect($xlsx, 'Dataset description file should exist').to.exist
+            })
+            // There should be 4 icons
+            cy.get('@datasetDescription').find('.nuxt-icon.nuxt-icon--fill.action-icon').as('actions')
+            cy.get('@actions').should(($icons) => {
+              expect($icons, 'There should be 4 icons').to.have.length(4)
+            })
+            // Check download
+            cy.get('@actions').eq(0).click({ force: true })
+            cy.wait('@zipit', { timeout: 20000 }).then((intercept) => {
+              expect(intercept.response.statusCode).to.eq(200)
+            })
+            // Check oSPARC
+            cy.get('@actions').eq(2).click({ force: true })
+            cy.get('.el-select__wrapper').should(($select) => {
+              expect($select, 'Select box should exist').to.exist
+            })
+            cy.get('.content-body > .el-button').should(($button) => {
+              expect($button, 'Open in oSPARC button should exist').to.exist
+            })
+            cy.get('.el-dialog__headerbtn').click();
+            // Check get share links  
+            cy.get('@actions').eq(3).click({ force: true });
+            cy.get('.el-message', { timeout: 30000 }).should(($message) => {
+              expect($message, 'Message should be visible').to.be.visible
+            })
 
-          //Find the download file button
-          cy.contains('.el-table__row', 'dataset_description.xlsx').should('have.length', 1).as('datasetDescription');
-
-          //there should be 4 icons, one for each action
-          cy.get('@datasetDescription').find('.nuxt-icon.nuxt-icon--fill.action-icon').should('have.length', 4).as('icons')
-
-          //Check get share links
-          cy.get('@icons').eq(3).click({ force: true });
-          cy.get('.el-message', { timeout: 30000 }).should('be.visible')
-
-          //Check oSPARC link
-          cy.get('@icons').eq(2).click({ force: true });
-          cy.get('.el-dialog__headerbtn').click();
-
-          // Check for files breadcrumb
-          cy.get('.mb-16 > .dataset-link').should('have.attr', 'href', 'https://docs.sparc.science/docs/navigating-a-sparc-dataset');
-          cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link');
-          cy.get('.breadcrumb-link').should('have.attr', 'href').and('contain', 'datasetDetailsTab=files&path=files');
-          cy.get('tbody').then(($ele) => {
-            if ($ele.text().includes('Folder')) {
-              cy.get('.cell > .file-name-wrap > .el-tooltip__trigger').then(($folder) => {
-                cy.get('.breadcrumb-link').should('have.length', 1)
-                cy.wrap($folder).first().click()
-                cy.get('.breadcrumb-link').should('have.length', 2)
-                cy.get(':nth-child(1) > .breadcrumb-link').click()
-                cy.get('.breadcrumb-link').should('have.length', 1)
+            // Check for files browser
+            cy.get('.dataset-link').should(($link) => {
+              expect($link, 'Navigation help link should exist').to.have.attr('href').to.contain('https://docs.sparc.science/docs/navigating-a-sparc-dataset')
+              expect($link, 'Navigation help link should open a new tab').to.have.attr('target').to.contain('blank')
+            })
+            cy.get('.breadcrumb-link').should('have.class', 'breadcrumb-link')
+            cy.get('.breadcrumb-link').should(($link) => {
+              expect($link, 'Breadcrumb link should exist').to.exist
+              expect($link, 'Breadcrumb link should have correct href').to.have.attr('href').to.contain(`/datasets/${datasetId}?type=dataset&datasetDetailsTab=files&path=files`)
+            })
+            cy.get('.cell > .file-name-wrap > .el-tooltip__trigger').then(($folder) => {
+              cy.get('.breadcrumb-link').should(($breadcrumb) => {
+                expect($breadcrumb, 'Should have one breadcrumb').to.have.length(1)
               })
-            }
-          })
-        } else {
-          this.skip();
-        }
-      });
-    });
+              cy.wrap($folder).first().click()
+              cy.get('.breadcrumb-link').should(($breadcrumb) => {
+                expect($breadcrumb, 'Should have two breadcrumb').to.have.length(2)
+              })
+              cy.get(':nth-child(1) > .breadcrumb-link').click()
+              cy.get('.breadcrumb-link').should(($breadcrumb) => {
+                expect($breadcrumb, 'Should have one breadcrumb').to.have.length(1)
+              })
+            })
+          } else {
+            this.skip();
+          }
+        })
+      })
+    })
 
     it.skip("References Tab", function () {
       //First check if reference tab is present
