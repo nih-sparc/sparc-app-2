@@ -30,10 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@3.1.7":
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.1.7.tgz#34e2d25a4443af64d8e769403f2b539a90f8d2f8"
-  integrity sha512-nNyeMKWumA6Q+nu3Vj/S1/KuuZc6dLl0SuTWZllyD+vkED4SqlSliP4DKHBES+ajsxeIPOzZI1TZWwHQV2U0jw==
+"@abi-software/flatmap-viewer@3.1.8":
+  version "3.1.8"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.1.8.tgz#f1a63f46ce0a26a134c14dc280f258d86bd271dc"
+  integrity sha512-X1bRBgrDZFR98Qg28C3jrK5qUmHndNX56RHJnAqXGVElPueeWSMcdrRh/AMmw0gxrpTzZBWJf9ilI774F+tbwQ==
   dependencies:
     "@deck.gl/core" "^9.0.17"
     "@deck.gl/geo-layers" "^9.0.18"
@@ -74,12 +74,12 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.4.3":
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.4.3.tgz#468141b4e9103a4dcaf478737f0ee687bb931bae"
-  integrity sha512-eqYSQj0tWUn23TpA/W02m+a+D4UKIzEpAm9LkSbXc+mdyyzU+N/4vHgL5hCoLV80eniTLa5hp/5T7pfDHmMNZw==
+"@abi-software/flatmapvuer@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.4.4.tgz#1cda1ff1d6d02da9cac2a9451b634f38f1fa64ae"
+  integrity sha512-3lDto9qQWKrizGDCyB/GzNVrfoDgtAZI87JjfhCCV6NAChUJbPKsi5lGSTjie2WP+mVA1uiid7hiuvyYLSBSAw==
   dependencies:
-    "@abi-software/flatmap-viewer" "3.1.7"
+    "@abi-software/flatmap-viewer" "3.1.8"
     "@abi-software/map-utilities" "1.1.0"
     "@abi-software/sparc-annotation" "0.3.1"
     "@abi-software/svg-sprite" "1.0.0"
@@ -129,12 +129,12 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.4.1.tgz#5caf0fa80167eb9771552dd526c720abaf7eabd3"
-  integrity sha512-+DZaURscyMAqR4gf0RQBRiH/OnzoBT6fBKwCKlqNQgM6UXcGjDtv4dnNZkYh+fth2uIskrqofPMScWcbbQReNw==
+"@abi-software/mapintegratedvuer@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.4.2.tgz#781083f4c322fe5e79a09f717dc55876d92d81b3"
+  integrity sha512-qvTwEpXeD8dkJ2d0WLnlZ9lq2ek6PG+aHAxNvdYSQLAKZ7YDIyl3SWi+0H1ud/7uIN/ebLjhq9kYbuNfMDDIaw==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.4.3"
+    "@abi-software/flatmapvuer" "^1.4.4"
     "@abi-software/map-side-bar" "^2.4.1"
     "@abi-software/map-utilities" "^1.1.0"
     "@abi-software/plotvuer" "1.0.0"
