@@ -45,9 +45,12 @@ import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
+import { useLocalStorage } from '~/composables/useLocalStorage'
 
 import marked from '@/mixins/marked'
 import { pathOr, propOr, isEmpty } from 'ramda'
+
+const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage()
 
 export default {
   name: 'ConsortiaPage',
@@ -63,6 +66,8 @@ export default {
 
   data: () => {
     return {
+      featuredDatasetId: null,
+      featuredDataset: {},
       breadcrumb: [
         {
           to: {
@@ -82,7 +87,7 @@ export default {
 
   async setup() {
     const config = useRuntimeConfig()
-    const { $contentfulClient, $pennsieveApiClient } = useNuxtApp()
+    const { $contentfulClient } = useNuxtApp()
     const { params } = useRoute()
     let contentfulError = false
     const consortiaItem =
@@ -94,16 +99,6 @@ export default {
       }).catch(e => {
         contentfulError = true
       })
-    let featuredDataset = {}
-    const featuredId = pathOr('', ['fields', 'datasetId'], consortiaItem)
-    if (!isEmpty(featuredId)) {
-      const pennsieveDatasetUrl = `${config.public.discover_api_host}/datasets/${featuredId}`
-      await $pennsieveApiClient.value.get(pennsieveDatasetUrl).then(({ data }) => {
-        featuredDataset = { 'title': data.name, 'description': data.description, 'banner': data.banner, 'id': data.id }
-      }).catch(() => {
-        featuredDataset = {}
-      })
-    }
     let highlights = ref([])
     $contentfulClient.getEntries({
       'content_type': config.public.ctf_news_id,
@@ -117,9 +112,58 @@ export default {
     })
     return {
       consortiaItem,
-      featuredDataset,
       highlights,
       contentfulError
+    }
+  },
+  async mounted() {
+    const featuredDatasetIds = pathOr('', ['fields', 'featuredDatasets'], this.consortiaItem)
+    const organizationFilter = pathOr('', ['fields', 'organizations'], this.consortiaItem)
+    const dateToShowFeaturedDatasetsUntil = pathOr('', ['fields', 'dateToShowFeaturedDatasets'], this.consortiaItem)
+    const timeDeltaForFeaturedDatasets = pathOr('', ['fields', 'timeDelta'], this.consortiaItem)
+
+    // Check if any of the values have been changed
+    const updatedFeaturedDatasetIds = storeInLocalStorage(this.featuredDatasetIdsKey, featuredDatasetIds)
+    const updatedOrganizationFilter = storeInLocalStorage(this.organizationFilterKey, organizationFilter)
+    const updatedDateToShowFeaturedDatasetsUntil = storeInLocalStorage(this.dateToShowFeaturedDatasetsUntilKey, dateToShowFeaturedDatasetsUntil)
+    const updatedTimeDeltaForFeaturedDatasets = storeTimeDelta(this.timeDeltaForFeaturedDatasetsKey, timeDeltaForFeaturedDatasets)
+    const hasAnyFeaturedDatasetsValuesChanged = updatedFeaturedDatasetIds || updatedOrganizationFilter || updatedDateToShowFeaturedDatasetsUntil || updatedTimeDeltaForFeaturedDatasets
+
+    let listWasReset = false
+    let availableFeaturedDatasetIds = getFromLocalStorage(this.listOfAvailableDatasetIdsKey)
+    if (hasAnyFeaturedDatasetsValuesChanged || availableFeaturedDatasetIds == null || availableFeaturedDatasetIds.length < 1) {
+      await this.resetListOfAvailableDatasetIds(featuredDatasetIds, new Date(dateToShowFeaturedDatasetsUntil), organizationFilter)
+      listWasReset = true
+    }
+    if (hasTimeDeltaPassed(this.timeDeltaForFeaturedDatasetsKey) || listWasReset) {
+      resetTimestamp(this.timeDeltaForFeaturedDatasetsKey)
+      const availableDatasetIds = getFromLocalStorage(this.listOfAvailableDatasetIdsKey)
+      if (availableDatasetIds == null || availableDatasetIds.length < 1)
+      {
+        storeInLocalStorage(this.featuredDatasetIdKey, null)
+      } else {
+        const randomIndex = Math.floor(Math.random() * availableDatasetIds.length)
+        // Remove a random id from the list of available and set it as the featured id
+        storeInLocalStorage(this.featuredDatasetIdKey, availableDatasetIds.splice(randomIndex, 1)[0])
+        // Update local storage with the new list
+        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, availableDatasetIds)
+      }
+    }
+    this.featuredDatasetId = getFromLocalStorage(this.featuredDatasetIdKey)
+  },
+  watch: {
+    'featuredDatasetId': {
+      handler: async function (id) {
+        if (!isEmpty(id) && id != null) {
+          const pennsieveDatasetUrl = `${this.$config.public.discover_api_host}/datasets/${id}`
+          try {
+            const { data } = await this.$pennsieveApiClient.value.get(pennsieveDatasetUrl)
+            this.featuredDataset = { 'title': data.name, 'description': data.description, 'banner': data.banner, 'id': data.id }
+          } catch {
+            this.featuredDataset = {}
+          }
+        }
+      }
     }
   },
   computed: {
@@ -179,6 +223,44 @@ export default {
         path: datasetPath
       }
     },
+    featuredDatasetIdKey() {
+      return `${this.consortiaItem.fields.slug}_featuredDatasetId`
+    },
+    featuredDatasetIdsKey() {
+      return `${this.consortiaItem.fields.slug}_featuredDatasetIds`
+    },
+    listOfAvailableDatasetIdsKey() {
+      return `${this.consortiaItem.fields.slug}_listOfAvailableDatasetIds`
+    },
+    organizationFilterKey() {
+      return `${this.consortiaItem.fields.slug}_organizationFilter`
+    },
+    dateToShowFeaturedDatasetsUntilKey() {
+      return `${this.consortiaItem.fields.slug}_dateToShowFeaturedDatasetsUntil`
+    },
+    timeDeltaForFeaturedDatasetsKey() {
+      return `${this.consortiaItem.fields.slug}_timeDeltaForFeaturedDatasets`
+    }
+  },
+  methods: {
+    async resetListOfAvailableDatasetIds(featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizations) {
+      if (featuredDatasetIds?.length > 0) {
+        const currentDate = new Date()
+        // If the reset time has not passed or it is not set then just use the list of featured dataset ids set in Contentful
+        if (isEmpty(dateToShowFeaturedDatasetsUntil) || isNaN(dateToShowFeaturedDatasetsUntil.getTime()) || currentDate < dateToShowFeaturedDatasetsUntil) {
+          storeInLocalStorage(this.listOfAvailableDatasetIdsKey, featuredDatasetIds)
+          return
+        }
+      }
+
+      const pennsieveDatasetUrl = `${this.$config.public.discover_api_host}/search/datasets?limit=999&organization=${organizations}`
+      try {
+        const { data } = await this.$pennsieveApiClient.value.get(pennsieveDatasetUrl)
+        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, data.datasets.map(dataset => dataset.id))
+      } catch {
+        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, null)
+      }
+    }
   }
 }
 </script>
