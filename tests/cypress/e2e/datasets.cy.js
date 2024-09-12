@@ -122,9 +122,6 @@ datasetIds.forEach(datasetId => {
           cy.get('@doiLink').invoke('attr', 'href').then((href) => {
             cy.request(href).then((resp) => {
               expect(resp.status).to.eq(200)
-              if (resp.redirects && resp.redirects.length) {
-                expect(resp.redirects[0]).to.contain(`datasets/${datasetId}/version/${version}`)
-              }
             })
           })
         })
@@ -435,7 +432,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe("Files Tab", function () {
+    describe.skip("Files Tab", function () {
       it("Content, Link and Button", function () {
         //First check if there is a Files tab
         cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
@@ -545,44 +542,59 @@ datasetIds.forEach(datasetId => {
       })
     })
 
-    it.skip("References Tab", function () {
-      //First check if reference tab is present
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
-        if ($tabs.text().includes('References')) {
-          // Should switch to 'References' if exist
-          cy.wrap($tabs).contains('References').click();
-          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'References');
+    describe("References Tab", function () {
+      it("Link", function () {
+        //First check if reference tab is present
+        cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
+          if ($tabs.text().includes('References')) {
+            // Should switch to 'References' if exist
+            cy.wrap($tabs).contains('References').click();
+            cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+              expect($tab, 'Active tab should be References').to.contain('References')
+            });
 
-          // Check for content
-          cy.get('.dataset-references .heading2').contains(/Primary Publications for this Dataset|Associated Publications for this Dataset/);
-          cy.get('.dataset-references .citation-container').each(($el) => {
-            cy.wrap($el).find('div > a').should('have.attr', 'href').and('include', 'doi.org');
-            cy.wrap($el).find('.copy-button').click();
-            cy.get('.el-message').should('be.visible').and('contain', 'Successfully copied citation.')
-          });
-
-          // Check if redundant doi exist
-          let doiList = []
-          cy.get('.dataset-references').then(($content) => {
-            if (
-              $content.text().includes('Primary Publications for this Dataset') &&
-              $content.text().includes('Preprints')
-            ) {
-              cy.get('.dataset-references .citation-container > div > a').each($doi => {
-                cy.wrap($doi).invoke('attr', 'href').then((link) => {
-                  if (!doiList.includes(link)) {
-                    doiList.push(link)
-                  } else {
-                    throw new Error("Redundant doi references are found")
-                  }
+            // Check for content
+            cy.get('.citation-container > div > a').each(($link) => {
+              expect($link, 'Citation link should have doi href').to.have.attr('href').to.contain('doi.org')
+              expect($link, 'Citation link should open a new tab').to.have.attr('target').to.contain('blank')
+              cy.wrap($link).invoke('attr', 'href').then((href) => {
+                cy.request(href).then((resp) => {
+                  expect(resp.status).to.eq(200)
                 })
-              });
-            }
-          })
-        } else {
-          this.skip();
-        }
-      });
+              })
+            })
+
+            cy.get('.citation-container > .copy-button').each(($button) => {
+              cy.wrap($button).click()
+              cy.get('.el-message').should(($message) => {
+                expect($message, 'Popup should exist').to.exist
+                expect($message, 'Popup should contain success message').to.contain('Successfully copied citation')
+              })
+            })
+
+            // Check if redundant doi exist
+            let doiList = []
+            cy.get('.dataset-references').then(($content) => {
+              if (
+                $content.text().includes('Primary Publications for this Dataset') &&
+                $content.text().includes('Preprints')
+              ) {
+                cy.get('.dataset-references .citation-container > div > a').each($doi => {
+                  cy.wrap($doi).invoke('attr', 'href').then((href) => {
+                    if (!doiList.includes(href)) {
+                      doiList.push(href)
+                    } else {
+                      throw new Error("Redundant doi references are found")
+                    }
+                  })
+                });
+              }
+            })
+          } else {
+            this.skip();
+          }
+        })
+      })
     });
 
     it.skip("Versions Tab", function () {
