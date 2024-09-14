@@ -69,7 +69,7 @@
       </div>
       <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version"
         :dataset-details="datasetInfo" />
-    
+
   </div>
 </template>
 
@@ -101,7 +101,7 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => { 
+  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => {
     const status = propOr('', 'status', error.response)
     // If not found, then try accessing it directly from Pennsieve in case it has been unpublished
     if (status == 404) {
@@ -162,7 +162,8 @@ const getOrganizationNames = async (algoliaIndex) => {
       'SPARC Consortium',
       'RE-JOIN',
       'HEAL PRECISION',
-      "IT'IS Foundation"
+      "IT'IS Foundation",
+      'NIH PRECISION Human Pain Network',
     ]
   }
 }
