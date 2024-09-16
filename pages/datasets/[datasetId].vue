@@ -162,7 +162,8 @@ const getOrganizationNames = async (algoliaIndex) => {
       'SPARC Consortium',
       'RE-JOIN',
       'HEAL PRECISION',
-      "IT'IS Foundation"
+      "IT'IS Foundation",
+      "NIH PRECISION Human Pain Network"
     ]
   }
 }
