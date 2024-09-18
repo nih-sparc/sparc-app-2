@@ -20,7 +20,7 @@ datasetIds.forEach(datasetId => {
       cy.waitForPageLoading()
     })
 
-    describe.skip("Gallery Tab", { testIsolation: false }, function () {
+    describe("Gallery Tab", { testIsolation: false }, function () {
       it('Gallery Items', function () {
         // Should switch to 'Gallery'
         cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').click();
@@ -63,7 +63,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe.skip("Landing page", { testIsolation: false }, function () {
+    describe("Landing page", { testIsolation: false }, function () {
       it('Top Left Panel - Thumbnail and Button', function () {
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
@@ -113,16 +113,14 @@ datasetIds.forEach(datasetId => {
 
       it('Top Right Panel - Link', function () {
         // DOI link should link to page with correct version
-        cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
-          const version = value.match(/[0-9]+/i)[0]
-          cy.get('.dataset-information-box > :nth-child(2) > a').as('doiLink')
-          cy.get('@doiLink').should(($link) => {
-            expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
-          })
-          cy.get('@doiLink').invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
-            })
+        cy.get('.dataset-information-box > :nth-child(2) > a').as('doiLink')
+        cy.get('@doiLink').should(($link) => {
+          expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
+        })
+        cy.get('@doiLink').invoke('attr', 'href').then((href) => {
+          cy.request(href).then((resp) => {
+            expect(resp.status).to.eq(200)
+            expect(resp.redirects.length, 'Redirect should exist').to.have.length(0)
           })
         })
 
@@ -186,7 +184,7 @@ datasetIds.forEach(datasetId => {
       })
     })
 
-    describe.skip("Abstract Tab", function () {
+    describe("Abstract Tab", function () {
       it('Content, Link and Button', function () {
         // Avoid failed test block new retries
         cy.backToDetailPage(datasetId)
@@ -278,7 +276,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe.skip("About Tab", function () {
+    describe("About Tab", function () {
       it("Content and Link", function () {
         // Avoid failed test block new retries
         cy.backToDetailPage(datasetId)
@@ -392,7 +390,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe.skip("Cite Tab", function () {
+    describe("Cite Tab", function () {
       it("Content and Link", function () {
         cy.backToDetailPage(datasetId)
 
@@ -432,7 +430,7 @@ datasetIds.forEach(datasetId => {
       })
     });
 
-    describe.skip("Files Tab", function () {
+    describe("Files Tab", function () {
       it("Content, Link and Button", function () {
         //First check if there is a Files tab
         cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
@@ -536,7 +534,7 @@ datasetIds.forEach(datasetId => {
               })
             })
           } else {
-            this.skip();
+            this();
           }
         })
       })
@@ -591,66 +589,63 @@ datasetIds.forEach(datasetId => {
               }
             })
           } else {
-            this.skip();
+            this();
           }
         })
       })
     });
 
-    it.skip("Versions Tab", function () {
-      //First check if version tab is present
-      cy.get('#datasetDetailsTabsContainer > .style1', { timeout: 30000 }).then(($tabs) => {
-        if ($tabs.text().includes('Versions')) {
-          // Should switch to 'Versions' if exist
-          cy.wrap($tabs).contains('Versions').click();
-          cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions');
+    describe("Versions Tab", function () {
+      it("Button and Link", function () {
+        // First check if version tab is present
+        cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
+          if ($tabs.text().includes('Versions')) {
+            // Should switch to 'Versions' if exist
+            cy.wrap($tabs).contains('Versions').click();
+            cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+              expect($tab, 'Active tab should be Versions').to.contain('Versions')
+            });
 
-          // Check for file actions
-          cy.get('.version-table > :nth-child(2) > :nth-child(4)', { timeout: 30000 }).then(($cell) => {
-            if ($cell.text().includes('Not available')) {
-              cy.wrap($cell).should('contain', 'Not available')
-            } else {
-              // Check for changelog
-              cy.wrap($cell).find('.circle').as('icons').should('have.length', 2)
-              cy.get('@icons').eq(0).click()
+            // Check for file actions
+            cy.get('.version-table > .table-rows > :nth-child(4)').as('changelogs')
+            cy.get('@changelogs').each(($cell) => {
+              if (!$cell.text().includes('Not available')) {
+                // Check for changelog
+                cy.wrap($cell).find('.circle').as('icons')
+                cy.get('@icons').should(($icon) => {
+                  expect($icon, 'There should be 2 icons').to.have.length(2)
+                })
 
-              cy.wait(5000)
-
-              // Check for changelog popover
-              cy.get('.optional-content-container').should('be.visible');
-              cy.get('.main-content-container').should('be.visible');
-              cy.get('.el-icon.el-dialog__close:visible').click();
-
-              // Check for download
-              cy.intercept('**/zipit/discover').as('changelogDownload')
-              cy.get('@icons').eq(1).click({ force: true })
-              cy.get('@changelogDownload').should(({ request, response }) => {
-                expect(request.method).to.equal('POST')
-                expect(request.body.data.datasetId).to.equal(datasetId)
-                expect(response.statusCode).to.equal(200)
-              })
-            }
-          })
-
-          // DOI link should link to page with correct version
-          cy.get('.version-table > .table-rows').each(($row) => {
-            cy.wrap($row).children('.el-col-pull-1').invoke('text').then((value) => {
-              const version = value.match(/[0-9]+/i)[0]
-              cy.wrap($row).children('.el-col-push-1').children('a').should('have.attr', 'href').and('include', 'doi.org').then((href) => {
-
-                // Wait after each request in case of conflict
+                cy.get('@icons').eq(0).click()
+                cy.wait(5000)
+                // Check for changelog popover
+                cy.get('.el-dialog').should(($content) => {
+                  expect($content, 'Changelog content should be visible').to.be.visible
+                });
+                cy.get('.el-dialog__headerbtn').click();
                 cy.wait(5000)
 
-                cy.request(href).then((resp) => {
-                  expect(resp.status).to.eq(200);
-                  expect(resp.body).to.include(`datasets/${datasetId}/version/${version}`);
+                // Check for download
+                cy.get('@icons').eq(1).click()
+                cy.wait('@zipit', { timeout: 20000 }).then((intercept) => {
+                  expect(intercept.response.statusCode).to.eq(200)
                 })
-              });
+              }
             })
-          })
-        } else {
-          this.skip()
-        }
+
+            cy.get('.version-table > .table-rows > :nth-child(5) > a').as('dois')
+            cy.get('@dois').each(($doi) => {
+              cy.wrap($doi).invoke('attr', 'href').then((href) => {
+                cy.request(href).then((resp) => {
+                  expect(resp.status).to.eq(200)
+                  expect(resp.redirects.length, 'Redirect should exist').to.have.length(0)
+                })
+              })
+            })
+          } else {
+            this()
+          }
+        })
       });
     });
   });
