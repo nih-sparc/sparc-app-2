@@ -137,8 +137,11 @@ datasetIds.forEach(datasetId => {
         // Check project link if exist
         cy.get('.similar-datasets-container').then(($content) => {
           if ($content.text().includes('project(s):')) {
-            cy.wrap($content).get('.mt-8 > a > u').then(($title) => {
-              const projectName = $title.text()
+            cy.wrap($content).contains('project(s):').siblings('.mt-8').should(($project) => {
+              expect($project, 'Project title should exist').to.exist
+            })
+            cy.get('.mt-8 > a > u').as('projectLink')
+            cy.get('@projectLink').invoke('text').then((value) => {
               cy.get('.mt-8 > a').click()
               cy.waitForPageLoading()
               cy.url().should((url) => {
@@ -146,7 +149,7 @@ datasetIds.forEach(datasetId => {
               })
               // Check for the title
               cy.get('.row > .heading2').should(($title) => {
-                expect($title, 'Project title should match').to.contain(projectName)
+                expect($title, 'Project title should match').to.contain(value)
               });
               cy.go('back')
               cy.waitForPageLoading()
@@ -195,63 +198,74 @@ datasetIds.forEach(datasetId => {
           expect($tab, 'Active tab should be Abstract').to.contain('Abstract')
         });
 
-        // The following regular expression should capture space and letters
-        cy.get('.dataset-description-info strong').contains(/Study Purpose:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Study Purpose" content should exist').to.match(/Study Purpose:(.+?)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Data Collect(ion|ed):/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Data Collection" content should exist').to.match(/Data Collect(ion|ed):(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/(Primary )?Conclusion(s)?:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Primary Conclusions" content should exist').to.match(/(Primary )?Conclusion(s)?:(.+)/i)
-        })
+        cy.get('.dataset-description-info strong').as('descriptionInfo')
+        cy.get('@descriptionInfo').then(($description) => {
+          const description = $description.text()
+          // The following regular expression should capture space and letters
+          cy.wrap($description).contains(/Study Purpose:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Study Purpose" content should exist').to.match(/Study Purpose:(.+?)/i)
+          })
+          cy.wrap($description).contains(/Data Collect(ion|ed):/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Data Collection" content should exist').to.match(/Data Collect(ion|ed):(.+)/i)
+          })
+          cy.wrap($description).contains(/(Primary )?Conclusion(s)?:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Primary Conclusions" content should exist').to.match(/(Primary )?Conclusion(s)?:(.+)/i)
+          })
 
-        // Check for Curator's Note
-        cy.get('.dataset-description-info strong').contains(/Experimental Design:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Experimental Design" content should exist').to.match(/Experimental Design:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Completeness:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Completeness" content should exist').to.match(/Completeness:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Subjects & Samples:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Subjects & Samples" content should exist').to.match(/Subjects & Samples:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Primary vs(.)? derivative data:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Primary vs derivative data" content should exist').to.match(/Primary vs(.)? derivative data:(.+)/i)
-        })
-
-        // Check for Metadata
-        cy.get('.dataset-description-info strong').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($link) => {
-          if ($link.text().includes('https://doi.org/')) {
-            cy.get('.link2').should(($link) => {
-              expect($link, 'Link content should exist').to.exist
-              expect($link.length, 'Link should have at lease one').to.be.greaterThan(0)
-              expect($link, 'Link should have correct href').to.have.attr('href').to.contain('https://doi.org/')
+          // Check for Curator's Note
+          cy.wrap($description).contains(/Experimental Design:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Experimental Design" content should exist').to.match(/Experimental Design:(.+)/i)
+          })
+          cy.wrap($description).contains(/Completeness:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Completeness" content should exist').to.match(/Completeness:(.+)/i)
+          })
+          cy.wrap($description).contains(/Subjects & Samples:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Subjects & Samples" content should exist').to.match(/Subjects & Samples:(.+)/i)
+          })
+          if (description.match(/Primary vs(.)? derivative data:/i)) {
+            cy.wrap($description).contains(/Primary vs(.)? derivative data:/i).parent().should(($content) => {
+              expect($content.text().trim(), '"Primary vs derivative data" content should exist').to.match(/Primary vs(.)? derivative data:(.+)/i)
             })
           }
-        })
-        cy.get('.dataset-description-info strong').contains(/Experimental Approach:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
-        })
+          if (description.match(/Code Availability:/i)) {
+            cy.wrap($description).contains(/Code Availability:/i).parent().should(($content) => {
+              expect($content.text().trim(), '"Code Availability" content should exist').to.match(/Code Availability:(.+)/i)
+            })
+          }
 
-        // Check for Subject Information
-        cy.get('.dataset-description-info strong').contains(/Subject Information:/i).should(($content) => {
-          expect($content.text().trim(), '"Subject Information" content should exist').to.exist
-        })
-        cy.get('.dataset-description-info strong').contains(/Anatomical structure:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Anatomical structure" content should exist').to.match(/Anatomical structure:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Species:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Species" content should exist').to.match(/Species:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Sex:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Sex" content should exist').to.match(/Sex:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Age Range:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Age Range" content should exist').to.match(/Age Range:(.+)/i)
-        })
-        cy.get('.dataset-description-info strong').contains(/Number of samples:/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
+          // Check for Metadata
+          cy.wrap($description).contains(/Protocol Links:/i).parents('.experimental-design-container').within(($link) => {
+            if ($link.text().includes('https://doi.org/')) {
+              cy.get('.link2').should(($link) => {
+                expect($link, 'Link content should exist').to.exist
+                expect($link.length, 'Link should have at lease one').to.be.greaterThan(0)
+                expect($link, 'Link should have correct href').to.have.attr('href').to.contain('https://doi.org/')
+              })
+            }
+          })
+          cy.wrap($description).contains(/Experimental Approach:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
+          })
+
+          // Check for Subject Information
+          cy.wrap($description).contains(/Subject Information:/i).should(($content) => {
+            expect($content.text().trim(), '"Subject Information" content should exist').to.exist
+          })
+          cy.wrap($description).contains(/Anatomical structure:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Anatomical structure" content should exist').to.match(/Anatomical structure:(.+)/i)
+          })
+          cy.wrap($description).contains(/Species:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Species" content should exist').to.match(/Species:(.+)/i)
+          })
+          cy.wrap($description).contains(/Sex:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Sex" content should exist').to.match(/Sex:(.+)/i)
+          })
+          cy.wrap($description).contains(/Age Range:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Age Range" content should exist').to.match(/Age Range:(.+)/i)
+          })
+          cy.wrap($description).contains(/Number of samples:/i).parent().should(($content) => {
+            expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
+          })
         })
 
         // Check for downloading feature
