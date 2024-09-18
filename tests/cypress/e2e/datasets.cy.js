@@ -328,9 +328,11 @@ datasetIds.forEach(datasetId => {
                 cy.get('.el-input__inner').clear()
                 cy.get('.el-input__inner').type(datasetId)
                 cy.get('.search-text').click()
-                cy.get('.cell').contains(value).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
-                cy.get('@PI').invoke('text').then((value) => {
-                  expect($content.text(), 'PI should be the contact author').to.contain(value)
+                cy.get('.cell').contains($title.text()).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
+                cy.get('@PI').then(($pi) => {
+                  const author = $content.text().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                  const pi = $pi.text().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                  expect(author, 'PI should be the contact author').to.contain(pi)
 
                   cy.backToDetailPage(datasetId)
 
@@ -339,9 +341,11 @@ datasetIds.forEach(datasetId => {
             })
           })
           cy.get('.about-section-container a').then(($email) => {
-            const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
-            cy.get('.dataset-owners').then(($owners) => {
-              expect($owners.text(), `Contact author ${author} should be in owners list`).to.contain(author)
+            const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ').trim()
+            const name = author.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            cy.get('.dataset-owners').should(($contributors) => {
+              const contributors = $contributors.text().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+              expect(contributors, `Contact author ${name} should be in contributor list`).to.contain(name)
             })
             expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)
           })
