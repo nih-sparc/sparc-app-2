@@ -192,12 +192,23 @@ Cypress.Commands.add('findGalleryCard', (text, dir) => {
 })
 
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
-  cy.url().then((url) => {
-    if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
-      cy.go('back')
-      cy.waitForPageLoading()
-    }
-  })
+  let retry = 0
+  const backToDetailPage = () => {
+    cy.url().then((url) => {
+      if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+        cy.go('back')
+        cy.waitForPageLoading()
+        retry += 1
+      }
+      if (retry > 3) {
+        cy.visit(`/datasets/${datasetId}?type=dataset`)
+      }
+      if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+        backToDetailPage()
+      }
+    })
+  }
+  backToDetailPage()
 })
 
 Cypress.Commands.add('checkGalleyCardState', () => {

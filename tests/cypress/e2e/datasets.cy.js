@@ -298,8 +298,26 @@ datasetIds.forEach(datasetId => {
         cy.get('@contact').should(($content) => {
           expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/i)
         })
-        // Check for email href exist
+
+        // Check for author and email href
         cy.get('@contact').then(($content) => {
+          cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
+            cy.get('.similar-datasets-container > .px-8').then(($similar) => {
+              if ($similar.text().includes('Type:')) {
+                cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
+                cy.get('.el-input__inner').clear()
+                cy.get('.el-input__inner').type(datasetId)
+                cy.get('.search-text').click()
+                cy.get('.cell').contains(value).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
+                cy.get('@PI').invoke('text').then((value) => {
+                  expect($content.text(), 'PI should be the contact author').to.contain(value)
+
+                  cy.backToDetailPage(datasetId)
+
+                })
+              }
+            })
+          })
           cy.get('.about-section-container a').then(($email) => {
             const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
             cy.get('.dataset-owners').then(($owners) => {
@@ -337,11 +355,6 @@ datasetIds.forEach(datasetId => {
           expect($content.text().trim(), '"Dataset DOI" content should exist').to.match(/Dataset DOI:(.+)/i)
         })
 
-        // cy.get('.dataset-owners').then(($contributors) => {
-        //   const contributors = $contributors.text().trim().replace('Contributors:', '')
-        //   cy.get('@contact').then(($content) => {
-        //     cy.get('.about-section-container a').then(($email) => {
-        //       const author = $content.text().trim().replace($email.text(), '').replace('Contact Author: ', '')
         cy.get('@awards').then(($award) => {
           const award = $award.text().trim().replace('Award(s): ', '')
           cy.get('@institutions').then(($institution) => {
@@ -361,29 +374,11 @@ datasetIds.forEach(datasetId => {
               cy.get('.link1').should(($award) => {
                 expect(award, 'Award should be the same').to.include($award.text().trim())
               })
-              // cy.get('span.label4').parent().contains(/PRINCIPAL INVESTIGATOR[(]S[)]:/i).should(($PI) => {
-              //   const PI = $PI.text().trim().replace('PRINCIPAL INVESTIGATOR(S): ', '')
-              //   const contributorList = contributors.split(',')
-              //   let PIIsCOntactAuthor = false
-              //   let PIIsContributor = false
-              //   contributorList.forEach((contributor) => {
-              //     if (!PIIsContributor) {
-              //       // Avoid slightly name difference
-              //       PIIsContributor = $PI.text().includes(contributor.trim()) || contributor.trim().includes(PI)
-              //       PIIsCOntactAuthor = $PI.text().includes(author) || author.includes(contributor.trim())
-              //     }
-              //   })
-              //   expect(PIIsContributor, 'Principal Investigator should list as dataset contributor').to.be.true
-              //   expect(PIIsCOntactAuthor, 'Principal Investigator should list as contact author').to.be.true
-              // })
               cy.go('back')
               cy.waitForPageLoading()
             })
           })
         })
-        //     })
-        //   })
-        // })
       })
     });
 
