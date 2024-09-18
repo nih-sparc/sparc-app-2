@@ -146,16 +146,16 @@ datasetIds.forEach(datasetId => {
             cy.wrap($content).contains('project(s):').siblings('.mt-8').should(($project) => {
               expect($project, 'Project title should exist').to.exist
             })
-            cy.get('.mt-8 > a > u').as('projectLink')
-            cy.get('@projectLink').invoke('text').then((value) => {
+            cy.get('.mt-8 > a').then(($link) => {
+              const title = $link.children().text()
               cy.get('.mt-8 > a').click()
               cy.waitForPageLoading()
               cy.url().should((url) => {
                 expect(url, 'URL should contain correct slug').to.contain('/about/projects/')
               })
               // Check for the title
-              cy.get('.row > .heading2').should(($title) => {
-                expect($title, 'Project title should match').to.contain(value)
+              cy.get('.row > .heading2').should(($pTitle) => {
+                expect($pTitle, 'Project title should match').to.contain(title)
               });
               cy.go('back')
               cy.waitForPageLoading()
@@ -321,7 +321,7 @@ datasetIds.forEach(datasetId => {
 
         // Check for author and email href
         cy.get('@contact').then(($content) => {
-          cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
+          cy.get('.el-col-sm-16 > .heading2').then(($title) => {
             cy.get('.similar-datasets-container > .px-8').then(($similar) => {
               if ($similar.text().includes('Type:')) {
                 cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
@@ -380,11 +380,11 @@ datasetIds.forEach(datasetId => {
         })
 
         cy.get('@awards').then(($award) => {
-          const award = $award.text().trim().replace('Award(s): ', '')
+          const award = $award.text().replace('Award(s):', '').trim()
           cy.get('@institutions').then(($institution) => {
-            const institution = $institution.text().trim().replace('Institution(s): ', '')
+            const institution = $institution.text().replace('Institution(s):', '').trim()
             cy.get('@project').then(($project) => {
-              const project = $project.text().trim().replace('Associated project(s): ', '')
+              const project = $project.text().replace('Associated project(s):', '').trim()
               cy.wrap($project).within(($button) => {
                 cy.wrap($button).click()
               })
@@ -422,23 +422,24 @@ datasetIds.forEach(datasetId => {
         })
 
         // Check for title
-        cy.get('.el-col-sm-16 > .heading2').invoke('text').then((value) => {
+        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           cy.get('.info-citation > .citation-text', { timeout: 30000 }).should(($citation) => {
-            expect($citation, 'Citation should contain title').to.contain(value.trim())
+            expect($citation, 'Citation should contain title').to.contain($title.text().trim())
           })
         })
 
-        cy.get('.dataset-information-box > :nth-child(2) > a > u').invoke('text').then((value) => {
-          // Check for citation doi
+        // Check for citation doi
+        cy.get('.dataset-information-box > :nth-child(2) > a > u').then(($doi) => {
+          const doi = $doi.text()
           cy.get('.info-citation > .citation-text', { timeout: 30000 }).should(($citation) => {
-            expect($citation, 'Citation should contain doi').to.contain(value)
+            expect($citation, 'Citation should contain doi').to.contain(doi)
           })
 
           // Check for source link
           cy.get('.citation-details > p > a').then(($link) => {
             expect($link, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
             cy.wrap($link).invoke('attr', 'href').then((href) => {
-              expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`)
+              expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${doi}`)
               cy.request(href).then((resp) => {
                 expect(resp.status).to.eq(200);
               })
@@ -485,8 +486,8 @@ datasetIds.forEach(datasetId => {
                   })
                 } else {
                   cy.get('.left-column > :nth-child(1) > a').invoke('attr', 'href').then((href) => {
-                    cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
-                      const versionNumber = value.match(/[0-9]+/i)[0]
+                    cy.get('.dataset-information-box > :nth-child(1)').then(($version) => {
+                      const versionNumber = $version.text().match(/[0-9]+/i)[0]
                       expect(href, 'Download link should have correct href').to.contain(`https://api.pennsieve.io/discover/datasets/${datasetId}/versions/${versionNumber}/download?downloadOrigin=SPARC`)
                     })
                   })
