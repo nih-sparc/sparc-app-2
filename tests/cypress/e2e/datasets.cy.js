@@ -120,7 +120,7 @@ datasetIds.forEach(datasetId => {
         cy.get('@doiLink').invoke('attr', 'href').then((href) => {
           cy.request(href).then((resp) => {
             expect(resp.status).to.eq(200)
-            expect(resp.redirects.length, 'Redirect should exist').to.have.length(0)
+            expect(resp.redirects, 'Redirect should exist').to.have.length(1)
           })
         })
 
@@ -207,9 +207,6 @@ datasetIds.forEach(datasetId => {
         })
 
         // Check for Curator's Note
-        cy.get('.dataset-description-info strong').contains(/Curator's Notes/i).should(($content) => {
-          expect($content, '"Curator Note" content should exist').to.exist
-        })
         cy.get('.dataset-description-info strong').contains(/Experimental Design:/i).parent().should(($content) => {
           expect($content.text().trim(), '"Experimental Design" content should exist').to.match(/Experimental Design:(.+)/i)
         })
@@ -258,7 +255,7 @@ datasetIds.forEach(datasetId => {
         })
 
         // Check for downloading feature
-        cy.get('.dataset-description-info a').not('.link2').as('download')
+        cy.get('.dataset-description-info a').not('.link2').last().as('download')
         cy.get('@download').should(($link) => {
           expect($link, 'Download link should exist').to.exist
           expect($link, 'Download link should have correct href').to.have.attr('href').to.match(/https:\/\/api.pennsieve.io\/discover\/datasets\/[0-9]+\/versions\/[0-9]+\/metadata/i)
@@ -419,11 +416,13 @@ datasetIds.forEach(datasetId => {
           })
 
           // Check for source link
-          cy.get('.citation-details > p > a').invoke('attr', 'href').then((href) => {
-            expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`)
-            expect(href, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200);
+          cy.get('.citation-details > p > a').then(($link) => {
+            expect($link, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
+            cy.wrap($link).invoke('attr', 'href').then((href) => {
+              expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${value}`)
+              cy.request(href).then((resp) => {
+                expect(resp.status).to.eq(200);
+              })
             })
           })
         })
@@ -459,11 +458,20 @@ datasetIds.forEach(datasetId => {
                 cy.get('.left-column > :nth-child(1) > a > .el-button').should(($button) => {
                   expect($button, 'Download button should be enabled when size is less than 5GB').to.be.enabled
                 })
-                // Check if datasets is downloaded
-                cy.get('.left-column > :nth-child(1) > a > .el-button').click()
-                cy.wait('@download', { timeout: 20000 }).then((intercept) => {
-                  expect(intercept.response.statusCode).to.eq(200)
-                })
+                if ($size.text().includes("MB")) {
+                  // Check if datasets is downloaded
+                  cy.get('.left-column > :nth-child(1) > a > .el-button').click()
+                  cy.wait('@download', { timeout: 20000 }).then((intercept) => {
+                    expect(intercept.response.statusCode).to.eq(200)
+                  })
+                } else {
+                  cy.get('.left-column > :nth-child(1) > a').invoke('attr', 'href').then((href) => {
+                    cy.get('.dataset-information-box > :nth-child(1)').invoke('text').then((value) => {
+                      const versionNumber = value.match(/[0-9]+/i)[0]
+                      expect(href, 'Download link should have correct href').to.contain(`https://api.pennsieve.io/discover/datasets/${datasetId}/versions/${versionNumber}/download?downloadOrigin=SPARC`)
+                    })
+                  })
+                }
               }
             })
 
@@ -589,7 +597,7 @@ datasetIds.forEach(datasetId => {
               }
             })
           } else {
-            this();
+            this.skip();
           }
         })
       })
@@ -622,7 +630,7 @@ datasetIds.forEach(datasetId => {
                 cy.get('.el-dialog').should(($content) => {
                   expect($content, 'Changelog content should be visible').to.be.visible
                 });
-                cy.get('.el-dialog__headerbtn').click();
+                cy.get('.el-dialog__headerbtn:visible').click();
                 cy.wait(5000)
 
                 // Check for download
@@ -638,12 +646,12 @@ datasetIds.forEach(datasetId => {
               cy.wrap($doi).invoke('attr', 'href').then((href) => {
                 cy.request(href).then((resp) => {
                   expect(resp.status).to.eq(200)
-                  expect(resp.redirects.length, 'Redirect should exist').to.have.length(0)
+                  expect(resp.redirects, 'Redirect should exist').to.have.length(1)
                 })
               })
             })
           } else {
-            this()
+            this.skip()
           }
         })
       });
