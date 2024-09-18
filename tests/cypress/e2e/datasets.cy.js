@@ -99,15 +99,21 @@ datasetIds.forEach(datasetId => {
         cy.get('.dataset-owners').should(($contributor) => {
           expect($contributor, 'Contributor content should exist').to.exist
         })
-        cy.get('.dataset-owners > .contributor-item-wrap > .has-orcid').each(($contributor) => {
-          cy.wrap($contributor).trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-          // Popover should be visible for each contributor
-          cy.get('.orcid-popover:visible').should(($tooltip) => {
-            expect($tooltip, 'Orcid tooltip should be visible').to.be.visible
-            expect($tooltip, 'Orcid tooltip should contain contributor name').to.contain($contributor.text())
-            expect($tooltip, 'Orcid tooltip should contain ORCID').to.contain('ORCID iD')
+        cy.get('.dataset-owners > .contributor-item-wrap').each(($owner) => {
+          const contributorName = $owner.text().replace(',', '').trim()
+          cy.wrap($owner).children().as('contributor')
+          cy.get('@contributor').invoke('attr', 'class').then((classList) => {
+            if (classList.includes('has-orcid')) {
+              cy.get('@contributor').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+              // Popover should be visible for each contributor
+              cy.get('.orcid-popover:visible').should(($tooltip) => {
+                expect($tooltip, 'Orcid tooltip should be visible').to.be.visible
+                expect($tooltip, 'Orcid tooltip should contain contributor name').to.contain(contributorName)
+                expect($tooltip, 'Orcid tooltip should contain ORCID').to.contain('ORCID iD')
+              })
+              cy.get('@contributor').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
+            }
           })
-          cy.wrap($contributor).trigger('mouseleave', { eventConstructor: 'MouseEvent' })
         })
       });
 
