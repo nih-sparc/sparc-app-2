@@ -160,6 +160,11 @@ export default {
       if (packageType == 'Unsupported') {
         await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
           segmentationData = data
+          // file is from pennsieve, filePath is from scicrunch
+          // Normally filePath will be correct if path in file and filePath not the same
+          if (file.path != filePath) {
+            file.path = filePath
+          }
         })
       }
     } catch(e) {
