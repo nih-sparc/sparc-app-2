@@ -29,7 +29,7 @@ export default defineConfig({
       FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',
       MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Pig, Heart',
       // datasets.js
-      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 205, 290, 34, 76',
+      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 204, 290, 34, 76',
       // mapsviewer.js
       TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Human Female',
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
