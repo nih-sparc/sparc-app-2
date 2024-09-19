@@ -537,13 +537,17 @@ export default {
         this.scicrunchItems = items
 
         if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
-          const biolucida2DItems = pathOr([],['biolucida-2d'], scicrunchData)
+          const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
-          const biolucidaItems = biolucida2DItems.concat(pathOr([],['biolucida-3d'], scicrunchData)).filter((bObject) => {
-            return scicrunchData['dataset_images'].some(image => image.image_id == pathOr("", ['biolucida','identifier'], bObject))
+          let biolucidaItems = {}
+          biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach((bObject) => {
+            const biolucidaId = pathOr("", ['biolucida','identifier'], bObject)
+            if (biolucidaId && scicrunchData['dataset_images'].some(image => image.image_id == biolucidaId)) {
+              biolucidaItems[biolucidaId] = bObject
+            }
           })
           bItems.push(
-            ...Array.from(biolucidaItems, biolucida_item => {
+            ...Array.from(Object.values(biolucidaItems), biolucida_item => {
               let filePath = ""
               const dataset_image = scicrunchData['dataset_images'].find((image) => {
                 return image.image_id == pathOr("", ['biolucida','identifier'], biolucida_item)
