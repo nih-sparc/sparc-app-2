@@ -157,8 +157,7 @@ datasetIds.forEach(datasetId => {
               cy.get('.row > .heading2').should(($pTitle) => {
                 expect($pTitle, 'Project title should match').to.contain(title)
               });
-              cy.go('back')
-              cy.waitForPageLoading()
+              cy.backToDetailPage(datasetId)
             })
           }
         })
@@ -172,8 +171,7 @@ datasetIds.forEach(datasetId => {
             expect($tag, 'Tag content should exist in applied').to.have.length(1)
             expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(randomIndex).text())
           })
-          cy.go('back')
-          cy.waitForPageLoading()
+          cy.backToDetailPage(datasetId)
         })
 
         // Wait for the link in the clicked name
@@ -187,8 +185,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.el-input__inner').should(($input) => {
             expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(randomIndex).text())
           })
-          cy.go('back')
-          cy.waitForPageLoading()
+          cy.backToDetailPage(datasetId)
         })
       })
     })
@@ -333,9 +330,7 @@ datasetIds.forEach(datasetId => {
                   const author = $content.text().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                   const pi = $pi.text().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                   expect(author, 'PI should be the contact author').to.contain(pi)
-
                   cy.backToDetailPage(datasetId)
-
                 })
               }
             })
@@ -398,8 +393,6 @@ datasetIds.forEach(datasetId => {
               cy.get('.link1').should(($award) => {
                 expect(award, 'Award should be the same').to.include($award.text().trim())
               })
-              cy.go('back')
-              cy.waitForPageLoading()
             })
           })
         })
@@ -676,5 +669,53 @@ datasetIds.forEach(datasetId => {
         })
       });
     });
+
+    describe("Dataset Surfaces in Search", function () {
+      it("Keyword Search", function () {
+        cy.backToDetailPage(datasetId)
+
+        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+          cy.get('.similar-datasets-container > .px-8').then(($similar) => {
+            if ($similar.text().includes('Type:')) {
+              const title = $title.text()
+              const titleList = title.split(' ')
+              const input = titleList.slice(0, Math.floor(Math.random() * titleList.length) + 1).join(' ')
+              cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
+              cy.waitForPageLoading()
+              cy.get('.el-input__inner').clear()
+              cy.get('.el-input__inner').type(input)
+              cy.get('.search-text').click()
+              cy.waitForBrowserLoading()
+              cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+              cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+              cy.waitForBrowserLoading()
+              cy.get('.cell').contains(title).should(($dTitle) => {
+                expect($dTitle, 'Dataset title should exist in search results').to.exist
+              })
+            } else {
+              this.skip()
+            }
+          })
+        })
+      })
+
+      it("Faceted Browse Search Search", function () {
+        cy.backToDetailPage(datasetId)
+
+        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+          cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
+            const randomIndex = Math.floor(Math.random() * $facets.length);
+            cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
+            cy.waitForPageLoading()
+            cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+            cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+            cy.waitForBrowserLoading()
+            cy.get('.cell').contains($title.text()).should(($dTitle) => {
+              expect($dTitle, 'Dataset title should exist in search results').to.exist
+            })
+          })
+        })
+      })
+    })
   });
 });
