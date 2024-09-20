@@ -151,6 +151,7 @@ const getDownloadsSummary = async (config, axios) => {
 const getOrganizationNames = async (algoliaIndex) => {
   try {
     await algoliaIndex.search('', {
+      hitsPerPage: 0,
       sortFacetValuesBy: 'alpha',
       facets: 'pennsieve.organization.name',
     }).then(({ facets }) => {
