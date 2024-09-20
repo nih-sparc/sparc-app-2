@@ -562,7 +562,7 @@ datasetIds.forEach(datasetId => {
     })
 
     describe("References Tab", function () {
-      it("Link", function () {
+      it("Link and Content", function () {
         //First check if reference tab is present
         cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
           if ($tabs.text().includes('References')) {
@@ -588,6 +588,19 @@ datasetIds.forEach(datasetId => {
               cy.get('.el-message').should(($message) => {
                 expect($message, 'Popup should exist').to.exist
                 expect($message, 'Popup should contain success message').to.contain('Successfully copied citation')
+              })
+            })
+
+            // Check for consistency between citation and dataset information
+            cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+              const title = $title.text().match(/[a-z]{3,}/gi)
+              cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
+                const description = $description.text().replace(/Description:/i, '').match(/[a-z]{3,}/gi)
+                cy.get('.dataset-references .citation-container').then(($citation) => {
+                  const regex = new RegExp('\(' + title.concat(description).join('|') + '\)', 'gi')
+                  const consistentContent = $citation.text().match(regex);
+                  expect(consistentContent.length > 0, 'Citation should be consistent with dataset information').to.be.true
+                })
               })
             })
 
