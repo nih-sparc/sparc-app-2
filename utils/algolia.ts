@@ -60,6 +60,7 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
   var facetId = 0
   return algoliaIndex
     .search('', {
+      hitsPerPage: 0,
       sortFacetValuesBy: 'alpha',
       facets: facetPropPaths.concat(facetSubpropPaths),
       filters: filters || ''

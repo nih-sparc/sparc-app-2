@@ -65,7 +65,7 @@ export default {
 .loading-container {
   position: fixed;
   top: 0;
-  z-index: 1;
+  z-index: 101;
   background-color: white;
   opacity: .5;
   width: 100vw;

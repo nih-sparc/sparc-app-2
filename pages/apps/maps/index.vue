@@ -132,7 +132,7 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
     for_species && for_species !== 'undefined'
   ) {
     if (for_species !== target) {
-      failMessage = `Sorry! A flatmap for ${for_species} species does not yet exist. The ${organ_name} of a rat has been shown instead.`
+      failMessage = `Sorry! A flatmap for ${for_species} species does not yet exist. The ${organ_name} of a human male has been shown instead.`
     } else if (!organ) {
       failMessage = `Sorry! Applicable entity is not yet available. A generic flatmap for ${for_species} species has been shown instead.`
     }
@@ -141,9 +141,9 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
   } else {
     if (!target) {
       if (organ) {
-        failMessage += `The ${organ_name} of a rat has been shown instead.`
+        failMessage += `The ${organ_name} of a human male has been shown instead.`
       } else {
-        failMessage += 'A generic rat flatmap has been shown instead.'
+        failMessage += 'A generic human male flatmap has been shown instead.'
       }
     }
   }
