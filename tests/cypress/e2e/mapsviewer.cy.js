@@ -43,7 +43,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       if (index === 0) {
         cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
         cy.waitForLoadingMask()
-        loadedModels.add('Rat')
+        loadedModels.add('Human Male')
       }
 
       // Switch to the second flatmap
