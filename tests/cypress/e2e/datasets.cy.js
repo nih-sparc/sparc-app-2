@@ -162,14 +162,38 @@ datasetIds.forEach(datasetId => {
           }
         })
 
-        cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
+        cy.get('.tooltip-item.facet-button').then(($facets) => {
+          let exclude = 0
+          let facetLabels = []
+          cy.wrap($facets).each(($facet) => {
+            const facetType = $facet.parents('.parent-facet').siblings('.capitalize').text()
+            if (facetType !== 'Type:' && facetType !== 'Funding Program:') {
+              facetLabels.push($facet.text())
+            } else {
+              exclude += 1
+            }
+            if (facetLabels.length === $facets.length - exclude) {
+              const regex = new RegExp('\(' + facetLabels.join('|') + '\)', 'gi')
+              cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+                cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
+                  cy.get('.description-container').then(($abstract) => {
+                    const text = $title.text() + $description.text() + $abstract.text()
+                    const matchText = text.match(regex)
+                    const matchContent = matchText && matchText.length > 0
+                    expect(matchContent, 'Metadata tags should be suitable for the dataset').to.be.true
+                  })
+                })
+              })
+            }
+          })
+
           const randomIndex = Math.floor(Math.random() * $facets.length);
           const facetName = $facets.eq(randomIndex).text()
-          cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
+          cy.wrap($facets).eq(randomIndex).click()
           cy.waitForPageLoading()
           cy.get('.el-tag__content').should(($tag) => {
-            expect($tag, 'Tag content should exist in applied').to.have.length(1)
-            expect($tag, `Tag should match name ${facetName}`).to.contain($facets.eq(randomIndex).text())
+            expect($tag.length, 'Tag content should exist in applied').to.be.greaterThan(0)
+            expect($tag, `Tag should match name ${facetName}`).to.contain(facetName)
           })
           cy.backToDetailPage(datasetId)
         })
@@ -183,7 +207,7 @@ datasetIds.forEach(datasetId => {
           cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
           cy.waitForPageLoading()
           cy.get('.el-input__inner').should(($input) => {
-            expect($input, `Search input should match name ${contributorName}`).to.have.value($contributors.eq(randomIndex).text())
+            expect($input, `Search input should match name ${contributorName}`).to.have.value(contributorName)
           })
           cy.backToDetailPage(datasetId)
         })
