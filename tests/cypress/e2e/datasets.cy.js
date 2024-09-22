@@ -236,16 +236,34 @@ datasetIds.forEach(datasetId => {
             })
           }
 
-          // Check for Metadata
-          cy.wrap($description).contains(/Protocol Links:/i).parents('.experimental-design-container').within(($link) => {
-            if ($link.text().includes('https://doi.org/')) {
-              cy.get('.link2').should(($link) => {
-                expect($link, 'Link content should exist').to.exist
-                expect($link.length, 'Link should have at lease one').to.be.greaterThan(0)
-                expect($link, 'Link should have correct href').to.have.attr('href').to.contain('https://doi.org/')
+          cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+            const title = $title.text().trim()
+            const titleRegex = new RegExp('\(' + title + '\)', 'gi')
+            cy.get('.dataset-owners').then(($contributor) => {
+              const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim())
+              const contributorRegex = new RegExp('\(' + contributor.join('|') + '\)', 'gi')
+              // Check for Metadata
+              cy.wrap($description).contains(/Protocol Links:/i).parents('.experimental-design-container').within(($content) => {
+                if ($content.text().includes('https://doi.org/')) {
+                  cy.get('.link2').then(($links) => {
+                    expect($links.length, 'Link should have at lease one').to.be.greaterThan(0)
+                    cy.wrap($links).each(($link) => {
+                      cy.wrap($link).invoke('attr', 'href').then((href) => {
+                        cy.request(href).then((resp) => {
+                          expect(resp.status).to.eq(200)
+                          const matchTitle = resp.body.match(titleRegex);
+                          const matchContributor = resp.body.match(contributorRegex);
+                          const matchContent = (matchTitle && matchTitle.length > 0) || (matchContributor && matchContributor.length > 0)
+                          expect(matchContent, 'Protocol link should make sense').to.be.true
+                        })
+                      })
+                    })
+                  })
+                }
               })
-            }
+            })
           })
+
           cy.wrap($description).contains(/Experimental Approach:/i).parent().should(($content) => {
             expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
           })
@@ -598,8 +616,9 @@ datasetIds.forEach(datasetId => {
                 const description = $description.text().replace(/Description:/i, '').match(/[a-z]{3,}/gi)
                 cy.get('.dataset-references .citation-container').then(($citation) => {
                   const regex = new RegExp('\(' + title.concat(description).join('|') + '\)', 'gi')
-                  const consistentContent = $citation.text().match(regex);
-                  expect(consistentContent.length > 0, 'Citation should be consistent with dataset information').to.be.true
+                  const matchText = $citation.text().match(regex)
+                  const matchContent = matchText && matchText.length > 0
+                  expect(matchContent, 'Citation content should be consistent with dataset information').to.be.true
                 })
               })
             })
