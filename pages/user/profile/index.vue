@@ -350,9 +350,12 @@ export default {
       "Cache-Control": "no-store"
     }
     let annotatorAuthenticated = false
-    const url = `${config.public.flatmap_api}annotator/authenticate?key=${mainStore.userToken}&session=`
-    annotatorAuthenticated = await $axios.get(url, { headers }).then(() => {
-      return true
+    const url = `${config.public.flatmap_api}/annotator/authenticate?key=${mainStore.userToken}`
+    annotatorAuthenticated = await $axios.get(url, { headers }).then((response) => {
+      if (response.data.data.canUpdate) {
+        return true
+      }
+      return false
     }).catch(() => {
       return false
     })
