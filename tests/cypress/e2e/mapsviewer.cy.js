@@ -1,5 +1,5 @@
 import { retryableBefore } from "../support/retryableBefore.js"
-import { stringToArray } from "../support/stringToArray.js"
+import { stringToArray } from "../support/utils.js"
 
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top

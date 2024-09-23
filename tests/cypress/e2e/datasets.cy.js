@@ -1,5 +1,5 @@
 import { retryableBefore } from "../support/retryableBefore.js"
-import { stringToArray } from "../support/stringToArray.js"
+import { stringToArray, randomInteger } from "../support/utils.js"
 
 /**
  * List of dataset ids
@@ -187,7 +187,7 @@ datasetIds.forEach(datasetId => {
             }
           })
 
-          const randomIndex = Math.floor(Math.random() * $facets.length);
+          const randomIndex = randomInteger(0, $facets.length - 1);
           const facetName = $facets.eq(randomIndex).text()
           cy.wrap($facets).eq(randomIndex).click()
           cy.waitForPageLoading()
@@ -202,7 +202,7 @@ datasetIds.forEach(datasetId => {
         cy.wait(5000)
         // Should search for contributor in find data page
         cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($contributors) => {
-          const randomIndex = Math.floor(Math.random() * $contributors.length);
+          const randomIndex = randomInteger(0, $contributors.length - 1);
           const contributorName = $contributors.eq(randomIndex).text()
           cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
           cy.waitForPageLoading()
@@ -735,7 +735,7 @@ datasetIds.forEach(datasetId => {
             if ($similar.text().includes('Type:')) {
               const title = $title.text()
               const titleList = title.split(' ')
-              const input = titleList.slice(0, Math.floor(Math.random() * titleList.length) + 1).join(' ')
+              const input = titleList.slice(0, randomInteger(1, titleList.length - 1)).join(' ')
               cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
               cy.waitForPageLoading()
               cy.get('.el-input__inner').clear()
@@ -760,7 +760,7 @@ datasetIds.forEach(datasetId => {
 
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
-            const randomIndex = Math.floor(Math.random() * $facets.length);
+            const randomIndex = randomInteger(0, $facets.length - 1);
             cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
             cy.waitForPageLoading()
             cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
