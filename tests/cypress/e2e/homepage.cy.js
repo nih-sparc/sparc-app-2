@@ -1,4 +1,4 @@
-import { retryableBefore } from "../support/retryableBefore.js"
+import { retryableBefore } from "../support/utils.js"
 
 describe('Homepage', { testIsolation: false }, function () {
   retryableBefore(function () {

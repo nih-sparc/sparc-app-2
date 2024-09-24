@@ -1,5 +1,4 @@
-import { retryableBefore } from "../support/retryableBefore.js"
-import { stringToArray } from "../support/utils.js"
+import { retryableBefore, stringToArray } from "../support/utils.js"
 
 const browseCategories = ['dataset', 'model', 'simulation']
 
