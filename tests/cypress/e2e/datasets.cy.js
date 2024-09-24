@@ -22,8 +22,11 @@ datasetIds.forEach(datasetId => {
 
     describe("Gallery Tab", { testIsolation: false }, function () {
       it('Gallery Items', function () {
+        cy.backToDetailPage(datasetId)
+
         // Should switch to 'Gallery'
-        cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').click();
+        cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').as('galleryTab')
+        cy.get('@galleryTab').click()
         cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
           expect($tab, 'Active tab should be Gallery').to.contain('Gallery')
         });
@@ -45,19 +48,77 @@ datasetIds.forEach(datasetId => {
 
             cy.checkGalleyCardState()
 
+            // Check card if flatmap exist
+            if ('organs' in response && response['organs'].length) {
+
+              cy.findGalleryCard('flatmap', 'prev');
+
+              cy.get('.el-card > .el-card__body').should(($card) => {
+                expect($card, 'Flatmap card should exist').to.contain('flatmap')
+              });
+            }
+
+            cy.get('.filter-container > .filter-dropdown').click()
+            cy.get('.el-cascader-node').then(($options) => {
+              for (let index = 1; index < $options.length; index++) {
+                cy.window().then((window) => {
+                  cy.stub(window.document.body, 'appendChild').as('cardClicked')
+                })
+                cy.get('.el-cascader-node').eq(index).children('.el-checkbox').click()
+                cy.get('.el-pager > .number').then(($pages) => {
+                  if ($pages.length > 1) {
+                    const randomPage = randomInteger(0, $pages.length - 1)
+                    cy.wrap($pages).eq(randomPage).click()
+                  }
+                  cy.get('.el-card > .el-card__body').then(($cards) => {
+                    const randomCard = randomInteger(0, $cards.length - 1)
+                    cy.wrap($cards).eq(randomCard).then(($card) => {
+                      cy.wrap($card).find('b').then(($type) => {
+                        const cardType = $type.text()
+                        cy.wrap($card).find('.el-button').click()
+                        cy.get('@cardClicked').should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
+                          // Appended link element
+                          const element = stub.args[0][0]
+                          expect(element, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
+                          cy.visit(element.href)
+                          cy.waitForPageLoading()
+                          if (cardType.includes('Scaffold') || cardType.includes('flatmap')) {
+                            cy.waitForViewerContainer('.mapClass')
+                            cy.get('.page-hero > .container').should(($content) => {
+                              expect($content, 'Map Viewer should display content').to.contain('Maps')
+                            })
+                            cy.backToDetailPage(datasetId)
+                            cy.waitForPageLoading()
+                          } else {
+                            cy.waitForViewerContainer('.subpage')
+                            cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
+                              expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
+                            })
+                            cy.get('.subpage').contains('File location').siblings().find('a').then(($link) => {
+                              cy.wrap($link).click()
+                              cy.waitForPageLoading()
+                              const breadcrumbs = $link.text().split('/')
+                              cy.get('.breadcrumb-list .breadcrumb-link').each(($breadcrumb) => {
+                                expect(breadcrumbs, 'Filepath should contain all breadcrumbs').to.include($breadcrumb.text())
+                              })
+                              cy.get('.cell').contains(breadcrumbs[breadcrumbs.length - 1]).should(($filename) => {
+                                expect($filename, 'Filename should exist').to.exist
+                              })
+                            })
+                            cy.get('@galleryTab').click()
+                          }
+                          cy.get('.filter-container > .filter-dropdown').click()
+                        })
+                      })
+                    })
+                  })
+                })
+              }
+            })
           } else {
             cy.get('.content > .full-size').should(($message) => {
               expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
             })
-          }
-          // Check card if flatmap exist
-          if ('organs' in response && response['organs'].length) {
-
-            cy.findGalleryCard('flatmap', 'prev');
-
-            cy.get('.el-card > .el-card__body').should(($card) => {
-              expect($card, 'Flatmap card should exist').to.contain('flatmap')
-            });
           }
         })
       })
@@ -65,6 +126,8 @@ datasetIds.forEach(datasetId => {
 
     describe("Landing page", { testIsolation: false }, function () {
       it('Top Left Panel - Thumbnail and Button', function () {
+        cy.backToDetailPage(datasetId)
+
         // Should display image with correct dataset src
         cy.get('.dataset-image').should(($image) => {
           expect($image, 'Dataset image should have correct source').to.have.attr('src').to.contain(`https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)

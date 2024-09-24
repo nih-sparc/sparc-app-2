@@ -75,6 +75,13 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForViewerContainer', (selector) => {
+  cy.get(selector, { timeout: 30000 }).should(($mapViewer) => {
+    expect($mapViewer, 'Viewer container should exist').to.exist
+  })
+  cy.wait(5000)
+})
+
 /**
  * Databrowser commands
  */
