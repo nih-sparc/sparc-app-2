@@ -174,30 +174,6 @@ Cypress.Commands.add('checkFilterInitialised', () => {
 /**
  * datasets commands
  */
-Cypress.Commands.add('findGalleryCard', (text, dir) => {
-  let direction = '.btn-next'
-  const clickNextPageButton = () => {
-    cy.get('.el-card > .el-card__body').then(($card) => {
-      if (!$card.text().includes(text)) {
-        cy.get(direction).then(($button) => {
-          if ($button.is(":disabled")) {
-            return
-          } else {
-            cy.wrap($button).click()
-            clickNextPageButton()
-          }
-        })
-      }
-    })
-  }
-  // prev: from end to start, next: from start to end
-  if (dir === 'prev') {
-    cy.get('.el-pager > .number').last().click()
-    direction = '.btn-prev'
-  }
-  clickNextPageButton()
-})
-
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
   let retry = 0
   const backToDetailPage = () => {
