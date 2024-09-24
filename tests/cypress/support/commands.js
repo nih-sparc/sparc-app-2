@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { randomInteger } from "../support/utils.js"
+
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
@@ -174,6 +176,13 @@ Cypress.Commands.add('checkFilterInitialised', () => {
 /**
  * datasets commands
  */
+Cypress.Commands.add('clickOnDetailTab', (tabName) => {
+  cy.get('#datasetDetailsTabsContainer > .style1').contains(tabName).click()
+  cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+    expect($tab, 'Tab should be activated').to.contain(tabName)
+  });
+})
+
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
   let retry = 0
   const backToDetailPage = () => {
@@ -223,6 +232,60 @@ Cypress.Commands.add('checkGalleyCardState', () => {
     })
   }
   clickNextPageButton()
+})
+
+Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
+  cy.get('.filter-container > .filter-dropdown').click()
+  cy.get('.el-cascader-node').contains(new RegExp(itemType, 'i')).parent().siblings().click()
+  cy.window().then((window) => {
+    cy.stub(window.document.body, 'appendChild').as('cardClicked')
+  })
+  cy.get('.el-pager > .number').then(($pages) => {
+    if ($pages.length > 1) {
+      const randomPage = randomInteger(0, $pages.length - 1)
+      cy.wrap($pages).eq(randomPage).click()
+    }
+    cy.get('.el-card > .el-card__body').then(($cards) => {
+      const randomCard = randomInteger(0, $cards.length - 1)
+      cy.wrap($cards).eq(randomCard).then(($card) => {
+        cy.wrap($card).find('.el-button').click()
+        cy.get('@cardClicked').should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
+          // Appended link element
+          const element = stub.args[0][0]
+          expect(element, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
+          cy.visit(element.href)
+          cy.waitForPageLoading()
+          if (itemType === 'Scaffold' || itemType === 'Flatmap') {
+            // Check whether map viewer loaded or not
+            cy.waitForViewerContainer('.mapClass')
+            cy.get('.page-hero > .container').should(($content) => {
+              expect($content, 'Map Viewer should display content').to.contain('Maps')
+            })
+            cy.backToDetailPage(datasetId)
+            cy.waitForPageLoading()
+          } else {
+            // Check whether metadata exist or not
+            cy.waitForViewerContainer('.subpage')
+            cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
+              expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
+            })
+            cy.get('.subpage').contains('File location').siblings().find('a').then(($link) => {
+              cy.wrap($link).click()
+              cy.waitForPageLoading()
+              const breadcrumbs = $link.text().split('/')
+              cy.get('.breadcrumb-list .breadcrumb-link').each(($breadcrumb) => {
+                expect(breadcrumbs, 'Filepath should contain all breadcrumbs').to.include($breadcrumb.text())
+              })
+              cy.get('.cell').contains(breadcrumbs[breadcrumbs.length - 1]).should(($filename) => {
+                expect($filename, 'Filename should exist').to.exist
+              })
+            })
+          }
+          cy.clickOnDetailTab('Gallery')
+        })
+      })
+    })
+  })
 })
 
 /**

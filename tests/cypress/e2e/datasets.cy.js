@@ -5,7 +5,7 @@ import { retryableBefore, stringToArray, randomInteger } from "../support/utils.
  */
 const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
-datasetIds.forEach(datasetId => {
+datasetIds.forEach((datasetId) => {
 
   describe(`Dataset ${datasetId}`, { testIsolation: false }, function () {
     retryableBefore(function () {
@@ -20,19 +20,13 @@ datasetIds.forEach(datasetId => {
     })
 
     describe("Gallery Tab", { testIsolation: false }, function () {
-      let galleryItemExists = false
+      let galleryItems = []
 
       beforeEach(function () {
-        // Should switch to 'Gallery'
-        cy.get('#datasetDetailsTabsContainer > .style1').contains('Gallery').as('galleryTab')
-        cy.get('@galleryTab').click()
+        cy.clickOnDetailTab('Gallery')
       })
 
       it('Gallery Item', function () {
-        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
-          expect($tab, 'Active tab should be Gallery').to.contain('Gallery')
-        });
-
         cy.wait(5000)
         cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
           const response = intercept.response.body.result[0]
@@ -47,7 +41,28 @@ datasetIds.forEach(datasetId => {
             ('biolucida-2d' in response && response['biolucida-2d'].length) ||
             ('biolucida-3d' in response && response['biolucida-3d'].length)
           ) {
-            galleryItemExists = true
+            if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
+              galleryItems.push('Scaffold')
+            }
+            if ('video' in response && response['video'].length) {
+              galleryItems.push('Video')
+            }
+            if ('organs' in response && response['organs'].length) {
+              galleryItems.push('Flatmap')
+            }
+            if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
+              galleryItems.push('Segmentation')
+            }
+            if ('abi-plot' in response && response['abi-plot'].length) {
+              galleryItems.push('Plot')
+            }
+            if (
+              ('common-images' in response && response['common-images'].length) ||
+              ('biolucida-2d' in response && response['biolucida-2d'].length) ||
+              ('biolucida-3d' in response && response['biolucida-3d'].length)
+            ) {
+              galleryItems.push('Image')
+            }
             cy.checkGalleyCardState()
           } else {
             cy.get('.content > .full-size').should(($message) => {
@@ -57,68 +72,44 @@ datasetIds.forEach(datasetId => {
         })
       })
 
-      it('Access Viewer', function () {
-        if (galleryItemExists) {
-          cy.get('.filter-container > .filter-dropdown').click()
-          cy.get('.el-cascader-node').then(($options) => {
-            for (let index = 1; index < $options.length; index++) {
-              cy.window().then((window) => {
-                cy.stub(window.document.body, 'appendChild').as('cardClicked')
-              })
-              cy.get('.el-cascader-node').eq(index).children('.el-checkbox').click()
-              cy.get('.el-pager > .number').then(($pages) => {
-                if ($pages.length > 1) {
-                  const randomPage = randomInteger(0, $pages.length - 1)
-                  cy.wrap($pages).eq(randomPage).click()
-                }
-                cy.get('.el-card > .el-card__body').then(($cards) => {
-                  const randomCard = randomInteger(0, $cards.length - 1)
-                  cy.wrap($cards).eq(randomCard).then(($card) => {
-                    cy.wrap($card).find('b').then(($type) => {
-                      const viewerType = $type.text()
-                      cy.wrap($card).find('.el-button').click()
-                      cy.get('@cardClicked').should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
-                        // Appended link element
-                        const element = stub.args[0][0]
-                        expect(element, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
-                        cy.visit(element.href)
-                        cy.waitForPageLoading()
-                        if (viewerType.includes('Scaffold') || viewerType.includes('flatmap')) {
-                          // Check whether map viewer loaded or not
-                          cy.waitForViewerContainer('.mapClass')
-                          cy.get('.page-hero > .container').should(($content) => {
-                            expect($content, 'Map Viewer should display content').to.contain('Maps')
-                          })
-                          cy.backToDetailPage(datasetId)
-                          cy.waitForPageLoading()
-                        } else {
-                          // Check whether metadata exist or not
-                          cy.waitForViewerContainer('.subpage')
-                          cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
-                            expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
-                          })
-                          cy.get('.subpage').contains('File location').siblings().find('a').then(($link) => {
-                            cy.wrap($link).click()
-                            cy.waitForPageLoading()
-                            const breadcrumbs = $link.text().split('/')
-                            cy.get('.breadcrumb-list .breadcrumb-link').each(($breadcrumb) => {
-                              expect(breadcrumbs, 'Filepath should contain all breadcrumbs').to.include($breadcrumb.text())
-                            })
-                            cy.get('.cell').contains(breadcrumbs[breadcrumbs.length - 1]).should(($filename) => {
-                              expect($filename, 'Filename should exist').to.exist
-                            })
-                          })
-                          cy.get('@galleryTab').click()
-                        }
-                        cy.wait(5000)
-                        cy.get('.filter-container > .filter-dropdown').click()
-                      })
-                    })
-                  })
-                })
-              })
-            }
-          })
+      it('Scaffold Viewer', function () {
+        if (galleryItems.includes('Scaffold')) {
+          cy.checkGalleryItemViewer(datasetId, 'Scaffold')
+        } else {
+          this.skip()
+        }
+      })
+      it('Video Viewer', function () {
+        if (galleryItems.includes('Video')) {
+          cy.checkGalleryItemViewer(datasetId, 'Video')
+        } else {
+          this.skip()
+        }
+      })
+      it('Flatmap Viewer', function () {
+        if (galleryItems.includes('Flatmap')) {
+          cy.checkGalleryItemViewer(datasetId, 'Flatmap')
+        } else {
+          this.skip()
+        }
+      })
+      it('Segmentation Viewer', function () {
+        if (galleryItems.includes('Segmentation')) {
+          cy.checkGalleryItemViewer(datasetId, 'Segmentation')
+        } else {
+          this.skip()
+        }
+      })
+      it('Plot Viewer', function () {
+        if (galleryItems.includes('Plot')) {
+          cy.checkGalleryItemViewer(datasetId, 'Plot')
+        } else {
+          this.skip()
+        }
+      })
+      it('Image Viewer', function () {
+        if (galleryItems.includes('Image')) {
+          cy.checkGalleryItemViewer(datasetId, 'Image')
         } else {
           this.skip()
         }
