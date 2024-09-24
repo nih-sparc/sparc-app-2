@@ -16,5 +16,15 @@
 // Import commands.js using ES2015 syntax:
 import './commands'
 
+if (Cypress.config('isInteractive')) {
+    const logTypes = ['fetch', 'xhr'];
+    const originalLog = Cypress.log;
+    Cypress.log = function (opts, ...other) {
+        if (logTypes.includes(opts.displayName)) {
+            return;
+        }
+        return originalLog(opts, ...other);
+    };
+}
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
