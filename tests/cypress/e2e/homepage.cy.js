@@ -1,12 +1,13 @@
 import { retryableBefore } from "../support/utils.js"
 
 describe('Homepage', { testIsolation: false }, function () {
+
   retryableBefore(function () {
     cy.visit('')
     cy.waitForPageLoading()
   })
 
-  it(`Testing Portal Target: ${Cypress.config().baseUrl}`, function () { })
+  it(`Portal Target: ${Cypress.config().baseUrl}`, function () { })
 
   it('Navigation Bar', function () {
     // Check for navigation bar
@@ -62,7 +63,6 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for consortia
     cy.get('.container.p-32 > .body1 > b > .heading2').first().then(($el) => {
       const numberOfConsortia = parseInt($el.text())
-
       cy.get('.container.p-32 > .data-wrap.py-16 > .consortia-item').should(($item) => {
         expect($item, 'Correct number of consortia items should be displayed').to.have.length(numberOfConsortia)
         expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/about/consortia/')
@@ -71,7 +71,6 @@ describe('Homepage', { testIsolation: false }, function () {
     // Check for contributor
     cy.get('.container.p-32 > .body1 > b > .heading2').last().then(($el) => {
       const numberOfContributor = parseInt($el.text())
-
       expect(numberOfContributor, 'The number of contributors should be displayed').to.be.greaterThan(0)
       cy.get('.container.p-32 > .data-wrap.pt-16 > .consortia-item').should(($item) => {
         expect($item, 'Correct number of consortia items should be displayed').to.have.length(4)

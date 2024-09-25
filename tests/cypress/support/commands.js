@@ -24,7 +24,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { randomInteger } from "../support/utils.js"
+import { randomInteger } from '../support/utils.js'
 
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
@@ -102,20 +102,17 @@ Cypress.Commands.add('restoreUrlState', (link) => {
   })
 })
 
-Cypress.Commands.add('checkDatasetSorted', (sort) => {
+Cypress.Commands.add('checkDatasetSort', (sortType) => {
   cy.waitForBrowserLoading()
-
   cy.get('.el-table_1_column_1 > .cell > :nth-child(1) > .img-dataset > img').as('datasetImgs')
   // Get first dataset image alt text
   cy.get('@datasetImgs').first().invoke('attr', 'alt').then((alt) => {
     cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
-    cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sort).click()
-
+    cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(sortType).click()
     cy.waitForBrowserLoading()
-
     // Get last dataset image alt text
     cy.get('@datasetImgs').last().invoke('attr', 'alt').then((alt2) => {
-      expect(alt2, `Datasets should match after ${sort} sorting`).to.contains(alt)
+      expect(alt2, `Datasets should match after sorting by ${sortType}`).to.contains(alt)
     })
   })
 })
@@ -169,7 +166,7 @@ Cypress.Commands.add('checkFilterInitialised', () => {
     expect($facetbox, 'No facets should be applied').to.contain('No filters applied')
   })
   cy.url().should((url) => {
-    expect(url, 'URL should not contain selected facet IDs').to.not.contain(`selectedFacetIds`)
+    expect(url, 'URL should not contain selected facet IDs').to.not.contain('selectedFacetIds')
   })
 })
 
@@ -232,7 +229,7 @@ Cypress.Commands.add('checkGalleyCardState', () => {
       })
     })
     cy.get('.btn-next').then(($button) => {
-      if ($button.is(":disabled")) {
+      if ($button.is(':disabled')) {
         cy.get('.el-pager > .number').first().click()
       } else {
         cy.wrap($button).click()
@@ -305,7 +302,7 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
 Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorX = coordinate.x
   let coorY = coordinate.y
-  cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas');
+  cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas')
   const clickOnNeuron = () => {
     cy.get('@canvas').click(coorX, coorY)
     cy.wait(5000)

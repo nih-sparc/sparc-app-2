@@ -1,4 +1,4 @@
-import { retryableBefore, stringToArray } from "../support/utils.js"
+import { retryableBefore, stringToArray } from '../support/utils.js'
 
 const browseCategories = ['dataset', 'model', 'simulation']
 
@@ -29,7 +29,9 @@ if (multipleFilterFacets && multipleFilterFacets.length > 1) {
 }
 
 browseCategories.forEach((category, bcIndex) => {
+
   describe(`Browsing Data in ${category}`, { testIsolation: false }, function () {
+
     retryableBefore(function () {
       cy.visit(`/data?type=${category}`)
     })
@@ -69,14 +71,12 @@ browseCategories.forEach((category, bcIndex) => {
         // Show all datasets in order to check the sorting functionality
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
         // Publish date sorting
-        cy.checkDatasetSorted('Date (asc)')
-
+        cy.checkDatasetSort('Date (asc)')
         // A-Z sorting
         cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('A-Z').click()
-        cy.checkDatasetSorted('Z-A')
+        cy.checkDatasetSort('Z-A')
       })
 
       /**
@@ -101,7 +101,6 @@ browseCategories.forEach((category, bcIndex) => {
         cy.get('[role="tooltip"]').should(($tooltip) => {
           expect($tooltip, 'Tooltip for Filter applied should not be visible').to.not.be.visible
         })
-
         // AVAILABILITY
         cy.get('.ml-4.help-icon').as('helpIcon2')
         cy.get('@helpIcon2').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
@@ -128,10 +127,8 @@ browseCategories.forEach((category, bcIndex) => {
         // Change the page limit
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
-
         cy.wait('@query', { timeout: 20000 })
         cy.waitForBrowserLoading()
-
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
           if (pageLimit === 'View All') {
@@ -167,7 +164,7 @@ browseCategories.forEach((category, bcIndex) => {
 
       searchKeywords.forEach((keyword) => {
 
-        it(`${keyword}`, function () {
+        it(keyword, function () {
           // In case previous test has been skipped
           cy.restoreUrlState(`data?type=${category}`)
 
@@ -175,7 +172,6 @@ browseCategories.forEach((category, bcIndex) => {
           cy.get('.el-input__inner').should(($input) => {
             expect($input, 'Placeholder should be visible').to.have.attr('placeholder', 'Enter search criteria (e.g., researcher name or other keywords)')
           })
-
           // Searching keyword
           cy.get('.el-input__inner').clear()
           cy.get('.el-input__inner').type(keyword)
@@ -188,7 +184,6 @@ browseCategories.forEach((category, bcIndex) => {
           cy.url().should((url) => {
             expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
           })
-
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
             cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
@@ -201,10 +196,8 @@ browseCategories.forEach((category, bcIndex) => {
                 // Show all datasets in order to check the sorting functionality
                 cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                 cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
                 cy.wait('@query', { timeout: 20000 })
                 cy.waitForBrowserLoading()
-
                 // Check for keyword in table
                 cy.get('.table-wrap').then(($table) => {
                   const keywordExistInTable = $table.text().toLowerCase().includes(keyword.toLowerCase())
@@ -214,10 +207,8 @@ browseCategories.forEach((category, bcIndex) => {
                     })
                   } else {
                     cy.get('.img-dataset > img').first().click()
-
                     cy.wait('@query', { timeout: 20000 })
                     cy.waitForPageLoading()
-
                     cy.get('.details-container').then(($detail) => {
                       const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
                       if (keywordExistInDetail) {
@@ -229,6 +220,7 @@ browseCategories.forEach((category, bcIndex) => {
                       }
                     })
                     cy.go('back')
+                    cy.waitForPageLoading()
                   }
                 })
               }
@@ -242,13 +234,12 @@ browseCategories.forEach((category, bcIndex) => {
 
       filterFacets.forEach((facetList, ffIndex) => {
 
-        it(`${facetList}`, function () {
+        it(facetList.join(','), function () {
           // In case previous test has been skipped
           cy.restoreUrlState(`data?type=${category}`)
 
           cy.wait(5000)
           cy.checkFilterInitialised()
-
           if (ffIndex === 0) {
             cy.get('.label-content-container').should(($filter) => {
               expect($filter, 'Filter content should not be visible').to.not.be.visible
@@ -267,7 +258,6 @@ browseCategories.forEach((category, bcIndex) => {
               cy.wrap($ele).click()
             }
           })
-
           // Check for filter
           cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node1) => {
             let facetsArray = []
@@ -286,7 +276,6 @@ browseCategories.forEach((category, bcIndex) => {
                       }
                     })
                   })
-
                   // Check for the number of facet tags in filters applied box
                   cy.get('.el-card__body > .capitalize:visible').contains(new RegExp(facet, 'i')).should(($card) => {
                     expect($card, 'Facet tag should be displayed in filters applied box').to.exist
@@ -296,7 +285,6 @@ browseCategories.forEach((category, bcIndex) => {
                 cy.url().should((url) => {
                   expect(url, 'URL should contain facet ids parameter').to.contain('selectedFacetIds=')
                 })
-
                 cy.wait(5000)
                 cy.wait('@query', { timeout: 20000 }).then((intercept) => {
                   cy.get('.el-col-md-16 > :nth-child(1) > p').then(($result) => {
@@ -309,10 +297,8 @@ browseCategories.forEach((category, bcIndex) => {
                       // Show all datasets
                       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-
                       cy.wait('@query', { timeout: 20000 })
                       cy.waitForBrowserLoading()
-
                       // Check for facets exist in dataset card
                       cy.get('.table-wrap').then(($content) => {
                         facetList.forEach((facet) => {
@@ -323,10 +309,8 @@ browseCategories.forEach((category, bcIndex) => {
                             })
                           } else {
                             cy.get('.img-dataset > img').first().click()
-
                             cy.wait('@query', { timeout: 20000 })
                             cy.waitForPageLoading()
-
                             cy.get('.details-container').then(($detail) => {
                               const facetExistInDetail = $detail.text().toLowerCase().includes(facet.toLowerCase())
                               if (facetExistInDetail) {
@@ -338,20 +322,19 @@ browseCategories.forEach((category, bcIndex) => {
                               }
                             })
                             cy.go('back')
+                            cy.waitForPageLoading()
                           }
                         })
                       })
                     }
                   })
                 })
-
                 // Don't use $node1 variable to avoid selector issue in case previous test has accessed the detail page
                 cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node2) => {
                   // Uncheck all
                   cy.checkFacetCheckbox(facetList, 'uncheck', $node2)
                   cy.checkFilterInitialised()
-
-                  // Only test dataset category and multiple facets case
+                  // Only test 'dataset' category and multiple facets case
                   if (bcIndex === 0 && ffIndex === 1) {
                     for (let index = 0; index < 2; index++) {
                       if (index === 1) {
@@ -360,17 +343,14 @@ browseCategories.forEach((category, bcIndex) => {
                         cy.get('.el-input__inner').type('dataset')
                         cy.checkFacetCheckbox(facetList, 'check', $node2)
                       }
-
                       // Close all tags in order
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.closeFacetTag(facetList, $node2)
                       cy.checkFilterInitialised()
-
                       // Reset all
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
                       cy.checkFilterInitialised()
-
                       // Close one child facet tag and then click reset all
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()

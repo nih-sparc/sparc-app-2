@@ -1,4 +1,4 @@
-import { retryableBefore, stringToArray } from "../support/utils.js"
+import { retryableBefore, stringToArray } from '../support/utils.js'
 
 // x: The distance in pixels from the element's left
 // y: The distance in pixels from the element's top
@@ -23,6 +23,7 @@ const searchInMap = Cypress.env('SEARCH_IN_MAP')
 const scaffoldDatasetIds = stringToArray(Cypress.env('SCAFFOLD_DATASET_IDS'), ',')
 
 describe('Maps Viewer', { testIsolation: false }, function () {
+
   retryableBefore(function () {
     cy.visit('/maps?type=ac')
   })
@@ -45,7 +46,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.waitForMapLoading()
         loadedModels.add('Human Male')
       }
-
       // Switch to the different flatmap
       cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
         cy.get('.el-select-dropdown__item:visible').should(($dropdown) => {
@@ -59,17 +59,14 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           }
         })
       })
-
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
       cy.get('@settingIcon').click({ waitForAnimations: false })
-      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true });
+      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true })
       cy.get('@settingIcon').click({ waitForAnimations: false })
-
       // Open a provenance card
       // Not able to click on a specific neuron. Click on different coordinates instead.
       cy.clickOnNeuron(coordinate, pixelChange)
-
       // Check for the sidebar tabs
       cy.get('.title-text-table > .title-text').should(($title) => {
         expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
@@ -79,7 +76,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('@ActiveTab').should(($tab) => {
         expect($tab, 'Active tab should be Connectivity after clicking on a neuron').to.have.text('Connectivity')
       })
-
       // Check for the provenance content
       cy.get('.connectivity-info-title').within(($content) => {
         cy.get('.block > .title').should(($title) => {
@@ -100,13 +96,12 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           cy.get('@Open').should('have.been.calledOnceWithExactly', Cypress.sinon.match(/^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov(?:\/.*)/), '_blank')
           cy.get('@Open').should('be.calledWith', Cypress.sinon.match.string).then((stub) => {
             const url = stub.args[0][0]
-            const termUrl = decodeURIComponent(url.slice(url.indexOf("?term=")));
+            const termUrl = decodeURIComponent(url.slice(url.indexOf('?term=')))
             const invalidTermFound = ['pubmed', 'doi.org'].some(term => termUrl.includes(term))
             expect(!invalidTermFound, 'Should not contain pubmed or doi.org').to.be.true
           })
         }
       })
-
       // Check for the provenance button click
       cy.get('.sidebar-container > .main > .content-container').then(($content) => {
         cy.wrap($content).get('.attribute-title-container').should(($title) => {
@@ -128,7 +123,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           }
         })
       })
-
       // Close the provenance card
       cy.get('.active-tab > .el-button').as('closeTabButton').click()
       cy.get('.sidebar-container > .tab-container').should(($tab) => {
@@ -148,7 +142,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         loadedModels.add(threeDSyncView)
       }
     })
-
     // Open the 3D view in a split viewer
     cy.get('.settings-group > :nth-child(1):visible').as('newMapIcon')
     cy.get('@newMapIcon').contains(/Open new map/i).should(($icon) => {
@@ -160,14 +153,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       expect($button, 'The sync map button should exist').to.exist
     })
     cy.get('@syncMapButton').click()
-
     cy.wait(['@get_body_scaffold_info', '@s3-resource'], { timeout: 20000 })
-
     // Check for the number of displayed viewers
     cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
       expect($toolbar, 'Should have two toolbar').to.have.length(2)
     })
-
     // Check for 3D view's content card detail
     cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should(($image) => {
       expect($image, 'The 3D view content card should have an image').to.exist
@@ -190,7 +180,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.view-description').contains(/Human whole-body/i).should(($description) => {
       expect($description, 'The 3D view content card should have an scaffold view description').to.exist
     })
-
     // Close the pathway sidebar
     cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button').click()
     // Search keyword in displayed viewers
@@ -207,13 +196,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     it(`Context card for scaffold dataset ${datasetId}`, function () {
       // Open the sidebar
       cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
-
       // Search dataset id
       cy.get('.search-input > .el-input__wrapper').as('searchBox')
       cy.get('@searchBox').clear()
       cy.get('@searchBox').type(datasetId)
       cy.get('.header > .el-button > span').as('sidebarSearchButton').click()
-
       cy.wait(5000)
       cy.wait('@query', { timeout: 20000 }).then((intercept) => {
         cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
@@ -224,7 +211,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             })
           } else {
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
-
             // Check for search result and the tag 'Scaffold'
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).as('datasetCards')
             cy.get('@datasetCards').contains(datasetId).should(($card) => {
@@ -239,9 +225,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             })
             // Check for button text
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).click()
-
             cy.wait('@s3-resource', { timeout: 20000 })
-
             // Check for context card
             cy.get('.context-card').should(($card) => {
               expect($card, 'The context card should be displayed').to.be.visible
