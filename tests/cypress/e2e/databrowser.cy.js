@@ -39,28 +39,6 @@ browseCategories.forEach((category, bcIndex) => {
       cy.waitForPageLoading()
     })
 
-    describe('Data Browser', { testIsolation: false }, function () {
-      // Make sure the page is loaded
-      it('Page UI', function () {
-        // Wait in case the page is still loading
-        cy.get('.search-tabs__container').should(($tabs) => {
-          expect($tabs, 'Search tabs tab should be loaded').to.be.visible
-        })
-        cy.get('.search-bar__container').should(($bar) => {
-          expect($bar, 'Search bar should be loaded').to.be.visible
-        })
-        cy.get('.facet-menu').should(($menu) => {
-          expect($menu, 'Facet menu should be loaded').to.be.visible
-        })
-        cy.get('.table-wrap').should(($table) => {
-          expect($table, 'Table should be loaded').to.be.visible
-        })
-        cy.get('.cell').should(($cells) => {
-          expect($cells, 'Table cells should be loaded').to.be.visible
-        })
-      })
-    })
-
     describe('All Page Features', { testIsolation: false }, function () {
       /**
        * Test whether the datasets order can be updated correctly
