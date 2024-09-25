@@ -26,10 +26,9 @@ export default defineConfig({
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',
-      FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',
-      MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Pig, Heart',
+      FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human, Heart',
       // datasets.js
-      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 204, 290, 34, 76',
+      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 331, 221, 119, 76',
       // mapsviewer.js
       TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Human Female',
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',

@@ -16,14 +16,12 @@ let filterFacets = []
 /**
  * Single facet
  */
-const filterFacet = stringToArray(Cypress.env('FILTER_FACET'), ',')
-if (filterFacet && filterFacet.length === 1) {
-  filterFacets.push(filterFacet)
-}
+const singleFilterFacet = stringToArray(Cypress.env('FILTER_FACET'), ',').filter((facet, index) => index === 0)
+filterFacets.push(singleFilterFacet)
 /**
  * List of facets
  */
-const multipleFilterFacets = stringToArray(Cypress.env('MULTIPLE_FILTER_FACETS'), ',')
+const multipleFilterFacets = stringToArray(Cypress.env('FILTER_FACET'), ',')
 if (multipleFilterFacets && multipleFilterFacets.length > 1) {
   filterFacets.push(multipleFilterFacets)
 }
