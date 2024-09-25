@@ -6,7 +6,6 @@ import { retryableBefore, stringToArray, randomInteger } from '../support/utils.
 const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
 const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Plot', 'Image']
-let existGalleryItems = []
 
 datasetIds.forEach((datasetId) => {
 
@@ -24,6 +23,7 @@ datasetIds.forEach((datasetId) => {
     })
 
     describe('Gallery Tab', { testIsolation: false }, function () {
+      let existGalleryItems = []
 
       beforeEach(function () {
         cy.clickOnDetailTab('Gallery').then((tab) => {
