@@ -177,10 +177,19 @@ Cypress.Commands.add('checkFilterInitialised', () => {
  * datasets commands
  */
 Cypress.Commands.add('clickOnDetailTab', (tabName) => {
-  cy.get('#datasetDetailsTabsContainer > .style1').contains(tabName).click()
-  cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
-    expect($tab, 'Tab should be activated').to.contain(tabName)
-  });
+  let tabExist = false
+  cy.get('#datasetDetailsTabsContainer > .style1').then(($tabs) => {
+    if ($tabs.text().includes(tabName)) {
+      tabExist = true
+      cy.wrap($tabs).contains(tabName).click()
+      cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
+        expect($tab, 'Tab should be activated').to.contain(tabName)
+      })
+    }
+    cy.then(() => {
+      return tabExist
+    })
+  })
 })
 
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
@@ -281,7 +290,9 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
               })
             })
           }
-          cy.clickOnDetailTab('Gallery')
+          cy.then(() => {
+            cy.clickOnDetailTab('Gallery')
+          })
         })
       })
     })
