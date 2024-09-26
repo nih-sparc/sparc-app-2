@@ -666,7 +666,7 @@ datasetIds.forEach((datasetId) => {
                 if (!doiList.includes(href)) {
                   doiList.push(href)
                 } else {
-                  cy.log('Redundant doi references are found')
+                  cy.print({ title: 'doi', message: 'Redundant doi references are found', type: 'warning' })
                 }
               })
             })

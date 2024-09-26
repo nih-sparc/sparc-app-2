@@ -45,6 +45,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
         cy.waitForMapLoading()
         loadedModels.add('Human Male')
+        cy.print({
+          title: 'model',
+          message: 'Human Male model has been loaded',
+          type: 'info'
+        })
       }
       // Switch to the different flatmap
       cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
@@ -56,6 +61,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.wait('@flatmap', { timeout: 20000 })
             cy.waitForMapLoading()
             loadedModels.add(model)
+            cy.print({
+              title: 'model',
+              message: `${model} model has been loaded`,
+              type: 'info'
+            })
           }
         })
       })
@@ -78,8 +88,13 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       })
       // Check for the provenance content
       cy.get('.connectivity-info-title').within(($content) => {
-        cy.get('.block > .title').should(($title) => {
+        cy.get('.block > .title').then(($title) => {
           expect($title, 'The provenance card should have the neuron name').to.exist
+          cy.print({
+            title: 'neuron',
+            message: `Clicked on the ${$title.text()}`,
+            type: 'info'
+          })
         })
         cy.get('.block > .subtitle').should(($description) => {
           expect($description, 'The provenance card should have the neuron description').to.exist
@@ -141,6 +156,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         cy.wait('@flatmap', { timeout: 20000 })
         cy.waitForMapLoading()
         loadedModels.add(threeDSyncView)
+        cy.print({
+          title: 'model',
+          message: `${threeDSyncView} model has been loaded`,
+          type: 'info'
+        })
       }
     })
     // Open the 3D view in a split viewer
@@ -217,6 +237,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             // Empty text should show up if no result
             cy.get('.error-feedback').should(($text) => {
               expect($text, 'Empty result message should be displayed').to.contain('No results found')
+            })
+            cy.print({
+              title: 'search',
+              message: 'Empty result, please try different scaffold datasets',
+              type: 'warning'
             })
           } else {
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })

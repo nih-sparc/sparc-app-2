@@ -48,10 +48,20 @@ browseCategories.forEach((category, bcIndex) => {
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
         // Publish date sorting
+        cy.print({
+          title: 'sort',
+          message: 'Sort by Publish Date (Ascending)',
+          type: 'info'
+        })
         cy.checkDatasetSort('Date (asc)')
         // A-Z sorting
         cy.get('.label1 > .el-dropdown > .filter-dropdown > .el-dropdown-text-link').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('A-Z').click()
+        cy.print({
+          title: 'sort',
+          message: 'Sort by Title (Descending)',
+          type: 'info'
+        })
         cy.checkDatasetSort('Z-A')
       })
 
@@ -107,6 +117,11 @@ browseCategories.forEach((category, bcIndex) => {
         cy.waitForBrowserLoading()
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
+          cy.print({
+            title: 'limit',
+            message: `Display ${pageLimit} datasets per page`,
+            type: 'info'
+          })
           if (pageLimit === 'View All') {
             // Check for page limit in URL
             cy.url().should((url) => {
@@ -168,6 +183,11 @@ browseCategories.forEach((category, bcIndex) => {
                 cy.get('.el-table__empty-text').should(($text) => {
                   expect($text, 'Empty result message should be displayed').to.contain('No Results')
                 })
+                cy.print({
+                  title: 'keyword',
+                  message: 'Empty result, please try different keywords',
+                  type: 'warning'
+                })
               } else {
                 // Show all datasets in order to check the sorting functionality
                 cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
@@ -182,6 +202,11 @@ browseCategories.forEach((category, bcIndex) => {
                       expect($keyword, 'Highlighted keyword should exist in table').to.exist
                     })
                   } else {
+                    cy.print({
+                      title: 'keyword',
+                      message: `${keyword} cannot be found in the table`,
+                      type: 'warning'
+                    })
                     cy.get('.img-dataset > img').first().click()
                     cy.wait('@query', { timeout: 20000 })
                     cy.waitForPageLoading()
@@ -269,6 +294,11 @@ browseCategories.forEach((category, bcIndex) => {
                       cy.get('.el-table__empty-text').should(($text) => {
                         expect($text, 'Empty result message should be displayed').to.contain('No Results')
                       })
+                      cy.print({
+                        title: 'facet',
+                        message: 'Empty result, please try different facets',
+                        type: 'warning'
+                      })
                     } else {
                       // Show all datasets
                       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
@@ -284,6 +314,11 @@ browseCategories.forEach((category, bcIndex) => {
                               expect($facet, 'Facet should exist in table').to.exist
                             })
                           } else {
+                            cy.print({
+                              title: 'facet',
+                              message: `${facet} cannot be found in the table`,
+                              type: 'warning'
+                            })
                             cy.get('.img-dataset > img').first().click()
                             cy.wait('@query', { timeout: 20000 })
                             cy.waitForPageLoading()
@@ -308,6 +343,11 @@ browseCategories.forEach((category, bcIndex) => {
                 // Don't use $node1 variable to avoid selector lost issue if previous test has accessed the detail page
                 cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node2) => {
                   // Uncheck all
+                  cy.print({
+                    title: 'checkbox',
+                    message: 'Uncheck all',
+                    type: 'info'
+                  })
                   cy.checkFacetCheckbox(facetList, 'uncheck', $node2)
                   cy.checkFilterInitialised()
                   // Only test 'dataset' category and multiple facets case
@@ -320,14 +360,29 @@ browseCategories.forEach((category, bcIndex) => {
                         cy.checkFacetCheckbox(facetList, 'check', $node2)
                       }
                       // Close all tags in order
+                      cy.print({
+                        title: 'tag',
+                        message: 'Close all tags',
+                        type: 'info'
+                      })
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.closeFacetTag(facetList, $node2)
                       cy.checkFilterInitialised()
                       // Reset all
+                      cy.print({
+                        title: 'tag',
+                        message: 'Reset all',
+                        type: 'info'
+                      })
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
                       cy.checkFilterInitialised()
                       // Close one child facet tag and then click reset all
+                      cy.print({
+                        title: 'tag',
+                        message: 'Close one tag and reset all',
+                        type: 'info'
+                      })
                       cy.checkFacetCheckbox(facetList, 'check', $node2)
                       cy.get('.el-card__body > .capitalize > .el-tag__close').last().click()
                       cy.get('.tags-container > .flex > .el-link > .el-link__inner').click()
