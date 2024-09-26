@@ -123,25 +123,29 @@ describe('Homepage', { testIsolation: false }, function () {
       expect($title, 'Title should contain specific content').to.have.text('Find by')
     })
     // Check for categories selection item
-    cy.get('.categories-container > .categories-select').click()
-    cy.get('.el-select-dropdown > .el-scrollbar > .el-select-dropdown__wrap > .el-select-dropdown__list > .el-select-dropdown__item').should(($dropdown) => {
+    cy.get('.categories-container > .categories-select').as('findBy')
+    cy.get('@findBy').click()
+    cy.get('.el-select-dropdown > .el-scrollbar > .el-select-dropdown__wrap > .el-select-dropdown__list > .el-select-dropdown__item').as('options')
+    cy.get('@options').then(($dropdown) => {
       expect($dropdown, 'Dropdown should have at least one item').to.have.length.above(0)
-    })
-    cy.get('.categories-container > .categories-select').click()
-    cy.wait(5000)
-    cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').should(($card) => {
-      expect($card, 'Featured card should contain correct href').to.have.attr('href').to.contain('/data?type=dataset&selectedFacetIds=')
-    })
-    // Check for pagination
-    cy.get('.sparc-design-system-pagination').should(($pagination) => {
-      expect($pagination, 'Pagination should exist').to.exist
-    })
-    cy.get('.is-active').should(($page) => {
-      expect($page, 'Pagination should have active page').to.contain('1')
-    })
-    cy.get('.btn-next').click()
-    cy.get('.is-active').should(($page) => {
-      expect($page, 'Pagination should have active page').to.contain('2')
+      for (let index = 0; index < $dropdown.length; index++) {
+        cy.wrap($dropdown).eq(index).click()
+        cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').should(($card) => {
+          expect($card, 'Featured card should contain correct href').to.have.attr('href').to.contain('/data?type=dataset&selectedFacetIds=')
+        })
+        // Check for pagination
+        cy.get('.sparc-design-system-pagination').should(($pagination) => {
+          expect($pagination, 'Pagination should exist').to.exist
+        })
+        cy.get('.is-active').should(($page) => {
+          expect($page, 'Pagination should have active page').to.contain('1')
+        })
+        cy.get('.btn-next').click()
+        cy.get('.is-active').should(($page) => {
+          expect($page, 'Pagination should have active page').to.contain('2')
+        })
+        cy.get('@findBy').click()
+      }
     })
   })
 
