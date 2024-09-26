@@ -305,7 +305,7 @@ browseCategories.forEach((category, bcIndex) => {
                     }
                   })
                 })
-                // Don't use $node1 variable to avoid selector issue in case previous test has accessed the detail page
+                // Don't use $node1 variable to avoid selector lost issue if previous test has accessed the detail page
                 cy.get('.el-tree-node__content > .custom-tree-node > .capitalize:visible').then(($node2) => {
                   // Uncheck all
                   cy.checkFacetCheckbox(facetList, 'uncheck', $node2)

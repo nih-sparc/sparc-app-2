@@ -61,9 +61,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       })
       // Hide organs and outlines
       cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-      cy.get('@settingIcon').click({ waitForAnimations: false })
-      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ waitForAnimations: false, multiple: true })
-      cy.get('@settingIcon').click({ waitForAnimations: false })
+      cy.get('@settingIcon').click()
+      cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true })
+      cy.get('@settingIcon').click()
       // Open a provenance card
       // Not able to click on a specific neuron. Click on different coordinates instead.
       cy.clickOnNeuron(coordinate, pixelChange)
@@ -226,11 +226,11 @@ describe('Maps Viewer', { testIsolation: false }, function () {
               expect($card, 'The search result should contain the specific dataset card').to.exist
             })
             cy.get('@datasetCards').filter(`:contains(${datasetId})`).within(() => {
-              cy.get('.badges-container > .container', { timeout: 30000 }).as('scaffoldTags')
-              cy.get('@scaffoldTags').contains(/Scaffold/i).should(($tag) => {
+              cy.get('.badges-container > .container', { timeout: 30000 }).as('tags')
+              cy.get('@tags').contains(/Scaffold/i).should(($tag) => {
                 expect($tag, 'The dataset card should contain the scaffold tag').to.exist
               })
-              cy.get('@scaffoldTags').contains(/Scaffold/i).click()
+              cy.get('@tags').contains(/Scaffold/i).click()
             })
             // Check for button text
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).click()

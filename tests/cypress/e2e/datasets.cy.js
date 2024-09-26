@@ -247,7 +247,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Content and Download', function () {
+      it('Content', function () {
         cy.get('.dataset-description-info strong').then(($description) => {
           const description = $description.text()
           // The following regular expression should capture space and letters
@@ -303,6 +303,13 @@ datasetIds.forEach((datasetId) => {
             expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
           })
         })
+        // Check for Keywords
+        cy.get('.keywords').should(($content) => {
+          expect($content.length, '"Keywords" content should exist').to.be.greaterThan(0)
+        })
+      })
+
+      it('Download', function () {
         // Check for downloading feature
         cy.get('.dataset-description-info a').not('.link2').last().as('download')
         cy.get('@download').should(($link) => {
@@ -313,10 +320,6 @@ datasetIds.forEach((datasetId) => {
           cy.request(href).then((resp) => {
             expect(resp.status).to.eq(200)
           })
-        })
-        // Check for Keywords
-        cy.get('.keywords').should(($content) => {
-          expect($content.length, '"Keywords" content should exist').to.be.greaterThan(0)
         })
       })
 
@@ -473,7 +476,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Content and Link', function () {
+      it('Content', function () {
         cy.get('.info-citation').should(($citation) => {
           expect($citation, 'Citation should exist').to.exist
           expect($citation.length, 'Cite should have multiple citation formats').to.be.greaterThan(0)
@@ -484,6 +487,9 @@ datasetIds.forEach((datasetId) => {
             expect($citation, 'Citation should contain title').to.contain($title.text().trim())
           })
         })
+      })
+
+      it('DOI', function () {
         // Check for citation doi
         cy.get('.dataset-information-box > :nth-child(2) > a > u').then(($doi) => {
           const doi = $doi.text()
@@ -514,7 +520,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Content, Link and Download', function () {
+      it('Content', function () {
         // Check for direct download content
         cy.get('.left-column .label4').should(($option) => {
           expect($option, 'Option 1 should be Direct download').to.contain('Direct download')
@@ -523,6 +529,24 @@ datasetIds.forEach((datasetId) => {
         cy.get('.left-column .el-button').contains('Download Full Dataset').should(($button) => {
           expect($button, 'Download button should exist').to.exist
         })
+        // Check for aws download content
+        cy.get('.aws-download-column .label4').should(($option) => {
+          expect($option, 'Option 2 should be AWS download').to.contain('AWS S3')
+        })
+      })
+
+      it('Link', function () {
+        cy.get('.aws-download-column > :nth-child(1) > a').should(($link) => {
+          expect($link, 'AWS pricing link should have correct href').to.have.attr('href').to.contain('https://aws.amazon.com/s3/pricing/')
+          expect($link, 'AWS pricing link should open a new tab').to.have.attr('target').to.contain('blank')
+        })
+        cy.get('.aws-download-column > :nth-child(3) > a').should(($link) => {
+          expect($link, 'Help page link should have correct href').to.have.attr('href').to.contain('https://docs.sparc.science/docs/accessing-public-datasets')
+          expect($link, 'Help page link should open a new tab').to.have.attr('target').to.contain('blank')
+        })
+      })
+
+      it('Download', function () {
         cy.get('.mb-8 .label4:visible').contains(/Dataset size:/i).parent().then(($size) => {
           const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
           if (($size.text().includes('GB') && size > 5) || $size.text().includes('TB')) {
@@ -548,18 +572,6 @@ datasetIds.forEach((datasetId) => {
               })
             }
           }
-        })
-        // Check for aws download content
-        cy.get('.aws-download-column .label4').should(($option) => {
-          expect($option, 'Option 2 should be AWS download').to.contain('AWS S3')
-        })
-        cy.get('.aws-download-column > :nth-child(1) > a').should(($link) => {
-          expect($link, 'AWS pricing link should have correct href').to.have.attr('href').to.contain('https://aws.amazon.com/s3/pricing/')
-          expect($link, 'AWS pricing link should open a new tab').to.have.attr('target').to.contain('blank')
-        })
-        cy.get('.aws-download-column > :nth-child(3) > a').should(($link) => {
-          expect($link, 'Help page link should have correct href').to.have.attr('href').to.contain('https://docs.sparc.science/docs/accessing-public-datasets')
-          expect($link, 'Help page link should open a new tab').to.have.attr('target').to.contain('blank')
         })
       })
 
@@ -628,24 +640,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Link and Content', function () {
-        // Check for content
-        cy.get('.citation-container > div > a').each(($link) => {
-          expect($link, 'Citation link should have doi href').to.have.attr('href').to.contain('doi.org')
-          expect($link, 'Citation link should open a new tab').to.have.attr('target').to.contain('blank')
-          cy.wrap($link).invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
-            })
-          })
-        })
-        cy.get('.citation-container > .copy-button').each(($button) => {
-          cy.wrap($button).click()
-          cy.get('.el-message').should(($message) => {
-            expect($message, 'Popup should exist').to.exist
-            expect($message, 'Popup should contain success message').to.contain('Successfully copied citation')
-          })
-        })
+      it('Content', function () {
         // Check for consistency between citation and dataset information
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           const title = $title.text().match(/[a-z]{3,}/gi)
@@ -678,6 +673,26 @@ datasetIds.forEach((datasetId) => {
           }
         })
       })
+
+      it('Citation', function () {
+        cy.get('.citation-container > .copy-button').each(($button) => {
+          cy.wrap($button).click()
+          cy.get('.el-message').should(($message) => {
+            expect($message, 'Popup should exist').to.exist
+            expect($message, 'Popup should contain success message').to.contain('Successfully copied citation')
+          })
+        })
+        // Check for content
+        cy.get('.citation-container > div > a').each(($link) => {
+          expect($link, 'Citation link should have doi href').to.have.attr('href').to.contain('doi.org')
+          expect($link, 'Citation link should open a new tab').to.have.attr('target').to.contain('blank')
+          cy.wrap($link).invoke('attr', 'href').then((href) => {
+            cy.request(href).then((resp) => {
+              expect(resp.status).to.eq(200)
+            })
+          })
+        })
+      })
     })
 
     describe('Versions Tab', function () {
@@ -690,7 +705,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Button and DOI', function () {
+      it('Button', function () {
         // Check for file actions
         cy.get('.version-table > .table-rows > :nth-child(4)').as('changelogs')
         cy.get('@changelogs').each(($cell) => {
@@ -715,8 +730,10 @@ datasetIds.forEach((datasetId) => {
             })
           }
         })
-        cy.get('.version-table > .table-rows > :nth-child(5) > a').as('dois')
-        cy.get('@dois').each(($doi) => {
+      })
+
+      it('DOI', function () {
+        cy.get('.version-table > .table-rows > :nth-child(5) > a').each(($doi) => {
           cy.wrap($doi).invoke('attr', 'href').then((href) => {
             cy.request(href).then((resp) => {
               expect(resp.status).to.eq(200)
@@ -755,7 +772,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Faceted Browse Search Search', function () {
+      it('Faceted Browse Search', function () {
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
             const randomIndex = randomInteger(0, $facets.length - 1)
