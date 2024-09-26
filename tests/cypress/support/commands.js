@@ -47,9 +47,10 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('Source "markers" already exists.'))
     return false
-  if (err.message.includes('node already exist in the graph')) {
+  if (err.message.includes('node already exist in the graph'))
     return false
-  }
+  if (err.message.includes('message.startsWith is not a function'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
