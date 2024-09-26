@@ -15,6 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import './printLog'
 
 if (Cypress.config('isInteractive')) {
     const logTypes = ['fetch', 'xhr'];
