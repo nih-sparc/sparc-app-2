@@ -28,7 +28,7 @@ export default defineConfig({
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',
       FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human, Heart',
       // datasets.js
-      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 331, 338, 212, 76',
+      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '76, 126, 127, 331, 338',
       // mapsviewer.js
       TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Pig',
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
