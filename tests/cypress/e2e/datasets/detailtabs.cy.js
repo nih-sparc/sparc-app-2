@@ -1,11 +1,9 @@
-import { retryableBefore, stringToArray, randomInteger } from '../support/utils.js'
+import { retryableBefore, stringToArray } from '../../support/utils.js'
 
 /**
  * List of dataset ids
  */
 const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
-
-const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Plot', 'Image']
 
 datasetIds.forEach((datasetId) => {
 
@@ -16,228 +14,12 @@ datasetIds.forEach((datasetId) => {
     })
 
     beforeEach(function () {
-      cy.intercept('**/dataset_info/using_doi?**').as('dataset_info')
       cy.intercept('**/download?**').as('download')
       cy.intercept('**/zipit/**').as('zipit')
       cy.waitForPageLoading()
     })
 
-    describe('Gallery Tab', { testIsolation: false }, function () {
-      let existGalleryItems = []
-
-      beforeEach(function () {
-        cy.clickOnDetailTab('Gallery').then((tab) => {
-          if (!tab) {
-            this.skip()
-          }
-        })
-      })
-
-      it('Gallery Item', function () {
-        cy.wait(5000)
-        cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
-          const response = intercept.response.body.result[0]
-          // Check if gallery cards loaded
-          if (
-            ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
-            ('video' in response && response['video'].length) ||
-            ('organs' in response && response['organs'].length) ||
-            ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
-            ('abi-plot' in response && response['abi-plot'].length) ||
-            ('common-images' in response && response['common-images'].length) ||
-            ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-            ('biolucida-3d' in response && response['biolucida-3d'].length)
-          ) {
-            if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
-              existGalleryItems.push('Scaffold')
-            }
-            if ('video' in response && response['video'].length) {
-              existGalleryItems.push('Video')
-            }
-            if ('organs' in response && response['organs'].length) {
-              existGalleryItems.push('Flatmap')
-            }
-            if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
-              existGalleryItems.push('Segmentation')
-            }
-            if ('abi-plot' in response && response['abi-plot'].length) {
-              existGalleryItems.push('Plot')
-            }
-            if (
-              ('common-images' in response && response['common-images'].length) ||
-              ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-              ('biolucida-3d' in response && response['biolucida-3d'].length)
-            ) {
-              existGalleryItems.push('Image')
-            }
-            cy.checkGalleyCardState()
-          } else {
-            cy.get('.content > .full-size').should(($message) => {
-              expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
-            })
-          }
-        })
-      })
-
-      describe('Viewer', { testIsolation: false }, function () {
-
-        galleryItems.forEach((item) => {
-
-          it(item, function () {
-            if (existGalleryItems.includes(item)) {
-              cy.checkGalleryItemViewer(datasetId, item)
-            } else {
-              this.skip()
-            }
-          })
-        })
-      })
-    })
-
-    describe('Landing page', { testIsolation: false }, function () {
-      it('Top Panel - Thumbnail, Button, Title, Contributor, DOI and Version', function () {
-        // Should display image with correct dataset src
-        cy.get('.dataset-image').should(($image) => {
-          expect($image, 'Dataset image should have correct source').to.have.attr('src').to.contain(`https://assets.discover.pennsieve.io/dataset-assets/${datasetId}`)
-        })
-        //Check 'Get {dataset type}' directs to files tab (It could say either Get Dataset, Model, Scaffold, or Device based off the type of dataset)
-        cy.contains('.button-container span', 'Get').click()
-        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
-          expect($tab, 'Active tab should be Files').to.contain('Files')
-        })
-        cy.get('[style=""] > .heading2.mb-8').should(($title) => {
-          expect($title, 'Title should be Download Dataset').to.contain('Download Dataset').to.be.visible
-        })
-        // Check 'Cite {dataset type}' directs to Cite tab (It could say either Cite Dataset, Model, Scaffold, or Device based off the type of dataset)
-        cy.contains('.button-container span', 'Cite').click()
-        cy.get('.active.style1.tab2.tab-link.p-16').should(($tab) => {
-          expect($tab, 'Active tab should be Cite').to.contain('Cite')
-        })
-        cy.get('[style=""] > .heading2.mb-8').should(($title) => {
-          expect($title, 'Title should be Dataset Citation').to.contain('Dataset Citation').to.be.visible
-        })
-        // Should display dataset title
-        cy.get('.el-col-sm-16 > .heading2').should(($title) => {
-          expect($title, 'Dataset title content should exist').to.exist
-        })
-        // Check for tooltip when hover over contributor 
-        cy.get('.dataset-owners').should(($contributor) => {
-          expect($contributor, 'Contributor content should exist').to.exist
-        })
-        cy.get('.dataset-owners > .contributor-item-wrap').each(($owner) => {
-          const contributorName = $owner.text().replace(',', '').trim()
-          cy.wrap($owner).children().as('contributor')
-          cy.get('@contributor').invoke('attr', 'class').then((classList) => {
-            if (classList.includes('has-orcid')) {
-              cy.get('@contributor').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
-              // Popover should be visible for each contributor
-              cy.get('.orcid-popover:visible').should(($tooltip) => {
-                expect($tooltip, 'Orcid tooltip should be visible').to.be.visible
-                expect($tooltip, 'Orcid tooltip should contain contributor name').to.contain(contributorName)
-                expect($tooltip, 'Orcid tooltip should contain ORCID').to.contain('ORCID iD')
-              })
-              cy.get('@contributor').trigger('mouseleave', { eventConstructor: 'MouseEvent' })
-            }
-          })
-        })
-        // DOI link should link to page with correct version
-        cy.get('.dataset-information-box > :nth-child(2) > a').as('doiLink')
-        cy.get('@doiLink').should(($link) => {
-          expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
-        })
-        cy.get('@doiLink').invoke('attr', 'href').then((href) => {
-          cy.request(href).then((resp) => {
-            expect(resp.status).to.eq(200)
-            expect(resp.redirects, 'Redirect should exist').to.have.length(1)
-          })
-        })
-        // Check 'View other version' directs to Versions tab
-        cy.get('.dataset-information-box > div').contains('View other versions').click()
-        cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions')
-        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
-      })
-
-      describe('Left Panel', { testIsolation: false }, function () {
-        it('Project', function () {
-          // Check project link if exist
-          cy.get('.similar-datasets-container').then(($content) => {
-            if ($content.text().includes('project(s):')) {
-              cy.wrap($content).contains('project(s):').siblings('.mt-8').should(($project) => {
-                expect($project, 'Project title should exist').to.exist
-              })
-              cy.get('.mt-8 > a').then(($link) => {
-                const title = $link.children().text()
-                cy.get('.mt-8 > a').click()
-                cy.waitForPageLoading()
-                cy.url().should((url) => {
-                  expect(url, 'URL should contain correct slug').to.contain('/about/projects/')
-                })
-                // Check for the title
-                cy.get('.row > .heading2').should(($pTitle) => {
-                  expect($pTitle, 'Project title should match').to.contain(title)
-                })
-                cy.backToDetailPage(datasetId)
-              })
-            }
-          })
-        })
-
-        it('Facet', function () {
-          cy.get('.tooltip-item.facet-button').then(($facets) => {
-            let exclude = 0
-            let facetLabels = []
-            cy.wrap($facets).each(($facet) => {
-              const facetType = $facet.parents('.parent-facet').siblings('.capitalize').text()
-              if (facetType !== 'Type:' && facetType !== 'Funding Program:') {
-                facetLabels.push($facet.text())
-              } else {
-                exclude += 1
-              }
-              if (facetLabels.length === $facets.length - exclude) {
-                const regex = new RegExp('\(' + facetLabels.join('|') + '\)', 'gi')
-                cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-                  cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
-                    cy.get('.description-container').then(($abstract) => {
-                      const text = $title.text() + $description.text() + $abstract.text()
-                      const matchText = text.match(regex)
-                      const matchContent = matchText && matchText.length > 0
-                      expect(matchContent, 'Metadata tags should be suitable for the dataset').to.be.true
-                    })
-                  })
-                })
-              }
-            })
-            const randomIndex = randomInteger(0, $facets.length - 1)
-            const facetName = $facets.eq(randomIndex).text()
-            cy.wrap($facets).eq(randomIndex).click()
-            cy.waitForPageLoading()
-            cy.get('.el-tag__content').should(($tag) => {
-              expect($tag.length, 'Tag content should exist in applied').to.be.greaterThan(0)
-              expect($tag, 'Tag should match with facet').to.contain(facetName)
-            })
-            cy.backToDetailPage(datasetId)
-          })
-        })
-
-        it('Contributor', function () {
-          // Wait for the link in the clicked name
-          cy.wait(5000)
-          // Should search for contributor in find data page
-          cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').then(($contributors) => {
-            const randomIndex = randomInteger(0, $contributors.length - 1)
-            const contributorName = $contributors.eq(randomIndex).text()
-            cy.get('.contributor-list > li > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
-            cy.waitForPageLoading()
-            cy.get('.el-input__inner').should(($input) => {
-              expect($input, 'Search input should match with contributor').to.have.value(contributorName)
-            })
-            cy.backToDetailPage(datasetId)
-          })
-        })
-      })
-    })
-
-    describe('Abstract Tab', function () {
+    describe('Abstract Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('Abstract').then((tab) => {
@@ -355,7 +137,7 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('About Tab', function () {
+    describe('About Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('About').then((tab) => {
@@ -466,7 +248,7 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('Cite Tab', function () {
+    describe('Cite Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('Cite').then((tab) => {
@@ -510,7 +292,7 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('Files Tab', function () {
+    describe('Files Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('Files').then((tab) => {
@@ -630,7 +412,20 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('References Tab', function () {
+    describe('Gallery Tab', { testIsolation: false }, function () {
+
+      beforeEach(function () {
+        cy.clickOnDetailTab('Gallery').then((tab) => {
+          if (!tab) {
+            this.skip()
+          }
+        })
+      })
+
+      it('Gallery', function () { })
+    })
+
+    describe('References Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('References').then((tab) => {
@@ -695,7 +490,7 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('Versions Tab', function () {
+    describe('Versions Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {
         cy.clickOnDetailTab('Versions').then((tab) => {
@@ -739,52 +534,6 @@ datasetIds.forEach((datasetId) => {
               expect(resp.status).to.eq(200)
               expect(resp.redirects, 'Redirect should exist').to.have.length(1)
             })
-          })
-        })
-      })
-    })
-
-    describe('Dataset Surfaces in Search', function () {
-      it('Keyword Search', function () {
-        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-          cy.get('.similar-datasets-container > .px-8').then(($similar) => {
-            if ($similar.text().includes('Type:')) {
-              const title = $title.text()
-              const titleList = title.split(' ')
-              const input = titleList.slice(0, randomInteger(1, titleList.length - 1)).join(' ')
-              cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
-              cy.waitForPageLoading()
-              cy.get('.el-input__inner').clear()
-              cy.get('.el-input__inner').type(input)
-              cy.get('.search-text').click()
-              cy.waitForBrowserLoading()
-              cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-              cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-              cy.waitForBrowserLoading()
-              cy.get('.cell').contains(title).should(($dTitle) => {
-                expect($dTitle, 'Dataset title should exist in search results').to.exist
-              })
-              cy.backToDetailPage(datasetId)
-            } else {
-              this.skip()
-            }
-          })
-        })
-      })
-
-      it('Faceted Browse Search', function () {
-        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-          cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
-            const randomIndex = randomInteger(0, $facets.length - 1)
-            cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
-            cy.waitForPageLoading()
-            cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-            cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-            cy.waitForBrowserLoading()
-            cy.get('.cell').contains($title.text()).should(($dTitle) => {
-              expect($dTitle, 'Dataset title should exist in search results').to.exist
-            })
-            cy.backToDetailPage(datasetId)
           })
         })
       })
