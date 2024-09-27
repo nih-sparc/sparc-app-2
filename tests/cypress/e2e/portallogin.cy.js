@@ -8,9 +8,9 @@ describe('Portal Login', { testIsolation: false }, function () {
     })
 
     describe('When NOT logged in', { testIsolation: false }, function () {
-        it('Access embargoed dataset', function () { })
+        it.skip('Access embargoed dataset', function () { })
 
-        it('Describe workflow', function () { })
+        it.skip('Describe workflow', function () { })
 
         it('Portal submissions form', function () {
             cy.get('.header__nav--parent a').contains(/Contact Us/i).then(($contact) => {

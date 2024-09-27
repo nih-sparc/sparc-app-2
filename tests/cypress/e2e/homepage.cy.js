@@ -7,7 +7,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.waitForPageLoading()
   })
 
-  it(`Portal Target: ${Cypress.config().baseUrl}`, function () { })
+  it.skip(`Portal Target: ${Cypress.config().baseUrl}`, function () { })
 
   it('Navigation Bar', function () {
     // Check for navigation bar
