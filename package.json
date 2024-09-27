@@ -11,8 +11,8 @@
     "sitemap": "node generate_sitemap.js",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
-    "cypress-record": "cypress run --record --key <record key> --tag local",
-    "cypress-record-parallel": "cypress run --record --key <record key> --tag local --parallel --ci-build-id <build id>"
+    "cypress-record": "cypress run --record --tag local",
+    "cypress-record-parallel": "cypress run --record --tag local --parallel --ci-build-id $CI_BUILD_ID"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
