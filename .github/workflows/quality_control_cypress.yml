@@ -3,63 +3,26 @@ name: Quality Control Cypress Testing
 on:
   workflow_dispatch:
     inputs:
-      PAGE_LIMIT:
-        type: "choice"
-        description: "Define the number of displayed datasets per page"
-        required: true
-        options:
-          - "10"
-          - "20"
-          - "50"
-          - "View All"
       SEARCH_KEYWORDS:
-        description: "Define keywords for searching"
+        description: "Define search keywords"
         required: true
         default: "Spine, Neck"
-      FILTER_FACET:
-        description: "Define facet for filtering"
+      FILTER_FACETS:
+        description: "Define filter facets"
         required: true
-        default: "Human"
-      MULTIPLE_FILTER_FACETS:
-        description: "Define multiple facets for filtering"
-        required: true
-        default: "Pig, Heart"
+        default: "Human, Heart"
       DATASET_IDS:
         description: "Define dataset ids"
         required: true
         default: "127, 205, 290, 34, 76"
-      TAXON_MODELS:
-        description: "Define taxon models"
-        required: true
-        default: "Rat, Human Female"
-      THREE_SYNC_VIEW:
-        type: "choice"
-        description: "Define species for sync map"
-        required: true
-        options:
-          - "Human Male"
-          - "Human Female"
-      SEARCH_IN_MAP:
-        description: "Define keyword"
-        required: true
-        default: "Heart"
-      SCAFFOLD_DATASET_IDS:
-        description: "Define scaffold dataset ids"
-        required: true
-        default: "150, 155"
 
 env:
-  PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
-  SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
-  FILTER_FACET: ${{ github.event.inputs.FILTER_FACET }}
-  MULTIPLE_FILTER_FACETS: ${{ github.event.inputs.MULTIPLE_FILTER_FACETS }}
-  DATASET_IDS: ${{ github.event.inputs.DATASET_IDS }}
-  TAXON_MODELS: ${{ github.event.inputs.TAXON_MODELS }}
-  THREE_SYNC_VIEW: ${{ github.event.inputs.THREE_SYNC_VIEW }}
-  SEARCH_IN_MAP: ${{ github.event.inputs.SEARCH_IN_MAP }}
-  SCAFFOLD_DATASET_IDS: ${{ github.event.inputs.SCAFFOLD_DATASET_IDS }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+  SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
+  FILTER_FACETS: ${{ github.event.inputs.FILTER_FACETS }}
+  DATASET_IDS: ${{ github.event.inputs.DATASET_IDS }}
   ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
   ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
   ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
@@ -112,7 +75,6 @@ jobs:
           environment: sparc-app-prod
 
       - name: Print latest deployment sha
-        id: output
         run: echo "${{ steps.latest-deployment-sha.outputs.deployment-sha }}"
 
   quality-control-cypress-run:
