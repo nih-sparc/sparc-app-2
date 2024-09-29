@@ -113,7 +113,6 @@ browseCategories.forEach((category, bcIndex) => {
         // Change the page limit
         cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
         cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains(pageLimit).click()
-        cy.wait('@query', { timeout: 20000 })
         cy.waitForBrowserLoading()
         cy.get('.el-col-md-16 > :nth-child(1) > p').then(($number) => {
           const numberOfDatasets = parseInt($number.text().match(/[0-9]+(.[0-9]+)?/i)[0])
@@ -192,7 +191,6 @@ browseCategories.forEach((category, bcIndex) => {
                 // Show all datasets in order to check the sorting functionality
                 cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                 cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-                cy.wait('@query', { timeout: 20000 })
                 cy.waitForBrowserLoading()
                 // Check for keyword in table
                 cy.get('.table-wrap').then(($table) => {
@@ -208,7 +206,6 @@ browseCategories.forEach((category, bcIndex) => {
                       type: 'warning'
                     })
                     cy.get('.img-dataset > img').first().click()
-                    cy.wait('@query', { timeout: 20000 })
                     cy.waitForPageLoading()
                     cy.get('.details-container').then(($detail) => {
                       const keywordExistInDetail = $detail.text().toLowerCase().includes(keyword.toLowerCase())
@@ -303,7 +300,6 @@ browseCategories.forEach((category, bcIndex) => {
                       // Show all datasets
                       cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                       cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-                      cy.wait('@query', { timeout: 20000 })
                       cy.waitForBrowserLoading()
                       // Check for facets exist in dataset card
                       cy.get('.table-wrap').then(($content) => {
@@ -320,7 +316,6 @@ browseCategories.forEach((category, bcIndex) => {
                               type: 'warning'
                             })
                             cy.get('.img-dataset > img').first().click()
-                            cy.wait('@query', { timeout: 20000 })
                             cy.waitForPageLoading()
                             cy.get('.details-container').then(($detail) => {
                               const facetExistInDetail = $detail.text().toLowerCase().includes(facet.toLowerCase())

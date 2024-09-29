@@ -14,7 +14,7 @@ on:
       DATASET_IDS:
         description: "Define dataset ids"
         required: true
-        default: "127, 205, 290, 34, 76"
+        default: "76, 126, 127, 331, 338"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
