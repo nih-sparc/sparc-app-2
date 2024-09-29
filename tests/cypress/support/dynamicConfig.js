@@ -43,7 +43,7 @@ const DYNAMICENVS = {
         'value': 'Brainstem, Lung, Rat, Liver, Brain, Human',
         'number': 2
     },
-    'FILTER_FACET': {
+    'FILTER_FACETS': {
         'value': 'Tissue, Rat, Anatomy, Female, Embryo',
         'number': 1 // fixed, no need to change
     },

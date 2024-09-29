@@ -9,7 +9,7 @@ on:
 env:
   PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
   SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
-  FILTER_FACET: ${{ github.event.inputs.FILTER_FACET }}
+  FILTER_FACETS: ${{ github.event.inputs.FILTER_FACETS }}
   MULTIPLE_FILTER_FACETS: ${{ github.event.inputs.MULTIPLE_FILTER_FACETS }}
   DATASET_IDS: ${{ github.event.inputs.DATASET_IDS }}
   TAXON_MODELS: ${{ github.event.inputs.TAXON_MODELS }}

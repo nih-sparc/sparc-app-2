@@ -26,7 +26,7 @@ export default defineConfig({
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',
-      FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human, Heart',
+      FILTER_FACETS: process.env.FILTER_FACETS ? process.env.FILTER_FACETS : 'Human, Heart',
       // datasets.js
       DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '76, 126, 127, 331, 338',
       // mapsviewer.js
