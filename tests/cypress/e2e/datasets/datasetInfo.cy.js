@@ -124,7 +124,8 @@ datasetIds.forEach((datasetId) => {
               exclude += 1
             }
             if (facetLabels.length === $facets.length - exclude) {
-              const regex = new RegExp('\(' + facetLabels.join('|') + '\)', 'gi')
+              const labels = facetLabels.map((label) => label.split(' ')).flat()
+              const regex = new RegExp('\(' + labels.join('|') + '\)', 'gi')
               cy.get('.el-col-sm-16 > .heading2').then(($title) => {
                 cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
                   cy.get('.description-container').then(($abstract) => {
