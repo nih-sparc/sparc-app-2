@@ -105,7 +105,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it.only('Protocol Link', function () {
+      it('Protocol Link', function () {
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           const title = $title.text().trim()
           const titleRegex = new RegExp('\(' + title + '\)', 'gi')
