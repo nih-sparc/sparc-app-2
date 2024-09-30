@@ -228,11 +228,11 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().as('project')
         cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().as('institutions')
         cy.get('@awards').then(($award) => {
-          const award = $award.text().replace(/Award(s):/i, '').trim()
+          const award = $award.text().replace('Award(s):', '').trim()
           cy.get('@project').then(($project) => {
-            const project = $project.text().replace(/Associated project(s):/i, '').trim()
+            const project = $project.text().replace('Associated project(s):', '').trim()
             cy.get('@institutions').then(($institution) => {
-              const institution = $institution.text().replace(/Institution(s):/i, '').trim()
+              const institution = $institution.text().replace('Institution(s):', '').trim()
               cy.wrap($project).find('a').click()
               cy.waitForPageLoading()
               cy.get('.row > .heading2').should(($title) => {
