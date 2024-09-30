@@ -8,7 +8,6 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
-    "sitemap": "node generate_sitemap.js",
     "test-cypress": "cypress run",
     "test-cypress-record": "cypress run --record"
   },
@@ -20,8 +19,7 @@
     "nuxt": "^3.8.2",
     "nuxt-simple-robots": "^4.0.0-rc.19",
     "nuxt-svgo": "^3.5.6",
-    "sass": "^1.66.1",
-    "sitemap": "^7.1.1"
+    "sass": "^1.66.1"
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "1.5.0",
