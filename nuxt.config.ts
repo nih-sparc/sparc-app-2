@@ -203,20 +203,30 @@ export default defineNuxtConfig({
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
+    cacheMaxAgeSeconds: 86400,
     sources: [
       '/api/__sitemap__/urls'
     ],
+    exclude: [
+      '/datasets/plotviewer',
+      '/datasets/simulationviewer',
+      '/datasets/timeseriesviewer',
+      '/datasets/videoviewer',
+      '/datasets/biolucidaviewer',
+      '/datasets/flatmapviewer',
+      '/datasets/imageviewer',
+      '/datasets/scaffoldviewer',
+    ],
+    
     xslColumns: [
       { label: 'URL', width: '100%' }
     ],
   },
   robots: {
-    sitemap: 'https://sparc.science/sitemap.xml',
     // provide simple disallow rules for all robots `user-agent: *`
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
     disallow: [
-      '/datasets',
-      '/data',
+      '/datasets/*?*',
       '/welcome', 
       '/user', 
       '/contact-us', 
@@ -227,6 +237,6 @@ export default defineNuxtConfig({
       '/news-and-events/community-spotlight/submit'
     ],
     blockNonSeoBots: true,
-    crawlDelay: 60
+    crawlDelay: 3600
   }
 })
