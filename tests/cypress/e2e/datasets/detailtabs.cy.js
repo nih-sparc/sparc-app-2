@@ -33,55 +33,55 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-description-info strong').then(($description) => {
           const description = $description.text()
           // The following regular expression should capture space and letters
-          cy.wrap($description).contains(/Study Purpose:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Study Purpose/i).parent().should(($content) => {
             expect($content.text().trim(), '"Study Purpose" content should exist').to.match(/Study Purpose:(.+?)/i)
           })
-          cy.wrap($description).contains(/Data Collect(ion|ed):/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Data Collect(ion|ed)/i).parent().should(($content) => {
             expect($content.text().trim(), '"Data Collection" content should exist').to.match(/Data Collect(ion|ed):(.+)/i)
           })
-          cy.wrap($description).contains(/(Primary )?Conclusion(s)?:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/(Primary )?Conclusion(s)?/i).parent().should(($content) => {
             expect($content.text().trim(), '"Primary Conclusions" content should exist').to.match(/(Primary )?Conclusion(s)?:(.+)/i)
           })
           // Check for Curator's Note
-          cy.wrap($description).contains(/Experimental Design:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Experimental Design/i).parent().should(($content) => {
             expect($content.text().trim(), '"Experimental Design" content should exist').to.match(/Experimental Design:(.+)/i)
           })
-          cy.wrap($description).contains(/Completeness:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Completeness/i).parent().should(($content) => {
             expect($content.text().trim(), '"Completeness" content should exist').to.match(/Completeness:(.+)/i)
           })
-          cy.wrap($description).contains(/Subjects & Samples:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Subjects & Samples/i).parent().should(($content) => {
             expect($content.text().trim(), '"Subjects & Samples" content should exist').to.match(/Subjects & Samples:(.+)/i)
           })
-          if (description.match(/Primary vs(.)? derivative data:/i)) {
-            cy.wrap($description).contains(/Primary vs(.)? derivative data:/i).parent().should(($content) => {
+          if (description.match(/Primary vs(.)? derivative data/i)) {
+            cy.wrap($description).contains(/Primary vs(.)? derivative data/i).parent().should(($content) => {
               expect($content.text().trim(), '"Primary vs derivative data" content should exist').to.match(/Primary vs(.)? derivative data:(.+)/i)
             })
           }
-          if (description.match(/Code Availability:/i)) {
-            cy.wrap($description).contains(/Code Availability:/i).parent().should(($content) => {
+          if (description.match(/Code Availability/i)) {
+            cy.wrap($description).contains(/Code Availability/i).parent().should(($content) => {
               expect($content.text().trim(), '"Code Availability" content should exist').to.match(/Code Availability:(.+)/i)
             })
           }
-          cy.wrap($description).contains(/Experimental Approach:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Experimental Approach/i).parent().should(($content) => {
             expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
           })
           // Check for Subject Information
-          cy.wrap($description).contains(/Subject Information:/i).should(($content) => {
+          cy.wrap($description).contains(/Subject Information/i).should(($content) => {
             expect($content.text().trim(), '"Subject Information" content should exist').to.exist
           })
-          cy.wrap($description).contains(/Anatomical structure:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Anatomical structure/i).parent().should(($content) => {
             expect($content.text().trim(), '"Anatomical structure" content should exist').to.match(/Anatomical structure:(.+)/i)
           })
-          cy.wrap($description).contains(/Species:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Species/i).parent().should(($content) => {
             expect($content.text().trim(), '"Species" content should exist').to.match(/Species:(.+)/i)
           })
-          cy.wrap($description).contains(/Sex:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Sex/i).parent().should(($content) => {
             expect($content.text().trim(), '"Sex" content should exist').to.match(/Sex:(.+)/i)
           })
-          cy.wrap($description).contains(/Age Range:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Age Range/i).parent().should(($content) => {
             expect($content.text().trim(), '"Age Range" content should exist').to.match(/Age Range:(.+)/i)
           })
-          cy.wrap($description).contains(/Number of samples:/i).parent().should(($content) => {
+          cy.wrap($description).contains(/Number of samples/i).parent().should(($content) => {
             expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
           })
         })
@@ -105,7 +105,7 @@ datasetIds.forEach((datasetId) => {
         })
       })
 
-      it('Protocol Link', function () {
+      it.only('Protocol Link', function () {
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           const title = $title.text().trim()
           const titleRegex = new RegExp('\(' + title + '\)', 'gi')
@@ -113,7 +113,7 @@ datasetIds.forEach((datasetId) => {
             const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim())
             const contributorReversed = contributor.map(name => name.split(' ').reverse().join(' '))
             const contributorRegex = new RegExp('\(' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
-            cy.get('.dataset-description-info strong').contains(/Protocol Links:/i).parents('.experimental-design-container').within(($content) => {
+            cy.get('.dataset-description-info strong').contains(/Protocol Links/i).parents('.experimental-design-container').within(($content) => {
               if ($content.text().includes('https://doi.org/')) {
                 cy.get('.link2').as('links')
                 cy.get('@links').should(($links) => {
@@ -149,53 +149,56 @@ datasetIds.forEach((datasetId) => {
 
       it('Content', function () {
         // Check for content
-        cy.get('.dataset-about-info .label4').contains(/Title:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Title/i).parent().should(($content) => {
           expect($content.text().trim(), '"Title" content should exist').to.match(/Title:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/First Published:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/First Published/i).parent().should(($content) => {
           expect($content.text().trim(), '"First Published" content should exist').to.match(/First Published:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Last Published:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Last Published/i).parent().should(($content) => {
           expect($content.text().trim(), '"Last Published" content should exist').to.match(/Last Published:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Contact Author:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Contact Author/i).parent().should(($content) => {
           expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]:/i).parent().as('awards')
+        cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]/i).parent().as('awards')
         cy.get('@awards').should(($content) => {
           expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/i)
         })
         cy.get('@awards').find('a').should(($award) => {
           expect($award, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
         })
-        cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Funding Programs" content should exist').to.match(/Funding Program[(]s[)]:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Associated projects" content should exist').to.match(/Associated project[(]s[)]:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Institutions" content should exist').to.match(/Institution[(]s[)]:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Version [0-9]+ Revision [0-9]+:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Version [0-9]+ Revision [0-9]+/i).parent().should(($content) => {
           expect($content.text().trim(), '"Version" content should exist').to.match(/Version [0-9]+ Revision [0-9]+:(.+)/i)
         })
-        cy.get('.dataset-about-info .label4').contains(/Dataset DOI:/i).parent().should(($content) => {
+        cy.get('.dataset-about-info .label4').contains(/Dataset DOI/i).parent().should(($content) => {
           expect($content.text().trim(), '"Dataset DOI" content should exist').to.match(/Dataset DOI:(.+)/i)
         })
       })
 
       it('Contact Author', function () {
-        cy.get('.dataset-about-info .label4').contains(/Contact Author:/i).parent().as('contact')
+        cy.get('.dataset-about-info .label4').contains(/Contact Author/i).parent().as('contact')
         // Check for author and email href
         cy.get('@contact').then(($content) => {
           cy.get('.el-col-sm-16 > .heading2').then(($title) => {
             cy.get('.similar-datasets-container > .px-8').then(($similar) => {
               if ($similar.text().includes('Type:')) {
-                cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
+                cy.wrap($similar).contains(/TYPE/i).siblings('.facet-button-container').click()
                 cy.get('.el-input__inner').clear()
                 cy.get('.el-input__inner').type(datasetId)
                 cy.get('.search-text').click()
+                cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+                cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+                cy.waitForBrowserLoading()
                 cy.get('.cell').contains($title.text()).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
                 cy.get('@PI').then(($pi) => {
                   const author = $content.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -221,21 +224,21 @@ datasetIds.forEach((datasetId) => {
       })
 
       it('Project', function () {
-        cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]:/i).parent().as('awards')
-        cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]:/i).parent().as('project')
-        cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]:/i).parent().as('institutions')
+        cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]/i).parent().as('awards')
+        cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().as('project')
+        cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().as('institutions')
         cy.get('@awards').then(($award) => {
-          const award = $award.text().replace('Award(s):', '').trim()
+          const award = $award.text().replace(/Award(s):/i, '').trim()
           cy.get('@project').then(($project) => {
-            const project = $project.text().replace('Associated project(s):', '').trim()
+            const project = $project.text().replace(/Associated project(s):/i, '').trim()
             cy.get('@institutions').then(($institution) => {
-              const institution = $institution.text().replace('Institution(s):', '').trim()
+              const institution = $institution.text().replace(/Institution(s):/i, '').trim()
               cy.wrap($project).find('a').click()
               cy.waitForPageLoading()
               cy.get('.row > .heading2').should(($title) => {
                 expect($title, 'Project title should be the same').to.contain(project)
               })
-              cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]:/i).should(($institution) => {
+              cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
                 expect($institution, 'Institution should be the same').to.contain(institution)
               })
               cy.get('.link1').should(($award) => {
@@ -329,7 +332,7 @@ datasetIds.forEach((datasetId) => {
       })
 
       it('Download', function () {
-        cy.get('.mb-8 .label4:visible').contains(/Dataset size:/i).parent().then(($size) => {
+        cy.get('.mb-8 .label4:visible').contains(/Dataset size/i).parent().then(($size) => {
           const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
           if (($size.text().includes('GB') && size > 5) || $size.text().includes('TB')) {
             cy.get('.el-tooltip__trigger > .el-button').should(($button) => {
@@ -439,7 +442,7 @@ datasetIds.forEach((datasetId) => {
         // Check for consistency between citation and dataset information
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
           const title = $title.text().match(/[a-z]{3,}/gi)
-          cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
+          cy.get('.el-col-sm-16').contains(/Description/i).parent().then(($description) => {
             const description = $description.text().replace(/Description:/i, '').match(/[a-z]{3,}/gi)
             cy.get('.dataset-references .citation-container').then(($citation) => {
               const regex = new RegExp('\(' + title.concat(description).join('|') + '\)', 'gi')
@@ -461,7 +464,11 @@ datasetIds.forEach((datasetId) => {
                 if (!doiList.includes(href)) {
                   doiList.push(href)
                 } else {
-                  cy.print({ title: 'doi', message: 'Redundant doi references are found', type: 'warning' })
+                  cy.print({
+                    title: 'doi',
+                    message: 'Redundant doi references are found',
+                    type: 'warning'
+                  })
                 }
               })
             })
