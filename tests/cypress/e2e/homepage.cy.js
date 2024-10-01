@@ -33,7 +33,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('SPARC by the numbers', function () {
     // Check for content title
-    cy.get('.container.p-32 > .heading2').should('exist').and('contain', 'SPARC by the numbers')
+    cy.get('.container.p-24 > .heading2').should('exist').and('contain', 'SPARC by the numbers')
 
     // Check for consortia
     cy.get('.container.p-32 > .body1 > b > .heading2').first().should('exist').then(($el) => {
@@ -93,7 +93,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Resources and datasets', function () {
     // Check for content title
-    cy.get('.section-container.py-32 > .heading2').should('contain', 'Resources & Datasets')
+    cy.get('.section-container.py-24 > .heading2').should('contain', 'Resources & Datasets')
 
     // Check for card description
     cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'Here is a resource you might be interested in:')
