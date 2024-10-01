@@ -15,14 +15,15 @@
         />
       </template>
     </page-hero>
-    <div class="secondary-background">
-      <client-only><sparc-numbers :explore-data="exploreData"/></client-only>
+    <hr />
+    <portal-features class="secondary-background" :features="portalFeatures" />
+    <hr />
+    <div>
+      <sparc-numbers :explore-data="exploreData"/>
     </div>
     <hr />
-    <portal-features :features="portalFeatures" />
-    <hr />
     <div class="secondary-background">
-      <client-only><featured-data :featured-data="featuredData" /></client-only>
+      <featured-data :featured-data="featuredData" />
     </div>
     <hr />
     <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />

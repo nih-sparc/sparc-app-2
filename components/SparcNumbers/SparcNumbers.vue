@@ -1,5 +1,5 @@
 <template>
-  <div class="container p-32">
+  <div class="container p-24">
     <div class="heading2">
       SPARC by the numbers
     </div>
