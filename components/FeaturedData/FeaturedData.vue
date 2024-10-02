@@ -1,5 +1,5 @@
 <template>
-  <div class="featured-data container py-32">
+  <div class="featured-data container py-24">
     <div class="categories-container mb-8">
       <h2 class="heading2 mt-0 mr-12">Find by</h2>
       <el-select class="categories-select" v-model="selectedCategory">

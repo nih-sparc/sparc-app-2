@@ -1,6 +1,6 @@
 <template>
-  <div class="featured-datasets container pt-32">
-    <h2 class="heading2 title mt-0 mb-32">
+  <div class="featured-datasets container pt-24">
+    <h2 class="heading2 title mt-0 mb-24">
       News &amp; Upcoming Events
     </h2>
     <sparc-card
@@ -244,7 +244,7 @@ h2 a:not(:hover) {
 :deep(div.sparc-card) {
   padding-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
-    padding-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
   }
   .sparc-card__content-wrap {
     flex: 7 0 0rem;
