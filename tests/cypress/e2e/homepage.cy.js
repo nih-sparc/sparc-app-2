@@ -36,20 +36,20 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.container.p-24 > .heading2').should('exist').and('contain', 'SPARC by the numbers')
 
     // Check for consortia
-    cy.get('.container.p-32 > .body1 > b > .heading2').first().should('exist').then(($el) => {
+    cy.get('.container.p-24 > .body1 > b > .heading2').first().should('exist').then(($el) => {
       const numberOfConsortia = parseInt($el.text())
 
-      cy.get('.container.p-32 > .data-wrap.py-16 > .consortia-item').should('have.length', numberOfConsortia)
-      cy.get('.container.p-32 > .data-wrap.py-16 > .consortia-item').should('have.attr', 'href').and('contain', '/about/consortia/')
+      cy.get('.container.p-24 > .data-wrap.py-16 > .consortia-item').should('have.length', numberOfConsortia)
+      cy.get('.container.p-24 > .data-wrap.py-16 > .consortia-item').should('have.attr', 'href').and('contain', '/about/consortia/')
     })
 
     // Check for contributor
-    cy.get('.container.p-32 > .body1 > b > .heading2').last().should('exist').then(($el) => {
+    cy.get('.container.p-24 > .body1 > b > .heading2').last().should('exist').then(($el) => {
       const numberOfContributor = parseInt($el.text())
       expect(numberOfContributor).to.be.greaterThan(0)
 
-      cy.get('.container.p-32 > .data-wrap.pt-16 > .consortia-item').should('have.length.above', 0)
-      cy.get('.container.p-32 > .data-wrap.pt-16 > .consortia-item').should('have.attr', 'href').and('contain', '/data?type=')
+      cy.get('.container.p-24 > .data-wrap.pt-16 > .consortia-item').should('have.length.above', 0)
+      cy.get('.container.p-24 > .data-wrap.pt-16 > .consortia-item').should('have.attr', 'href').and('contain', '/data?type=')
     })
   })
 
