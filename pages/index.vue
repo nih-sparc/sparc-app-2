@@ -19,11 +19,11 @@
     <portal-features class="secondary-background" :features="portalFeatures" />
     <hr />
     <div>
-      <sparc-numbers :explore-data="exploreData"/>
+      <client-only><sparc-numbers :explore-data="exploreData"/></client-only>
     </div>
     <hr />
     <div class="secondary-background">
-      <featured-data :featured-data="featuredData" />
+      <client-only><featured-data :featured-data="featuredData" /></client-only>
     </div>
     <hr />
     <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
