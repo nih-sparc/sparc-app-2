@@ -9,6 +9,7 @@ const pixelChange = 3
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
  */
+const defaultModel = 'Human Male'
 const taxonModels = stringToArray(Cypress.env('TAXON_MODELS'), ',')
 let loadedModels = new Set()
 
@@ -35,19 +36,23 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.intercept('**/datasets/**').as('datasets')
     cy.intercept('**/get_body_scaffold_info/**').as('get_body_scaffold_info')
     cy.intercept('**/s3-resource/**').as('s3-resource')
+    cy.waitForViewerContainer('.mapClass')
     cy.waitForPageLoading()
   })
 
   taxonModels.forEach((model, index) => {
 
     it(`Provenance card for ${model}`, function () {
+      cy.print({
+        title: 'loaded model',
+        message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
+        type: 'info'
+      })
       if (index === 0) {
-        cy.wait(['@query', '@flatmap', '@dataset_info', '@datasets'], { timeout: 20000 })
-        cy.waitForMapLoading()
-        loadedModels.add('Human Male')
+        loadedModels.add(defaultModel)
         cy.print({
           title: 'model',
-          message: 'Human Male model has been loaded',
+          message: `${defaultModel} model has been loaded`,
           type: 'info'
         })
       }
@@ -148,10 +153,13 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    // Switch to the human related flatmap
-    cy.waitForMapLoading()
     cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click().then(() => {
       cy.get('.el-select-dropdown__item:visible').contains(new RegExp(threeDSyncView, 'i')).click()
+      cy.print({
+        title: 'loaded model',
+        message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
+        type: 'info'
+      })
       if (!loadedModels.has(threeDSyncView)) {
         cy.wait('@flatmap', { timeout: 20000 })
         cy.waitForMapLoading()
