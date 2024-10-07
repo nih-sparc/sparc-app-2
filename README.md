@@ -38,3 +38,30 @@ yarn preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Testing
+
+Export the following environment variables for Cypress:
+
+```bash
+# testing target, default http://localhost:3000
+export ROOT_URL=
+# recording require
+export CYPRESS_PROJECT_ID=
+export CYPRESS_RECORD_KEY=
+# parallel require
+export CI_BUILD_ID=
+```
+
+Run Cypress E2E tests for portal:
+
+```bash
+# Run all tests locally
+yarn cypress
+# Open the Cypress UI (for adding/editing/debugging tests)
+yarn cypress-ui
+# -record to record in Cypress Cloud
+# -parallel to run in parallel (requires several terminals)
+yarn cypress-record
+yarn cypress-record-parallel
+```
