@@ -180,35 +180,28 @@ describe('Maps Viewer', { testIsolation: false }, function () {
     cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
       expect($toolbar, 'Should have two toolbar').to.have.length(2)
     })
-    /**
-     * Context card testing is commented out.
-     * Dataset has recently published and paths to the dataset files are changed. 
-     */
-    // // Check for 3D view's content card detail
-    // cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should(($image) => {
-    //   expect($image, 'The 3D view content card should have an image').to.exist
-    // })
-    // cy.get('.context-card > .card-right', { timeout: 30000 }).within(() => {
-    //   cy.get('.title').contains(/3D human whole-body/i).should(($title) => {
-    //     expect($title, 'The 3D view content card title should contain correct content').to.exist
-    //   })
-    //   cy.get(':nth-child(2) > p').contains(/Visualization/i).should(($description) => {
-    //     expect($description, 'The 3D view content card description should contain correct content').to.exist
-    //   })
-    // })
-    // cy.get('.subtitle').contains(/Scaffold Views/i).should(($title) => {
-    //   expect($title, 'The 3D view content card subtitle should contain correct content').to.exist
-    // })
-    // cy.get('.view-image').should('exist')
-    // cy.get('.view-image').should(($image) => {
-    //   expect($image, 'The 3D view content card should have an scaffold view image').to.exist
-    // })
-    // cy.get('.view-description').contains(/Human whole-body/i).should(($description) => {
-    //   expect($description, 'The 3D view content card should have an scaffold view description').to.exist
-    // })
-    /**
-     * 
-     */
+    // Check for 3D view's content card detail
+    cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should(($image) => {
+      expect($image, 'The 3D view content card should have an image').to.exist
+    })
+    cy.get('.context-card > .card-right', { timeout: 30000 }).within(() => {
+      cy.get('.title').contains(/3D human whole-body/i).should(($title) => {
+        expect($title, 'The 3D view content card title should contain correct content').to.exist
+      })
+      cy.get(':nth-child(2) > p').contains(/Visualization/i).should(($description) => {
+        expect($description, 'The 3D view content card description should contain correct content').to.exist
+      })
+    })
+    cy.get('.subtitle').contains(/Scaffold Views/i).should(($title) => {
+      expect($title, 'The 3D view content card subtitle should contain correct content').to.exist
+    })
+    cy.get('.view-image').should('exist')
+    cy.get('.view-image').should(($image) => {
+      expect($image, 'The 3D view content card should have an scaffold view image').to.exist
+    })
+    cy.get('.view-description').contains(/Human whole-body/i).should(($description) => {
+      expect($description, 'The 3D view content card should have an scaffold view description').to.exist
+    })
     // Close the pathway sidebar
     cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button').click()
     // Search keyword in displayed viewers
