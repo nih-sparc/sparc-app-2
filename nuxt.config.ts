@@ -182,7 +182,7 @@ export default defineNuxtConfig({
       SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
       SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || 'false',
       gtm: {
-        id: process.env.GOOGLE_TAG_MANAGER_ID || '',
+        id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
         compatibility: false,
         source: 'https://www.googletagmanager.com/gtm.js',
