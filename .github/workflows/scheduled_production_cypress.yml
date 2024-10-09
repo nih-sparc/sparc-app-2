@@ -64,10 +64,13 @@ jobs:
       - name: Print latest deployment sha
         run: echo "${{ steps.latest-deployment-sha.outputs.deployment-sha }}"
 
-  scheduled-cypress-run-production:
+  cypress-run:
     runs-on: ubuntu-latest
 
     needs: latest-deployment
+
+    outputs:
+      step-outcome: ${{ steps.cypress.outcome }}
 
     steps:
       - name: Cleanup pre-installed tools
@@ -88,6 +91,7 @@ jobs:
           node-version: 18.17.1
 
       - name: Schedule Run Testing against Production
+        id: cypress
         uses: cypress-io/github-action@v6
         timeout-minutes: 30
         env:
@@ -96,3 +100,58 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           tag: Scheduled-Production
+
+  status-change:
+    if: always()
+    runs-on: ubuntu-latest
+
+    needs: cypress-run
+
+    outputs:
+      status: ${{ env.TESTING }}
+
+    steps:
+      - name: Cypress result
+        run: echo "C_STEP=${{ needs.cypress-run.outputs.step-outcome }}" >> $GITHUB_ENV
+
+      - name: Get previous workflow status
+        uses: pinguet62/workflow-conclusion@v1.0.0
+        id: workflow
+        with:
+          workflow_id: "pull_request_cypress.yml"
+          branch: "main"
+          skip: 1
+
+      - name: Workflow result
+        run: echo "P_WORKFLOW=${{ steps.workflow.outputs.workflow_conclusion }}" >> $GITHUB_ENV
+
+      - name: Checking condition
+        run: |
+          if [[ $C_STEP == 'success' && $P_WORKFLOW == 'success' ]]; then
+            echo "TESTING=keepsuccess" >> $GITHUB_ENV
+          elif [[ $C_STEP == 'success' && $P_WORKFLOW == 'failure' ]]; then
+            echo "TESTING=backtonormal" >> $GITHUB_ENV
+          elif [[ $C_STEP == 'failure' && $P_WORKFLOW == 'success' ]]; then
+            echo "TESTING=failure" >> $GITHUB_ENV
+          elif [[ $C_STEP == 'failure' && $P_WORKFLOW == 'failure' ]]; then
+            echo "TESTING=stillfail" >> $GITHUB_ENV
+          else
+            echo "TESTING=unexpected" >> $GITHUB_ENV
+            echo "Unexpected condition. Investigation is required."
+          fi
+
+      - name: Status result
+        run: echo "result=$TESTING"
+
+  slack-notification:
+    if: always()
+    runs-on: ubuntu-latest
+
+    needs: status-change
+
+    steps:
+      - name: Send notification to Slack
+        if: ${{ needs.status-change.outputs.status == 'backtonormal' || needs.status-change.outputs.status == 'failure' || needs.status-change.outputs.status == 'stillfail' }}
+        run: |
+          echo "Testing status=${{ needs.status-change.outputs.status }}"
+          echo "Sending notification to Slack..."
