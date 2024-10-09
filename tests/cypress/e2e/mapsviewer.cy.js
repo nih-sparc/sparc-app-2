@@ -47,7 +47,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       }
 
       // Switch to the second flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true })
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger > .el-select__wrapper').click({ force: true })
       cy.get('.el-select-dropdown__item').should('be.visible')
       cy.get('.el-select-dropdown__item:visible').contains(new RegExp(model, 'i')).click({ force: true }).then(() => {
         if (!loadedModels.has(model)) {
