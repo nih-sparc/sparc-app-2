@@ -42,7 +42,7 @@ export const infoMessage = message => {
 
 /**
  * Custom notification message object
- * @param {Object} Object containing all message required
+ * @param {Object} Object containing required data for ElMessage
  * @return {Object}
  */
 export const customMessage = data => {
