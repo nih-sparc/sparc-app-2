@@ -22,9 +22,9 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.5.0",
-    "@abi-software/plotvuer": "1.0.0",
-    "@abi-software/simulationvuer": "1.0.0",
+    "@abi-software/mapintegratedvuer": "1.5.1",
+    "@abi-software/plotvuer": "1.0.3",
+    "@abi-software/simulationvuer": "1.0.1",
     "@element-plus/nuxt": "^1.0.6",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
