@@ -118,7 +118,7 @@ jobs:
         uses: pinguet62/workflow-conclusion@v1.0.0
         id: workflow
         with:
-          workflow_id: "pull_request_cypress.yml"
+          workflow_id: "scheduled_production_cypress.yml"
           branch: "main"
           skip: 1
 
