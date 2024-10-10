@@ -3,7 +3,6 @@
  * @param {String} message
  * @return {Object}
  */
-
 export const successMessage = message => {
   ElMessage({
     showClose: true,
@@ -12,6 +11,7 @@ export const successMessage = message => {
     duration: 5000
   })
 }
+
 /**
  * Failure notification message object
  * @param {String} message
@@ -38,4 +38,13 @@ export const infoMessage = message => {
     type: 'info',
     duration: 5000
   })
+}
+
+/**
+ * Custom notification message object
+ * @param {Object} Object containing required data for ElMessage
+ * @return {Object}
+ */
+export const customMessage = data => {
+  ElMessage(data)
 }
