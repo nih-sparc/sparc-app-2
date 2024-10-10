@@ -54,8 +54,7 @@
   },
   "resolutions": {
     "string-width": "4.2.3",
-    "mlly": "1.4.0",
-    "vue": "3.4.21"
+    "mlly": "1.4.0"
   },
   "engines": {
     "node": "18.17.1"
