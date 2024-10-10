@@ -57,7 +57,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         })
       }
       // Switch to the different flatmap
-      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click({ force: true }).then(() => {
+      cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger > .el-select__wrapper').click({ force: true }).then(() => {
         cy.get('.el-select-dropdown__item:visible').should(($dropdown) => {
           expect($dropdown, 'Dropdown should have multiple items').to.have.length(6)
         })
@@ -153,7 +153,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   })
 
   it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger').click().then(() => {
+    cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger > .el-select__wrapper').click().then(() => {
       cy.get('.el-select-dropdown__item:visible').contains(new RegExp(threeDSyncView, 'i')).click()
       cy.print({
         title: 'loaded model',
