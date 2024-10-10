@@ -269,6 +269,16 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
             cy.get('.page-hero > .container').should(($content) => {
               expect($content, 'Map Viewer should display content').to.contain('Maps')
             })
+            if (itemType === 'Scaffold') {
+              cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container > .el-select > .el-select__wrapper > .el-select__selection > .el-select__placeholder > span').should(($title) => {
+                expect($title, 'Map Viewer should display scaffold').to.contain('Scaffold')
+              })
+            }
+            if (itemType === 'Flatmap') {
+              cy.get('.toolbar-title').should(($title) => {
+                expect($title, 'Map Viewer should display flatmap').to.contain('MultiFlatmap')
+              })
+            }
             cy.backToDetailPage(datasetId)
             cy.waitForPageLoading()
           } else {
