@@ -8,7 +8,6 @@
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
     "postinstall": "nuxt prepare",
-    "sitemap": "node generate_sitemap.js",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
@@ -22,14 +21,13 @@
     "nuxt": "^3.8.2",
     "nuxt-simple-robots": "^4.0.0-rc.19",
     "nuxt-svgo": "^3.5.6",
-    "sass": "^1.66.1",
-    "sitemap": "^7.1.1"
+    "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.5.0",
-    "@abi-software/plotvuer": "1.0.0",
-    "@abi-software/simulationvuer": "1.0.0",
-    "@element-plus/nuxt": "^1.0.6",
+    "@abi-software/mapintegratedvuer": "1.5.1",
+    "@abi-software/plotvuer": "1.0.3",
+    "@abi-software/simulationvuer": "1.0.1",
+    "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
@@ -58,7 +56,8 @@
   },
   "resolutions": {
     "string-width": "4.2.3",
-    "mlly": "1.4.0"
+    "mlly": "1.4.0",
+    "vue": "3.4.21"
   },
   "engines": {
     "node": "18.17.1"

@@ -33,6 +33,7 @@
         ref="table"
         :data="data"
         @selection-change="handleSelectionChange"
+        @filter-change="handleFilterChange"
       >
         <el-table-column type="selection" fixed width="45" />
         <el-table-column fixed prop="name" label="Name" min-width="150" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
@@ -118,11 +119,21 @@
           prop="fileType" 
           label="File type" 
           width="280" 
+          columnKey="fileType"
           sortable
           :filters="getFileTypeFilters(data)"
           :filter-method="fileTypeFilterStatus"
           filter-placement="top-start"
+          filter-class-name="file-type-filter"
         >
+          <template #header="{ column }">
+            <span class="custom-header">
+              {{ column.label }}
+              <el-button v-if="isFilterApplied" class="custom-button"  @click="handleResetFilters('fileType')">
+                Reset filter
+              </el-button>
+            </span>
+          </template>
           <template v-slot="scope">
             <template v-if="scope.row.type === 'Directory'">
               Folder
@@ -453,7 +464,8 @@ export default {
       limit: 500,
       selected: [],
       dialogSelectedFile: null,
-      zipData: ''
+      zipData: '',
+      filtersApplied: []
     }
   },
 
@@ -520,6 +532,9 @@ export default {
         totalSize += file.size
       })
       return totalSize >= this.$config.public.max_download_size
+    },
+    isFilterApplied() {
+      return this.filtersApplied.length > 0
     }
   },
 
@@ -645,6 +660,7 @@ export default {
      */
     pathQueryChanged: function () {
       this.$refs.table.clearFilter()
+      this.handleResetFilters('fileType')
       this.getFiles()
     },
 
@@ -1005,6 +1021,13 @@ export default {
     },
     fileTypeFilterStatus: function (value, row, col) {
       return row.fileType ? row.fileType == value : row.type == value
+    },
+    handleFilterChange(filters) {
+      this.filtersApplied = filters?.fileType 
+    },
+    handleResetFilters(columnKey) {
+      this.$refs.table.clearFilter([columnKey])
+      this.filtersApplied = []
     }
   }
 }
@@ -1106,5 +1129,20 @@ export default {
 .action-icon {
   width: 1.5rem;
   height: 1.5rem;
+}
+.custom-button {
+  position: absolute;
+  left: 7rem;
+  top: .35rem;
+  max-width: 5rem;
+  width: -webkit-fill-available;
+  height: 1rem;
+}
+:global(.file-type-filter .el-table-filter__bottom button) {
+  background-color: $purple;
+  color: white;
+  border-radius: 10%;
+  margin-right: .25rem;
+  padding: .2rem .3rem .2rem .3rem;
 }
 </style>

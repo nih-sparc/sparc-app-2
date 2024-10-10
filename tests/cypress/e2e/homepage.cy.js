@@ -57,22 +57,22 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('SPARC by the numbers', function () {
     // Check for content title
-    cy.get('.container.p-32 > .heading2').should(($title) => {
+    cy.get('.container.p-24 > .heading2').should(($title) => {
       expect($title, 'Title should contain specific content').to.contain('SPARC by the numbers')
     })
     // Check for consortia
-    cy.get('.container.p-32 > .body1 > b > .heading2').first().then(($el) => {
+    cy.get('.container.p-24 > .body1 > b > .heading2').first().then(($el) => {
       const numberOfConsortia = parseInt($el.text())
-      cy.get('.container.p-32 > .data-wrap.py-16 > .consortia-item').should(($item) => {
+      cy.get('.container.p-24 > .data-wrap.py-16 > .consortia-item').should(($item) => {
         expect($item, 'Correct number of consortia items should be displayed').to.have.length(numberOfConsortia)
         expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/about/consortia/')
       })
     })
     // Check for contributor
-    cy.get('.container.p-32 > .body1 > b > .heading2').last().then(($el) => {
+    cy.get('.container.p-24 > .body1 > b > .heading2').last().then(($el) => {
       const numberOfContributor = parseInt($el.text())
       expect(numberOfContributor, 'The number of contributors should be displayed').to.be.greaterThan(0)
-      cy.get('.container.p-32 > .data-wrap.pt-16 > .consortia-item').should(($item) => {
+      cy.get('.container.p-24 > .data-wrap.pt-16 > .consortia-item').should(($item) => {
         expect($item, 'Correct number of consortia items should be displayed').to.have.length(4)
         expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/data?type=')
       })
@@ -151,7 +151,7 @@ describe('Homepage', { testIsolation: false }, function () {
 
   it('Resources and datasets', function () {
     // Check for title
-    cy.get('.section-container.py-32 > .heading2').should('contain', 'Resources & Datasets')
+    cy.get('.section-container.py-24 > .heading2').should('contain', 'Resources & Datasets')
     // Check for card description
     cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'Here is a resource you might be interested in:')
     cy.get('.row > :nth-child(2) > .mb-16').should('have.text', 'Featured Datasets')

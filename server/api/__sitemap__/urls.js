@@ -4,7 +4,7 @@ import { defineSitemapEventHandler } from '#imports'
 
 export default defineSitemapEventHandler(async () => {
   try {
-    const PORTAL_BASE_URL = process.env.ROOL_URL || 'https://staging.sparc.science'
+    const PORTAL_BASE_URL = process.env.ROOT_URL
 
     // Algolia creds
     const ALGOLIA_APP_ID = process.env.ALGOLIA_APP_ID
@@ -159,21 +159,10 @@ export default defineSitemapEventHandler(async () => {
       }
     })
 
-    // Fetching ABOUT DETAILS IDs
-
-    const aboutResp = await contentfulClient.getEntries({
-      content_type: 'aboutPageSecondLevel',
-      limit: 1000
-    })
-
-    aboutResp.items.forEach(db => {
-      if (db.sys.id) {
-        urls.push(PORTAL_BASE_URL + '/about/' + db.sys.id)
-      }
-    })
-
     return urls.map((url) => {
-      return { loc: url }
+      // strip any parameters set on the url
+      const parsedUrl = new URL(url)
+      return { loc: parsedUrl.origin + parsedUrl.pathname }
     })
   } catch (err) {
     console.error('Error fetching dynamic routes:', err)

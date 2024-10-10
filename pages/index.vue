@@ -15,11 +15,12 @@
         />
       </template>
     </page-hero>
-    <div class="secondary-background">
+    <hr />
+    <portal-features class="secondary-background" :features="portalFeatures" />
+    <hr />
+    <div>
       <client-only><sparc-numbers :explore-data="exploreData"/></client-only>
     </div>
-    <hr />
-    <portal-features :features="portalFeatures" />
     <hr />
     <div class="secondary-background">
       <client-only><featured-data :featured-data="featuredData" /></client-only>

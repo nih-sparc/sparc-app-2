@@ -1,6 +1,6 @@
 <template>
-  <div class="container py-32">
-    <h2 class="heading2 subheader mb-32 mt-0">Stay Connected</h2>
+  <div class="container py-24">
+    <h2 class="heading2 subheader mb-24 mt-0">Stay Connected</h2>
     <div class="subpage py-16">
       <el-row :gutter="32">
         <el-col :xs="24" :sm="12" class="newsletter-wrap">

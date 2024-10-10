@@ -1,6 +1,6 @@
 <template>
-  <div class="section-container container py-32">
-    <div v-if="isProject" class="heading2 mb-32">Projects &amp; Datasets</div>
+  <div class="section-container container py-24">
+    <div v-if="isProject" class="heading2 mb-24">Projects &amp; Datasets</div>
     <div v-else class="heading2 mb-32">Resources &amp; Datasets</div>
     <div class="row">
       <div class="col p-16">

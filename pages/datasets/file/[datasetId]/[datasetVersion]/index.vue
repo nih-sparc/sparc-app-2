@@ -27,12 +27,8 @@
       </div>
       <div v-if="hasRelatedDatasets" class="container">
         <div class="subpage">
-          <div class="heading3 mb-16">Find related images from other datasets
-            <sparc-tooltip content="Find images among other datasets that share the same award id" placement="bottom-center">
-              <template #item>
-                <svgo-icon-help class="help-icon"/>
-              </template>
-            </sparc-tooltip>
+          <div class="heading3 mb-16">
+            Find related images among other datasets that share the same award id
           </div>
           <gallery galleryItemType="relatedDatasets" :items="relatedDatasets" :cardWidth="12" />
         </div>
