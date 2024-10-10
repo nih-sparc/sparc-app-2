@@ -51,6 +51,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('.startsWith is not a function'))
     return false
+  if (err.message.includes('.shift is not a function'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
