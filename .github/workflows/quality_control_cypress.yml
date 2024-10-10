@@ -109,5 +109,5 @@ jobs:
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          spec: tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/datasets.cy.js,tests/cypress/e2e/mapsviewer.cy.js
+          spec: tests/cypress/e2e/datasets/*.cy.js,tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/mapsviewer.cy.js
           tag: QC
