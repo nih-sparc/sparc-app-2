@@ -275,6 +275,18 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
           } else {
             // Check whether metadata exist or not
             cy.waitForViewerContainer('.subpage')
+            if (itemType === 'Video') {
+              cy.get('video')
+                .should('have.prop', 'paused', true)
+                .and('have.prop', 'ended', false)
+                .then(($video) => {
+                  $video[0].play()
+                })
+              // once the video starts playing, check props
+              cy.get('video')
+                .should('have.prop', 'paused', false)
+                .and('have.prop', 'ended', false)
+            }
             cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
               expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
             })
