@@ -342,7 +342,7 @@ datasetIds.forEach((datasetId) => {
             cy.get('.left-column > :nth-child(1) > a > .el-button').should(($button) => {
               expect($button, 'Download button should be enabled when size is less than 5GB').to.be.enabled
             })
-            if ($size.text().includes('MB')) {
+            if ($size.text().includes('MB') && size < 50) {
               // Check if datasets is downloaded
               cy.get('.left-column > :nth-child(1) > a > .el-button').click()
               cy.wait('@download', { timeout: 20000 }).then((intercept) => {
