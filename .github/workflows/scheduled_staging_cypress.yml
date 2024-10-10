@@ -133,12 +133,9 @@ jobs:
           elif [[ $C_STEP == 'success' && $P_WORKFLOW == 'failure' ]]; then
             echo "TESTING_STATUS=backtonormal" >> $GITHUB_ENV
             echo "TESTING_MESSAGE=Testing back to normal" >> $GITHUB_ENV
-          elif [[ $C_STEP == 'failure' && $P_WORKFLOW == 'success' ]]; then
+          elif [[ $C_STEP == 'failure' ]]; then
             echo "TESTING_STATUS=failure" >> $GITHUB_ENV
             echo "TESTING_MESSAGE=Testing failed" >> $GITHUB_ENV
-          elif [[ $C_STEP == 'failure' && $P_WORKFLOW == 'failure' ]]; then
-            echo "TESTING_STATUS=stillfail" >> $GITHUB_ENV
-            echo "TESTING_MESSAGE=Testing still failed" >> $GITHUB_ENV
           else
             echo "TESTING_STATUS=unexpected" >> $GITHUB_ENV
             echo "Unexpected condition. Investigation is required."
@@ -157,7 +154,7 @@ jobs:
 
     steps:
       - name: Send notification to Slack
-        if: ${{ needs.status-change.outputs.status == 'backtonormal' || needs.status-change.outputs.status == 'failure' || needs.status-change.outputs.status == 'stillfail' }}
+        if: ${{ needs.status-change.outputs.status == 'backtonormal' || needs.status-change.outputs.status == 'failure' }}
         run: |
           echo "Testing status=${{ needs.status-change.outputs.status }}"
           echo "Testing message=${{ needs.status-change.outputs.message }}"
