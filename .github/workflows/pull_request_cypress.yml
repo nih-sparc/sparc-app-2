@@ -59,7 +59,7 @@ jobs:
       - name: Print uuid
         run: echo "${{ steps.uuid.outputs.value }}"
 
-  pull-request-cypress-run:
+  cypress-run:
     runs-on: ubuntu-latest
 
     needs: build-uuid
@@ -97,6 +97,7 @@ jobs:
 
       - name: Automated Run Testing when Pull Request
         if: steps.checkUser.outputs.require-result == 'true'
+        id: cypress
         uses: cypress-io/github-action@v6
         timeout-minutes: 30
         env:

@@ -64,10 +64,13 @@ jobs:
       - name: Print latest deployment sha
         run: echo "${{ steps.latest-deployment-sha.outputs.deployment-sha }}"
 
-  scheduled-cypress-run-staging:
+  cypress-run:
     runs-on: ubuntu-latest
 
     needs: latest-deployment
+
+    outputs:
+      step-outcome: ${{ steps.cypress.outcome }}
 
     steps:
       - name: Cleanup pre-installed tools
@@ -88,6 +91,7 @@ jobs:
           node-version: 18.17.1
 
       - name: Schedule Run Testing against Staging
+        id: cypress
         uses: cypress-io/github-action@v6
         timeout-minutes: 30
         env:
@@ -96,3 +100,62 @@ jobs:
           wait-on: ${{ env.ROOT_URL }}
           record: true
           tag: Scheduled-Staging
+
+  status-change:
+    if: always()
+    runs-on: ubuntu-latest
+
+    needs: cypress-run
+
+    outputs:
+      status: ${{ env.TESTING_STATUS }}
+      message: ${{ env.TESTING_MESSAGE }}
+
+    steps:
+      - name: Cypress result
+        run: echo "C_STEP=${{ needs.cypress-run.outputs.step-outcome }}" >> $GITHUB_ENV
+
+      - name: Get previous workflow status
+        uses: pinguet62/workflow-conclusion@v1.0.0
+        id: workflow
+        with:
+          workflow_id: "scheduled_staging_cypress.yml"
+          branch: "main"
+          skip: 1
+
+      - name: Workflow result
+        run: echo "P_WORKFLOW=${{ steps.workflow.outputs.workflow_conclusion }}" >> $GITHUB_ENV
+
+      - name: Checking condition
+        run: |
+          if [[ $C_STEP == 'success' && $P_WORKFLOW == 'success' ]]; then
+            echo "TESTING_STATUS=staysuccess" >> $GITHUB_ENV
+          elif [[ $C_STEP == 'success' && $P_WORKFLOW == 'failure' ]]; then
+            echo "TESTING_STATUS=backtonormal" >> $GITHUB_ENV
+            echo "TESTING_MESSAGE=Testing back to normal" >> $GITHUB_ENV
+          elif [[ $C_STEP == 'failure' ]]; then
+            echo "TESTING_STATUS=failure" >> $GITHUB_ENV
+            echo "TESTING_MESSAGE=Testing failed" >> $GITHUB_ENV
+          else
+            echo "TESTING_STATUS=unexpected" >> $GITHUB_ENV
+            echo "Unexpected condition. Investigation is required."
+          fi
+
+      - name: Status result
+        run: |
+          echo "status=$TESTING_STATUS"
+          echo "message=$TESTING_MESSAGE"
+
+  slack-notification:
+    if: always()
+    runs-on: ubuntu-latest
+
+    needs: status-change
+
+    steps:
+      - name: Send notification to Slack
+        if: ${{ needs.status-change.outputs.status == 'backtonormal' || needs.status-change.outputs.status == 'failure' }}
+        run: |
+          echo "Testing status=${{ needs.status-change.outputs.status }}"
+          echo "Testing message=${{ needs.status-change.outputs.message }}"
+          echo "Sending notification to Slack..."
