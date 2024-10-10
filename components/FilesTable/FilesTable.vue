@@ -124,6 +124,7 @@
           :filters="getFileTypeFilters(data)"
           :filter-method="fileTypeFilterStatus"
           filter-placement="top-start"
+          filter-class-name="file-type-filter"
         >
           <template #header="{ column }">
             <span class="custom-header">
@@ -1136,5 +1137,12 @@ export default {
   max-width: 5rem;
   width: -webkit-fill-available;
   height: 1rem;
+}
+:global(.file-type-filter .el-table-filter__bottom button) {
+  background-color: $purple;
+  color: white;
+  border-radius: 5%;
+  margin-right: .25rem;
+  padding: .2rem .3rem .2rem .3rem;
 }
 </style>
