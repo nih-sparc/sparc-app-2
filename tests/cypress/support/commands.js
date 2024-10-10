@@ -244,7 +244,6 @@ Cypress.Commands.add('checkGalleyCardState', () => {
 })
 
 Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
-  cy.get('.filter-container > .filter-dropdown').click()
   cy.get('.el-cascader-node').contains(new RegExp(itemType, 'i')).parent().siblings().click()
   cy.window().then((window) => {
     cy.stub(window.document.body, 'appendChild').as('cardClicked')
