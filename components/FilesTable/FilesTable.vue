@@ -1141,7 +1141,7 @@ export default {
 :global(.file-type-filter .el-table-filter__bottom button) {
   background-color: $purple;
   color: white;
-  border-radius: 5%;
+  border-radius: 10%;
   margin-right: .25rem;
   padding: .2rem .3rem .2rem .3rem;
 }
