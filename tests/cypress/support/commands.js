@@ -80,6 +80,13 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForGalleryLoading', () => {
+  cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForViewerContainer', (selector) => {
   cy.get(selector, { timeout: 30000 }).should(($mapViewer) => {
     expect($mapViewer, 'Viewer container should exist').to.exist

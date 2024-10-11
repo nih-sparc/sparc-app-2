@@ -74,12 +74,12 @@ datasetIds.forEach((datasetId) => {
 
         it(item, function () {
           if (existGalleryItems.includes(item)) {
+            cy.waitForGalleryLoading()
             cy.get('.filter-container > .filter-dropdown').click()
             cy.get('.el-cascader-node').then(($content) => {
               if (!$content.text().includes(item) && !$content.text().includes(item.toLowerCase())) {
                 this.skip()
               }
-              cy.get('.filter-container > .filter-dropdown').click()
             })
             cy.checkGalleryItemViewer(datasetId, item)
           } else {
