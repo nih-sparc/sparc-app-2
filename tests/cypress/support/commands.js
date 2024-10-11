@@ -296,6 +296,15 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
                 .should('have.prop', 'paused', false)
                 .and('have.prop', 'ended', false)
             }
+            if (itemType === 'Segmentation' || itemType === 'Image') {
+              cy.get('.page-data').invoke('attr', 'class').then((classList) => {
+                if (classList.includes('biolucida-viewer')) {
+                  cy.get('iframe')
+                    .its('0.contentDocument.body')
+                    .should('not.be.empty')
+                }
+              })
+            }
             cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
               expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
             })
