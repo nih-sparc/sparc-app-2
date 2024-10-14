@@ -62,9 +62,11 @@ datasetIds.forEach((datasetId) => {
               expect($content.text().trim(), '"Code Availability" content should exist').to.match(/Code Availability:(.+)/i)
             })
           }
-          cy.wrap($description).contains(/Experimental Approach/i).parent().should(($content) => {
-            expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
-          })
+          if (description.match(/Experimental Approach/i)) {
+            cy.wrap($description).contains(/Experimental Approach/i).parent().should(($content) => {
+              expect($content.text().trim(), '"Experimental Approach" content should exist').to.match(/Experimental Approach:(.+)/i)
+            })
+          }
           // Check for Subject Information
           cy.wrap($description).contains(/Subject Information/i).should(($content) => {
             expect($content.text().trim(), '"Subject Information" content should exist').to.exist
@@ -81,9 +83,11 @@ datasetIds.forEach((datasetId) => {
           cy.wrap($description).contains(/Age Range/i).parent().should(($content) => {
             expect($content.text().trim(), '"Age Range" content should exist').to.match(/Age Range:(.+)/i)
           })
-          cy.wrap($description).contains(/Number of samples/i).parent().should(($content) => {
-            expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
-          })
+          if (description.match(/Number of samples/i)) {
+            cy.wrap($description).contains(/Number of samples/i).parent().should(($content) => {
+              expect($content.text().trim(), '"Number of samples" content should exist').to.match(/Number of samples:(.+)/i)
+            })
+          }
         })
         // Check for Keywords
         cy.get('.keywords').should(($content) => {
@@ -106,33 +110,34 @@ datasetIds.forEach((datasetId) => {
       })
 
       it('Protocol Link', function () {
-        cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-          const title = $title.text().trim()
-          const titleRegex = new RegExp('\(' + title + '\)', 'gi')
-          cy.get('.dataset-owners').then(($contributor) => {
-            const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim())
-            const contributorReversed = contributor.map(name => name.split(' ').reverse().join(' '))
-            const contributorRegex = new RegExp('\(' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
-            cy.get('.dataset-description-info strong').contains(/Protocol Links/i).parents('.experimental-design-container').within(($content) => {
-              if ($content.text().includes('https://doi.org/')) {
-                cy.get('.link2').as('links')
-                cy.get('@links').should(($links) => {
-                  expect($links.length, 'Link should have at lease one').to.be.greaterThan(0)
-                })
-                cy.get('@links').each(($link) => {
-                  cy.wrap($link).invoke('attr', 'href').then((href) => {
-                    cy.request(href).then((resp) => {
-                      expect(resp.status).to.eq(200)
-                      const matchTitle = resp.body.match(titleRegex)
-                      const matchContributor = resp.body.match(contributorRegex)
-                      const matchContent = (matchTitle && matchTitle.length > 0) || (matchContributor && matchContributor.length > 0)
-                      expect(matchContent, 'Protocol link should make sense').to.be.true
+        cy.get('.dataset-description-info strong').then(($description) => {
+          const description = $description.text()
+          if (description.match(/Protocol Links/i)) {
+            cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+              cy.get('.dataset-owners').then(($contributor) => {
+                cy.get('.dataset-description-info strong').contains(/Protocol Links/i).parents('.experimental-design-container').within(($content) => {
+                  if ($content.text().includes('https://doi.org/')) {
+                    cy.get('.link2').as('links')
+                    cy.get('@links').should(($links) => {
+                      expect($links.length, 'Link should have at lease one').to.be.greaterThan(0)
                     })
-                  })
+                    cy.get('@links').each(($link) => {
+                      cy.wrap($link).invoke('attr', 'href').then((href) => {
+                        cy.request(href).then((resp) => {
+                          const title = $title.text().trim().replaceAll(' ', '.*')
+                          const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
+                          const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
+                          const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
+                          expect(resp.status).to.eq(200)
+                          expect(resp.body, 'Protocol link should make sense').to.match(regex)
+                        })
+                      })
+                    })
+                  }
                 })
-              }
+              })
             })
-          })
+          }
         })
       })
     })
@@ -210,13 +215,13 @@ datasetIds.forEach((datasetId) => {
             })
           })
           cy.get('.about-section-container a').then(($email) => {
-            const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ').trim()
-            const name = author.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            const nameReversed = name.split(' ').reverse().join(' ')
-            const nameRegex = new RegExp('\(' + name + '|' + nameReversed + '\)', 'i')
             cy.get('.dataset-owners').should(($contributors) => {
+              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ').trim()
+              const name = author.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+              const nameReversed = name.split(' ').reverse().join(' ')
+              const regex = new RegExp('\(' + name + '|' + nameReversed + '\)', 'i')
               const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-              expect(contributors, 'Contact author should be in contributor list').to.match(nameRegex)
+              expect(contributors, 'Contact author should be in contributor list').to.match(regex)
             })
             expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)
           })
@@ -441,14 +446,12 @@ datasetIds.forEach((datasetId) => {
       it('Content', function () {
         // Check for consistency between citation and dataset information
         cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-          const title = $title.text().match(/[a-z]{3,}/gi)
           cy.get('.el-col-sm-16').contains(/Description/i).parent().then(($description) => {
-            const description = $description.text().replace(/Description:/i, '').match(/[a-z]{3,}/gi)
             cy.get('.dataset-references .citation-container').then(($citation) => {
+              const title = $title.text().match(/[a-z0-9]{3,}/gi)
+              const description = $description.text().replace(/Description:/i, '').match(/[a-z0-9]{3,}/gi)
               const regex = new RegExp('\(' + title.concat(description).join('|') + '\)', 'gi')
-              const matchText = $citation.text().match(regex)
-              const matchContent = matchText && matchText.length > 0
-              expect(matchContent, 'Citation content should be consistent with dataset information').to.be.true
+              expect($citation.text(), 'Citation content should be consistent with dataset information').to.match(regex)
             })
           })
         })

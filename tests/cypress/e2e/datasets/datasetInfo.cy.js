@@ -124,15 +124,13 @@ datasetIds.forEach((datasetId) => {
               exclude += 1
             }
             if (facetLabels.length === $facets.length - exclude) {
-              const labels = facetLabels.map((label) => label.split(' ')).flat()
-              const regex = new RegExp('\(' + labels.join('|') + '\)', 'gi')
               cy.get('.el-col-sm-16 > .heading2').then(($title) => {
                 cy.get('.el-col-sm-16').contains(/Description:/i).parent().then(($description) => {
                   cy.get('.description-container').then(($abstract) => {
+                    const labels = facetLabels.map((label) => label.split(' ')).flat()
+                    const regex = new RegExp('\(' + labels.join('|') + '\)', 'gi')
                     const text = $title.text() + $description.text() + $abstract.text()
-                    const matchText = text.match(regex)
-                    const matchContent = matchText && matchText.length > 0
-                    expect(matchContent, 'Metadata tags should be suitable for the dataset').to.be.true
+                    expect(text, 'Metadata tags should be suitable for the dataset').to.match(regex)
                   })
                 })
               })
