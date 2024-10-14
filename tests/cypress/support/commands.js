@@ -322,8 +322,12 @@ Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
               cy.get('.breadcrumb-list .breadcrumb-link').each(($breadcrumb) => {
                 expect(breadcrumbs, 'Filepath should contain all breadcrumbs').to.include($breadcrumb.text())
               })
-              cy.get('.cell').contains(breadcrumbs[breadcrumbs.length - 1]).should(($filename) => {
-                expect($filename, 'Filename should exist').to.exist
+              const filenameList = breadcrumbs[breadcrumbs.length - 1].match(/[a-z0-9]+/gi)
+              const filenameRegex = new RegExp(filenameList.join('.*'), 'gi')
+              cy.get('.truncated > a').then(($filenames) => {
+                const matchFilename = $filenames.text().match(filenameRegex)
+                const matchContent = matchFilename && matchFilename.length > 0
+                expect(matchContent, 'Filename should exist in the table').to.be.true
               })
             })
           }
