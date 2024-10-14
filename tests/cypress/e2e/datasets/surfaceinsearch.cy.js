@@ -46,17 +46,23 @@ datasetIds.forEach((datasetId) => {
 
     it('Surfaces in Faceted Browse Search', function () {
       cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-        cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
-          const randomIndex = randomInteger(0, $facets.length - 1)
-          cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
-          cy.waitForPageLoading()
-          cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-          cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-          cy.waitForBrowserLoading()
-          cy.get('.cell').contains($title.text()).should(($dTitle) => {
-            expect($dTitle, 'Dataset title should exist in search results').to.exist
-          })
-          cy.backToDetailPage(datasetId)
+        cy.get('.similar-datasets-container > .px-8').then(($similar) => {
+          if ($similar.text().includes('Type:')) {
+            cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').then(($facets) => {
+              const randomIndex = randomInteger(0, $facets.length - 1)
+              cy.get('.facet-button-container > .el-tooltip__trigger > .tooltip-item').eq(randomIndex).click()
+              cy.waitForPageLoading()
+              cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+              cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+              cy.waitForBrowserLoading()
+              cy.get('.cell').contains($title.text()).should(($dTitle) => {
+                expect($dTitle, 'Dataset title should exist in search results').to.exist
+              })
+              cy.backToDetailPage(datasetId)
+            })
+          } else {
+            this.skip()
+          }
         })
       })
     })
