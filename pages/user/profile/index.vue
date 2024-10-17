@@ -144,9 +144,9 @@
                     </template>
                     <div>
                       My published Datasets relates to all Datasets, Computational and Anatomical models where you have
-                      been
-                      associated to the dataset using your ORCID number. If there are datasets that you feel should be
-                      linked to you please contact curation@sparc.science
+                      been associated to the dataset using your ORCID number. Please note that there may be a delay in recently
+                      published datasets being immediately available on the portal. 
+                      If there are datasets that you feel should be linked to you please contact curation@sparc.science
                     </div>
                   </el-popover>
                 </client-only>
