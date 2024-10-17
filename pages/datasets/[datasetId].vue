@@ -148,23 +148,20 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
-const getOrganizationNames = async (algoliaIndex) => {
+const getOrganizationIds = async (algoliaIndex) => {
   try {
-    await algoliaIndex.search('', {
+    const { facets } = await algoliaIndex.search('', {
       hitsPerPage: 0,
       sortFacetValuesBy: 'alpha',
-      facets: 'pennsieve.organization.name',
-    }).then(({ facets }) => {
-      return facets['pennsieve.organization.name'].keys()
+      facets: 'pennsieve.organization.identifier',
     })
+    return Object.keys(facets['pennsieve.organization.identifier'])
   } catch (error) {
     return [
-      'SPARC',
-      'SPARC Consortium',
-      'RE-JOIN',
-      'HEAL PRECISION',
-      "IT'IS Foundation",
-      "NIH PRECISION Human Pain Network"
+      29, //IT'IS Foundation
+      367, // SPARC
+      661, // RE-JOIN
+      666, // PRECISION
     ]
   }
 }
@@ -239,7 +236,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary, sparcOrganizationNames, algoliaContributors] = await Promise.all([
+      let [datasetDetails, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -249,7 +246,7 @@ export default {
         ),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
-        getOrganizationNames(algoliaIndex),
+        getOrganizationIds(algoliaIndex),
         getContributorsFromAlgolia(algoliaIndex, datasetId)
       ])
       const datasetDetailsContributors = algoliaContributors?.map(contributor => {
@@ -292,9 +289,9 @@ export default {
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
       const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
       // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
-      if (!sparcOrganizationNames.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
+      if (!sparcOrganizationIds.includes(`${propOr('', 'organizationId', datasetDetails)}`) && !isEmpty(doiLink) && !showTombstone)
       {
-        navigateTo(doiLink, { external: true, redirectCode: 301 })
+        await navigateTo(doiLink, { external: true, redirectCode: 301 })
       }
 
       return {
