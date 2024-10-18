@@ -144,9 +144,9 @@
                     </template>
                     <div>
                       My published Datasets relates to all Datasets, Computational and Anatomical models where you have
-                      been
-                      associated to the dataset using your ORCID number. If there are datasets that you feel should be
-                      linked to you please contact curation@sparc.science
+                      been associated to the dataset using your ORCID number. Please note that there may be a delay in recently
+                      published datasets being immediately available on the portal. 
+                      If there are datasets that you feel should be linked to you please contact curation@sparc.science
                     </div>
                   </el-popover>
                 </client-only>
@@ -393,7 +393,8 @@ export default {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
-          this.fetchUserDatasets()
+          this.fetchPublishedDatasets(newValue)
+          this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
         }
@@ -402,7 +403,36 @@ export default {
     },
   },
   methods: {
-    async fetchUserDatasets() {
+    async fetchPublishedDatasets(orcid) {
+      const filter = `contributors.curie:\"ORCID:${orcid}\"`
+      try {
+        const { hits } = await this.$algoliaClient.initIndex(this.$config.public.ALGOLIA_INDEX).search('', {
+          filters: filter,
+          hitsPerPage: 999
+        })
+        let items = []
+        for (const hit of hits) {
+            const datasetName = pathOr('', ['item', 'name'], hit)
+            const datasetId = propOr('', 'objectID', hit)
+            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
+            const numDownloads = this.getDownloadsCount(datasetId);
+            items.push({
+                'name': datasetName,
+                'intId': datasetId,
+                'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
+                'numDownloads': numDownloads,
+                'numCitations': numCitations
+            })
+        }
+        this.datasets = items
+      } catch (error) {
+        this.datasets = []
+      } finally {
+        this.datasetsLoading = false
+      }
+    },
+    async fetchInProgressDatasets() {
       let orgIntIds = []
       this.organizations.forEach(org => {
         orgIntIds.push(org.intId)
@@ -413,7 +443,6 @@ export default {
           await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${id}&api_key=${this.userToken}`)
 
           let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/paginated?onlyMyDatasets=true&api_key=${this.userToken}`)
-          const publishedDatasets = data.datasets.filter(dataset => dataset.publication.status == 'completed')
           const inProgressDatasets = data.datasets.filter(dataset => dataset.publication.status != 'completed')
 
           for (let dataset of inProgressDatasets) {
@@ -424,29 +453,10 @@ export default {
               banner: data.banner
             })
           }
-
-          for (let dataset of publishedDatasets) {
-            const intId = pathOr('', ['content', 'intId'], dataset)
-            const datasetName = pathOr('', ['content', 'name'], dataset)
-            const pennsieveIdentifier = pathOr('', ['content', 'id'], dataset)
-
-            let { data } = await this.$axios.get(`${this.$config.public.LOGIN_API_URL}/datasets/${pennsieveIdentifier}/banner?api_key=${this.userToken}`)
-            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
-            const numDownloads = this.getDownloadsCount(intId)
-
-            this.datasets.push({
-              'name': datasetName,
-              'intId': intId,
-              'banner': data.banner,
-              'numDownloads': numDownloads,
-              'numCitations': numCitations
-            })
-          }
         } catch (e) {
         }
       }
       this.inProgressDatasetsLoading = false
-      this.datasetsLoading = false
     },
     async fetchDatasetSubmissions() {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
