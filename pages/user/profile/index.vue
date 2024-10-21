@@ -152,7 +152,7 @@
                 </client-only>
               </span>
             </div>
-            <gallery v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
+            <gallery :v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
           </div>
 
           <div class="section heading2 p-16 mt-16">
@@ -172,7 +172,7 @@
                 </client-only>
               </span>
             </div>
-            <gallery v-loading="inProgressDatasetsLoading" galleryItemType="inProgressDatasets" :items="inProgressDatasets" />
+            <gallery :v-loading="inProgressDatasetsLoading" galleryItemType="inProgressDatasets" :items="inProgressDatasets" />
           </div>
 
           <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
@@ -193,7 +193,7 @@
                 </client-only>
               </span>
             </div>
-            <div v-loading="submissionsLoading">
+            <div :v-loading="submissionsLoading">
               <template v-for="datasetSubmission in datasetSubmissions" :key="datasetSubmission.id">
                 <div class="resource-container row">
                   <span class="body1 left-col mr-16">
