@@ -16,7 +16,7 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSupport?.length > 0" class="who-we-support-container p-24 mt-32">
+      <div class="who-we-support-container p-24 mt-32">
         <div class="heading2">Who We Support</div>
         <Consortias />
         <nuxt-link to="/about/projects">
