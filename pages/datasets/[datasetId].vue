@@ -251,8 +251,8 @@ export default {
       ])
       const datasetDetailsContributors = algoliaContributors?.map(contributor => {
         return {
-          firstName: contributor.first.name,
-          lastName: contributor.last.name,
+          firstName: contributor.first?.name,
+          lastName: contributor.last?.name,
           orcid: contributor.curie?.replace('ORCID:', '')
         }
       })
