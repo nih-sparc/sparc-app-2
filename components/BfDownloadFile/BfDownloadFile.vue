@@ -62,6 +62,7 @@
 
 <script>
 import StorageMetrics from '@/mixins/bf-storage-metrics'
+import { propOr } from 'ramda'
 
 const DEFAULT_ARCHIVE_NAME = 'sparc-portal-data'
 
@@ -193,8 +194,8 @@ export default {
         file_path: "",
         file_type: "",
         category: "",
-        dataset_id: "",
-        version_id: "",
+        dataset_id: this.dataset.id,
+        version_id: this.dataset.version,
         doi: "",
         citation_type: "",
         location: ""
