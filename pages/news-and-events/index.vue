@@ -73,11 +73,18 @@
               <newsletter-form />
               <div class="newsletter-archive mt-16">
                 <div class="heading2 mt-24">Current Newsletter</div>
-                <div ref="newsletterArchive" id="newsletter-archive" />
-                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
-                  target="_blank">
-                  View all Newsletters<svgo-icon-open />
-                </a>
+                <div>
+                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-current"
+                    target="_blank">
+                    Read the current SPARC Plug Newsletter<svgo-icon-open />
+                  </a>
+                </div>
+                <div>
+                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
+                    target="_blank">
+                    View Newsletters Archive<svgo-icon-open />
+                  </a>
+                </div>
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel">
@@ -147,10 +154,6 @@ export default {
       return data
     } catch(e) {
     }
-  },
-
-  mounted() {
-    this.$injectNewsletterArchive('#newsletter-archive')
   },
 
   watch: {
