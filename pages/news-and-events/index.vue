@@ -73,12 +73,21 @@
               <newsletter-form />
               <div class="newsletter-archive mt-16">
                 <div class="heading2 mt-24">Current Newsletter</div>
-                <div ref="newsletterArchive" id="newsletter-archive" />
-                <a class="mt-8" href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
-                  target="_blank">
-                  View all Newsletters<svgo-icon-open />
-                </a>
+                <div>
+                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-current"
+                    target="_blank">
+                    Read the current SPARC Plug Newsletter<svgo-icon-open />
+                  </a>
+                </div>
+                <div>
+                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
+                    target="_blank">
+                    View Newsletters Archive<svgo-icon-open />
+                  </a>
+                </div>
               </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel">
               <div class="heading2 mt-24">Get Involved</div>
               <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your
                 science story, news, or event.</div>
@@ -103,12 +112,6 @@
                     Submit A Community Spotlight Idea
                   </el-button>
                 </nuxt-link>
-              </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" class="twitter-wrap">
-              <div v-twitter-widgets>
-                <a class="twitter-timeline" href="https://twitter.com/sparc_science?ref_src=twsrc%5Etfw">Tweets by
-                  sparc_science</a>
               </div>
             </el-col>
           </el-row>
@@ -151,13 +154,6 @@ export default {
       return data
     } catch(e) {
     }
-  },
-
-  mounted() {
-    this.$injectNewsletterArchive('#newsletter-archive')
-    const xFeedScript = document.createElement('script')
-    xFeedScript.setAttribute('src', 'https://platform.twitter.com/widgets.js')
-    document.head.appendChild(xFeedScript)
   },
 
   watch: {
@@ -261,14 +257,12 @@ export default {
   margin-bottom: 2rem;
   @media (min-width: 48em) {
     margin-bottom: 0;
+    &.right-panel {
+      border-left: 2px solid #d8d8d8;
+    }
   }
   p {
     color: $darkBlue
-  }
-}
-.twitter-wrap {
-  @media (min-width: 48em) {
-    border-left: 2px solid #d8d8d8;
   }
 }
 

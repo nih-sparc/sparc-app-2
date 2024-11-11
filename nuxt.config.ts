@@ -130,7 +130,6 @@ export default defineNuxtConfig({
       ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
-      ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
@@ -204,10 +203,12 @@ export default defineNuxtConfig({
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
     cacheMaxAgeSeconds: 86400,
-    sources: [
+    sources: process.env.DEPLOY_ENV === 'production' ?
+    [
       '/api/__sitemap__/urls'
-    ],
-    exclude: [
+    ] : [],
+    exclude: process.env.DEPLOY_ENV === 'production' ? 
+    [
       '/datasets/plotviewer',
       '/datasets/simulationviewer',
       '/datasets/timeseriesviewer',
@@ -216,8 +217,7 @@ export default defineNuxtConfig({
       '/datasets/flatmapviewer',
       '/datasets/imageviewer',
       '/datasets/scaffoldviewer',
-    ],
-    
+    ] : ['/'],  
     xslColumns: [
       { label: 'URL', width: '100%' }
     ],
@@ -225,7 +225,8 @@ export default defineNuxtConfig({
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
-    disallow: [
+    disallow: process.env.DEPLOY_ENV === 'production' ? 
+    [
       '/datasets/*?*',
       '/welcome', 
       '/user', 
@@ -235,7 +236,7 @@ export default defineNuxtConfig({
       '/maps',
       '/news-and-events/submit',
       '/news-and-events/community-spotlight/submit'
-    ],
+    ] : ['/'],
     blockNonSeoBots: true,
     crawlDelay: 3600
   }

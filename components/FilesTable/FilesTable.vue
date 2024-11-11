@@ -730,8 +730,8 @@ export default {
         file_type: pathOr('', ['row','fileType'], scope),
         location: "",
         category: "",
-        dataset_id: "",
-        version_id: "",
+        dataset_id: this.datasetInfo.id,
+        version_id: this.datasetVersion,
         doi: "",
         citation_type: "",
         files: ""
@@ -767,8 +767,8 @@ export default {
         file_type: "",
         location: "",
         category: "",
-        dataset_id: "",
-        version_id: "",
+        dataset_id: this.datasetInfo.id,
+        version_id: this.datasetVersion,
         doi: "",
         citation_type: ""
       })
