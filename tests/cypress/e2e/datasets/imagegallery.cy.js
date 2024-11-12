@@ -139,14 +139,18 @@ datasetIds.forEach((datasetId) => {
                         })
                       }
                       if (item === 'Image') {
-                        cy.window().then((window) => {
-                          cy.stub(window, 'open').as('Open')
-                        })
-                        cy.get('.biolucida-viewer > .el-row > div > .el-button').each(($button) => {
+                        let windowOpenStub
+                        cy.get('.biolucida-viewer > .el-row > div > .el-button').each(($button, index) => {
+                          cy.window().then((window) => {
+                            windowOpenStub = cy.stub(window, 'open').as(`Open${index}`)
+                          })
                           cy.wrap($button).click()
-                          cy.get('@Open').should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
+                          cy.get(`@Open${index}`).should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
                             const link = stub.args[0][0]
-                            expect(link.length, 'Button should contain link to external resource').to.be.greaterThan(0)
+                            expect(link.length, 'Button should contain external resource link').to.be.greaterThan(0)
+                          })
+                          cy.then(()=>{
+                            windowOpenStub.restore()
                           })
                         })
                       }
