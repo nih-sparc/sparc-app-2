@@ -98,7 +98,6 @@ jobs:
 
       - name: Schedule Run Testing against Staging
         uses: cypress-io/github-action@v6
-        timeout-minutes: 30
         env:
           ROOT_URL: "https://staging.sparc.science"
         with:
