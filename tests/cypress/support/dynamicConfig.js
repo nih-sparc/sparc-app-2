@@ -45,11 +45,7 @@ const DYNAMICENVS = {
     },
     'FILTER_FACETS': {
         'value': 'Tissue, Rat, Anatomy, Female, Embryo',
-        'number': 1 // fixed, no need to change
-    },
-    'MULTIPLE_FILTER_FACETS': {
-        'value': 'Central Nervous System, Human, Connectivity, Male, Adult',
-        'number': 2
+        'number': 2 // fixed, no need to change
     },
     'TAXON_MODELS': {
         'value': 'Human Female, Human Male, Rat, Mouse, Pig, Cat', // fixed, no need to change

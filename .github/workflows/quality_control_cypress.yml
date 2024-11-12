@@ -14,7 +14,7 @@ on:
       DATASET_IDS:
         description: "Define dataset ids"
         required: true
-        default: "76, 119, 127, 331, 338"
+        default: "54, 76, 117, 226, 385"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,5 +109,5 @@ jobs:
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true
-          spec: tests/cypress/e2e/datasets/*.cy.js,tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/mapsviewer.cy.js
+          spec: tests/cypress/e2e/datasets/*.cy.js,tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/mapsviewer.cy.js,tests/cypress/e2e/portallogin.cy.js
           tag: QC
