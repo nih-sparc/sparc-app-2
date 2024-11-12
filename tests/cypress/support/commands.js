@@ -24,8 +24,6 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { randomInteger } from '../support/utils.js'
-
 Cypress.on('uncaught:exception', (err, runnable) => {
   // returning false here prevents Cypress from
   // failing the test
@@ -250,94 +248,6 @@ Cypress.Commands.add('checkGalleyCardState', () => {
     })
   }
   clickNextPageButton()
-})
-
-Cypress.Commands.add('checkGalleryItemViewer', (datasetId, itemType) => {
-  cy.get('.el-cascader-node').contains(new RegExp(itemType, 'i')).parent().siblings().click()
-  cy.window().then((window) => {
-    cy.stub(window.document.body, 'appendChild').as('cardClicked')
-  })
-  cy.get('.el-pager > .number').then(($pages) => {
-    if ($pages.length > 1) {
-      const randomPage = randomInteger(0, $pages.length - 1)
-      cy.wrap($pages).eq(randomPage).click()
-    }
-    cy.get('.el-card > .el-card__body').then(($cards) => {
-      const randomCard = randomInteger(0, $cards.length - 1)
-      cy.wrap($cards).eq(randomCard).then(($card) => {
-        cy.wrap($card).find('.el-button').click()
-        cy.get('@cardClicked').should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
-          // Appended link element
-          const element = stub.args[0][0]
-          expect(element, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
-          cy.visit(element.href)
-          cy.waitForPageLoading()
-          if (itemType === 'Scaffold' || itemType === 'Flatmap') {
-            // Check whether map viewer loaded or not
-            cy.waitForViewerContainer('.mapClass')
-            cy.get('.page-hero > .container').should(($content) => {
-              expect($content, 'Map Viewer should display content').to.contain('Maps')
-            })
-            if (itemType === 'Scaffold') {
-              cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container > .el-select > .el-select__wrapper > .el-select__selection > .el-select__placeholder > span').should(($title) => {
-                expect($title, 'Map Viewer should display scaffold').to.contain('Scaffold')
-              })
-            }
-            if (itemType === 'Flatmap') {
-              cy.get('.toolbar-title').should(($title) => {
-                expect($title, 'Map Viewer should display flatmap').to.contain('MultiFlatmap')
-              })
-            }
-            cy.backToDetailPage(datasetId)
-            cy.waitForPageLoading()
-          } else {
-            // Check whether metadata exist or not
-            cy.waitForViewerContainer('.subpage')
-            if (itemType === 'Video') {
-              cy.get('video')
-                .should('have.prop', 'paused', true)
-                .and('have.prop', 'ended', false)
-                .then(($video) => {
-                  $video[0].play()
-                })
-              // once the video starts playing, check props
-              cy.get('video')
-                .should('have.prop', 'paused', false)
-                .and('have.prop', 'ended', false)
-            }
-            if (itemType === 'Segmentation' || itemType === 'Image') {
-              cy.get('.page-data').invoke('attr', 'class').then((classList) => {
-                if (classList.includes('biolucida-viewer')) {
-                  cy.get('iframe')
-                    .its('0.contentDocument.body')
-                    .should('not.be.empty')
-                }
-              })
-            }
-            cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
-              expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
-            })
-            cy.get('.subpage').contains('File location').siblings().find('a').then(($link) => {
-              cy.wrap($link).click()
-              cy.waitForPageLoading()
-              const breadcrumbs = $link.text().split('/')
-              cy.get('.breadcrumb-list .breadcrumb-link').each(($breadcrumb) => {
-                expect(breadcrumbs, 'Filepath should contain all breadcrumbs').to.include($breadcrumb.text())
-              })
-              const filenameList = breadcrumbs[breadcrumbs.length - 1].match(/[a-z0-9]+/gi)
-              const regex = new RegExp(filenameList.join('.*'), 'gi')
-              cy.get('.truncated > a').then(($filenames) => {
-                expect($filenames.text(), 'Filename should exist in the table').to.match(regex)
-              })
-            })
-          }
-          cy.then(() => {
-            cy.clickOnDetailTab('Gallery')
-          })
-        })
-      })
-    })
-  })
 })
 
 /**
