@@ -142,7 +142,6 @@ jobs:
         env:
           ROOT_URL: "https://sparc.science"
         uses: cypress-io/github-action@v6
-        timeout-minutes: 30
         with:
           wait-on: ${{ env.ROOT_URL }}
           record: true

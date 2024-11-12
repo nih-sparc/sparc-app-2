@@ -249,10 +249,13 @@ export default {
         getOrganizationIds(algoliaIndex),
         getContributorsFromAlgolia(algoliaIndex, datasetId)
       ])
-      const datasetDetailsContributors = algoliaContributors?.map(contributor => {
+      const filteredAlgoliaContributors = algoliaContributors.filter(contributor =>
+        contributor.first || contributor.last
+      )
+      const datasetDetailsContributors = filteredAlgoliaContributors?.map(contributor => {
         return {
-          firstName: contributor.first.name,
-          lastName: contributor.last.name,
+          firstName: contributor.first?.name,
+          lastName: contributor.last?.name,
           orcid: contributor.curie?.replace('ORCID:', '')
         }
       })
@@ -269,7 +272,7 @@ export default {
           name: propOr('', 'organizationName', datasetDetails)
         }
       ]
-      const contributors = algoliaContributors?.map(contributor => {
+      const contributors = filteredAlgoliaContributors?.map(contributor => {
         const sameAs = contributor.curie
           ? `http://orcid.org/${contributor.curie.replace('ORCID:', '')}`
           : null
