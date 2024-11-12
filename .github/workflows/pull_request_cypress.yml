@@ -82,7 +82,6 @@ jobs:
       - name: Automated Run Testing when Pull Request
         if: steps.checkUser.outputs.require-result == 'true'
         uses: cypress-io/github-action@v6
-        timeout-minutes: 30
         env:
           ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
         with:
