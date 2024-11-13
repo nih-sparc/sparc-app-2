@@ -98,20 +98,35 @@ export default {
       file.packageType == 'Image' ? 'Image' : // Biolucida
         file.packageType == 'Unsupported' ? 'Unsupported' : // Segmentation
           'Others' // All other types of files, e.g. plot, video, timeseries, etc.
+    //packageType is not correct for biolucida image in some cases so we will check
+    //the extension as well
+    if (packageType == 'Others' && file.name) {
+      let extension = file.name.split('.').pop();
+      if (extension === 'jp2' || extension === 'jpx') {
+        packageType = 'Image'
+      }
+    }
 
     // We should just be able to do as below and pull the source package id from file, but there are sometimes discrepancies between the pennsieve file sourcePackageId and the biolucida image data sourcePackageId returned from sparc.biolucida.net
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
+    let biolucidaData = {}
     try {
       const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
-      const imagesData = biolucidaSearchResults['dataset_images']
+      //sort the following with reverse order, make sure the latest images get prioritised
+      let imagesData = biolucidaSearchResults['dataset_images']
+      imagesData = imagesData.reverse()
       if (packageType == 'Image' && imagesData != undefined) {
         await Promise.all(imagesData.map(async image => {
           const imageInfo = await biolucida.getImageInfo(image.image_id)
           if (imageInfo['name'] == file.name)
           {
             sourcePackageId = image['sourcepkg_id']
+            biolucidaData.biolucida_image_id = image.image_id
+            biolucidaData.share_link = image.share_link
+            biolucidaData.status = imageInfo.status
+            biolucidaData.type_field = image.type_field
             return
           }
         }))
@@ -120,16 +135,6 @@ export default {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
     }
 
-    let biolucidaData = {}
-    try {
-      if (packageType == 'Image' && sourcePackageId != "") {
-        await $axios.get(`${config.public.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`).then(({ data }) => {
-          biolucidaData = data
-        })
-      }
-    } catch(e) {
-      console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
-    }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
 
     // We must remove the N: in order for scicrunch to realize the package
