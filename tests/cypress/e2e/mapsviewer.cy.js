@@ -167,13 +167,15 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card in sidebar for scaffold dataset ${datasetId}`, function () {
+      //Wait for the loading mask to appear otherwise sidebar will be closed on map loading
+      cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should('exist')
       // Open the sidebar
       cy.get('.open-tab > .el-icon').click()
 
       // Search dataset id
-      cy.get('.search-input > .el-input__wrapper').clear()
-      cy.get('.search-input > .el-input__wrapper').type(datasetId)
-      cy.get('.header > .el-button > span').click()
+      cy.get('.search-input > .el-input__wrapper').filter(':visible').clear()
+      cy.get('.search-input > .el-input__wrapper').filter(':visible').type(datasetId)
+      cy.get('.header > .el-button > span').filter(':visible').click()
 
       cy.wait('@query', { timeout: 20000 })
       cy.waitForLoadingMask()

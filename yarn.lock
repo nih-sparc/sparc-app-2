@@ -30,10 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@3.1.9":
-  version "3.1.9"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.1.9.tgz#c3d945406d38a462a29df5cbf1c055644805e5bf"
-  integrity sha512-MlqhIQbfW4Iaov0lc+9+sOzDpDxjO6FES8RyiJh+ObCsCI88NS/VJxf2fcKi31EfCVYG0RqOEocVZ1U9j9/QSw==
+"@abi-software/flatmap-viewer@^3.2.5":
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.5.tgz#ad7a56d89f5c89907c5b84d8eedc8dfc26988e25"
+  integrity sha512-mnuJXwke2rF/9qEKPPDJdHPqTimgN5CRf9+gyZwM0zPh3A/p4VHzPeFK3NFSdQ++4RwY0zDhEE/xhdifHf0coQ==
   dependencies:
     "@deck.gl/core" "^9.0.17"
     "@deck.gl/geo-layers" "^9.0.18"
@@ -75,13 +75,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.5.6":
-  version "1.5.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.5.6.tgz#f6cec44e38e08edeefa0555a43a4ced4ee563bef"
-  integrity sha512-G7lXWVUZK99HHpkoVrdzF1YEQjYpuJ0DsPU0Pzm2eTYnb6xFCgcW9exgzVJILm9Y+3V1znu7ix66kzjYatQQ2Q==
+"@abi-software/flatmapvuer@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.0.tgz#ffddd9ab5159b65eec4712fbf03a1588a7b58fa3"
+  integrity sha512-ZXKOcrsdTFX3coI4FVyVobhzS1yJ9pWxxV+Dsz7lzQpGP9Q5s4wFrkEk5wQl+yw1UfE6ZSTlZzwbHa3MoVD88Q==
   dependencies:
-    "@abi-software/flatmap-viewer" "3.1.9"
-    "@abi-software/map-utilities" "^1.1.2"
+    "@abi-software/flatmap-viewer" "^3.2.5"
+    "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/sparc-annotation" "0.3.1"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -102,13 +102,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.4.2.tgz#2079efc14c28d98e3855b62082041cd117f95042"
-  integrity sha512-OMTQ9wCv8I/fqJUe4l3tXaptaIshKCO/+zsHK/GGQnpdj5tNkmiPs4zDpQpOJkN06bEYrhODnVkHaISV0l5fJw==
+"@abi-software/map-side-bar@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.5.1.tgz#d7b795d7bd7b5107228ab01b49fdbc0e7ef8d8ff"
+  integrity sha512-ZPQj75Jm2ekg/PCRNrG/dVSgYpHlr80Q+R9Gwn67euYJeM6GQq2ymopUVizzhSOFUA2uzHJilj8Clmgfm5CPhQ==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "^1.1.2"
+    "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -119,28 +119,30 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.1.2.tgz#44f5151ee53b7d36024a402a0c95c0c5236d7f72"
-  integrity sha512-NMERIqSq6pVwy7Daq+Uip8Cm1UE2KEJoquOqVXACrMoTDHV77LPbWAtawn3f7De5HK69oqLwZ+wbnFLy5aisrQ==
+"@abi-software/map-utilities@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.2.0.tgz#a9abd1726ef99ed8f95c41e7e3d04afd66d13b98"
+  integrity sha512-KKDCnHUDmLgzcUxBNZdh0ev2XY04ISirK7WXk87pxKH0m6qUhU9RUBcgHUQ3yizLP07mQe0/CvQpkwHv9znlEw==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
+    cytoscape "^3.30.2"
     element-plus "2.8.4"
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.5.2":
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.5.2.tgz#99e81f2f831a9023e369fc2caab7105903af1b6e"
-  integrity sha512-/FVBAPWSTQiMLiL1VIJqmQ5IMpW4p9EzVlnBlMC4/h+7yLhSh1e3e9lD7ptPGEkTN1sz+ij7+TIbAzk/EH7UJw==
+"@abi-software/mapintegratedvuer@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.6.1.tgz#d87c1e833006c387268de3cd4f1d8842698b0d04"
+  integrity sha512-YCQUigwlu978Izo6g3bJ/INPllwzmvleC0Y7Q9TzCLEfvHjhm4kiAqmHLrsfig7RUXiIQl9QuR/iODHohh/bNA==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.5.6"
-    "@abi-software/map-side-bar" "^2.4.2"
-    "@abi-software/map-utilities" "^1.1.2"
+    "@abi-software/flatmapvuer" "^1.6.0"
+    "@abi-software/map-side-bar" "^2.5.1"
+    "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/plotvuer" "^1.0.3"
-    "@abi-software/scaffoldvuer" "^1.5.1"
+    "@abi-software/scaffoldvuer" "^1.6.2"
     "@abi-software/simulationvuer" "^1.0.1"
+    "@abi-software/sparc-annotation" "0.3.1"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     "@vitejs/plugin-vue" "^4.6.2"
@@ -169,12 +171,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.5.1":
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.5.1.tgz#118974f5e9b51f5db0b0bef7cf50834a29910127"
-  integrity sha512-6bkdnw4kYMKju0iCzlVQ0c/qw0YQyCyAHu0JD2m/Q0Rpkv1SFSXVtv1BktUOxG8EFJrwqZqIRId+385WdBwkTg==
+"@abi-software/scaffoldvuer@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.6.2.tgz#aa121ad412265fc08c88db248952cf356908ac15"
+  integrity sha512-Z9BvbDUrD5Ts2xVg7+ayj763/OvRHvYllPV/1iUQHucPZpjz4rk87KY5NXNMKuwA1eimeBg10LiWJLD7/BAIEA==
   dependencies:
-    "@abi-software/map-utilities" "^1.1.2"
+    "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/sparc-annotation" "^0.3.1"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -9544,6 +9546,11 @@ cypress@13.9.0:
     tmp "~0.2.1"
     untildify "^4.0.0"
     yauzl "^2.10.0"
+
+cytoscape@^3.30.2:
+  version "3.30.3"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.30.3.tgz#1b2726bbfa6673f643488a81147354841c252352"
+  integrity sha512-HncJ9gGJbVtw7YXtIs3+6YAFSSiKsom0amWc33Z7QbylbY2JGMrA0yz4EwrdTScZxnwclXeEZHzO5pxoy0ZE4g==
 
 d3-array@1, d3-array@^1.2.1:
   version "1.2.4"
