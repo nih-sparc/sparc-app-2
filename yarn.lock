@@ -102,10 +102,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.5.0.tgz#68728f411fdf9b0e1a98913ca3cbbcd3ca062e03"
-  integrity sha512-UagI+zVV3H47RcY9ZkNqBfNqTwZowJu9Mmm661MbNoJbbF5HKpXOjv1RQ4erj+eGu5OakNBZuq3XT6zmTOhPRA==
+"@abi-software/map-side-bar@^2.5.1":
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.5.1.tgz#d7b795d7bd7b5107228ab01b49fdbc0e7ef8d8ff"
+  integrity sha512-ZPQj75Jm2ekg/PCRNrG/dVSgYpHlr80Q+R9Gwn67euYJeM6GQq2ymopUVizzhSOFUA2uzHJilj8Clmgfm5CPhQ==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
     "@abi-software/map-utilities" "^1.2.0"
@@ -131,16 +131,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.6.0.tgz#5e6a3d35ffbf5b9fb2f8ef4df91a6e80820d4159"
-  integrity sha512-rawA5Iu1QSzkzrWu6oINwnzPC3ob0Y2Fskbj/vlHbxaQ4oyorkrre/+zGBoMBN5KTSFZKqWp2LUW/yVf219cKA==
+"@abi-software/mapintegratedvuer@1.6.1":
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.6.1.tgz#d87c1e833006c387268de3cd4f1d8842698b0d04"
+  integrity sha512-YCQUigwlu978Izo6g3bJ/INPllwzmvleC0Y7Q9TzCLEfvHjhm4kiAqmHLrsfig7RUXiIQl9QuR/iODHohh/bNA==
   dependencies:
     "@abi-software/flatmapvuer" "^1.6.0"
-    "@abi-software/map-side-bar" "^2.5.0"
+    "@abi-software/map-side-bar" "^2.5.1"
     "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/plotvuer" "^1.0.3"
-    "@abi-software/scaffoldvuer" "^1.6.1"
+    "@abi-software/scaffoldvuer" "^1.6.2"
     "@abi-software/simulationvuer" "^1.0.1"
     "@abi-software/sparc-annotation" "0.3.1"
     "@abi-software/svg-sprite" "^1.0.1"
@@ -171,10 +171,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.6.1.tgz#fd18c69f8697aa942c0c21de128786bba16b5e56"
-  integrity sha512-Q/sWC2VlFRKx3RcqGbkCx4U4S+RLlT7A35d/QrAXUoABH9/Or4b+RKFYaMHxP7VNSJHOA4ExcAywcbVNsgZMZA==
+"@abi-software/scaffoldvuer@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.6.2.tgz#aa121ad412265fc08c88db248952cf356908ac15"
+  integrity sha512-Z9BvbDUrD5Ts2xVg7+ayj763/OvRHvYllPV/1iUQHucPZpjz4rk87KY5NXNMKuwA1eimeBg10LiWJLD7/BAIEA==
   dependencies:
     "@abi-software/map-utilities" "^1.2.0"
     "@abi-software/sparc-annotation" "^0.3.1"
