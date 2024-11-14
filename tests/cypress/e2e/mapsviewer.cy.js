@@ -224,16 +224,17 @@ describe('Maps Viewer', { testIsolation: false }, function () {
   scaffoldDatasetIds.forEach((datasetId) => {
 
     it(`Context card for scaffold dataset ${datasetId}`, function () {
+      cy.waitForMapLoading()
       // Open the sidebar
       cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
       // Search dataset id
-      cy.get('.search-input > .el-input__wrapper').as('searchBox')
+      cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
       cy.get('@searchBox').clear()
       cy.get('@searchBox').type(datasetId)
-      cy.get('.header > .el-button > span').as('sidebarSearchButton').click()
+      cy.get('.header > .el-button > span:visible').as('sidebarSearchButton').click()
       cy.wait(5000)
       cy.wait('@query', { timeout: 20000 }).then((intercept) => {
-        cy.get('.dataset-results-feedback', { timeout: 30000 }).then(($result) => {
+        cy.get('.dataset-results-feedback:visible', { timeout: 30000 }).then(($result) => {
           if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
             // Empty text should show up if no result
             cy.get('.error-feedback').should(($text) => {
