@@ -539,61 +539,52 @@ export default {
         if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
           const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
-          let biolucidaItems = {}
           biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach((bObject) => {
             const biolucidaId = pathOr("", ['biolucida','identifier'], bObject)
-            if (biolucidaId && scicrunchData['dataset_images'].some(image => image.image_id == biolucidaId)) {
-              biolucidaItems[biolucidaId] = bObject
+            if (biolucidaId) {
+              const dataset_image = scicrunchData['dataset_images'].findLast((image) => {
+                return image.image_id == biolucidaId
+              })
+              if (dataset_image) {
+                let filePath = ""
+                filePath = "files/" + pathOr("", ['dataset','path'], bObject)
+                // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
+                const viewEncoding = dataset_image.share_link.replace(
+                  this.$config.public.BL_SHARE_LINK_PREFIX,
+                  ''
+                )
+                let linkUrl = filePath != "" ?
+                  baseRoute +
+                  `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
+                  baseRoute +
+                  'datasets/biolucidaviewer/' +
+                  dataset_image.image_id +
+                  '?view=' +
+                  viewEncoding +
+                  '&dataset_version=' +
+                  datasetVersion +
+                  '&dataset_id=' +
+                  datasetId +
+                  '&item_id=' +
+                  dataset_image.sourcepkg_id
+                bItems.push({
+                  id: dataset_image.image_id,
+                  title: null,
+                  type: 'Image',
+                  thumbnail: null,
+                  link: linkUrl
+                })
+                this.getThumbnailFromBiolucida(bItems, {
+                  id: dataset_image.image_id,
+                  fetchAttempts: 0
+                })
+                this.getImageInfoFromBiolucida(bItems, {
+                  id: dataset_image.image_id,
+                  fetchAttempts: 0
+                })
+              }
             }
           })
-          bItems.push(
-            ...Array.from(Object.values(biolucidaItems), biolucida_item => {
-              let filePath = ""
-              const dataset_image = scicrunchData['dataset_images'].find((image) => {
-                return image.image_id == pathOr("", ['biolucida','identifier'], biolucida_item)
-              })
-              biolucida2DItems.forEach(biolucida2DItem => {
-                if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
-                  filePath = "files/" + pathOr("", ['dataset','path'], biolucida2DItem)
-                }
-              })
-              this.getThumbnailFromBiolucida(bItems, {
-                id: dataset_image.image_id,
-                fetchAttempts: 0
-              })
-              this.getImageInfoFromBiolucida(bItems, {
-                id: dataset_image.image_id,
-                fetchAttempts: 0
-              })
-              const viewEncoding = dataset_image.share_link.replace(
-                this.$config.public.BL_SHARE_LINK_PREFIX,
-                ''
-              )
-              // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
-              let linkUrl = filePath != "" ?
-                baseRoute +
-                `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
-                baseRoute +
-                'datasets/biolucidaviewer/' +
-                dataset_image.image_id +
-                '?view=' +
-                viewEncoding +
-                '&dataset_version=' +
-                datasetVersion +
-                '&dataset_id=' +
-                datasetId +
-                '&item_id=' +
-                dataset_image.sourcepkg_id
-
-              return {
-                id: dataset_image.image_id,
-                title: null,
-                type: 'Image',
-                thumbnail: null,
-                link: linkUrl
-              }
-            })
-          )
         }
         this.biolucidaItems = bItems
 
