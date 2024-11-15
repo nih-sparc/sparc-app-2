@@ -133,7 +133,7 @@
             </div>
           </div>
 
-          <div class="section heading2 p-16 mt-16">
+          <div v-if="organizations.length >= 1" class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2 mb-16">Published Datasets ({{ datasets.length }})</span>
               <span>
@@ -155,7 +155,7 @@
             <gallery :v-loading="datasetsLoading" galleryItemType="datasets" :items="datasets" />
           </div>
 
-          <div class="section heading2 p-16 mt-16">
+          <div v-if="organizations.length >= 1" class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2 mb-16">In Progress Datasets ({{ inProgressDatasets.length }})</span>
               <span>
@@ -175,7 +175,7 @@
             <gallery :v-loading="inProgressDatasetsLoading" galleryItemType="inProgressDatasets" :items="inProgressDatasets" />
           </div>
 
-          <div v-if="showDatasetSubmissionFeature" class="section heading2 p-16 mt-16">
+          <div v-if="showDatasetSubmissionFeature && organizations.length > 1" class="section heading2 p-16 mt-16">
             <div class="datasets-container-title">
               <span class="heading2">Dataset Submission Requests ({{ datasetSubmissions.length }})</span>
               <span>
