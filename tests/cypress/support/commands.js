@@ -94,6 +94,13 @@ Cypress.Commands.add('waitForViewerContainer', (selector) => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
+  cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 30000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Connectivity graph loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 /**
  * Databrowser commands
  */

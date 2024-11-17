@@ -100,6 +100,12 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             message: `Clicked on the ${$title.text()}`,
             type: 'info'
           })
+          cy.get('.el-button.copy-clipboard-button:visible').click()
+          cy.window().then(win => {
+            win.navigator.clipboard.readText().then(text => {
+              expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
+            })
+          })
         })
         cy.get('.block > .subtitle').should(($description) => {
           expect($description, 'The provenance card should have the neuron description').to.exist
@@ -122,6 +128,9 @@ describe('Maps Viewer', { testIsolation: false }, function () {
           })
         }
       })
+      cy.get('.population-display > .buttons-row').as('populationDisplay')
+      // List view
+      cy.get('@populationDisplay').contains('List view').click()
       // Check for the provenance button click
       cy.get('.sidebar-container > .main > .content-container').then(($content) => {
         cy.wrap($content).get('.attribute-title-container').should(($title) => {
@@ -141,6 +150,28 @@ describe('Maps Viewer', { testIsolation: false }, function () {
               expect($tab, 'Active tab should be Connectivity after clicking on the Connectivity tab').to.contain('Connectivity')
             })
           }
+        })
+      })
+      // Graph view
+      cy.get('@populationDisplay').contains('Graph view').click()
+      cy.waitForConnectivityGraphLoading()
+      cy.get('.connectivity-graph > .graph-canvas').then(($graph) => {
+        expect($graph, 'The connectivity graph should exist').to.exist
+      })
+      cy.get('.connectivity-graph > .control-panel-tools').then(($panelTools) => {
+        expect($panelTools, 'The control panel tools should exist').to.exist
+      })
+      cy.get('.tools > .control-button:visible').then(($tools) => {
+        expect($tools, 'The control panel tools should have 2').to.have.length(2)
+      })
+      cy.get('.tools > :nth-child(2).control-button:visible').click()  
+      cy.get('.tools > .control-button:visible').then(($tools) => {
+        expect($tools, 'The more control panel tools should be displayed').to.have.length.greaterThan(2)
+      })
+      cy.get('.connectivity-graph > .control-panel-nodes').then(($panelNodes) => {
+        expect($panelNodes, 'The control panel nodes should exist').to.exist
+        cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
+          expect($keys, 'The control panel nodes should have at least one key').to.have.length.greaterThan(0)
         })
       })
       // Close the provenance card
