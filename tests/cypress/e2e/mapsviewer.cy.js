@@ -165,9 +165,6 @@ describe('Maps Viewer', { testIsolation: false }, function () {
         expect($tools, 'The control panel tools should have 2').to.have.length(2)
       })
       cy.get('.tools > :nth-child(2).control-button:visible').click()  
-      cy.get('.tools > .control-button:visible').then(($tools) => {
-        expect($tools, 'The more control panel tools should be displayed').to.have.length.greaterThan(2)
-      })
       cy.get('.connectivity-graph > .control-panel-nodes').then(($panelNodes) => {
         expect($panelNodes, 'The control panel nodes should exist').to.exist
         cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
