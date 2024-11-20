@@ -26,12 +26,11 @@ export default defineConfig({
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
       SEARCH_KEYWORDS: process.env.SEARCH_KEYWORDS ? process.env.SEARCH_KEYWORDS : 'Spine, Neck',
-      FILTER_FACET: process.env.FILTER_FACET ? process.env.FILTER_FACET : 'Human',
-      MULTIPLE_FILTER_FACETS: process.env.MULTIPLE_FILTER_FACETS ? process.env.MULTIPLE_FILTER_FACETS : 'Pig, Heart',
+      FILTER_FACETS: process.env.FILTER_FACETS ? process.env.FILTER_FACETS : 'Human, Heart',
       // datasets.js
-      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '127, 205, 290, 34, 76',
+      DATASET_IDS: process.env.DATASET_IDS ? process.env.DATASET_IDS : '54, 76, 117, 226, 385',
       // mapsviewer.js
-      TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Human Female',
+      TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Pig',
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
       SEARCH_IN_MAP: process.env.SEARCH_IN_MAP ? process.env.SEARCH_IN_MAP : 'Heart',
       SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '150, 155',
