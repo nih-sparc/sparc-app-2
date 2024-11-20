@@ -57,6 +57,7 @@
                   :associated-projects="associatedProjects" />
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
+                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <dataset-references v-if="hasCitations" class="body1" v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications" :associated-publications="associatedPublications" />
@@ -90,6 +91,7 @@ import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescripti
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
@@ -210,6 +212,7 @@ export default {
     DatasetAboutInfo,
     CitationDetails,
     DatasetFilesInfo,
+    SourceCodeInfo,
     ImagesGallery,
     DatasetReferences,
     VersionHistory,
@@ -494,6 +497,12 @@ export default {
       let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
       return numPrimary + numAssociated;
     },
+    hasSourceCode: function () {
+      return propOr(null, 'release', this.datasetInfo) !== null
+    },
+    sourceCodeLink: function () {
+      return pathOr(null, ['release','repoUrl'], this.datasetInfo)
+    },
     numDownloads: function () {
       let numDownloads = 0;
       this.downloadsSummary.filter(download => download.datasetId == this.datasetId).forEach(item => {
@@ -553,6 +562,17 @@ export default {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
             this.tabs.splice(5, 0, { label: 'References', id: 'references' })
+          }
+        }
+      },
+      immediate: true
+    },
+    hasSourceCode: {
+      handler: function (newValue) {
+        if (newValue && !this.hasError) {
+          const hasSourceCodeTab = this.tabs.find(tab => tab.id === 'source') !== undefined
+          if (!hasSourceCodeTab) {
+            this.tabs.splice(4, 0, { label: 'Source Code', id: 'source' })
           }
         }
       },
