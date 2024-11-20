@@ -1,21 +1,22 @@
 <template>
   <Head>
-    <Title>{{ page.fields.page_title }}</Title>
-    <Meta name="og:title" hid="og:title" :content="page.fields.page_title" />
-    <Meta name="twitter:title" :content="page.fields.page_title" />
-    <Meta name="description" hid="description" :content="page.fields.heroCopy" />
-    <Meta name="og:description" hid="og:description" :content="page.fields.heroCopy" />
-    <Meta name="twitter:description" :content="page.fields.heroCopy" />
+    <Title>{{ page?.fields?.page_title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="page?.fields?.page_title" />
+    <Meta name="twitter:title" :content="page?.fields?.page_title" />
+    <Meta name="description" hid="description" :content="page?.fields?.heroCopy" />
+    <Meta name="og:description" hid="og:description" :content="page?.fields?.heroCopy" />
+    <Meta name="twitter:description" :content="page?.fields?.heroCopy" />
   </Head>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
-      <h1>{{ page.fields.page_title }}</h1>
-      <!-- eslint-disable vue/no-v-html -->
-      <!-- marked will sanitize the HTML injected -->
-      <div v-html="parseMarkdown(page.fields.heroCopy)" />
-      <img v-if="page.fields.heroImage" :v-slot="image" class="page-hero-img"
-        :src="page.fields.heroImage.fields.file.url" />
+      <h1>{{ page?.fields?.page_title }}</h1>
+      <div v-html="parseMarkdown(page?.fields?.heroCopy)" />
+      <img
+        v-if="page?.fields?.heroImage"
+        class="page-hero-img"
+        :src="page.fields.heroImage.fields.file.url"
+      />
       <NuxtLink to="/news-and-events/news">
         <el-button class="secondary mb-16">Browse All News &amp; Events</el-button>
       </NuxtLink>
@@ -25,42 +26,44 @@
       <div class="container">
         <div v-if="Object.keys(featuredEvent).length" class="mb-48">
           <div class="heading2 mb-16">Featured Event</div>
-          <featured-event :event="featuredEvent" />
+          <FeaturedEvent :event="featuredEvent" />
         </div>
 
         <el-row :gutter="32">
           <el-col class="mb-16" :sm="12">
             <div class="heading2 mb-16">Latest News</div>
             <div class="subpage news-wrap">
-              <div>
-                <news-list-item v-for="newsItem in news.items" :key="newsItem.sys.id" :item="newsItem" />
-
-                <nuxt-link class="btn-load-more mt-16" :to="{
-                    name: 'news-and-events-news'
-                  }">
-                  View All News
-                </nuxt-link>
-              </div>
+              <news-list-item
+                v-for="newsItem in news.items"
+                :key="newsItem.sys.id"
+                :item="newsItem"
+              />
+              <nuxt-link class="btn-load-more mt-16" to="/news-and-events/news">
+                View All News
+              </nuxt-link>
             </div>
           </el-col>
           <el-col :sm="12">
             <div class="heading2 mb-16">Events</div>
             <div class="upcoming-events">
-              <event-card v-for="event in upcomingEvents.items" :key="event.sys.id" :event="event" />
+              <event-card
+                v-for="event in upcomingEvents.items"
+                :key="event.sys.id"
+                :event="event"
+              />
             </div>
-            <div class="mt-16">
-              <nuxt-link class="btn-load-more" :to="{
-                  name: 'news-and-events-events',
-                }">
-                View All Events
-              </nuxt-link>
-            </div>
+            <nuxt-link class="btn-load-more mt-16" to="/news-and-events/events">
+              View All Events
+            </nuxt-link>
           </el-col>
         </el-row>
 
         <div>
           <div class="heading2 mb-16 mt-32">Community Spotlight</div>
-          <community-spotlight-listings :stories="stories.items" :bottom-link="true" />
+          <community-spotlight-listings
+            :stories="stories.items"
+            :bottom-link="true"
+          />
         </div>
 
         <div id="stayConnected" class="heading2 mt-32 mb-16">Stay Connected</div>
@@ -68,46 +71,41 @@
           <el-row :gutter="32">
             <el-col :xs="24" :sm="12" class="newsletter-wrap">
               <div class="heading2">Sign up for the SPARC Newsletter</div>
-              <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.
+              <div class="body1 mb-16 mt-8">
+                Keep up to date with all the latest news and events from the SPARC Portal.
               </div>
               <newsletter-form />
               <div class="newsletter-archive mt-16">
                 <div class="heading2 mt-24">Current Newsletter</div>
-                <div>
-                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-current"
-                    target="_blank">
-                    Read the current SPARC Plug Newsletter<svgo-icon-open />
-                  </a>
-                </div>
-                <div>
-                  <a class="mt-8" href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
-                    target="_blank">
-                    View Newsletters Archive<svgo-icon-open />
-                  </a>
-                </div>
+                <a
+                  class="mt-8"
+                  href="https://docs.sparc.science/docs/sparc-plug-current"
+                  target="_blank"
+                >
+                  Read the current SPARC Plug Newsletter<svgo-icon-open />
+                </a>
+                <a
+                  class="mt-8"
+                  href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
+                  target="_blank"
+                >
+                  View Newsletters Archive<svgo-icon-open />
+                </a>
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel">
               <div class="heading2 mt-24">Get Involved</div>
-              <div class="body1 mb-16 mt-8">Empower SPARC to promote your science and interests by submitting your
-                science story, news, or event.</div>
+              <div class="body1 mb-16 mt-8">
+                Empower SPARC to promote your science and interests by submitting your science
+                story, news, or event.
+              </div>
               <div class="get-involved-buttons-container">
-                <nuxt-link :to="{
-                    name: 'contact-us',
-                    query: {
-                      type: 'news-event'
-                    }
-                  }" target="_blank">
+                <nuxt-link :to="{ name: 'contact-us', query: { type: 'news-event' } }">
                   <el-button class="get-involved-button secondary">
                     Share News Or Events
                   </el-button>
                 </nuxt-link>
-                <nuxt-link :to="{
-                    name: 'contact-us',
-                    query: {
-                      type: 'story'
-                    }
-                  }" target="_blank">
+                <nuxt-link :to="{ name: 'contact-us', query: { type: 'story' } }">
                   <el-button class="get-involved-button secondary mt-8">
                     Submit A Community Spotlight Idea
                   </el-button>
@@ -121,104 +119,45 @@
   </div>
 </template>
 
-<script>
-import FeaturedEvent from '@/components/FeaturedEvent/FeaturedEvent.vue';
-import NewsListItem from '@/components/NewsListItem/NewsListItem.vue';
-import EventCard from '@/components/EventCard/EventCard.vue';
-import CommunitySpotlightListings from '@/components/CommunitySpotlight/CommunitySpotlightListings.vue';
-import NewsletterForm from '@/components/NewsletterForm/NewsletterForm.vue';
+<script setup>
+import { computed } from 'vue';
+import { useAsyncData } from '#app';
+import { fetchData } from './model';
+import { marked } from 'marked'
+import DOMPurify from 'isomorphic-dompurify'
 
-import MarkedMixin from '@/mixins/marked'
-
-import { fetchData, fetchNews } from './model';
-
-export default {
-  name: 'NewsAndEventPage',
-
-  mixins: [
-    MarkedMixin
-  ],
-
-  components: {
-    FeaturedEvent,
-    NewsListItem,
-    EventCard,
-    CommunitySpotlightListings,
-    NewsletterForm
+const breadcrumb = [
+  {
+    to: { name: 'index' },
+    label: 'Home',
   },
+];
 
-  async setup() {
-    try {
-      const { $contentfulClient } = useNuxtApp()
-      const data = await fetchData($contentfulClient, '', 2)
-      return data
-    } catch(e) {
-    }
-  },
+const title = 'News & Events';
 
-  watch: {
-    '$route.query': {
-      handler: async function() {
-        const { $contentfulClient } = useNuxtApp()
-        const { upcomingEvents, news, page, stories } = await fetchData($contentfulClient, this.$route.query.search, 2)
-        this.upcomingEvents = upcomingEvents;
-        this.news = news;
-        this.page = page;
-        this.stories = stories;
-      },
-      immediate: true
-    }
-  },
+// Fetch initial data
+const { data: pageData } = await useAsyncData(() => {
+  const { $contentfulClient } = useNuxtApp();
+  return fetchData($contentfulClient, '', 2);
+});
 
-  data: function() {
-    return {
-      title: 'News & Events',
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        }
-      ],
-      upcomingEvents: {},
-      news: {},
-      page: {
-        fields: {
-          'page_title': 'News & Events'
-        }
-      },
-      stories: {}
-    }
-  },
+// Extract data
+const page = computed(() => pageData.value?.page || {});
+const news = computed(() => pageData.value?.news || {});
+const upcomingEvents = computed(() => pageData.value?.upcomingEvents || {});
+const stories = computed(() => pageData.value?.stories || {});
 
-  computed: {
-    /**
-     * Compute featured event
-     * @returns {Object}
-     */
-    featuredEvent: function() {
-      return this.page.fields.featuredEvent || {}
-    },
-  },
+// Computed for featured event
+const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {});
 
-  methods: {
-    /**
-     * Get all news
-     */
-    getAllNews: async function() {
-      const { $contentfulClient } = useNuxtApp()
-      const news = await fetchNews($contentfulClient, this.$route.query.search, undefined, undefined, undefined, undefined, this.news.total, 2)
-      this.news = { ...this.news, items: { ...this.news.items, ...news.items } }
-    },
-    currentMonth() {
-      return new Date().getMonth()
-    }
-  }
+// Markdown parser with sanitization
+const parseMarkdown = (markdown = '', purifyOptions = {}) => {
+  purifyOptions = { ...purifyOptions, ADD_ATTR: ['target'] }
+  return DOMPurify.sanitize(marked(markdown), purifyOptions)
 }
 </script>
 
-<style scoped lang="scss" >
+<style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 .page-data {
   background-color: $background;

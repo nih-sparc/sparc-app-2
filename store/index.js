@@ -61,7 +61,28 @@ export const useMainStore = defineStore('main', {
   },
   actions: {
     async init() {
-      await Promise.all([this.fetchContactUsFormOptions(), this.fetchFooterData(), this.fetchPortalNotification()])
+      // Server-side cookie check to ensure this runs only once
+      const appInitializedCookie = useCookie('appInitialized')
+
+      // If the cookie exists, prevent re-initialization
+      if (appInitializedCookie.value === 'true') {
+        console.log('App already initialized')
+        return
+      }
+
+      // If not, run the initialization actions
+      try {
+        await Promise.all([
+          this.fetchContactUsFormOptions(),
+          this.fetchFooterData(),
+          this.fetchPortalNotification()
+        ])
+
+        // Set the cookie to mark the app as initialized
+        appInitializedCookie.value = 'true'
+      } catch (error) {
+        console.error('Error during initialization:', error)
+      }
     },
     updateDisabledScrolling(value) {
       this.disableScrolling = value
@@ -85,37 +106,92 @@ export const useMainStore = defineStore('main', {
       this.formOptions = value
     },
     async fetchContactUsFormOptions() {
-      try {
-        const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_contact_us_form_options_id)
-        const fields = response.fields
+      // Fetch data server-side using `useAsyncData`
+      const { data, error } = await useAsyncData(
+        'contact-us-form-options',
+        async () => {
+          try {
+            const response = await useNuxtApp().$contentfulClient.getEntry(
+              useRuntimeConfig().public.ctf_contact_us_form_options_id
+            )
+            const fields = response.fields
   
-        const formOptions = {
-          userTypes: propOr([], 'typeOfUser', fields),
-          areasOfSparc: propOr([], 'areaOfSparcPortal', fields),
-          services: propOr([], 'services', fields),
-          resourceCategories: propOr([], 'resourceCategories', fields)
+            const formOptions = {
+              userTypes: propOr([], 'typeOfUser', fields),
+              areasOfSparc: propOr([], 'areaOfSparcPortal', fields),
+              services: propOr([], 'services', fields),
+              resourceCategories: propOr([], 'resourceCategories', fields),
+            }
+            return formOptions
+          } catch (e) {
+            console.error(e)
+            return null
+          }
+        },
+        {
+          server: true
         }
-        
-        this.setFormOptions(formOptions)
-      } catch (e) {
-        console.error(e)
+      )
+
+      if (data) {
+        this.setFormOptions(data)
       }
     },
+
     async fetchPortalNotification() {
-      try {
-        const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_portal_notification_entry_id)
-        this.setPortalNotification(response.fields)
-      } catch (e) {
-        console.error(e)
+      // Fetch data server-side using `useAsyncData`
+      const { data, error } = await useAsyncData(
+        'portal-notification',
+        async () => {
+          try {
+            const response = await useNuxtApp().$contentfulClient.getEntry(
+              useRuntimeConfig().public.ctf_portal_notification_entry_id
+            )
+            return response.fields
+          } catch (e) {
+            console.error(e)
+            return null
+          }
+        },
+        {
+          server: true
+        }
+      )
+
+      if (data) {
+        this.setPortalNotification(data)
       }
     },
+
     async fetchFooterData() {
-      try {
-        const response = await useNuxtApp().$contentfulClient.getEntry(useRuntimeConfig().public.ctf_home_page_id)
-        const { footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks } = response.fields
-        this.setFooterData({ footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks })
-      } catch (e) {
-        console.error(e)
+      // Fetch data server-side using `useAsyncData`
+      const { data, error } = await useAsyncData(
+        'footer-data',
+        async () => {
+          try {
+            const response = await useNuxtApp().$contentfulClient.getEntry(
+              useRuntimeConfig().public.ctf_home_page_id
+            )
+            const { footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks } = response.fields
+            return {
+              footerDescription,
+              learnMoreLinks,
+              policiesLinks,
+              helpUsImproveLinks,
+              stayUpdatedLinks,
+            }
+          } catch (e) {
+            console.error(e)
+            return null
+          }
+        },
+        {
+          server: true
+        }
+      )
+
+      if (data) {
+        this.setFooterData(data)
       }
     },
     setUserProfile(value) {
