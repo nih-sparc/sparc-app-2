@@ -30,8 +30,7 @@
 <script setup>
 import { computed } from 'vue'
 import { pathOr } from 'ramda'
-import { marked } from 'marked'
-import DOMPurify from 'isomorphic-dompurify'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 import { useAsyncData, useRuntimeConfig } from '#app'
 
 // Breadcrumb structure
@@ -41,12 +40,6 @@ const breadcrumb = [
     label: 'Home',
   },
 ]
-
-// Markdown parser with sanitization
-const parseMarkdown = (markdown = '', purifyOptions = {}) => {
-  purifyOptions = { ...purifyOptions, ADD_ATTR: ['target'] }
-  return DOMPurify.sanitize(marked(markdown), purifyOptions)
-}
 
 // Function to construct portal feature entries
 const constructPortalFeatureEntries = (apps) => {

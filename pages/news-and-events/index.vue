@@ -123,8 +123,7 @@
 import { computed } from 'vue';
 import { useAsyncData } from '#app';
 import { fetchData } from './model';
-import { marked } from 'marked'
-import DOMPurify from 'isomorphic-dompurify'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 
 const breadcrumb = [
   {
@@ -141,20 +140,13 @@ const { data: pageData } = await useAsyncData(() => {
   return fetchData($contentfulClient, '', 2);
 });
 
-// Extract data
 const page = computed(() => pageData.value?.page || {});
 const news = computed(() => pageData.value?.news || {});
 const upcomingEvents = computed(() => pageData.value?.upcomingEvents || {});
 const stories = computed(() => pageData.value?.stories || {});
 
-// Computed for featured event
 const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {});
 
-// Markdown parser with sanitization
-const parseMarkdown = (markdown = '', purifyOptions = {}) => {
-  purifyOptions = { ...purifyOptions, ADD_ATTR: ['target'] }
-  return DOMPurify.sanitize(marked(markdown), purifyOptions)
-}
 </script>
 
 <style scoped lang="scss">

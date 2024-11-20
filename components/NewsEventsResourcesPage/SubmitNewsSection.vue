@@ -10,14 +10,11 @@
 <script setup>
 import { useNuxtApp, useRuntimeConfig } from '#imports';
 import Paper from '@/components/Paper/Paper.vue';
-import { marked } from 'marked'
-import DOMPurify from 'isomorphic-dompurify'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 
-// Setup
 const config = useRuntimeConfig();
 const { $contentfulClient } = useNuxtApp();
 
-// Fetch data
 const { data } = await useAsyncData('newsAndEventsPage', async () => {
   const pageData = await $contentfulClient.getEntry(config.public.ctf_news_and_events_page_id);
   return {
@@ -27,10 +24,5 @@ const { data } = await useAsyncData('newsAndEventsPage', async () => {
 
 const searchPaperNEButton = computed(() => data.value?.fields.searchPaperNeButton || '')
 const searchPaperText = computed(() => data.value?.fields.searchPaperText || '')
-// Markdown parser with sanitization
-const parseMarkdown = (markdown = '', purifyOptions = {}) => {
-  purifyOptions = { ...purifyOptions, ADD_ATTR: ['target'] }
-  return DOMPurify.sanitize(marked(markdown), purifyOptions)
-}
 
 </script>

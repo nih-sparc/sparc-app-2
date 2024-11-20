@@ -37,118 +37,85 @@
   </news-events-resources-page>
 </template>
 
-<script>
-import { pathOr } from 'ramda'
-import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage'
-import FormatDate from '@/mixins/format-date'
+<script setup>
+import { computed } from 'vue';
+import { pathOr } from 'ramda';
+import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage';
+import { useNuxtApp, useRoute, useRouter } from '#app';
+import { formatDate } from '@/utils/dateUtils.js'
 
-const getEventPage = async (id) => {
-  const { $contentfulClient } = useNuxtApp()
-  const config = useRuntimeConfig()
-  try {
-    const isSlug = id.split('-').length > 1
+const route = useRoute();
+const router = useRouter();
+const { $contentfulClient } = useNuxtApp();
+const config = useRuntimeConfig();
 
-    const item = isSlug
+// Fetch event page data
+const { data: page, error } = useAsyncData(
+  'eventPage',
+  async () => {
+    const id = route.params.id;
+    const isSlug = id.split('-').length > 1;
+
+    const result = isSlug
       ? await $contentfulClient.getEntries({
           content_type: config.public.ctf_event_id,
           'fields.slug': id
         })
-      : await $contentfulClient.getEntry(id)
-    return isSlug ? item.items[0] : item
-  } catch (error) {
-    return {}
-  }
-}
+      : await $contentfulClient.getEntry(id);
 
-export default {
-  name: 'EventPage',
+    const eventPage = isSlug ? result.items[0] : result;
 
-  components: {
-    NewsEventsResourcesPage
-  },
-
-  mixins: [FormatDate],
-
-  async setup() {
-    const route = useRoute()
-    const router = useRouter()
-    try {
-      const page = await getEventPage(route.params.id)
-      const slug = pathOr(null, ['fields', 'slug'], page)
-      if (slug !== null && route.params.id !== slug) {
-        router.push(`/news-and-events/events/${slug}`)
-      }
-      return { page }
-    } catch (error) {
-      return {
-        page: {
-          fields: []
-        }
-      }
+    // Redirect if the slug doesn't match
+    const slug = pathOr(null, ['fields', 'slug'], eventPage);
+    if (slug && id !== slug) {
+      router.replace(`/news-and-events/events/${slug}`);
     }
-  },
 
-  data() {
-    return {
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'News & Events',
-          to: {
-            name: 'news-and-events'
-          }
-        },
-        {
-          label: 'Events',
-          to: {
-            name: 'news-and-events-events'
-          }
-        }
-      ]
-    }
-  },
-
-  computed: {
-    /**
-     * Get news and event image
-     * @returns {String}
-     */
-    newsImage: function() {
-      return pathOr('', ['fields', 'image', 'fields', 'file', 'url'], this.page)
-    },
-
-    /**
-     * Get news and event image alt tag
-     * @returns {String}
-     */
-    newsImageAlt: function() {
-      return pathOr('', ['fields', 'image', 'fields', 'title'], this.page)
-    },
-
-    eventDetails: function() {
-      return pathOr(null, ['fields', 'eventDetails'], this.page)
-    },
-
-    /**
-     * Get event date range, if there is no end date, default to start date
-     * @returns {String}
-     */
-    eventDate: function() {
-      const startDate = this.formatDate(this.page.fields?.startDate || '')
-      const endDate = this.formatDate(this.page.fields?.endDate || '')
-      return startDate === endDate || !endDate
-        ? startDate
-        : `${startDate} - ${endDate}`
-    },
-
-    hasEventDetailsPage: function() {
-      return this.eventDetails !== null
-    },
+    return eventPage || { fields: [] };
   }
-}
+);
+
+// Breadcrumb configuration
+const breadcrumb = [
+  {
+    label: 'Home',
+    to: { name: 'index' }
+  },
+  {
+    label: 'News & Events',
+    to: { name: 'news-and-events' }
+  },
+  {
+    label: 'Events',
+    to: { name: 'news-and-events-events' }
+  }
+];
+
+// Computed properties
+const newsImage = computed(() =>
+  pathOr('', ['fields', 'image', 'fields', 'file', 'url'], page.value)
+);
+
+const newsImageAlt = computed(() =>
+  pathOr('', ['fields', 'image', 'fields', 'title'], page.value)
+);
+
+const eventDetails = computed(() =>
+  pathOr(null, ['fields', 'eventDetails'], page.value)
+);
+
+const hasEventDetailsPage = computed(() => eventDetails.value !== null);
+
+const eventDate = computed(() => {
+  const startDate = page.value.fields?.startDate
+    ? formatDate(page.value.fields.startDate)
+    : '';
+  const endDate = page.value.fields?.endDate
+    ? formatDate(page.value.fields.endDate)
+    : '';
+  return startDate === endDate || !endDate
+    ? startDate
+    : `${startDate} - ${endDate}`;
+});
 </script>
+
