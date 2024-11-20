@@ -300,8 +300,11 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   } else if (route.query.type === 'wholebody') {
     startingMap = "WholeBody"
   } else {
+    //Only display the error if there is an invalid parameters
+    if (Object.keys(route.query).length > 0) {
+      failMessage = 'Invalid parameters were detected. Default parameters will now be used.'
+    }
     router.replace({ ...router.currentRoute, query: { type: 'ac' } })
-    failMessage = 'Invalid parameters were detected. Default parameters will now be used.'
   }
 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
