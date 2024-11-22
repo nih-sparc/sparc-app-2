@@ -1,11 +1,15 @@
 <template>
   <div class="body1">
-    The SPARC Portal currently supports <b><span class="heading2">{{ consortias.length }}</span></b> consortia. Visit
+    The SPARC Portal currently supports <b><span class="heading2">{{ items.length }}</span></b> consortia. Visit
     the consortia pages to find out more about them:
   </div>
   <div class="data-wrap py-16">
-    <nuxt-link v-for="item in consortias" :key="item.sys.id" class="consortia-item"
-      :to="`/about/consortia/${item.fields.slug}`">
+    <nuxt-link
+      v-for="item in items"
+      :key="item.sys.id"
+      class="consortia-item"
+      :to="`/about/consortia/${item.fields.slug}`"
+    >
       <img :src="logoUrl(item)" :alt="`Logo for ${item.fields.title}`" />
       <p class="mb-0 mt-8">
         {{ item.fields.title }}
@@ -19,20 +23,11 @@ import { pathOr } from 'ramda'
 
 export default {
   name: 'Consortias',
-  async setup() {
-    const config = useRuntimeConfig()
-    const { $contentfulClient } = useNuxtApp()
-    const consortias =
-      await $contentfulClient.getEntries({
-        content_type: config.public.ctf_consortia_content_type_id,
-        order: 'fields.displayOrder'
-      }).then(({ items }) => {
-        return items
-      }).catch(() => {
-        return []
-      })
-    return {
-      consortias
+
+  props: {
+    items: {
+      type: Array,
+      default: () => []
     }
   },
   methods: {
