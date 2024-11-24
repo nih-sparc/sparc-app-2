@@ -133,7 +133,6 @@ const { data: featuredDataCategories, error: featuredDataCategoriesError } = use
       }
     })
   })
-  console.log("CATS = ", categories)
   return categories
 })
 
