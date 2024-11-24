@@ -1,6 +1,6 @@
 <template>
   <div class="body1">
-    The SPARC Portal currently supports <b><span class="heading2">{{ items.length }}</span></b> consortia. Visit
+    The SPARC Portal currently supports <b><span class="heading2">{{ items?.length }}</span></b> consortia. Visit
     the consortia pages to find out more about them:
   </div>
   <div class="data-wrap py-16">

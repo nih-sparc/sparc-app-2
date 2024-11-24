@@ -23,7 +23,7 @@
     </div>
     <hr />
     <div class="secondary-background">
-      <client-only><featured-data :featured-data="featuredData" /></client-only>
+      <featured-data :featured-data="featuredData" :categories="featuredDataCategories"/>
     </div>
     <hr />
     <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
@@ -48,8 +48,7 @@ import { failMessage } from '@/utils/notification-messages'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
 import getHomepageFields from '@/utils/homepageFields'
 import { useMainStore } from '../store/index.js'
-import { mapState } from 'pinia'
-import { clone, pathOr } from 'ramda'
+import { pathOr } from 'ramda'
 import { useRuntimeConfig, useAsyncData } from '#app'
 
 const config = useRuntimeConfig()
@@ -123,7 +122,20 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
 
 const { data: homepageData, error: homepageError } = useAsyncData('homepage', async () => {
   return $contentfulClient.getEntry(config.public.ctf_home_page_id);
-});
+})
+
+const { data: featuredDataCategories, error: featuredDataCategoriesError } = useAsyncData('featuredDataCategories', async () => {
+  let categories = []
+  await $contentfulClient.getContentType('featuredData').then(contentType => {
+    contentType.fields.forEach((field) => {
+      if (field.id === 'facetType') {
+        categories = field.items?.validations[0]['in']
+      }
+    })
+  })
+  console.log("CATS = ", categories)
+  return categories
+})
 
 const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
   const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`);
@@ -170,16 +182,16 @@ const fields = computed(() => {
   return fields;
 })
 
-const heroHeading = computed(() => fields?.value.heroHeading)
-const heroImage = computed(() => fields?.value.heroImage)
-const heroCopy = computed(() => fields?.value.heroCopy)
-const portalFeatures = computed(() => fields?.value.portalFeatures)
-const exploreData = computed(() => fields?.value.exploreData)
-const featuredData = computed(() => fields?.value.featuredData)
-const featuredDataset = computed(() => fields?.value.featuredDataset)
-const featuredProject = computed(() => fields?.value.featuredProject)
-const datasetSectionTitle = computed(() => fields?.value.datasetSectionTitle)
-const newsAndEvents = computed(() => fields?.value.newsAndEvents)
+const heroHeading = computed(() => fields.value?.heroHeading)
+const heroImage = computed(() => fields.value?.heroImage)
+const heroCopy = computed(() => fields.value?.heroCopy)
+const portalFeatures = computed(() => fields.value?.portalFeatures)
+const exploreData = computed(() => fields.value?.exploreData)
+const featuredData = computed(() => fields.value?.featuredData)
+const featuredDataset = computed(() => fields.value?.featuredDataset)
+const featuredProject = computed(() => fields.value?.featuredProject)
+const datasetSectionTitle = computed(() => fields.value?.datasetSectionTitle)
+const newsAndEvents = computed(() => fields.value?.newsAndEvents)
 
 if (homepageError.value || featuredDatasetsError.value || institutionError.value) {
   console.error(homepageError.value || featuredDatasetsError.value || institutionError.value);
