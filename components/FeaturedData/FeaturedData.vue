@@ -10,9 +10,9 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, watch, computed } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
-import { pathOr, isEmpty } from 'ramda'
+import { isEmpty } from 'ramda'
 
 const config = useRuntimeConfig()
 const { $algoliaClient } = useNuxtApp()
@@ -30,7 +30,6 @@ const props = defineProps({
 
 const selectedCategory = ref(null)
 const facets = ref([])
-const viewMore = ref(false)
 const localFeaturedData = reactive([...props.featuredData])
 
 if (props.categories?.length > 0) {

@@ -98,6 +98,11 @@ export default {
       maxWidth: 0
     }
   },
+  watch: {
+    items() {
+      this.currentIndex = 1
+    }
+  },
   mounted() {
     this.resizeObserver = new ResizeObserver(this.onResize).observe(this.$el)
   },
