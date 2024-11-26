@@ -1,34 +1,33 @@
+
 <template>
   <Head>
-    <Title>{{ aboutDetailsItem.fields.title }}</Title>
-    <Meta name="og:title" hid="og:title" :content="aboutDetailsItem.fields.title" />
-    <Meta name="twitter:title" :content="aboutDetailsItem.fields.title" />
-    <Meta name="description" hid="description" :content="aboutDetailsItem.fields.summary" />
-    <Meta name="og:description" hid="og:description" :content="aboutDetailsItem.fields.summary" />
-    <Meta name="twitter:description" :content="aboutDetailsItem.fields.summary" />
+    <Title>{{ aboutDetailsItem?.fields?.title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="aboutDetailsItem?.fields?.title" />
+    <Meta name="twitter:title" :content="aboutDetailsItem?.fields?.title" />
+    <Meta name="description" hid="description" :content="aboutDetailsItem?.fields?.summary" />
+    <Meta name="og:description" hid="og:description" :content="aboutDetailsItem?.fields?.summary" />
+    <Meta name="twitter:description" :content="aboutDetailsItem?.fields?.summary" />
   </Head>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" :title="aboutDetailsItem.fields.title" />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="aboutDetailsItem?.fields?.title" />
     <page-hero class="py-24">
-      <h1>{{ aboutDetailsItem.fields.title }}</h1>
-      <p>{{ aboutDetailsItem.fields.summary }}</p>
+      <h1>{{ aboutDetailsItem?.fields?.title }}</h1>
+      <p>{{ aboutDetailsItem?.fields?.summary }}</p>
     </page-hero>
     <div class="container">
       <div class="subpage">
-        <div v-html="parseMarkdown(aboutDetailsItem.fields.description)" />
+        <div v-html="parseMarkdown(aboutDetailsItem?.fields?.description)" />
         <hr />
-        <p class="share-text">
-          SHARE
-        </p>
+        <p class="share-text">SHARE</p>
         <share-links />
       </div>
-      <div v-if="aboutDetailsItem.fields.learnMore" class="subpage">
+      <div v-if="aboutDetailsItem?.fields?.learnMore" class="subpage">
         <div class="heading2 mb-16">Learn More</div>
         <template v-for="(item, index) in aboutDetailsItem.fields.learnMore" :key="item + index">
           <div>
-            <learn-more-card :about-details-item="item" :parent-path="aboutDetailsItem.fields.slug" />
+            <learn-more-card :about-details-item="item" :parent-path="aboutDetailsItem?.fields?.slug" />
             <hr
-              v-if="aboutDetailsItem.fields.learnMore.length > 1 && index != aboutDetailsItem.fields.learnMore.length - 1" />
+              v-if="aboutDetailsItem?.fields?.learnMore.length > 1 && index !== aboutDetailsItem?.fields?.learnMore.length - 1" />
           </div>
         </template>
       </div>
@@ -36,72 +35,63 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
+import { useRuntimeConfig, useAsyncData } from '#app'
 import { pathOr, isEmpty } from 'ramda'
-import Breadcrumb from '@/components/Breadcrumb/Breadcrumb.vue'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 
-import marked from '@/mixins/marked'
+const config = useRuntimeConfig()
+const { $contentfulClient } = useNuxtApp()
+const { params } = useRoute()
+const router = useRouter()
 
-export default {
-  name: 'AboutDetailsId',
+const { data: aboutDetailsItem } = useAsyncData('aboutDetailsItem', async () => {
+  try {
+    const entries = await $contentfulClient.getEntries({
+      content_type: config.public.ctf_about_details_content_type_id,
+      'fields.slug': params.aboutDetailsId
+    })
 
-  components: {
-    Breadcrumb,
-    LearnMoreCard,
-    ShareLinks
-  },
+    if (entries.items.length === 0) {
+      const response = await $contentfulClient.getEntry(params.aboutDetailsId)
+      const slug = pathOr('', ['fields', 'slug'], response)
 
-  mixins: [marked],
-
-  data: () => ({
-    aboutDetailsItem: null,
-    heroCopy: '',
-    copy: '',
-    breadcrumb: [
-      {
-        to: {
-          name: 'index'
-        },
-        label: 'Home'
-      },
-      {
-        label: 'About',
-        to: {
-          name: 'about'
-        }
+      if (!isEmpty(slug)) {
+        await router.replace({ path: `/about/${slug}` })
       }
-    ]
-  }),
-
-  async setup() {
-    const { $contentfulClient } = useNuxtApp()
-    const { params } = useRoute()
-    const config = useRuntimeConfig()
-    const aboutDetailsItem =
-      await $contentfulClient.getEntries({
-        content_type: config.public.ctf_about_details_content_type_id,
-        'fields.slug': params.aboutDetailsId
-      }).then(async ({ items }) => {
-        if (items.length == 0) {
-          return await $contentfulClient.getEntry(params.aboutDetailsId).then(async (response) => {
-            const slug = pathOr("", ['fields', 'slug'], response)
-            if (!isEmpty(slug)) {
-              const router = useRouter()
-              await router.replace({ path: `/about/${slug}` })
-            }
-            return response
-          })
-        }
-        else {
-          return items[0]
-        }
-      })
-    return { aboutDetailsItem }
+      return response
+    } else {
+      return entries.items[0]
+    }
+  } catch (err) {
+    console.error('Error fetching about details item:', err)
+    return null
   }
-}
+})
+
+const breadcrumb = computed(() => [
+  {
+    to: { name: 'index' },
+    label: 'Home'
+  },
+  {
+    label: 'About',
+    to: { name: 'about' }
+  }
+])
+
 </script>
+
+<style scoped>
+.share-text {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+</style>
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';

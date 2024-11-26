@@ -3,7 +3,7 @@
     <div class="resources-gallery-strip">
       <div class="card-line">
         <!--template needed in order to force windowedItems to recompute when items changes-->
-        <template v-if="items.length">
+        <template v-if="items?.length">
           <span v-for="(item, index) in windowedItems" :key="index" :class="['key-image-span']">
             <template v-if="item">
               <component v-if="galleryItemType === 'resources'" :is="galleryItemComponent" :width="cardWidth"
@@ -31,7 +31,7 @@
       </div>
     </div>
     <client-only>
-      <pagination v-if="items.length > 0" background :total-count="itemCount" :selected="currentIndex"
+      <pagination v-if="items?.length > 0" background :total-count="itemCount" :selected="currentIndex"
         :page-size="numberOfItemsVisible" :pager-count=7 @select-page="indicatorClicked" />
     </client-only>
   </div>
@@ -98,6 +98,11 @@ export default {
       maxWidth: 0
     }
   },
+  watch: {
+    items() {
+      this.currentIndex = 1
+    }
+  },
   mounted() {
     this.resizeObserver = new ResizeObserver(this.onResize).observe(this.$el)
   },
@@ -109,7 +114,7 @@ export default {
       return defaultTo('', galleryItemComponents[this.galleryItemType])
     },
     itemCount() {
-      return this.items.length
+      return this.items?.length
     },
     isPrevPossible() {
       return this.currentIndex > 0

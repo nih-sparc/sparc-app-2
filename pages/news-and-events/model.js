@@ -86,6 +86,10 @@ export const fetchNews = async (client, terms, publishedLessThanDate, publishedG
   }
 }
 
+// In order to allow for sorting or fireside chats and success stories we needed
+// to restructure the content types in contentful to share a common model since you cannot query on 
+// multiple content types while applying a field filter or order in contentful api as outlined here:
+// https://www.contentfulcommunity.com/t/how-to-query-on-multiple-content-types/473
 export const fetchCommunitySpotlightItems = async (client, terms, spotlightTypes, anatomicalStructures, sortOrder, limit, skip) => {
   const query = replaceTerms(terms)
   try {

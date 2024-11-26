@@ -94,6 +94,7 @@ export default {
   aspect-ratio: 1;
   border: 1px solid $lineColor2;
   max-width: 12rem;
+  min-width: 5rem;
 }
 .subpage-col {
   display: flex;
@@ -101,6 +102,7 @@ export default {
   align-items: flex-start;
   background-color: white;
   padding: .5rem;
+  min-width: 7rem;
 }
 
 .subpage-row {

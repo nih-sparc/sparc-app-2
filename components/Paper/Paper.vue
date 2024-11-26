@@ -10,12 +10,12 @@
           </div>
         </div>
       </div>
-      <NuxtLink v-if="buttonText != '' && buttonLinkExternal == ''" class="margin-top-auto" :to="buttonLink"
+      <nuxt-link v-if="buttonText != '' && buttonLinkExternal == ''" class="margin-top-auto" :to="buttonLink"
         :target="newTab ? '_blank' : '_self'">
         <el-button class="secondary">
           {{ buttonText }}
         </el-button>
-      </NuxtLink>
+      </nuxt-link>
       <a v-if="buttonText != '' && buttonLinkExternal != ''" class="margin-top-auto" :href="buttonLinkExternal"
         target="_blank">
         <el-button class="secondary">

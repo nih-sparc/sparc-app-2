@@ -8,7 +8,7 @@
     <Meta name="twitter:description" :content="`Browse ${title}`" />
   </Head>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" :title=title />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container">
       <h1 hidden>Search for tools and resources</h1>
       <div class="search-tabs__container">
@@ -19,7 +19,7 @@
           <li v-for="searchType in searchTypes" :key="searchType.label">
             <nuxt-link
               class="search-tabs__button"
-              :class="{ active: searchType.path == path }"
+              :class="{ active: searchType.path === path }"
               :to="{
                 path: searchType.path,
                 query: {
@@ -39,7 +39,7 @@
         <search-controls-contentful
           class="search-bar"
           placeholder="Enter search criteria"
-          :path=path
+          :path="path"
           showSearchText
         />
       </div>
@@ -67,16 +67,16 @@
               :lg='18'
             >
               <div class="search-heading mb-16">
-                <div class="label1" v-show="resources.items.length">
-                  {{ resources.total }} Results | Showing
+                <div class="label1" v-show="resources?.items?.length">
+                  {{ resources?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="resources.limit"
+                      :page-size="resources?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
                 </div>
-                <span v-if="resources.items.length" class="label1">
+                <span v-if="resources?.items?.length" class="label1">
                   Sort
                   <client-only>
                     <sort-menu  
@@ -88,29 +88,29 @@
                 </span>
               </div>
               <div class="subpage">
-                <client-only><resources-search-results :table-data="resources.items" /></client-only>
+                <client-only><resources-search-results :table-data="resources?.items" /></client-only>
                 <alternative-search-results
                   ref="altSearchResults"
-                  :search-had-results="resources.items.length > 0"
+                  :search-had-results="resources?.items?.length > 0"
                   @vue:mounted="altResultsMounted"
                 />
               </div>
               <div class="search-heading">
-                <div class="label1" v-if="resources.items.length">
-                  {{ resources.total }} Results | Showing
+                <div class="label1" v-if="resources?.items?.length">
+                  {{ resources?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="resources.limit"
+                      :page-size="resources?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
                 </div>
                 <client-only>
                   <pagination
-                    v-if="resources.limit < resources.total"
+                    v-if="resources?.limit < resources?.total"
                     :selected="curSearchPage"
-                    :page-size="resources.limit"
-                    :total-count="resources.total"
+                    :page-size="resources?.limit"
+                    :total-count="resources?.total"
                     @select-page="onPaginationPageChange"
                   />
                 </client-only>
@@ -126,149 +126,101 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-import { propOr } from 'ramda'
+<script setup>
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useNuxtApp } from '#imports'
+import { useAsyncData } from '#app'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import ResourcesSearchResults from '@/components/Resources/ResourcesSearchResults.vue'
 import ToolsAndResourcesFacetMenu from '@/components/FacetMenu/ToolsAndResourcesFacetMenu.vue'
 import AlternativeSearchResults from '@/components/AlternativeSearchResults/AlternativeSearchResultsResources.vue'
-import { fetchResources, searchTypes, sortOptions } from '@/pages/resources/utils'
 import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
+import { fetchResources, searchTypes, sortOptions } from '@/pages/resources/utils'
 
-export default {
-  name: 'ResourcePage',
+const route = useRoute()
+const { $contentfulClient } = useNuxtApp()
+const searchType = searchTypes.find(searchType => searchType.path === route.path)
+const title = searchType.label
+const isTool = title === 'Tools'
 
-  components: {
-    SearchControlsContentful,
-    ResourcesSearchResults,
-    ToolsAndResourcesFacetMenu,
-    SortMenu,
-    SubmitToolSection,
-    AlternativeSearchResults
-  },
+const { data : resources } = await useAsyncData(
+  'resources',
+  () => {
+    return fetchResources(route.query.resourceType, route.query.selectedResourcesFundingIds, isTool, route.query.search, undefined, route.query.type, 10, 0)
+  }
+)
 
-  async setup() {
-    const route = useRoute()
-    const { $contentfulClient } = useNuxtApp()
-    const searchType = searchTypes.find(searchType => searchType.path == route.path)
-    const title = searchType.label
-    const isTool = title == 'Tools'
-    const resources = await fetchResources(undefined, undefined, isTool, route.query.search, undefined, undefined, 10, 0)
-    let resourcesFundingFacets = []
-    await $contentfulClient.getContentType('sparcPartners').then(contentType => {
-      contentType.fields.forEach((field) => {
+const { data: resourcesFundingFacets } = await useAsyncData(
+  'resources-funding-facets',
+  async () => {
+    const facetData = []
+    try {
+      const contentType = await $contentfulClient.getContentType('sparcPartners')
+      contentType.fields.forEach(field => {
         if (field.name === 'Program') {
           let fundingItems = field.items?.validations[0]['in']
-          let facetData = []
           fundingItems.forEach(itemLabel => {
             facetData.push({
               label: itemLabel,
               id: itemLabel,
             })
           })
-          resourcesFundingFacets = facetData
         }
       })
-    })
-    return {
-      resources: ref(resources),
-      title,
-      resourcesFundingFacets
+    } catch (e) {
+      console.error('Error fetching funding facets:', e)
     }
-  },
-
-  data() {
-    return {
-      selectedSortOption: sortOptions[0],
-      sortOptions,
-      searchTypes,
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'Tools & Resources',
-          to: {
-            name: 'tools'
-          }
-        }
-      ]
-    }
-  },
-
-  watch: {
-    '$route.query': {
-      handler: async function () {
-        this.resources = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, 10, 0)
-        this.$refs.altSearchResults?.retrieveAltTotals()
-      },
-      immediate: true
-    }
-  },
-
-  computed: {
-    /**
-     * Compute the current page based off the limit and the offset
-     * @returns {Number}
-     */
-    curSearchPage: function() {
-      return this.resources.skip / this.resources.limit + 1
-    },
-    sortOrder: function() {
-      return propOr('-fields.name', 'sortOrder', this.selectedSortOption)
-    },
-    resourceType: function () {
-      return this.$route.query.resourceType || undefined
-    },
-    fundingProgram: function () {
-      return this.$route.query.selectedResourcesFundingIds || undefined
-    },
-    type: function() {
-      return this.$route.query.type || undefined
-    },
-    path() {
-      return this.$route.path
-    },
-    isTool: function () {
-      return this.title == 'Tools'
-    }
-  },
-
-  methods: {
-    /**
-     * Get more events for the new page
-     * @param {Number} page
-     */
-    async onPaginationPageChange(page) {
-      const { limit } = this.resources
-      const offset = (page - 1) * limit
-      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, limit, offset)
-      this.resources = response
-    },
-    /**
-     * Update limit based on pagination menu selection and get more events
-     * @param {Number} limit
-     */
-    async onPaginationLimitChange(limit) {
-      const newLimit = limit === 'View All' ? this.resources.total : limit
-      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, newLimit, 0)
-      this.resources = response
-    },
-    async onSortOptionChange(option) {
-      this.selectedSortOption = option
-      const response = await fetchResources(this.resourceType, this.fundingProgram, this.isTool, this.$route.query.search, this.sortOrder, this.type, this.resources.limit, 0)
-      this.resources = response
-    },
-    altResultsMounted() {
-      this.$refs.altSearchResults?.retrieveAltTotals()
-    }
+    return facetData
   }
+)
+
+const altSearchResults = ref(null)
+const selectedSortOption = ref(sortOptions[0])
+const breadcrumb = ref([
+  { label: 'Home', to: { name: 'index' } },
+  { label: 'Tools & Resources', to: { name: 'tools' } }
+])
+
+const curSearchPage = computed(() => resources.value.skip / resources.value.limit + 1)
+
+const sortOrder = computed(() => {
+  return selectedSortOption.value ? selectedSortOption.value['sortOrder'] : '-fields.name'
+})
+
+const resourceType = computed(() => route.query.resourceType || undefined)
+const fundingProgram = computed(() => route.query.selectedResourcesFundingIds || undefined)
+const type = computed(() => route.query.type || undefined)
+const path = computed(() => route.path)
+const isToolComputed = computed(() => title === 'Tools')
+
+const onPaginationPageChange = async (page) => {
+  const { limit } = resources.value
+  const offset = (page - 1) * limit
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, limit, offset)
+  resources.value = response
 }
+
+const onPaginationLimitChange = async (limit) => {
+  const newLimit = limit === 'View All' ? resources.value.total : limit
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, newLimit, 0)
+  resources.value = response
+}
+
+const onSortOptionChange = async (option) => {
+  selectedSortOption.value = option
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, resources.value.limit, 0)
+  resources.value = response
+}
+
+const altResultsMounted = () => {
+  altSearchResults.value?.retrieveAltTotals()
+}
+
+watch(() => route.query, async () => {
+  resources.value = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, 10, 0)
+})
 </script>
 
 <style lang="scss" scoped>

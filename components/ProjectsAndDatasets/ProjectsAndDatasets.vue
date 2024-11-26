@@ -7,7 +7,7 @@
         <template v-if="isProject">
           <div class="body2 mb-16">Here is a project you might be interested in:</div>
           <projects-and-datasets-card 
-            v-if="projectOrResource.fields"
+            v-if="projectOrResource?.fields"
             :title="projectOrResource.fields.title" 
             :description="projectOrResource.fields.shortDescription" 
             :banner="projectOrResource.fields.banner" 
@@ -22,7 +22,7 @@
         <template v-else>
           <div class="body2 mb-16">Here is a resource you might be interested in:</div>
           <projects-and-datasets-card
-            v-if="projectOrResource.fields"
+            v-if="projectOrResource?.fields"
             :title="projectOrResource.fields.name" 
             :description="projectOrResource.fields.description" 
             :banner="projectOrResource.fields.logo.fields.file.url" 
@@ -34,7 +34,7 @@
           </nuxt-link>
         </template>
       </div>
-      <div v-if="dataset.title" class="col p-16">
+      <div v-if="dataset?.title" class="col p-16">
         <div class="body2 mb-16">{{ datasetSectionTitle }}</div>
         <projects-and-datasets-card 
           :title="dataset.title" 
@@ -91,7 +91,7 @@ export default {
       }
     },
     resourceLink() {
-      if (this.projectOrResource.fields.requiresDetailsPage) {
+      if (this.projectOrResource?.fields.requiresDetailsPage) {
         return {
           isInternal: true,
           path: "resources/" + pathOr("", ["sys","id"], this.projectOrResource)

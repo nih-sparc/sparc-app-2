@@ -3,7 +3,7 @@
     <div class="heading2">
       SPARC by the numbers
     </div>
-    <Consortias />
+    <Consortias :items=consortiaItems />
     <div class="body1">
       We have <b><span class="heading2">{{ totalContributors }}</span></b> total contributors. Explore the data to
       find out what amazing research we have:
@@ -61,6 +61,10 @@ export default {
   },
   props: {
     exploreData: {
+      type: Array,
+      default: () => []
+    },
+    consortiaItems: {
       type: Array,
       default: () => []
     }

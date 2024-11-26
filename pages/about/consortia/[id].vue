@@ -8,7 +8,7 @@
     <Meta name="twitter:description" :content="overview" />
   </Head>
   <div :style="consortiaStyle" class="pb-32">
-    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
       <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links />
       <div class="row mt-32">
@@ -39,230 +39,163 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
-import Paper from '~/components/Paper/Paper.vue'
-import Gallery from '~/components/Gallery/Gallery.vue'
-import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
-import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
-import { useLocalStorage } from '~/composables/useLocalStorage'
+<script setup>
+import { ref, computed, watch } from 'vue';
+import { useAsyncData, useRoute, useNuxtApp, useRuntimeConfig } from '#app';
 
-import marked from '@/mixins/marked'
-import { pathOr, propOr, isEmpty } from 'ramda'
+import Paper from '~/components/Paper/Paper.vue';
+import Gallery from '~/components/Gallery/Gallery.vue';
+import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue';
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
 
-const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage()
+import { pathOr } from 'ramda';
+import { parseMarkdown } from '@/utils/formattingUtils.js'
+import { useLocalStorage } from '~/composables/useLocalStorage';
 
-export default {
-  name: 'ConsortiaPage',
+const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage();
 
-  components: {
-    Paper,
-    Gallery,
-    ProjectsAndDatasetsCard,
-    LearnMoreCard
-  },
+const route = useRoute();
+const { $contentfulClient, $pennsieveApiClient } = useNuxtApp();
+const config = useRuntimeConfig();
 
-  mixins: [marked],
+const { data: consortiaItem, error: contentfulError } = await useAsyncData(async () => {
+  const response = await $contentfulClient.getEntries({
+    content_type: config.public.ctf_consortia_content_type_id,
+    'fields.slug': route.params.id.toLowerCase(),
+  });
+  return pathOr([], ['items'], response)[0];
+});
 
-  data: () => {
-    return {
-      featuredDatasetId: null,
-      featuredDataset: {},
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        },
-        {
-          label: 'About',
-          to: {
-            name: 'about'
-          }
-        }
-      ]
-    }
-  },
+const highlights = ref([]);
+const { items } = await $contentfulClient
+  .getEntries({
+    content_type: config.public.ctf_news_id,
+    order: '-fields.publishedDate',
+    limit: 999,
+    'fields.consortiaHighlight[in]': consortiaItem.value?.fields?.slug,
+  })
+  highlights.value = items;
 
-  async setup() {
-    const config = useRuntimeConfig()
-    const { $contentfulClient } = useNuxtApp()
-    const { params } = useRoute()
-    let contentfulError = false
-    const consortiaItem =
-      await $contentfulClient.getEntries({
-        content_type: config.public.ctf_consortia_content_type_id,
-        'fields.slug': params.id.toLowerCase()
-      }).then(response => {
-        return propOr([], 'items', response)[0]
-      }).catch(e => {
-        contentfulError = true
-      })
-    let highlights = ref([])
-    $contentfulClient.getEntries({
-      'content_type': config.public.ctf_news_id,
-      order: '-fields.publishedDate',
-      limit: '999',
-      'fields.consortiaHighlight[in]': consortiaItem.fields.slug
-    }).then(({ items }) => {
-      highlights.value = items
-    }).catch(() => {
-      highlights.value = []
-    })
-    return {
-      consortiaItem,
-      highlights,
-      contentfulError
-    }
-  },
-  async mounted() {
-    const featuredDatasetIds = pathOr('', ['fields', 'featuredDatasets'], this.consortiaItem)
-    const organizationFilter = pathOr('', ['fields', 'organizations'], this.consortiaItem)
-    const dateToShowFeaturedDatasetsUntil = pathOr('', ['fields', 'dateToShowFeaturedDatasets'], this.consortiaItem)
-    const timeDeltaForFeaturedDatasets = pathOr('', ['fields', 'timeDelta'], this.consortiaItem)
+const breadcrumb = [
+  { to: { name: 'index' }, label: 'Home' },
+  { to: { name: 'about' }, label: 'About' },
+];
 
-    // Check if any of the values have been changed
-    const updatedFeaturedDatasetIds = storeInLocalStorage(this.featuredDatasetIdsKey, featuredDatasetIds)
-    const updatedOrganizationFilter = storeInLocalStorage(this.organizationFilterKey, organizationFilter)
-    const updatedDateToShowFeaturedDatasetsUntil = storeInLocalStorage(this.dateToShowFeaturedDatasetsUntilKey, dateToShowFeaturedDatasetsUntil)
-    const updatedTimeDeltaForFeaturedDatasets = storeTimeDelta(this.timeDeltaForFeaturedDatasetsKey, timeDeltaForFeaturedDatasets)
-    const hasAnyFeaturedDatasetsValuesChanged = updatedFeaturedDatasetIds || updatedOrganizationFilter || updatedDateToShowFeaturedDatasetsUntil || updatedTimeDeltaForFeaturedDatasets
+const title = computed(() => pathOr('', ['fields', 'title'], consortiaItem.value));
+const overview = computed(() => pathOr('', ['fields', 'overview'], consortiaItem.value));
+const whoWeAre = computed(() => pathOr('', ['fields', 'whoWeAre'], consortiaItem.value));
+const whoWeAreButtonText = computed(() => pathOr('', ['fields', 'whoWeAreButtonText'], consortiaItem.value))
+const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonLink'], consortiaItem.value))
+const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
+const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchButtonText'], consortiaItem.value))
+const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
+const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
+const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
 
-    let listWasReset = false
-    let availableFeaturedDatasetIds = getFromLocalStorage(this.listOfAvailableDatasetIdsKey)
-    if (hasAnyFeaturedDatasetsValuesChanged || availableFeaturedDatasetIds == null || availableFeaturedDatasetIds.length < 1) {
-      await this.resetListOfAvailableDatasetIds(featuredDatasetIds, new Date(dateToShowFeaturedDatasetsUntil), organizationFilter)
-      listWasReset = true
-    }
-    if (hasTimeDeltaPassed(this.timeDeltaForFeaturedDatasetsKey) || listWasReset) {
-      resetTimestamp(this.timeDeltaForFeaturedDatasetsKey)
-      const availableDatasetIds = getFromLocalStorage(this.listOfAvailableDatasetIdsKey)
-      if (availableDatasetIds == null || availableDatasetIds.length < 1)
-      {
-        storeInLocalStorage(this.featuredDatasetIdKey, null)
-      } else {
-        const randomIndex = Math.floor(Math.random() * availableDatasetIds.length)
-        // Remove a random id from the list of available and set it as the featured id
-        storeInLocalStorage(this.featuredDatasetIdKey, availableDatasetIds.splice(randomIndex, 1)[0])
-        // Update local storage with the new list
-        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, availableDatasetIds)
-      }
-    }
-    this.featuredDatasetId = getFromLocalStorage(this.featuredDatasetIdKey)
-  },
-  watch: {
-    'featuredDatasetId': {
-      handler: async function (id) {
-        if (!isEmpty(id) && id != null) {
-          const pennsieveDatasetUrl = `${this.$config.public.discover_api_host}/datasets/${id}`
-          try {
-            const { data } = await this.$pennsieveApiClient.value.get(pennsieveDatasetUrl)
-            this.featuredDataset = { 'title': data.name, 'description': data.description, 'banner': data.banner, 'id': data.id }
-          } catch {
-            this.featuredDataset = {}
-          }
-        }
-      }
-    }
-  },
-  computed: {
-    title() {
-      return pathOr('', ['fields', 'title'], this.consortiaItem)
-    },
-    whoWeAre() {
-      return pathOr('', ['fields', 'whoWeAre'], this.consortiaItem)
-    },
-    whoWeAreButtonText() {
-      return pathOr('', ['fields', 'whoWeAreButtonText'], this.consortiaItem)
-    },
-    whoWeAreButtonLink() {
-      return pathOr('', ['fields', 'whoWeAreButtonLink'], this.consortiaItem)
-    },
-    learnMore() {
-      return pathOr([], ['fields', 'learnMore'], this.consortiaItem)
-    },
-    ourResearch() {
-      return pathOr('', ['fields', 'ourResearch'], this.consortiaItem)
-    },
-    ourResearchButtonText() {
-      return pathOr('', ['fields', 'ourResearchButtonText'], this.consortiaItem)
-    },
-    ourResearchButtonLink() {
-      return pathOr('', ['fields', 'ourResearchButtonLink'], this.consortiaItem)
-    },
-    overview() {
-      return pathOr('', ['fields', 'overview'], this.consortiaItem)
-    },
-    backgroundColor1() {
-      return pathOr('f5f7fa', ['fields', 'firstColor'], this.consortiaItem)
-    },
-    backgroundColor2() {
-      return pathOr('f5f7fa', ['fields', 'secondColor'], this.consortiaItem)
-    },
-    backgroundColor3() {
-      return pathOr('', ['fields', 'thirdColor'], this.consortiaItem)
-    },
-    buttonAndLinkColor() {
-      return pathOr('', ['fields', 'buttonAndLinkColor'], this.consortiaItem)
-    },
-    consortiaStyle() {
-      let style = isEmpty(this.backgroundColor3) ?
-        { backgroundImage: `linear-gradient(#${this.backgroundColor1}, #${this.backgroundColor2}` } :
-        { backgroundImage: `linear-gradient(#${this.backgroundColor1}, #${this.backgroundColor2}, #${this.backgroundColor3}` }
-      style = { ...style, '--button-and-link-color': `#${this.buttonAndLinkColor}`, '--button-and-link-secondary-color': `#${this.buttonAndLinkColor}16` }
-      return style
-    },
-    logoUrl() {
-      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], this.consortiaItem)
-    },
-    featuredDatasetLink() {
-      const datasetPath = this.featuredDataset?.id ? `/datasets/${this.featuredDataset.id}` : '/'
-      return {
-        isInternal: true,
-        path: datasetPath
-      }
-    },
-    featuredDatasetIdKey() {
-      return `${this.consortiaItem.fields.slug}_featuredDatasetId`
-    },
-    featuredDatasetIdsKey() {
-      return `${this.consortiaItem.fields.slug}_featuredDatasetIds`
-    },
-    listOfAvailableDatasetIdsKey() {
-      return `${this.consortiaItem.fields.slug}_listOfAvailableDatasetIds`
-    },
-    organizationFilterKey() {
-      return `${this.consortiaItem.fields.slug}_organizationFilter`
-    },
-    dateToShowFeaturedDatasetsUntilKey() {
-      return `${this.consortiaItem.fields.slug}_dateToShowFeaturedDatasetsUntil`
-    },
-    timeDeltaForFeaturedDatasetsKey() {
-      return `${this.consortiaItem.fields.slug}_timeDeltaForFeaturedDatasets`
-    }
-  },
-  methods: {
-    async resetListOfAvailableDatasetIds(featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizations) {
-      if (featuredDatasetIds?.length > 0) {
-        const currentDate = new Date()
-        // If the reset time has not passed or it is not set then just use the list of featured dataset ids set in Contentful
-        if (isEmpty(dateToShowFeaturedDatasetsUntil) || isNaN(dateToShowFeaturedDatasetsUntil.getTime()) || currentDate < dateToShowFeaturedDatasetsUntil) {
-          storeInLocalStorage(this.listOfAvailableDatasetIdsKey, featuredDatasetIds)
-          return
-        }
-      }
+const featuredDatasetLink = computed(() => {
+  const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
+  return {
+    isInternal: true,
+    path: datasetPath,
+  };
+});
 
-      const pennsieveDatasetUrl = `${this.$config.public.discover_api_host}/search/datasets?limit=999&organization=${organizations}`
+const featuredDatasetIdKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetId`);
+const featuredDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetIds`);
+const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_listOfAvailableDatasetIds`);
+const organizationFilterKey = computed(() => `${consortiaItem.value.fields.slug}_organizationFilter`);
+const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value.fields.slug}_dateToShowFeaturedDatasetsUntil`);
+const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value.fields.slug}_timeDeltaForFeaturedDatasets`);
+
+const featuredDatasetId = ref(null);
+const featuredDataset = ref({});
+watch(
+  featuredDatasetId,
+  async (id) => {
+    if (id) {
+      const pennsieveDatasetUrl = `${config.public.discover_api_host}/datasets/${id}`;
       try {
-        const { data } = await this.$pennsieveApiClient.value.get(pennsieveDatasetUrl)
-        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, data.datasets.map(dataset => dataset.id))
+        const { data } = await $pennsieveApiClient.value.get(pennsieveDatasetUrl);
+        featuredDataset.value = {
+          title: data.name,
+          description: data.description,
+          banner: data.banner,
+          id: data.id,
+        };
       } catch {
-        storeInLocalStorage(this.listOfAvailableDatasetIdsKey, null)
+        featuredDataset.value = {};
       }
+    }
+  },
+  { immediate: true }
+);
+
+// Styling for consortia
+const consortiaStyle = computed(() => {
+  const bg1 = pathOr('f5f7fa', ['fields', 'firstColor'], consortiaItem.value);
+  const bg2 = pathOr('f5f7fa', ['fields', 'secondColor'], consortiaItem.value);
+  const bg3 = pathOr('', ['fields', 'thirdColor'], consortiaItem.value);
+  const linkColor = pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value);
+  return {
+    backgroundImage: `linear-gradient(#${bg1}, #${bg2}${bg3 ? `, #${bg3}` : ''})`,
+    '--button-and-link-color': `#${linkColor}`,
+    '--button-and-link-secondary-color': `#${linkColor}16`,
+  }
+})
+
+const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizations) => {
+  if (featuredDatasetIds?.length > 0) {
+    const currentDate = new Date();
+    // If the reset time has not passed or it is not set then just use the list of featured dataset ids set in Contentful
+    if (!dateToShowFeaturedDatasetsUntil || isNaN(dateToShowFeaturedDatasetsUntil.getTime()) || currentDate < dateToShowFeaturedDatasetsUntil) {
+      storeInLocalStorage(listOfAvailableDatasetIdsKey.value, featuredDatasetIds);
+      return;
     }
   }
-}
+
+  const pennsieveDatasetUrl = `${config.public.discover_api_host}/search/datasets?limit=999&organization=${organizations}`;
+  try {
+    const { data } = await $pennsieveApiClient.value.get(pennsieveDatasetUrl);
+    storeInLocalStorage(listOfAvailableDatasetIdsKey.value, data.datasets.map(dataset => dataset.id));
+  } catch {
+    storeInLocalStorage(listOfAvailableDatasetIdsKey.value, null);
+  }
+};
+
+onMounted(async () => {
+  const featuredDatasetIds = pathOr('', ['fields', 'featuredDatasets'], consortiaItem.value)
+  const organizationFilter = pathOr('', ['fields', 'organizations'], consortiaItem.value)
+  const dateToShowFeaturedDatasetsUntil = pathOr('', ['fields', 'dateToShowFeaturedDatasets'], consortiaItem.value)
+  const timeDeltaForFeaturedDatasets = pathOr('', ['fields', 'timeDelta'], consortiaItem.value)
+
+  const updatedFeaturedDatasetIds = storeInLocalStorage(featuredDatasetIdsKey.value, featuredDatasetIds)
+  const updatedOrganizationFilter = storeInLocalStorage(organizationFilterKey.value, organizationFilter)
+  const updatedDateToShowFeaturedDatasetsUntil = storeInLocalStorage(dateToShowFeaturedDatasetsUntilKey.value, dateToShowFeaturedDatasetsUntil)
+  const updatedTimeDeltaForFeaturedDatasets = storeTimeDelta(timeDeltaForFeaturedDatasetsKey.value, timeDeltaForFeaturedDatasets)
+  const hasAnyFeaturedDatasetsValuesChanged = updatedFeaturedDatasetIds || updatedOrganizationFilter || updatedDateToShowFeaturedDatasetsUntil || updatedTimeDeltaForFeaturedDatasets
+
+  let listWasReset = false
+  let availableFeaturedDatasetIds = getFromLocalStorage(listOfAvailableDatasetIdsKey.value)
+  if (hasAnyFeaturedDatasetsValuesChanged || availableFeaturedDatasetIds == null || availableFeaturedDatasetIds.length < 1) {
+    await resetListOfAvailableDatasetIds(featuredDatasetIds.value, new Date(dateToShowFeaturedDatasetsUntil), organizationFilter)
+    listWasReset = true
+  }
+  if (hasTimeDeltaPassed(timeDeltaForFeaturedDatasetsKey.value) || listWasReset) {
+    resetTimestamp(timeDeltaForFeaturedDatasetsKey.value)
+    const availableDatasetIds = getFromLocalStorage(listOfAvailableDatasetIdsKey.value)
+    if (availableDatasetIds == null || availableDatasetIds.length < 1)
+    {
+      storeInLocalStorage(featuredDatasetIdKey.value, null)
+    } else {
+      const randomIndex = Math.floor(Math.random() * availableDatasetIds.length)
+      // Remove a random id from the list of available and set it as the featured id
+      storeInLocalStorage(featuredDatasetIdKey.value, availableDatasetIds.splice(randomIndex, 1)[0])
+      // Update local storage with the new list
+      storeInLocalStorage(listOfAvailableDatasetIdsKey.value, availableDatasetIds)
+    }
+  }
+  featuredDatasetId.value = getFromLocalStorage(featuredDatasetIdKey.value)
+})
 </script>
 
 <style scoped lang="scss">
