@@ -61,16 +61,11 @@ export const useMainStore = defineStore('main', {
   },
   actions: {
     async init() {
-      // Server-side cookie check to ensure this runs only once
       const appInitializedCookie = useCookie('appInitialized')
-
-      // If the cookie exists, prevent re-initialization
       if (appInitializedCookie.value === 'true') {
         console.log('App already initialized')
         return
       }
-
-      // If not, run the initialization actions
       try {
         await Promise.all([
           this.fetchContactUsFormOptions(),
@@ -78,7 +73,6 @@ export const useMainStore = defineStore('main', {
           this.fetchPortalNotification()
         ])
 
-        // Set the cookie to mark the app as initialized
         appInitializedCookie.value = 'true'
       } catch (error) {
         console.error('Error during initialization:', error)
@@ -106,7 +100,6 @@ export const useMainStore = defineStore('main', {
       this.formOptions = value
     },
     async fetchContactUsFormOptions() {
-      // Fetch data server-side using `useAsyncData`
       const { data, error } = await useAsyncData(
         'contact-us-form-options',
         async () => {
@@ -139,7 +132,6 @@ export const useMainStore = defineStore('main', {
     },
 
     async fetchPortalNotification() {
-      // Fetch data server-side using `useAsyncData`
       const { data, error } = await useAsyncData(
         'portal-notification',
         async () => {
@@ -164,7 +156,6 @@ export const useMainStore = defineStore('main', {
     },
 
     async fetchFooterData() {
-      // Fetch data server-side using `useAsyncData`
       const { data, error } = await useAsyncData(
         'footer-data',
         async () => {

@@ -186,7 +186,6 @@ const sortOrder = computed(() => {
   return propOr('-fields.publishedDate', 'sortOrder', selectedSortOption.value)
 })
 
-// Fetch news data using `useAsyncData` for server-side rendering
 const { data: news } = useAsyncData('news', () => {
   return fetchNews($contentfulClient, route.query.search, publishedLessThanDate.value,
   publishedGreaterThanOrEqualToDate.value, subjects.value, sortOrder.value, 10, 0)
@@ -209,7 +208,7 @@ watch(
       10,
       0
     );
-    altSearchResults.value?.retrieveAltTotals();
+    altSearchResults.value?.retrieveAltTotals()
   },
   { immediate: true }
 )

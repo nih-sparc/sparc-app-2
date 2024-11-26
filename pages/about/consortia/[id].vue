@@ -54,7 +54,6 @@ import { useLocalStorage } from '~/composables/useLocalStorage';
 
 const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage();
 
-// Fetch data using useAsyncData
 const route = useRoute();
 const { $contentfulClient, $pennsieveApiClient } = useNuxtApp();
 const config = useRuntimeConfig();
@@ -77,7 +76,6 @@ const { items } = await $contentfulClient
   })
   highlights.value = items;
 
-// Data and computed properties
 const breadcrumb = [
   { to: { name: 'index' }, label: 'Home' },
   { to: { name: 'about' }, label: 'About' },
@@ -91,11 +89,9 @@ const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonL
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
 const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchButtonText'], consortiaItem.value))
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
-
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
 const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
 
-// Computed properties
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
   return {
@@ -111,7 +107,6 @@ const organizationFilterKey = computed(() => `${consortiaItem.value.fields.slug}
 const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value.fields.slug}_dateToShowFeaturedDatasetsUntil`);
 const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value.fields.slug}_timeDeltaForFeaturedDatasets`);
 
-// Methods for handling featured datasets
 const featuredDatasetId = ref(null);
 const featuredDataset = ref({});
 watch(
@@ -173,7 +168,6 @@ onMounted(async () => {
   const dateToShowFeaturedDatasetsUntil = pathOr('', ['fields', 'dateToShowFeaturedDatasets'], consortiaItem.value)
   const timeDeltaForFeaturedDatasets = pathOr('', ['fields', 'timeDelta'], consortiaItem.value)
 
-  // Check if any of the values have been changed
   const updatedFeaturedDatasetIds = storeInLocalStorage(featuredDatasetIdsKey.value, featuredDatasetIds)
   const updatedOrganizationFilter = storeInLocalStorage(organizationFilterKey.value, organizationFilter)
   const updatedDateToShowFeaturedDatasetsUntil = storeInLocalStorage(dateToShowFeaturedDatasetsUntilKey.value, dateToShowFeaturedDatasetsUntil)

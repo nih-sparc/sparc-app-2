@@ -128,7 +128,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useNuxtApp } from '#imports'
 import { useAsyncData } from '#app'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
@@ -152,7 +152,6 @@ const { data : resources } = await useAsyncData(
   }
 )
 
-// Fetch funding facets using useAsyncData
 const { data: resourcesFundingFacets } = await useAsyncData(
   'resources-funding-facets',
   async () => {
@@ -177,16 +176,13 @@ const { data: resourcesFundingFacets } = await useAsyncData(
   }
 )
 
-// Data properties
 const altSearchResults = ref(null)
 const selectedSortOption = ref(sortOptions[0])
-const sortOptionsRef = ref(sortOptions)
 const breadcrumb = ref([
   { label: 'Home', to: { name: 'index' } },
   { label: 'Tools & Resources', to: { name: 'tools' } }
 ])
 
-// Computed properties
 const curSearchPage = computed(() => resources.value.skip / resources.value.limit + 1)
 
 const sortOrder = computed(() => {
@@ -199,7 +195,6 @@ const type = computed(() => route.query.type || undefined)
 const path = computed(() => route.path)
 const isToolComputed = computed(() => title === 'Tools')
 
-// Pagination handlers
 const onPaginationPageChange = async (page) => {
   const { limit } = resources.value
   const offset = (page - 1) * limit
@@ -223,7 +218,6 @@ const altResultsMounted = () => {
   altSearchResults.value?.retrieveAltTotals()
 }
 
-// Watch for route query changes
 watch(() => route.query, async () => {
   resources.value = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, 10, 0)
 })

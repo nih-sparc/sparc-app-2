@@ -193,30 +193,30 @@ const curSearchPage = computed(() => {
 })
 
 const firstPastEventId = computed(() => {
-  if (!events.value?.items) return -1;
+  if (!events.value?.items) return -1
 
   for (let i = 0; i < events.value?.items?.length; i++) {
     const event = events.value?.items[i];
     const upcomingSortOrder = pathOr("", ['fields', 'upcomingSortOrder'], event);
     if (upcomingSortOrder < 0) {
-      return pathOr("", ['sys', 'id'], event);
+      return pathOr("", ['sys', 'id'], event)
     }
   }
-  return -1;
+  return -1
 })
 
 const showPastEventsDivider = computed(() => {
   if (!events.value?.items || selectedSortOption.value?.id !== "upcoming") {
-    return false;
+    return false
   }
 
   const items = events.value?.items;
   if (!items?.length) {
-    return false;
+    return false
   }
 
   const firstEventId = pathOr(-1, ['sys', 'id'], items[0]);
-  return firstPastEventId.value !== firstEventId;
+  return firstPastEventId.value !== firstEventId
 })
 
 // Fetch events data using `useAsyncData` for server-side rendering

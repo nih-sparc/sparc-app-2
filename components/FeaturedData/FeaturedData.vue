@@ -17,7 +17,6 @@ import { pathOr, isEmpty } from 'ramda'
 const config = useRuntimeConfig()
 const { $algoliaClient } = useNuxtApp()
 
-// Props
 const props = defineProps({
   featuredData: {
     type: Array,
@@ -29,7 +28,6 @@ const props = defineProps({
   }
 })
 
-// Reactive state and refs
 const selectedCategory = ref(null)
 const facets = ref([])
 const viewMore = ref(false)
@@ -39,7 +37,6 @@ if (props.categories?.length > 0) {
   selectedCategory.value = props.categories[0]
 }
 
-// Watch for changes in featuredData and sync localFeaturedData
 watch(
   () => props.featuredData,
   (newVal) => {
@@ -57,7 +54,6 @@ watch(
 
 const selectedCategoryFeaturedData = ref([])
 
-// Watch for changes in selectedCategory
 watch(selectedCategory, async (newCategory) => {
   const categoryKey = facetPropPathMapping.find(item => item.label == newCategory)?.facetPropPath
 
@@ -76,9 +72,6 @@ watch(selectedCategory, async (newCategory) => {
 },
   { immediate: true }
 )
-
-// Methods
-const imageUrl = (item) => pathOr('', ['fields', 'image', 'fields', 'file', 'url'], item)
 
 const filterOrgans = (contentfulFields, organFacets) => {
   const normStr = str => str.toLowerCase().trim()

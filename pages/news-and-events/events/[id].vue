@@ -38,23 +38,22 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { pathOr } from 'ramda';
-import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage';
-import { useNuxtApp, useRoute, useRouter } from '#app';
+import { computed } from 'vue'
+import { pathOr } from 'ramda'
+import NewsEventsResourcesPage from '@/components/NewsEventsResourcesPage/NewsEventsResourcesPage'
+import { useNuxtApp, useRoute, useRouter } from '#app'
 import { formatDate } from '@/utils/dateUtils.js'
 
-const route = useRoute();
-const router = useRouter();
-const { $contentfulClient } = useNuxtApp();
-const config = useRuntimeConfig();
+const route = useRoute()
+const router = useRouter()
+const { $contentfulClient } = useNuxtApp()
+const config = useRuntimeConfig()
 
-// Fetch event page data
 const { data: page, error } = useAsyncData(
   'eventPage',
   async () => {
     const id = route.params.id;
-    const isSlug = id.split('-').length > 1;
+    const isSlug = id.split('-').length > 1
 
     const result = isSlug
       ? await $contentfulClient.getEntries({
@@ -63,19 +62,18 @@ const { data: page, error } = useAsyncData(
         })
       : await $contentfulClient.getEntry(id);
 
-    const eventPage = isSlug ? result.items[0] : result;
+    const eventPage = isSlug ? result.items[0] : result
 
     // Redirect if the slug doesn't match
-    const slug = pathOr(null, ['fields', 'slug'], eventPage);
+    const slug = pathOr(null, ['fields', 'slug'], eventPage)
     if (slug && id !== slug) {
       router.replace(`/news-and-events/events/${slug}`);
     }
 
-    return eventPage || { fields: [] };
+    return eventPage || { fields: [] }
   }
-);
+)
 
-// Breadcrumb configuration
 const breadcrumb = [
   {
     label: 'Home',
@@ -89,22 +87,21 @@ const breadcrumb = [
     label: 'Events',
     to: { name: 'news-and-events-events' }
   }
-];
+]
 
-// Computed properties
 const newsImage = computed(() =>
   pathOr('', ['fields', 'image', 'fields', 'file', 'url'], page.value)
-);
+)
 
 const newsImageAlt = computed(() =>
   pathOr('', ['fields', 'image', 'fields', 'title'], page.value)
-);
+)
 
 const eventDetails = computed(() =>
   pathOr(null, ['fields', 'eventDetails'], page.value)
-);
+)
 
-const hasEventDetailsPage = computed(() => eventDetails.value !== null);
+const hasEventDetailsPage = computed(() => eventDetails.value !== null)
 
 const eventDate = computed(() => {
   const startDate = page.value.fields?.startDate
@@ -115,7 +112,6 @@ const eventDate = computed(() => {
     : '';
   return startDate === endDate || !endDate
     ? startDate
-    : `${startDate} - ${endDate}`;
+    : `${startDate} - ${endDate}`
 });
 </script>
-

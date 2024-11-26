@@ -249,7 +249,7 @@ watch(
       10,
       0
     )
-    altSearchResults.value?.retrieveAltTotals();
+    altSearchResults.value?.retrieveAltTotals()
   },
   { immediate: true }
 )

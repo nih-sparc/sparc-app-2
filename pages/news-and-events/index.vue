@@ -120,9 +120,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useAsyncData } from '#app';
-import { fetchData } from './model';
+import { computed } from 'vue'
+import { useAsyncData } from '#app'
+import { fetchData } from './model'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
 
 const breadcrumb = [
@@ -136,16 +136,15 @@ const title = 'News & Events';
 
 // Fetch initial data
 const { data: pageData } = await useAsyncData(() => {
-  const { $contentfulClient } = useNuxtApp();
-  return fetchData($contentfulClient, '', 2);
+  const { $contentfulClient } = useNuxtApp()
+  return fetchData($contentfulClient, '', 2)
 });
 
-const page = computed(() => pageData.value?.page || {});
-const news = computed(() => pageData.value?.news || {});
-const upcomingEvents = computed(() => pageData.value?.upcomingEvents || {});
-const stories = computed(() => pageData.value?.stories || {});
-
-const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {});
+const page = computed(() => pageData.value?.page || {})
+const news = computed(() => pageData.value?.news || {})
+const upcomingEvents = computed(() => pageData.value?.upcomingEvents || {})
+const stories = computed(() => pageData.value?.stories || {})
+const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {})
 
 </script>
 

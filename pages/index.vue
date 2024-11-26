@@ -137,8 +137,8 @@ const { data: featuredDataCategories, error: featuredDataCategoriesError } = use
 })
 
 const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
-  const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`);
-  return response.data?.datasets;
+  const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
+  return response.data?.datasets
 });
 
 const institutionId = computed(() => 
@@ -219,7 +219,7 @@ onBeforeMount(() => {
   if (signInRedirectCookie.value) {
     const signInRedirectUrl = signInRedirectCookie.value;
     signInRedirectCookie.value = null;
-    return navigateTo(signInRedirectUrl);
+    return navigateTo(signInRedirectUrl)
   }
 });
 </script>

@@ -33,7 +33,6 @@ import { pathOr } from 'ramda'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
 import { useAsyncData, useRuntimeConfig } from '#app'
 
-// Breadcrumb structure
 const breadcrumb = [
   {
     to: { name: 'index' },
@@ -41,7 +40,6 @@ const breadcrumb = [
   },
 ]
 
-// Function to construct portal feature entries
 const constructPortalFeatureEntries = (apps) => {
   if (!apps) return []
   return apps.map((app) => {
@@ -77,7 +75,6 @@ const { data: appData } = await useAsyncData('apps-page-data', async () => {
   }
 })
 
-// Reactive properties
 const fields = computed(() => appData.value.fields || {})
 const appEntries = computed(() => appData.value.appEntries || [])
 const title = computed(() => fields.value?.title || '')
