@@ -237,8 +237,8 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
   let state = undefined
   let successMessage = undefined
   let failMessage = undefined
-  if (route.query.id) {
-    uuid = route.query.id
+  const maxRetry = 3
+  const getState = async (uuid) => {
     await $axios.post(`${sparcApi}/map/getstate`, {
       uuid: uuid,
     })
@@ -254,7 +254,15 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
           `Sorry! We can not retrieve the saved stated. Please check later or consider submitting a bug report.`
       })
   }
-
+  if (route.query.id) {
+    uuid = route.query.id
+    for (let attempt = 0; attempt < maxRetry && !successMessage; attempt++) {
+      await getState(uuid)
+    }
+  }
+  if (successMessage) {
+    failMessage = undefined
+  }
   return [uuid, state, successMessage, failMessage]
 }
 
@@ -413,20 +421,38 @@ export default {
     updateUUID: function () {
       let url = this.options.sparcApi + `map/getshareid`
       let state = this._instance.getState()
-      fetch(url, {
+      let maxRetry = 3
+      const getShareLink = (attempt) => {
+        fetch(url, {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({ state: state }),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.ok) {
+            return response.json()
+          }
+          throw new Error('Unsuccessful attempt to get shareid')
+        })
         .then((data) => {
           this.uuid = data.uuid
           this.$router.replace({ query: { id: data.uuid } }).then(() => {
             this.shareLink = `${this.options.rootUrl}${this.$route.fullPath}`
           })
         })
+        .catch((error) => {
+          console.log(`Unable to create permalink: attempt ${attempt} of ${maxRetry}`)
+          if (maxRetry > attempt) {
+            getShareLink(attempt + 1)
+          } else {
+            this.shareLink = `We have encountered an error, please try again.`
+            failMessage("We are unable to create a permalink at this moment, please try again later.")
+          }
+        })
+      }
+      getShareLink(1)
     },
     facetsUpdated: function () {
       if (this.facets.length > 0 && this._instance) this._instance.openSearch(this.facets, "")
