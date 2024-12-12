@@ -10,7 +10,7 @@
   <div :style="consortiaStyle" class="pb-32">
     <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container pt-32">
-      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links />
+      <paper class="row" :text="parseMarkdown(overview)" :logoSrc="logoUrl" show-share-links :readMoreLink="{ label: `Read more about ${title} on the help center`, href: readMoreLink }"/>
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
@@ -91,6 +91,7 @@ const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchB
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
 const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
+const readMoreLink = computed(() => pathOr('', ['fields', 'readMoreLink'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';

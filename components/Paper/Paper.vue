@@ -5,6 +5,9 @@
         <img v-if="logoSrc" class="logo-image mr-16" :src="logoSrc" />
         <div class="subpage-col">
           <div class="about-page-text" v-html="text" />
+          <nuxt-link v-if="readMoreLink && readMoreLink.href && readMoreLink.label" :to="readMoreLink.href" class="mb-12" target="_blank">
+            {{ readMoreLink.label }} <svgo-icon-open />
+          </nuxt-link>
           <div v-if="showShareLinks">
             <share-links />
           </div>
@@ -66,6 +69,10 @@ export default {
     showShareLinks: {
       type: Boolean,
       default: false
+    },
+    readMoreLink: {
+      type: Object,
+      default: null
     }
   }
 }
