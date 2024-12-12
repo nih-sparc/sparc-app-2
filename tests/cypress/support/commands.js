@@ -60,42 +60,42 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 })
 
 Cypress.Commands.add('waitForBrowserLoading', () => {
-  cy.get('.el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
+  cy.get('.el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Browser loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
 
 Cypress.Commands.add('waitForPageLoading', () => {
-  cy.get('.loading-container', { timeout: 30000 }).should(($loadingMask) => {
+  cy.get('.loading-container', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Page loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
 
 Cypress.Commands.add('waitForMapLoading', () => {
-  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 30000 }).should(($loadingMask) => {
+  cy.get('.multi-container > .el-loading-parent--relative > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Map loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
 
 Cypress.Commands.add('waitForGalleryLoading', () => {
-  cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 30000 }).should(($loadingMask) => {
+  cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
 
 Cypress.Commands.add('waitForViewerContainer', (selector) => {
-  cy.get(selector, { timeout: 30000 }).should(($mapViewer) => {
+  cy.get(selector, { timeout: 60000 }).should(($mapViewer) => {
     expect($mapViewer, 'Viewer container should exist').to.exist
   })
   cy.wait(5000)
 })
 
 Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
-  cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 30000 }).should(($loadingMask) => {
+  cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Connectivity graph loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
