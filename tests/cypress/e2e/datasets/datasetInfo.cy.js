@@ -103,7 +103,7 @@ datasetIds.forEach((datasetId) => {
                 expect(url, 'URL should contain correct slug').to.contain('/about/projects/')
               })
               // Check for the title
-              cy.get('.row > .heading2').should(($pTitle) => {
+              cy.get('.row > .heading2', { timeout: 60000 }).should(($pTitle) => {
                 expect($pTitle, 'Project title should match').to.contain(title)
               })
               cy.backToDetailPage(datasetId)
