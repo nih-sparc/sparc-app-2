@@ -226,6 +226,8 @@ datasetIds.forEach((datasetId) => {
               }
             })
           })
+        })
+        cy.get('@contact', { timeout: 60000 }).then(($content) => {
           cy.get('.about-section-container a').then(($email) => {
             cy.get('.dataset-owners').should(($contributors) => {
               const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ').trim()
@@ -252,7 +254,7 @@ datasetIds.forEach((datasetId) => {
               const institution = $institution.text().replace('Institution(s):', '').trim()
               cy.wrap($project).find('a').click()
               cy.waitForPageLoading()
-              cy.get('.row > .heading2').should(($title) => {
+              cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
                 expect($title, 'Project title should be the same').to.contain(project)
               })
               cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
