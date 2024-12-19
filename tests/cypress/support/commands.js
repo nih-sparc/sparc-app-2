@@ -80,6 +80,13 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForMapTreeControlLoading', () => {
+  cy.get('.el-tree > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Map tree control loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForGalleryLoading', () => {
   cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
