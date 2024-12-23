@@ -30,10 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@^3.2.6":
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.6.tgz#36a0600536385763e51957db5a2fe6b780d5aa06"
-  integrity sha512-GHYjGyvUzL6s2hxO+TvX+c20MIZo9/lajkShPjfkXmPUoCiQiC7Z63YCSKhJB8Fvu3tdfAXcH/fQG1lK457xHw==
+"@abi-software/flatmap-viewer@^3.2.10":
+  version "3.2.10"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.10.tgz#5a1bd0035a7669c41db064a35b58a73cbd355158"
+  integrity sha512-jmpZyJBQ7MF4GY4PEAMDpx2ZFel6Id7pacRXVfSVq0JD5zXMVGJ1wn/VJ0AYchSjhp+xYhDy7OjLSEqgxVTYjA==
   dependencies:
     "@deck.gl/core" "^9.0.17"
     "@deck.gl/geo-layers" "^9.0.18"
@@ -54,7 +54,7 @@
     graphology-operators "^1.6.0"
     graphology-shortest-path "^2.1.0"
     html-es6cape "^2.0.2"
-    maplibre-gl ">=4.5.0"
+    maplibre-gl ">=4.7.1"
     mathjax-full "^3.2.2"
     minisearch "^2.2.1"
     polylabel "^2.0.1"
@@ -75,12 +75,12 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.1.tgz#41e269a740171002cfab293e6c8bfa1030071e0c"
-  integrity sha512-qyxpcnTll4HnsfHcUW/K/qM1yP7beB5neD5g7CVGPAuWOgdyxEayLIkA6N0ozvaoBkYEI18dXehWpvtZpzwtPw==
+"@abi-software/flatmapvuer@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.2.tgz#79de01e8a3ce2f60a114eb020afb3640b1ba9611"
+  integrity sha512-5YFL4TV9pt2DKYEvl0vshvSzlybN35aFl+hiYycLowvizhxg3wYW5j8vbeFDs7mBSTiKxT/329UiXQVdI7YL/w==
   dependencies:
-    "@abi-software/flatmap-viewer" "^3.2.6"
+    "@abi-software/flatmap-viewer" "^3.2.10"
     "@abi-software/map-utilities" "^1.2.1"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
@@ -143,12 +143,12 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.6.3":
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.6.3.tgz#0b12cfabc59c618999fa9ad1e276e8adb2d1de5e"
-  integrity sha512-YJ1SU/I7/t/tcSicgOzdY56NaBgAeDqTWPhsvz95eDYPK6Mqt3hEK5HiNG7r34lt6mQ7EP4ANEUyp36kQXktoA==
+"@abi-software/mapintegratedvuer@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.6.5.tgz#804d8d2af7c82081368dffd103180b2b73e74c3c"
+  integrity sha512-bZzGVcBdfbQm0XYVD8e95j2HF7JjNZ/jvHylb5F1Qfd1kPtrXZPquzlYDe43B3bT56yp9e1RW6ZZtdvGy3xiaQ==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.6.1"
+    "@abi-software/flatmapvuer" "^1.6.2"
     "@abi-software/map-side-bar" "^2.5.2"
     "@abi-software/map-utilities" "^1.2.1"
     "@abi-software/plotvuer" "^1.0.3"
@@ -13706,10 +13706,10 @@ maplibre-gl@>=3.6.0:
     tinyqueue "^2.0.3"
     vt-pbf "^3.1.3"
 
-maplibre-gl@>=4.5.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-4.6.0.tgz#f25113a284752162cf4444a32f395380bc2565ec"
-  integrity sha512-zobZK+fE+XM+7K81fk5pSBYWZlTGjGT0P96y2fR4DV2ry35ZBfAd0uWNatll69EgYeE+uOhN1MvEk+z1PCuyOQ==
+maplibre-gl@>=4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-4.7.1.tgz#06a524438ee2aafbe8bcd91002a4e01468ea5486"
+  integrity sha512-lgL7XpIwsgICiL82ITplfS7IGwrB1OJIw/pCvprDp2dhmSSEBgmPzYRvwYYYvJGJD7fxUv1Tvpih4nZ6VrLuaA==
   dependencies:
     "@mapbox/geojson-rewind" "^0.5.2"
     "@mapbox/jsonlint-lines-primitives" "^2.0.2"
