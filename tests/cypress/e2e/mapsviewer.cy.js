@@ -164,7 +164,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
       cy.get('.tools > .control-button:visible').then(($tools) => {
         expect($tools, 'The control panel tools should have 2').to.have.length(2)
       })
-      cy.get('.tools > :nth-child(2).control-button:visible').click()  
+      cy.get('.tools > :nth-child(2).control-button:visible').click()
       cy.get('.connectivity-graph > .control-panel-nodes').then(($panelNodes) => {
         expect($panelNodes, 'The control panel nodes should exist').to.exist
         cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
@@ -277,10 +277,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
             cy.wait(['@dataset_info', '@datasets'], { timeout: 20000 })
             // Check for search result and the tag 'Scaffold'
             cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).as('datasetCards')
-            cy.get('@datasetCards').contains(datasetId).should(($card) => {
-              expect($card, 'The search result should contain the specific dataset card').to.exist
-            })
-            cy.get('@datasetCards').filter(`:contains(${datasetId})`).within(() => {
+            cy.get('@datasetCards').contains(datasetId).parents('.dataset-card-container.dataset-card').within(() => {
               cy.get('.badges-container > .container', { timeout: 30000 }).as('tags')
               cy.get('@tags').contains(/Scaffold/i).should(($tag) => {
                 expect($tag, 'The dataset card should contain the scaffold tag').to.exist
@@ -288,7 +285,7 @@ describe('Maps Viewer', { testIsolation: false }, function () {
               cy.get('@tags').contains(/Scaffold/i).click()
             })
             // Check for button text
-            cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).contains(/View Scaffold/i).click()
+            cy.get('@datasetCards').contains(/View Scaffold/i).click()
             cy.wait('@s3-resource', { timeout: 20000 })
             // Check for context card
             cy.get('.context-card').should(($card) => {

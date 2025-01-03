@@ -172,7 +172,7 @@ browseCategories.forEach((category, bcIndex) => {
           cy.get('.search-text').click()
           // Check for keyword in URL
           cy.url().should((url) => {
-            expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword}`)
+            expect(url, 'URL should contain search keyword parameter').to.contain(`search=${keyword.replace(' ', '+')}`)
           })
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
@@ -196,7 +196,7 @@ browseCategories.forEach((category, bcIndex) => {
                 cy.get('.table-wrap').then(($table) => {
                   const keywordExistInTable = $table.text().toLowerCase().includes(keyword.toLowerCase())
                   if (keywordExistInTable) {
-                    cy.get('b').contains(new RegExp(keyword, 'i')).should(($keyword) => {
+                    cy.get('b').contains(new RegExp('\(' + keyword.replace(' ', '|') + '\)', 'i')).should(($keyword) => {
                       expect($keyword, 'Highlighted keyword should exist in table').to.exist
                     })
                   } else {

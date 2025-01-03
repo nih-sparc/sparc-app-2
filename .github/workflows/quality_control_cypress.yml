@@ -17,6 +17,11 @@ on:
         default: "54, 76, 117, 226, 385"
 
 env:
+  PAGE_LIMIT: "randompick"
+  TAXON_MODELS: "randompick"
+  THREE_SYNC_VIEW: "randompick"
+  SEARCH_IN_MAP: "randompick"
+  SCAFFOLD_DATASET_IDS: "randompick"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
