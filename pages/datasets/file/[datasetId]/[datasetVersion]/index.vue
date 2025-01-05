@@ -1,6 +1,6 @@
 <template>
   <client-only>
-    <div class="pb-32">
+    <div class="pb-32 page-data">
       <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
       <div class="container">
         <h1 hidden>File viewer for {{ file.path }}</h1>
@@ -25,6 +25,14 @@
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />
       </div>
+      <div v-if="hasRelatedDatasets" class="container">
+        <div class="subpage">
+          <div class="heading3 mb-16">
+            Find related images among other datasets that share the same award id
+          </div>
+          <gallery galleryItemType="relatedDatasets" :items="relatedDatasets" :cardWidth="12" />
+        </div>
+      </div>
     </div>
   </client-only>
 </template>
@@ -41,6 +49,7 @@ import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
+import Gallery from '@/components/Gallery/Gallery.vue'
 
 import { extractS3BucketName } from '@/utils/common'
 
@@ -54,7 +63,8 @@ export default {
     SegmentationViewer,
     PlotViewer,
     VideoViewer,
-    FileViewerMetadata
+    FileViewerMetadata,
+    Gallery
   },
 
   mixins: [
@@ -67,7 +77,7 @@ export default {
     const router = useRouter()
     const route = useRoute()
     const config = useRuntimeConfig()
-    const { $axios, $pennsieveApiClient } = useNuxtApp()
+    const { $axios, $pennsieveApiClient, $algoliaClient } = useNuxtApp()
     const url = `${config.public.discover_api_host}/datasets/${route.params.datasetId}`
     var datasetUrl = route.params.datasetVersion ? `${url}/versions/${route.params.datasetVersion}` : url
     let datasetInfo = {}
@@ -88,20 +98,35 @@ export default {
       file.packageType == 'Image' ? 'Image' : // Biolucida
         file.packageType == 'Unsupported' ? 'Unsupported' : // Segmentation
           'Others' // All other types of files, e.g. plot, video, timeseries, etc.
+    //packageType is not correct for biolucida image in some cases so we will check
+    //the extension as well
+    if (packageType == 'Others' && file.name) {
+      let extension = file.name.split('.').pop();
+      if (extension === 'jp2' || extension === 'jpx') {
+        packageType = 'Image'
+      }
+    }
 
     // We should just be able to do as below and pull the source package id from file, but there are sometimes discrepancies between the pennsieve file sourcePackageId and the biolucida image data sourcePackageId returned from sparc.biolucida.net
     // const sourcePackageId = file.sourcePackageId
     // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
+    let biolucidaData = {}
     try {
       const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
-      const imagesData = biolucidaSearchResults['dataset_images']
+      //sort the following with reverse order, make sure the latest images get prioritised
+      let imagesData = biolucidaSearchResults['dataset_images']
+      imagesData = imagesData.reverse()
       if (packageType == 'Image' && imagesData != undefined) {
         await Promise.all(imagesData.map(async image => {
           const imageInfo = await biolucida.getImageInfo(image.image_id)
           if (imageInfo['name'] == file.name)
           {
             sourcePackageId = image['sourcepkg_id']
+            biolucidaData.biolucida_image_id = image.image_id
+            biolucidaData.share_link = image.share_link
+            biolucidaData.status = imageInfo.status
+            biolucidaData.type_field = image.type_field
             return
           }
         }))
@@ -110,16 +135,6 @@ export default {
       console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
     }
 
-    let biolucidaData = {}
-    try {
-      if (packageType == 'Image' && sourcePackageId != "") {
-        await $axios.get(`${config.public.BL_API_URL}imagemap/sharelink/${sourcePackageId}/${route.params.datasetId}`).then(({ data }) => {
-          biolucidaData = data
-        })
-      }
-    } catch(e) {
-      console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
-    }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
 
     // We must remove the N: in order for scicrunch to realize the package
@@ -146,6 +161,13 @@ export default {
       if (packageType == 'Unsupported') {
         await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
           segmentationData = data
+          // file is from Pennsieve, filePath is from Scicrunch
+          if (file.path != filePath) {
+            // Normally filePath will be correct if file.path and filePath not the same
+            file.path = filePath
+            // Need to update the file.name as well if file.path is changed
+            file.name = filePath.substring(filePath.lastIndexOf('/') + 1)
+          }
         })
       }
     } catch(e) {
@@ -198,6 +220,35 @@ export default {
       hasPlotViewer ? 'plotViewer' :
       hasVideoViewer ? 'videoViewer' : ''
 
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const { supportingAwards } = await algoliaIndex.getObject(route.params.datasetId)
+    const awardIds = supportingAwards.map(award => award.identifier).filter(identifier => identifier != undefined)
+    let relatedDatasets = []
+    try {
+      relatedDatasets = await Promise.all(
+        awardIds.map(async (awardId) => {
+          const { data } = await $axios.get(`${config.public.portal_api}/project/${awardId}`)
+          return data
+        })
+      )
+      relatedDatasets = relatedDatasets.flat()
+    } catch (error) {
+        console.error('Error fetching related datasets:', error)
+    }
+    relatedDatasets = relatedDatasets.map((dataset) => {
+      const datasetId = propOr('', 'objectID', dataset)
+      const datasetName = pathOr('', ['pennsieve', 'name'], dataset)
+      const datasetDescription = pathOr('', ['pennsieve', 'description'], dataset)
+      const datasetBanner = pathOr('', ['pennsieve', 'banner', 'uri'], dataset)
+
+      return {
+        'name': datasetName,
+        'description': datasetDescription,
+        'id': datasetId,
+        'banner': datasetBanner
+      }
+    })
+
     return {
       biolucidaData,
       videoData,
@@ -215,7 +266,8 @@ export default {
       signedUrl,
       packageType,
       activeTabId,
-      datasetInfo
+      datasetInfo,
+      relatedDatasets
     }
   },
 
@@ -257,6 +309,9 @@ export default {
     },
     readme: function() {
       return propOr('', 'readme', this.datasetInfo)
+    },
+    hasRelatedDatasets() {
+      return !isEmpty(this.relatedDatasets)
     },
     breadcrumb: function() {
       return [
@@ -388,11 +443,21 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
+.page-data {
+  background-color: $background;
+}
 .help-link {
   float: right;
   @media screen and (max-width: 29rem) {
     float: none;
   }
+}
+.help-icon {
+  color: $purple;
+    height: 1.5rem;
+    width: 1.5rem;
 }
 </style>

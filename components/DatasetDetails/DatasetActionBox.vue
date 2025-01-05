@@ -71,6 +71,11 @@
           Cite Dataset
         </el-button>
       </template>
+      <template v-if="hasSourceCode">
+        <el-button class="secondary" @click="actionButtonClicked('source')">
+          Open Source Code
+        </el-button>
+      </template>
       <template v-if="sdsViewer">
         <a
           :href="sdsViewer"
@@ -134,6 +139,9 @@ export default {
     },
     hasFiles: function() {
       return this.fileCount >= 1
+    },
+    hasSourceCode: function () {
+      return propOr(null, 'release', this.datasetInfo) !== null
     },
     fileCount: function() {
       return propOr('0', 'fileCount', this.datasetInfo)

@@ -8,7 +8,7 @@
     <Meta name="twitter:description" :content="heroCopy" />
   </Head>
   <div class="about-page pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" title="About" />
+    <Breadcrumb :breadcrumb="breadcrumb" title="About" />
     <page-hero class="py-24" v-if="heroCopy">
       <h1>{{ pageTitle }}</h1>
       <div v-html="parseMarkdown(heroCopy)" />
@@ -16,9 +16,9 @@
     <div class="container">
       <paper class="row mt-32" :text="parseMarkdown(sparcPortal)" button-text="View The Roadmap"
         button-link-external="https://docs.sparc.science/docs/sparc-portal-roadmap" />
-      <div :v-if="whoWeSupport?.length > 0" class="who-we-support-container p-24 mt-32">
+      <div class="who-we-support-container p-24 mt-32">
         <div class="heading2">Who We Support</div>
-        <Consortias />
+        <Consortias :items="consortiaItems" />
         <nuxt-link to="/about/projects">
           <el-button class="secondary">
             View All Projects
@@ -55,175 +55,152 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
+import { useRuntimeConfig, useAsyncData } from '#app'
 import Paper from '~/components/Paper/Paper.vue'
 import Gallery from '~/components/Gallery/Gallery.vue'
 import Consortias from '~/components/Consortias/Consortias.vue'
-
-import marked from '@/mixins/marked'
 import { getPreviousDate } from '@/utils/common'
-import { pathOr } from 'ramda'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
+
+const config = useRuntimeConfig()
+const currentDate = new Date()
+const currentDay = currentDate.getDate().toString().padStart(2, '0')
+let currentMonth = currentDate.getMonth() + 1
+currentMonth = currentMonth.toString().padStart(2, '0')
+const currentYear = currentDate.getFullYear()
+const whatWeOfferPageId = config.public.ctf_what_we_offer_page_id
+const teamAndLeadershipPageId = config.public.ctf_team_and_leadership_page_id
+const getInvolvedPageId = config.public.ctf_get_involved_page_id
+const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
 
 const months = [
-  'January',
-  'Febuary',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
+  'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
-export default {
-  name: 'AboutPage',
-
-  components: {
-    Consortias,
-    Paper,
-    Gallery
-  },
-
-  mixins: [marked],
-
-  data: () => {
-    const config = useRuntimeConfig()
-    return {
-      heroCopy: '',
-      copy: '',
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        }
-      ],
-      metricsItems: [],
-      highlights: [],
-      projectId: config.public.ctf_project_id,
-      heroImage: {},
-      futurePlans: '',
-      aboutPortalPageId: config.public.ctf_about_portal_page_id,
-      whatWeOfferPageId: config.public.ctf_what_we_offer_page_id,
-      teamAndLeadershipPageId: config.public.ctf_team_and_leadership_page_id,
-      getInvolvedPageId: config.public.ctf_get_involved_page_id,
-      contentfulError: false
-    }
-  },
-
-  setup() {
-    const config = useRuntimeConfig()
-    const { $contentfulClient, $axios } = useNuxtApp()
-    const currentDay = new Date().getDate().toString().padStart(2, "0")
-    let currentMonth = new Date().getMonth() + 1
-    currentMonth = currentMonth.toString().padStart(2, "0")
-    const currentYear = new Date().getFullYear()
-    // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
-    const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
-    let dateUsed = lastMonthsDate
-    return Promise.all([
-      /**
-       * Page data
-       */
-      $contentfulClient
-        .getEntry(config.public.ctf_about_page_id)
-        .then(({fields}) => {
-          return fields
-        })
-        .catch(err => console.error('Could not fetch page data from Contentful.', err)),
-      /**
-       * Metrics
-       */
-      $axios
-        .get(config.public.METRICS_URL + `/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`)
-        .then(({ data }) => {
-          const metrics = data[0]
-          return {
-            totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
-            newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-            downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
-          }
-        })
-        .catch(() => {
-          const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
-          dateUsed = monthBeforeLastDate
-          return $axios
-            .get(config.public.METRICS_URL + `/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`)
-            .then(({ data }) => {
-              const metrics = data[0]
-              return {
-                totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
-                newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-                downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
-              }
-            })
-            .catch(err => {
-              console.error('Could not retreive metrics: ', err)
-            })
-        }),
-      /**
-       * Download count
-       */
-      $axios
-        .get(config.public.discover_api_host + `/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`)
-        .then(response => {
-          let totalDownloads = 0
-          response.data.forEach(item => {
-            if (item.origin === 'SPARC') {
-              totalDownloads += parseInt(item['downloads'])
-            }
-          })
-          return totalDownloads
-        })
-        .catch(err => console.log('Error retreiving download count.', err)),
-      /**
-       * Highlights
-       */
-      $contentfulClient.getEntries({
-        'content_type': config.public.ctf_news_id,
-        order: '-fields.publishedDate',
-        limit: '999',
-        'fields.subject': 'Highlight'
-      })
-        .then(({ items }) => items)
-        .catch(err => {
-          console.log('Could not retrieve highlights.', err)
-        })
-    ]).then(([cfPage, metrics={}, totalDownloads, highlights]) => ({
-      ...cfPage,
-      highlights,
-      metricsItems: [{
-        title: 'Total Downloads',
-        data: totalDownloads.toString(),
-        subData: `(${metrics.downloadsLastMonth} in ${months[dateUsed.month - 1]})`
-      }, {
-        title: 'Dataset Contributors',
-        data: metrics.totalContributors?.toString(),
-        subData: `(${metrics.newContributors} new in ${months[dateUsed.month - 1]})`
-      }]
-    }))
-  },
-
-  methods: {
-    /**
-     * Compute the link to the help article
-     * This will use the slug if available, and fallback
-     * to the ID of the entry if not
-     * @returns {Object}
-     */
-    aboutLink(aboutDetailsId) {
-      const name = 'about-aboutDetailsId'
-      return { name, params: { aboutDetailsId } }
-    },
-    logoUrl: function (item) {
-      return pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], item)
-    },
+const { data: pageData, error: pageDataError } = useAsyncData('pageData', async () => {
+  try {
+    const { $contentfulClient } = useNuxtApp()
+    const cfPage = await $contentfulClient.getEntry(config.public.ctf_about_page_id)
+    return cfPage.fields
+  } catch (err) {
+    console.error('Could not fetch page data from Contentful.', err)
+    return {}
   }
+})
+
+const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
+  try {
+    const { $contentfulClient } = useNuxtApp()
+    const { items } = await $contentfulClient.getEntries({
+      content_type: config.public.ctf_consortia_content_type_id,
+      order: 'fields.displayOrder',
+    })
+    return items
+  } catch (err) {
+    console.error('Could not fetch consortia data from Contentful.', err)
+    return []
+  }
+})
+
+const { data: metricsData, error: metricsError } = useAsyncData('metricsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.METRICS_URL}/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`
+    const response = await $axios.get(url)
+    const metrics = response.data[0]
+    return {
+      totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
+      newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
+      downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+    }
+  } catch (err) {
+    const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
+    const url = `${config.public.METRICS_URL}/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`
+    const response = await $axios.get(url)
+    const metrics = response.data[0]
+    return {
+      totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
+      newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
+      downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+    }
+  }
+})
+
+const { data: totalDownloadsData, error: totalDownloadsError } = useAsyncData('totalDownloadsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.discover_api_host}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`
+    const response = await $axios.get(url)
+    let totalDownloads = 0
+    response.data.forEach(item => {
+      if (item.origin === 'SPARC') {
+        totalDownloads += parseInt(item['downloads'])
+      }
+    })
+    return totalDownloads
+  } catch (err) {
+    console.error('Error retrieving download count.', err)
+    return 0
+  }
+})
+
+const { data: highlights, error: highlightsError } = useAsyncData('highlightsData', async () => {
+  try {
+    const { $contentfulClient } = useNuxtApp()
+    const response = await $contentfulClient.getEntries({
+      'content_type': config.public.ctf_news_id,
+      order: '-fields.publishedDate',
+      limit: 999,
+      'fields.subject': 'Highlight'
+    })
+    return response.items
+  } catch (err) {
+    console.log('Could not retrieve highlights.', err)
+    return []
+  }
+})
+
+const metricsItems = computed(() => {
+  return [
+    {
+      title: 'Total Downloads',
+      data: totalDownloadsData.value?.toString(),
+      subData: `(${metricsData.value?.downloadsLastMonth} in ${months[lastMonthsDate.month - 1]})`
+    },
+    {
+      title: 'Dataset Contributors',
+      data: metricsData.value?.totalContributors?.toString(),
+      subData: `(${metricsData.value?.newContributors} new in ${months[lastMonthsDate.month - 1]})`
+    }
+  ]
+})
+
+const breadcrumb = computed(() => [
+  {
+    to: { name: 'index' },
+    label: 'Home'
+  }
+])
+
+const pageTitle = computed(() => pageData.value?.pageTitle || 'About Page')
+
+const heroCopy = computed(() => pageData.value?.heroCopy || '')
+
+const sparcPortal = computed(() => pageData.value?.sparcPortal || '')
+
+const whatWeOffer = computed(() => pageData.value?.whatWeOffer || '')
+
+const teamLeadership = computed(() => pageData.value?.teamLeadership || '')
+
+const getInvolved = computed(() => pageData.value?.getInvolved || '')
+
+const historyOfSparc = computed(() => pageData.value?.historyOfSparc || '')
+
+const aboutLink = (aboutDetailsId) => {
+  const name = 'about-aboutDetailsId'
+  return { name, params: { aboutDetailsId } }
 }
 </script>
 

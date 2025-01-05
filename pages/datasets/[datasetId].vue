@@ -57,6 +57,7 @@
                   :associated-projects="associatedProjects" />
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
+                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <dataset-references v-if="hasCitations" class="body1" v-show="activeTabId === 'references'"
                   :primary-publications="primaryPublications" :associated-publications="associatedPublications" />
@@ -90,6 +91,7 @@ import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescripti
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
+import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
@@ -148,21 +150,20 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
-const getOrganizationNames = async (algoliaIndex) => {
+const getOrganizationIds = async (algoliaIndex) => {
   try {
-    await algoliaIndex.search('', {
+    const { facets } = await algoliaIndex.search('', {
+      hitsPerPage: 0,
       sortFacetValuesBy: 'alpha',
-      facets: 'pennsieve.organization.name',
-    }).then(({ facets }) => {
-      return facets['pennsieve.organization.name'].keys()
+      facets: 'pennsieve.organization.identifier',
     })
+    return Object.keys(facets['pennsieve.organization.identifier'])
   } catch (error) {
     return [
-      'SPARC',
-      'SPARC Consortium',
-      'RE-JOIN',
-      'HEAL PRECISION',
-      "IT'IS Foundation"
+      29, //IT'IS Foundation
+      367, // SPARC
+      661, // RE-JOIN
+      666, // PRECISION
     ]
   }
 }
@@ -211,6 +212,7 @@ export default {
     DatasetAboutInfo,
     CitationDetails,
     DatasetFilesInfo,
+    SourceCodeInfo,
     ImagesGallery,
     DatasetReferences,
     VersionHistory,
@@ -237,7 +239,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary, sparcOrganizationNames, algoliaContributors] = await Promise.all([
+      let [datasetDetails, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -247,13 +249,16 @@ export default {
         ),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
-        getOrganizationNames(algoliaIndex),
+        getOrganizationIds(algoliaIndex),
         getContributorsFromAlgolia(algoliaIndex, datasetId)
       ])
-      const datasetDetailsContributors = algoliaContributors?.map(contributor => {
+      const filteredAlgoliaContributors = algoliaContributors.filter(contributor =>
+        contributor.first || contributor.last
+      )
+      const datasetDetailsContributors = filteredAlgoliaContributors?.map(contributor => {
         return {
-          firstName: contributor.first.name,
-          lastName: contributor.last.name,
+          firstName: contributor.first?.name,
+          lastName: contributor.last?.name,
           orcid: contributor.curie?.replace('ORCID:', '')
         }
       })
@@ -270,7 +275,7 @@ export default {
           name: propOr('', 'organizationName', datasetDetails)
         }
       ]
-      const contributors = algoliaContributors?.map(contributor => {
+      const contributors = filteredAlgoliaContributors?.map(contributor => {
         const sameAs = contributor.curie
           ? `http://orcid.org/${contributor.curie.replace('ORCID:', '')}`
           : null
@@ -290,9 +295,9 @@ export default {
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
       const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
       // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
-      if (!sparcOrganizationNames.includes(propOr('', 'organizationName', datasetDetails)) && !isEmpty(doiLink) && !showTombstone)
+      if (!sparcOrganizationIds.includes(`${propOr('', 'organizationId', datasetDetails)}`) && !isEmpty(doiLink) && !showTombstone)
       {
-        navigateTo(doiLink, { external: true, redirectCode: 301 })
+        await navigateTo(doiLink, { external: true, redirectCode: 301 })
       }
 
       return {
@@ -492,6 +497,12 @@ export default {
       let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
       return numPrimary + numAssociated;
     },
+    hasSourceCode: function () {
+      return propOr(null, 'release', this.datasetInfo) !== null
+    },
+    sourceCodeLink: function () {
+      return pathOr(null, ['release','repoUrl'], this.datasetInfo)
+    },
     numDownloads: function () {
       let numDownloads = 0;
       this.downloadsSummary.filter(download => download.datasetId == this.datasetId).forEach(item => {
@@ -551,6 +562,17 @@ export default {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
             this.tabs.splice(5, 0, { label: 'References', id: 'references' })
+          }
+        }
+      },
+      immediate: true
+    },
+    hasSourceCode: {
+      handler: function (newValue) {
+        if (newValue && !this.hasError) {
+          const hasSourceCodeTab = this.tabs.find(tab => tab.id === 'source') !== undefined
+          if (!hasSourceCodeTab) {
+            this.tabs.splice(4, 0, { label: 'Source Code', id: 'source' })
           }
         }
       },

@@ -116,7 +116,7 @@ export default defineNuxtConfig({
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
       CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
       ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
-      ctf_portal_notification_entry_id: 'XiVlrkTXeKxTyN1Q2oY2Q',
+      ctf_portal_notification_entry_id: '5S8eazBlD1Y47pTO1EQfQ3',
       ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
       ctf_project_id: 'sparcAward',
       ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
@@ -130,7 +130,6 @@ export default defineNuxtConfig({
       ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
       ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
-      ctf_tools_and_resources_page_id: '1Yy2BEB0df8HxLNx2Ivsct',
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
@@ -186,7 +185,7 @@ export default defineNuxtConfig({
         defer: true,
         compatibility: false,
         source: 'https://www.googletagmanager.com/gtm.js',
-        enabled: process.env.ROOT_URL == 'http://localhost:3000' ? false : true,
+        enabled: process.env.ROOT_URL == 'https://sparc.science' ? true : false,
         debug: true,
         loadScript: true,
         enableRouterSync: true,
@@ -203,20 +202,32 @@ export default defineNuxtConfig({
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
-    sources: [
+    cacheMaxAgeSeconds: 86400,
+    sources: process.env.DEPLOY_ENV === 'production' ?
+    [
       '/api/__sitemap__/urls'
-    ],
+    ] : [],
+    exclude: process.env.DEPLOY_ENV === 'production' ? 
+    [
+      '/datasets/plotviewer',
+      '/datasets/simulationviewer',
+      '/datasets/timeseriesviewer',
+      '/datasets/videoviewer',
+      '/datasets/biolucidaviewer',
+      '/datasets/flatmapviewer',
+      '/datasets/imageviewer',
+      '/datasets/scaffoldviewer',
+    ] : ['/'],  
     xslColumns: [
       { label: 'URL', width: '100%' }
     ],
   },
   robots: {
-    sitemap: 'https://sparc.science/sitemap.xml',
     // provide simple disallow rules for all robots `user-agent: *`
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
-    disallow: [
-      '/datasets',
-      '/data',
+    disallow: process.env.DEPLOY_ENV === 'production' ? 
+    [
+      '/datasets/*?*',
       '/welcome', 
       '/user', 
       '/contact-us', 
@@ -225,8 +236,8 @@ export default defineNuxtConfig({
       '/maps',
       '/news-and-events/submit',
       '/news-and-events/community-spotlight/submit'
-    ],
+    ] : ['/'],
     blockNonSeoBots: true,
-    crawlDelay: 60
+    crawlDelay: 3600
   }
 })

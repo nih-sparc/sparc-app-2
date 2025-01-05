@@ -8,7 +8,7 @@
     <Meta name="twitter:description" :content="summary" />
   </Head>
   <div class="page-data pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
       <h1>{{ title }}</h1>
       <p>{{ summary }}</p>
@@ -34,46 +34,39 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useAsyncData } from '#app'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
-import MarkedMixin from '@/mixins/marked'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 
-export default {
-  name: 'ShareDataPage',
-  components: {
-    LearnMoreCard,
-    LoginModal
-  },
-  mixins: [MarkedMixin],
-
-  async setup() {
-    const { $contentfulClient } = useNuxtApp()
-    const config = useRuntimeConfig()
-    const pageData = await $contentfulClient.getEntry(config.public.ctf_share_data_page_id)
-    return {
-      title: pageData.fields.title,
-      summary: pageData.fields.summary,
-      description: pageData.fields.description,
-      learnMore: pageData.fields.learnMore,
-      callsToAction: pageData.fields.callsToAction,
-      slug: pageData.fields.slug
-    }
-  },
-
-  data: () => {
-    return {
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        }
-      ],
-      showLoginDialog: false
-    }
+// Props or data
+const breadcrumb = [
+  {
+    to: {
+      name: 'index'
+    },
+    label: 'Home'
   }
+]
+const showLoginDialog = ref(false)
+
+const { data: pageData, error } = await useAsyncData('pageData', async () => {
+  const { $contentfulClient } = useNuxtApp()
+  const config = useRuntimeConfig()
+  const pageData = await $contentfulClient.getEntry(config.public.ctf_share_data_page_id)
+  return pageData.fields
+})
+
+const title = computed(() => pageData.value?.title || '')
+const summary = computed(() => pageData.value?.summary || '')
+const description = computed(() => pageData.value?.description || '')
+const learnMore = computed(() => pageData.value?.learnMore || [])
+const callsToAction = computed(() => pageData.value?.callsToAction || [])
+const slug = computed(() => pageData.value?.slug || '')
+
+if (error.value) {
+  console.error('Error fetching page data:', error.value)
 }
 </script>
 

@@ -8,7 +8,7 @@
     <Meta name="twitter:description" :content="`Browse ${searchTypes[2].label}`" />
   </Head>
   <div class="page-data">
-    <breadcrumb :breadcrumb="breadcrumb" title="Community Spotlight" />
+    <Breadcrumb :breadcrumb="breadcrumb" title="Community Spotlight" />
     <div class="container">
       <h1 hidden>Search for community spotlights</h1>
       <div class="search-tabs__container">
@@ -69,11 +69,11 @@
               :lg='18'
             >
               <div class="search-heading mt-32 mb-16">
-                <div class="label1" v-show="communitySpotlightItems.items.length">
-                  {{ communitySpotlightItems.total }} Results | Showing
+                <div class="label1" v-show="communitySpotlightItems?.items?.length">
+                  {{ communitySpotlightItems?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="communitySpotlightItems.limit"
+                      :page-size="communitySpotlightItems?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
@@ -90,10 +90,10 @@
                 </span>
               </div>
               <div class="subpage">
-                <template v-if="communitySpotlightItems.items.length > 0">
+                <template v-if="communitySpotlightItems?.items?.length > 0">
                   <client-only>
                     <community-spotlight-item
-                      v-for="(item, index) in communitySpotlightItems.items"
+                      v-for="(item, index) in communitySpotlightItems?.items"
                       :key="index"
                       :story="getLinkedItems(item)"
                     />
@@ -108,27 +108,27 @@
                 <client-only>
                   <alternative-search-results-news
                     ref="altSearchResults"
-                    :search-had-results="communitySpotlightItems.items.length > 0"
+                    :search-had-results="communitySpotlightItems?.items?.length > 0"
                     @vue:mounted="altResultsMounted"
                   />
                 </client-only>
               </div>
               <div class="search-heading">
-                <div class="label1" v-if="communitySpotlightItems.items.length">
-                  {{ communitySpotlightItems.total }} Results | Showing
+                <div class="label1" v-if="communitySpotlightItems?.items?.length">
+                  {{ communitySpotlightItems?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="communitySpotlightItems.limit"
+                      :page-size="communitySpotlightItems?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
                 </div>
                 <client-only>
                   <pagination
-                    v-if="communitySpotlightItems.limit < communitySpotlightItems.total"
+                    v-if="communitySpotlightItems?.limit < communitySpotlightItems?.total"
                     :selected="curSearchPage"
-                    :page-size="communitySpotlightItems.limit"
-                    :total-count="communitySpotlightItems.total"
+                    :page-size="communitySpotlightItems?.limit"
+                    :total-count="communitySpotlightItems?.total"
                     @select-page="onPaginationPageChange"
                   />
                 </client-only>
@@ -144,8 +144,9 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue'
+<script setup>
+import { ref, computed, watch } from 'vue'
+import { useRoute, useAsyncData } from '#app'
 import { pathOr, propOr } from 'ramda'
 import CommunitySpotlightItem from '@/components/CommunitySpotlight/CommunitySpotlightItem.vue'
 import CommunitySpotlightFacetMenu from '@/components/FacetMenu/CommunitySpotlightFacetMenu.vue'
@@ -153,40 +154,32 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
 import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
-
 import { fetchCommunitySpotlightItems } from '../model.js'
 
+
 const searchTypes = [
-  {
-    label: 'News',
-    path: 'news'
-  },
-  {
-    label: 'Events',
-    path: 'events'
-  },
-  {
-    label: 'Community Spotlight',
-    path: 'community-spotlight'
-  }
+  { label: 'News', path: 'news' },
+  { label: 'Events', path: 'events' },
+  { label: 'Community Spotlight', path: 'community-spotlight' }
 ]
 
 const sortOptions = [
-  {
-    label: 'Latest',
-    id: 'latest',
-    sortOrder: '-fields.publishedDate'
-  },
-  {
-    label: 'A-Z',
-    id: 'alphabatical',
-    sortOrder: 'fields.title'
-  },
-  {
-    label: 'Z-A',
-    id: 'reverseAlphabatical',
-    sortOrder: '-fields.title'
-  },
+  { label: 'Latest', id: 'latest', sortOrder: '-fields.publishedDate' },
+  { label: 'A-Z', id: 'alphabatical', sortOrder: 'fields.title' },
+  { label: 'Z-A', id: 'reverseAlphabatical', sortOrder: '-fields.title' }
+]
+
+const route = useRoute()
+const { $contentfulClient } = useNuxtApp()
+
+const altSearchResults = ref(null)
+const communitySpotlightFacetMenu = ref(null)
+
+const selectedSortOption = ref(sortOptions[0])
+
+const breadcrumb = [
+  { label: 'Home', to: { name: 'index' } },
+  { label: 'News & Events', to: { name: 'news-and-events' } }
 ]
 
 const SPOTLIGHT_TYPE_MAPPING = [
@@ -200,144 +193,103 @@ const SPOTLIGHT_TYPE_MAPPING = [
   }
 ]
 
-export default {
-  name: 'CommunitySpotlightPage',
+const selectedAnatomicalStructures = computed(() => {
+  return route.query.selectedAnatomicalStructures?.split(",") || undefined
+})
 
-  components: {
-    CommunitySpotlightItem,
-    CommunitySpotlightFacetMenu,
-    SearchControlsContentful,
-    SortMenu,
-    SubmitCommunitySection,
-    AlternativeSearchResultsNews
-  },
+const spotlightTypes = computed(() => {
+  return route.query.selectedSpotlightTypes || undefined
+})
 
-  // In order to allow for sorting or fireside chats and success stories we needed
-  // to restructure the content types in contentful to share a common model since you cannot query on 
-  // multiple content types while applying a field filter or order in contentful api as outlined here:
-  // https://www.contentfulcommunity.com/t/how-to-query-on-multiple-content-types/473
-  async setup() {
-    const { $contentfulClient } = useNuxtApp()
-    const route = useRoute()
-    const communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, undefined, undefined, undefined, 10, 0)
-    // get all the available pre-defined values for creating the facet menu
-    let anatomicalStructures = {}
-    await $contentfulClient.getContentType('communitySpotlight').then(contentType => {
-      contentType.fields.forEach((field) => {
-        if (field.id === 'anatomicalStructure') {
-          let structures = field.items?.validations[0]['in']
-          let facetData = []
-          structures.forEach(itemLabel => {
-            facetData.push({
-              label: itemLabel,
-              id: itemLabel,
-            })
+const sortOrder = computed(() => {
+  return propOr('-fields.startDate', 'sortOrder', selectedSortOption.value)
+})
+
+const curSearchPage = computed(() => {
+  return communitySpotlightItems.value?.skip / communitySpotlightItems.value?.limit + 1
+})
+
+const { data: communitySpotlightItems } = useAsyncData('communitySpotlightItems', () => {
+  return fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, 10, 0)
+})
+
+const { data: anatomicalStructures } = useAsyncData('anatomicalStructures', async () => {
+  let anatomicalStructures = {}
+  await $contentfulClient.getContentType('communitySpotlight').then(contentType => {
+    contentType.fields.forEach((field) => {
+      if (field.id === 'anatomicalStructure') {
+        let structures = field.items?.validations[0]['in']
+        let facetData = []
+        structures.forEach(itemLabel => {
+          facetData.push({
+            label: itemLabel,
+            id: itemLabel,
           })
-          anatomicalStructures = {
-            label: 'Focus',
-            id: 'spotlightAnatomicalStructure',
-            data: facetData
-          }
+        })
+        anatomicalStructures = {
+          label: 'Focus',
+          id: 'spotlightAnatomicalStructure',
+          data: facetData
         }
-      })
-    })
-
-    return {
-      communitySpotlightItems: ref(communitySpotlightItems),
-      anatomicalStructures
-    }
-  },
-  data() {
-    return {
-      searchTypes,
-      selectedSortOption: sortOptions[0],
-      sortOptions,
-      breadcrumb: [
-        {
-          label: 'Home',
-          to: {
-            name: 'index'
-          }
-        },
-        {
-          label: 'News & Events',
-          to: {
-            name: 'news-and-events'
-          }
-        }
-      ]
-    }
-  },
-  watch: {
-    '$route.query': {
-      handler: async function() {
-        const { $contentfulClient } = useNuxtApp()
-        this.communitySpotlightItems = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, 10, 0)
-        this.$refs.altSearchResults?.retrieveAltTotals()
-      },
-      immediate: true
-    },
-  },
-  computed: {
-    spotlightTypes: function() {
-      return this.$route.query.selectedSpotlightTypes || undefined
-    },
-    selectedAnatomicalStructures: function() {
-      return this.$route.query.selectedAnatomicalStructures?.split(",") || undefined
-    },
-    sortOrder: function() {
-      return propOr('-fields.startDate', 'sortOrder', this.selectedSortOption)
-    },
-    curSearchPage: function() {
-      return this.communitySpotlightItems.skip / this.communitySpotlightItems.limit + 1
-    },
-  },
-  methods: {
-    /**
-     * Get more events for the new page
-     * @param {Number} page
-     */
-    async onPaginationPageChange(page) {
-      const { $contentfulClient } = useNuxtApp()
-      const { limit } = this.communitySpotlightItems
-      const offset = (page - 1) * limit
-      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, limit, offset)
-      this.communitySpotlightItems = response
-    },
-    /**
-     * Update limit based on pagination menu selection and get more events
-     * @param {Number} limit
-     */
-    async onPaginationLimitChange(limit) {
-      const { $contentfulClient } = useNuxtApp()
-      const newLimit = limit === 'View All' ? this.communitySpotlightItems.total : limit
-      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, newLimit, 0)
-      this.communitySpotlightItems = response
-    },
-    async onSortOptionChange(option) {
-      const { $contentfulClient } = useNuxtApp()
-      this.selectedSortOption = option
-      const response = await fetchCommunitySpotlightItems($contentfulClient, this.$route.query.search, this.spotlightTypes, this.selectedAnatomicalStructures, this.sortOrder, this.communitySpotlightItems.limit, 0)
-      this.communitySpotlightItems = response
-    },
-    // The community spotlight item component needs to use the properties off the actual success stories/fireside chats
-    getLinkedItems(communitySpotlightItem) {
-      const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
-      const anatomicalStructures = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
-      const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
-      const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
-        return item.id == spotlightTypeId
-      })?.label
-      return {
-        ...linkedItem,
-        spotlightType,
-        anatomicalStructures
       }
-    },
-    altResultsMounted() {
-      this.$refs.altSearchResults?.retrieveAltTotals()
-    }
+    })
+  })
+  return anatomicalStructures
+})
+
+watch(
+  () => route.query,
+  async () => {
+    communitySpotlightItems.value = await fetchCommunitySpotlightItems(
+      $contentfulClient,
+      route.query.search,
+      spotlightTypes.value,
+      selectedAnatomicalStructures.value,
+      sortOrder.value,
+      10,
+      0
+    )
+    altSearchResults.value?.retrieveAltTotals()
   },
+  { immediate: true }
+)
+
+const onPaginationPageChange = async (page) => {
+  const { limit } = communitySpotlightItems.value
+  const offset = (page - 1) * limit
+  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, limit, offset)
+  communitySpotlightItems.value = response
+}
+
+const onPaginationLimitChange = async (limit) => {
+  const newLimit = limit === 'View All' ? communitySpotlightItems.value?.total : limit
+  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, newLimit, 0)
+  communitySpotlightItems.value = response
+}
+
+const onSortOptionChange = async (option) => {
+  selectedSortOption.value = option
+  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, communitySpotlightItems.value.limit, 0)
+  communitySpotlightItems.value = response
+}
+
+const altResultsMounted = () => {
+  altSearchResults.value?.retrieveAltTotals()
+}
+
+// The community spotlight item component needs to use the properties off the actual success stories/fireside chats
+const getLinkedItems = (communitySpotlightItem) => {
+  const linkedItem = pathOr('', ['fields','linkedItem'], communitySpotlightItem)
+  const anatomicalStructures = pathOr('', ['fields','anatomicalStructure'], communitySpotlightItem)
+  const spotlightTypeId = pathOr('', ['fields','itemType'], communitySpotlightItem)
+  const spotlightType = SPOTLIGHT_TYPE_MAPPING.find(item => {
+    return item.id == spotlightTypeId
+  })?.label
+  return {
+    ...linkedItem,
+    spotlightType,
+    anatomicalStructures
+  }
 }
 </script>
 

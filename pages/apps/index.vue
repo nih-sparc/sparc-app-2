@@ -1,40 +1,54 @@
 <template>
   <Head>
-    <Title>{{ fields.title }}</Title>
-    <Meta name="og:title" hid="og:title" :content="fields.title" />
-    <Meta name="twitter:title" :content="fields.title" />
-    <Meta name="description" hid="description" :content="fields.description" />
-    <Meta name="og:description" hid="og:description" :content="fields.description" />
-    <Meta name="twitter:description" :content="fields.description" />
+    <Title>{{ fields?.title }}</Title>
+    <Meta name="og:title" hid="og:title" :content="fields?.title" />
+    <Meta name="twitter:title" :content="fields?.title" />
+    <Meta name="description" hid="description" :content="fields?.description" />
+    <Meta name="og:description" hid="og:description" :content="fields?.description" />
+    <Meta name="twitter:description" :content="fields?.description" />
   </Head>
   <div>
-    <breadcrumb :breadcrumb="breadcrumb" :title="title" />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
       <h1>{{ title }}</h1>
-      <p>
-        {{ description }}
-      </p>
+      <p>{{ description }}</p>
     </page-hero>
-    <portal-features :features="appEntries" :title="appsSectionTitle" :icon-is-top-element="false" :max-per-row="3" />
-    <div class="container" :style="'text-align: center; margin-top: 1rem; margin-bottom: 2rem;'" v-html="parseMarkdown(footer)" />
+    <portal-features
+      :features="appEntries"
+      :title="appsSectionTitle"
+      :icon-is-top-element="false"
+      :max-per-row="3"
+    />
+    <div
+      class="container"
+      :style="'text-align: center; margin-top: 1rem; margin-bottom: 2rem;'"
+      v-html="parseMarkdown(footer)"
+    />
   </div>
 </template>
 
-<script>
-import PortalFeatures from '@/components/PortalFeatures/PortalFeatures.vue'
-import MarkedMixin from '@/mixins/marked'
-import { pathOr, propOr } from 'ramda'
+<script setup>
+import { computed } from 'vue'
+import { pathOr } from 'ramda'
+import { parseMarkdown } from '@/utils/formattingUtils.js'
+import { useAsyncData, useRuntimeConfig } from '#app'
+
+const breadcrumb = [
+  {
+    to: { name: 'index' },
+    label: 'Home',
+  },
+]
 
 const constructPortalFeatureEntries = (apps) => {
-  if (apps == undefined) {
-    return []
-  }
-  let entries = []
-  apps.forEach(app => {
-    const buttonLink = app.fields.requiresDetailsPage ? `/resources/${app.sys.id}` : pathOr('', ['fields', 'url'], app)
-    const appEntry = {
+  if (!apps) return []
+  return apps.map((app) => {
+    const buttonLink = app.fields.requiresDetailsPage
+      ? `/resources/${app.sys.id}`
+      : pathOr('', ['fields', 'url'], app)
+    return {
       fields: {
-        buttonLink: buttonLink,
+        buttonLink,
         buttonText: pathOr('', ['fields', 'buttonText'], app),
         description: pathOr('', ['fields', 'description'], app),
         title: pathOr('', ['fields', 'name'], app),
@@ -45,67 +59,30 @@ const constructPortalFeatureEntries = (apps) => {
             },
           },
         },
-      }
+      },
     }
-    entries.push(
-      appEntry
-    )
   })
-  return entries
 }
 
-export default {
-  name: 'AppsPage',
-  components: {
-    PortalFeatures
-  },
-  mixins: [MarkedMixin],
-  async setup() {
-    const config = useRuntimeConfig()
-    const { $contentfulClient } = useNuxtApp()
-    try {
-      const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
-      const appEntries = constructPortalFeatureEntries(appPage.fields?.apps)
-      return {
-        appEntries,
-        fields: appPage.fields,
-      }
-    } catch (e) {
-      console.error(e)
-    }
-  },
+const config = useRuntimeConfig()
 
-  data() {
-    return {
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        }
-      ]
-    }
-  },
-
-  computed: {
-    title: function () {
-      return this.fields.title
-    },
-    description: function () {
-      return this.fields.description
-    },
-    appsSectionTitle: function () {
-      return propOr('', 'appsSectionTitle', this.fields)
-    },
-    footer: function () {
-      return propOr('', 'footerText', this.fields)
-    }
+const { data: appData } = await useAsyncData('apps-page-data', async () => {
+  const { $contentfulClient } = useNuxtApp()
+  const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+  return {
+    fields: appPage.fields || {},
+    appEntries: constructPortalFeatureEntries(appPage.fields?.apps),
   }
-}
+})
+
+const fields = computed(() => appData.value.fields || {})
+const appEntries = computed(() => appData.value.appEntries || [])
+const title = computed(() => fields.value?.title || '')
+const description = computed(() => fields.value?.description || '')
+const appsSectionTitle = computed(() => fields.value?.appsSectionTitle || '')
+const footer = computed(() => fields.value?.footerText || '')
 </script>
 
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
-
 </style>

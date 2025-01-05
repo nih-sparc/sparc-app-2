@@ -5,16 +5,10 @@ on:
     types: [opened, synchronize, reopened]
     branches: [master, main]
 
+  workflow_dispatch:
+
 env:
-  PAGE_LIMIT: ${{ github.event.inputs.PAGE_LIMIT }}
-  SEARCH_KEYWORDS: ${{ github.event.inputs.SEARCH_KEYWORDS }}
-  FILTER_FACET: ${{ github.event.inputs.FILTER_FACET }}
-  MULTIPLE_FILTER_FACETS: ${{ github.event.inputs.MULTIPLE_FILTER_FACETS }}
-  DATASET_IDS: ${{ github.event.inputs.DATASET_IDS }}
-  TAXON_MODELS: ${{ github.event.inputs.TAXON_MODELS }}
-  THREE_SYNC_VIEW: ${{ github.event.inputs.THREE_SYNC_VIEW }}
-  SEARCH_IN_MAP: ${{ github.event.inputs.SEARCH_IN_MAP }}
-  SCAFFOLD_DATASET_IDS: ${{ github.event.inputs.SCAFFOLD_DATASET_IDS }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   CYPRESS_PROJECT_ID: ${{ secrets.CYPRESS_PROJECT_ID }}
   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
   ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
@@ -51,8 +45,29 @@ env:
   SPARC_PORTAL_USER_SECRET: ${{ secrets.SPARC_PORTAL_USER_SECRET }}
 
 jobs:
-  pull-request-cypress-run:
+  build-uuid:
     runs-on: ubuntu-latest
+
+    outputs:
+      uuid: ${{ steps.uuid.outputs.value }}
+
+    steps:
+      - name: Generate uuid based on commit and time
+        id: uuid
+        run: echo "value=sha-$GITHUB_SHA-time-$(date +"%s")" >> $GITHUB_OUTPUT
+
+      - name: Print uuid
+        run: echo "${{ steps.uuid.outputs.value }}"
+
+  cypress-run:
+    runs-on: ubuntu-latest
+
+    needs: build-uuid
+
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4]
 
     steps:
       - name: Cleanup pre-installed tools
@@ -62,11 +77,12 @@ jobs:
           sudo rm -rf "/usr/local/share/boost"
           sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 
-      - uses: actions-cool/check-user-permission@main
+      - name: Check user permission
+        uses: actions-cool/check-user-permission@v2
         id: checkUser
         with:
           require: "write"
-          username: ${{ github.event.pull_request.user.name }}
+          username: ${{ github.event.pull_request.user.login }}
 
       - name: Checkout
         if: steps.checkUser.outputs.require-result == 'true'
@@ -81,8 +97,8 @@ jobs:
 
       - name: Automated Run Testing when Pull Request
         if: steps.checkUser.outputs.require-result == 'true'
+        id: cypress
         uses: cypress-io/github-action@v6
-        timeout-minutes: 30
         env:
           ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
         with:
@@ -90,7 +106,9 @@ jobs:
           start: yarn preview
           wait-on: ${{ secrets.ROOT_URL }}
           record: true
+          parallel: true
           tag: PR
+          ci-build-id: "${{ needs.build-uuid.outputs.uuid }}-${{ github.workflow }}-${{ github.event_name }}"
 
       - name: Skip tests
         if: steps.checkUser.outputs.require-result == 'false'

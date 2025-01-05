@@ -1,5 +1,5 @@
 <template>
-  <paper
+  <Paper
     :text="parseMarkdown(searchPaperText)"
     :button-text="searchPaperNEButton"
     :button-link="{ name: 'contact-us', query: { type: 'news-event'} }"
@@ -7,29 +7,22 @@
   />
 </template>
 
-<script>
-import Paper from '@/components/Paper/Paper.vue'
-import marked from '@/mixins/marked/index'
+<script setup>
+import { useNuxtApp, useRuntimeConfig } from '#imports';
+import Paper from '@/components/Paper/Paper.vue';
+import { parseMarkdown } from '@/utils/formattingUtils.js'
 
-export default {
-  name: 'SubmitNewsSection',
+const config = useRuntimeConfig();
+const { $contentfulClient } = useNuxtApp();
 
-  mixins: [marked],
-
-  components: {
-    Paper
-  },
-
-  async setup() {
-    const config = useRuntimeConfig()
-    const { $contentfulClient } = useNuxtApp()
-    const response = await $contentfulClient.getEntry(config.public.ctf_news_and_events_page_id)
-    const searchPaperNEButton = response.fields.searchPaperNeButton
-    const searchPaperText = response.fields.searchPaperText
-    return {
-      searchPaperNEButton,
-      searchPaperText
-    }
+const { data } = await useAsyncData('newsAndEventsPage', async () => {
+  const pageData = await $contentfulClient.getEntry(config.public.ctf_news_and_events_page_id);
+  return {
+    fields: pageData.fields || {},
   }
-}
+});
+
+const searchPaperNEButton = computed(() => data.value?.fields.searchPaperNeButton || '')
+const searchPaperText = computed(() => data.value?.fields.searchPaperText || '')
+
 </script>

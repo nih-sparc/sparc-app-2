@@ -49,15 +49,13 @@
 import { ref } from 'vue'
 import SearchControlsContentful from '@/components/SearchControlsContentful/SearchControlsContentful.vue'
 import ServicesSearchResults from '@/components/Resources/ServicesSearchResults.vue'
-import SubmitToolSection from '@/components/Resources/SubmitToolSection.vue'
 
 export default {
   name: 'OsparcServices',
 
   components: {
     SearchControlsContentful,
-    ServicesSearchResults,
-    SubmitToolSection
+    ServicesSearchResults
   },
 
   async setup() {

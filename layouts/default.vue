@@ -15,6 +15,7 @@ import { propOr } from 'ramda'
 import DOMPurify from 'isomorphic-dompurify'
 import { useMainStore } from '../store/index.js'
 import { mapState } from 'pinia'
+import { customMessage } from '@/utils/notification-messages'
 
 export default {
   components: {
@@ -54,7 +55,7 @@ export default {
           if (!displayOnHomePageOnly || (displayOnHomePageOnly && currentlyOnHomePage)) {
             switch (messageType) {
               case 'Error': {
-                this.$message({
+                customMessage({
                   message: message,
                   showClose: true,
                   iconClass: 'el-icon-circle-close',
@@ -65,7 +66,7 @@ export default {
                 break
               }
               case 'Success': {
-                this.$message({
+                customMessage({
                   message: message,
                   showClose: true,
                   iconClass: 'el-icon-circle-check',
@@ -76,7 +77,7 @@ export default {
                 break
               }
               case 'Information': {
-                this.$message({
+                customMessage({
                   message: message,
                   showClose: true,
                   iconClass: 'about-icon',

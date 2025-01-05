@@ -68,7 +68,7 @@ const licenseData = [
   },
   {
     label: 'MIT license (MIT)',
-    value: 'MIT',
+    value: 'MIT License',
     abbr: 'MIT',
     link: 'https://opensource.org/licenses/MIT'
   },

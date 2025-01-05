@@ -1,35 +1,35 @@
 <template>
-  <paper
-    :text="parseMarkdown(searchPaperText)"
-    :button-text="searchPaperButton"
-    :button-link="{ name: 'contact-us', query: { type: 'tool'} }"
-    new-tab
-  />
+  <div class="subpage">
+    <div class="heading2 mb-12">
+      Submit a Tool or Resource
+    </div>
+    <div class="mb-12">
+      Our goal is to collect useful Tools and Resources to share with the Community to enable researchers to access and enhance the current datasets and knowledge they can gain from the SPARC Portal for their own research.
+    </div>
+    <a
+      :href="`/contact-us?type=tool`"
+      target="_blank"
+    >
+      <el-button class="secondary">
+        Submit Tool <svgo-icon-open class="icon-open" />
+      </el-button>
+    </a>
+  </div>
 </template>
 
 <script>
-import Paper from '@/components/Paper/Paper.vue'
-import marked from '@/mixins/marked/index'
-
 export default {
-  name: 'SubmitToolSection',
-
-  mixins: [marked],
-
-  components: {
-    Paper
-  },
-
-  async setup() {
-    const { $contentfulClient } = useNuxtApp()
-    const config = useRuntimeConfig()
-    const response = await $contentfulClient.getEntry(config.public.ctf_tools_and_resources_page_id)
-    const searchPaperButton = response.fields.searchPaperButton
-    const searchPaperText = response.fields.searchPaperText
-    return {
-      searchPaperText,
-      searchPaperButton
-    }
-  }
+  name: 'SubmitToolSection'
 }
 </script>
+<style lang="scss" scoped>
+.subpage {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 1rem;
+}
+.icon-open {
+  height: 1rem;
+  width: 1rem;
+}
+</style>

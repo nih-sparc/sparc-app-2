@@ -10,6 +10,17 @@
             <strong>Data collection:</strong>
             {{ description }}
           </p>
+          <hr />
+        </div>
+        <div class="filter-container mb-16">
+          <span>
+            Filter gallery: 
+          </span>
+          <multi-select
+            class="filter-dropdown"
+            :options="galleryFilterOptions"
+            @selection-changed="galleryFilterChanged"
+          />
         </div>
         <gallery
           class="file-viewer-gallery"
@@ -86,8 +97,8 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             species = speciesArray[0].children[0].label.toLowerCase()
         }
 
-        // check if there is a flatmap for the given species, use a rat if there is not
-        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['rat']
+        // check if there is a flatmap for the given species, use human if there is not
+        const taxo = species && species in Uberons.species ? Uberons.species[species] : Uberons.species['human']
 
         // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
         // if a flatmap of (species) has (anatomy)
@@ -214,6 +225,8 @@ export default {
       timeseriesItems: [],
       timeseriesData: [],
       datasetScicrunch: {},
+      galleryFilterOptions: [],
+      selectedGalleryFilter: []
     }
   },
   computed: {
@@ -246,8 +259,23 @@ export default {
     thumbnails() {
       return this.datasetThumbnailData
     },
+    isGalleryFilterSet() {
+      return this.selectedGalleryFilter.length > 0 && this.selectedGalleryFilter[0] != 'showAll'
+    },
     galleryItems() {
-      return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
+      if (this.isGalleryFilterSet) {
+        const items = this.biolucidaItems.concat(this.scicrunchItems).filter(item => {
+          return this.selectedGalleryFilter.some(filter => {
+            const index = filter[0]
+            const label = this.galleryFilterOptions.find(option => option.value == index)?.label
+            return label.includes(item.type)
+          })
+        })
+        return items
+      }
+      else {
+        return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
+      }
     },
     hasDescription() {
       return this.description !== ''
@@ -509,61 +537,67 @@ export default {
         this.scicrunchItems = items
 
         if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
-          const biolucida2DItems = pathOr([],['biolucida-2d'], scicrunchData)
+          const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
-          const biolucidaItems = biolucida2DItems.concat(pathOr([],['biolucida-3d'], scicrunchData)).filter((bObject) => {
-            return scicrunchData['dataset_images'].some(image => image.image_id == pathOr("", ['biolucida','identifier'], bObject))
-          })
-          bItems.push(
-            ...Array.from(biolucidaItems, biolucida_item => {
-              let filePath = ""
-              const dataset_image = scicrunchData['dataset_images'].find((image) => {
-                return image.image_id == pathOr("", ['biolucida','identifier'], biolucida_item)
+          biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach((bObject) => {
+            const biolucidaId = pathOr("", ['biolucida','identifier'], bObject)
+            if (biolucidaId) {
+              const dataset_image = scicrunchData['dataset_images'].findLast((image) => {
+                return image.image_id == biolucidaId
               })
-              biolucida2DItems.forEach(biolucida2DItem => {
-                if (pathOr("", ['biolucida','identifier'], biolucida2DItem) == dataset_image.image_id) {
-                  filePath = "files/" + pathOr("", ['dataset','path'], biolucida2DItem)
-                }
-              })
-              this.getThumbnailFromBiolucida(bItems, {
-                id: dataset_image.image_id,
-                fetchAttempts: 0
-              })
-              this.getImageInfoFromBiolucida(bItems, {
-                id: dataset_image.image_id,
-                fetchAttempts: 0
-              })
-              const viewEncoding = dataset_image.share_link.replace(
-                this.$config.public.BL_SHARE_LINK_PREFIX,
-                ''
-              )
-              // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
-              let linkUrl = filePath != "" ?
-                baseRoute +
-                `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
-                baseRoute +
-                'datasets/biolucidaviewer/' +
-                dataset_image.image_id +
-                '?view=' +
-                viewEncoding +
-                '&dataset_version=' +
-                datasetVersion +
-                '&dataset_id=' +
-                datasetId +
-                '&item_id=' +
-                dataset_image.sourcepkg_id
-
-              return {
-                id: dataset_image.image_id,
-                title: null,
-                type: 'Image',
-                thumbnail: null,
-                link: linkUrl
+              if (dataset_image) {
+                let filePath = ""
+                filePath = "files/" + pathOr("", ['dataset','path'], bObject)
+                // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
+                const viewEncoding = dataset_image.share_link.replace(
+                  this.$config.public.BL_SHARE_LINK_PREFIX,
+                  ''
+                )
+                let linkUrl = filePath != "" ?
+                  baseRoute +
+                  `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
+                  baseRoute +
+                  'datasets/biolucidaviewer/' +
+                  dataset_image.image_id +
+                  '?view=' +
+                  viewEncoding +
+                  '&dataset_version=' +
+                  datasetVersion +
+                  '&dataset_id=' +
+                  datasetId +
+                  '&item_id=' +
+                  dataset_image.sourcepkg_id
+                bItems.push({
+                  id: dataset_image.image_id,
+                  title: null,
+                  type: 'Image',
+                  thumbnail: null,
+                  link: linkUrl
+                })
+                this.getThumbnailFromBiolucida(bItems, {
+                  id: dataset_image.image_id,
+                  fetchAttempts: 0
+                })
+                this.getImageInfoFromBiolucida(bItems, {
+                  id: dataset_image.image_id,
+                  fetchAttempts: 0
+                })
               }
-            })
-          )
+            }
+          })
         }
         this.biolucidaItems = bItems
+
+        const galleryItems = this.scicrunchItems.concat(this.biolucidaItems)
+        const filterLabels = [...new Set(galleryItems.map(item => item.type))]
+        const labelCounts = galleryItems.reduce((counts, item) => {
+          counts[item.type] = (counts[item.type] || 0) + 1;
+          return counts;
+        }, {});
+        this.galleryFilterOptions = filterLabels.map((type, index) => ({
+          value: index,
+          label: `${type} (${labelCounts[type]})`
+        }))
       }
     }
   },
@@ -824,6 +858,9 @@ export default {
         }
       )
     },
+    galleryFilterChanged(newVal) {
+      this.selectedGalleryFilter = newVal
+    },
     onResize() {
       this.maxWidth = this.$el.clientWidth
       // this.$emit('resize', this.$el.clientWidth)
@@ -922,6 +959,18 @@ a.next {
 .loading-gallery {
   overflow: hidden;
   min-height: 4rem;
+}
+
+hr {
+  border-top: none;
+}
+
+.filter-container {
+  text-align: right;
+}
+
+.filter-dropdown {
+  display: inline-block;
 }
 
 :deep(.one-item .card-line) {

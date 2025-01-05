@@ -1,6 +1,6 @@
 <template>
-  <div class="featured-datasets container pt-32">
-    <h2 class="heading2 title mt-0 mb-32">
+  <div class="featured-datasets container pt-24">
+    <h2 class="heading2 title mt-0 mb-24">
       News &amp; Upcoming Events
     </h2>
     <sparc-card
@@ -95,7 +95,7 @@ import { pathOr } from 'ramda'
 import SparcCard from '@/components/SparcCard/SparcCard.vue'
 import MarkedMixin from '@/mixins/marked'
 import FormatDate from '@/mixins/format-date'
-import { isInternalLink } from '@/mixins/marked/index'
+import { isAnchor } from '@/mixins/marked/index'
 export default {
   name: 'HomepageNews',
   components: {
@@ -129,7 +129,7 @@ export default {
     }
   },
   methods: {
-    isInternalLink,
+    isAnchor,
     async fetchBitlyLinks() {
       this.upcomingNews.forEach(async item => {
         const url = pathOr("", ['fields', 'url'], item)
@@ -143,16 +143,21 @@ export default {
               }
             })
             const newUrl = response.data.long_url
-            this.itemIsInternalLink.push(isInternalLink(newUrl))
+            this.itemIsInternalLink.push(this.isInternalLink(newUrl))
           } catch {
             console.log("Error retreiving bitly link destination url")
-            this.itemIsInternalLink.push(isInternalLink(url))
+            this.itemIsInternalLink.push(this.isInternalLink(url))
           }
         }
         else {
-          this.itemIsInternalLink.push(isInternalLink(url))
+          this.itemIsInternalLink.push(this.isInternalLink(url))
         }
       })
+    },
+    isInternalLink(str){
+      return isAnchor(str)
+        ? true
+        : str.includes(this.$config.public.ROOT_URL) || str.includes("sparc.science") || str.startsWith('/')
     },
     /**
      * Get image source
@@ -239,7 +244,7 @@ h2 a:not(:hover) {
 :deep(div.sparc-card) {
   padding-bottom: 1.5rem;
   @media (min-width: $tablet-small) {
-    padding-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
   }
   .sparc-card__content-wrap {
     flex: 7 0 0rem;
