@@ -16,6 +16,8 @@
           :button-link="whoWeAreButtonLink" />
         <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
           :button-link="ourResearchButtonLink" />
+        <paper v-if="forInvestigators" class="row-item" :text="parseMarkdown(forInvestigators)"
+          :button-text="forInvestigatorsButtonLabel" :button-link-external="forInvestigatorsButtonLink" />
       </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
@@ -91,6 +93,9 @@ const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchB
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
 const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
+const forInvestigators = computed(() => pathOr('', ['fields', 'forInvestigators'], consortiaItem.value))
+const forInvestigatorsButtonLabel = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLabel'], consortiaItem.value))
+const forInvestigatorsButtonLink = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLink'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
@@ -205,23 +210,26 @@ onMounted(async () => {
   background-color: white;
 }
 
-.row-item {
-  width: 49%;
-  display: flex;
-
-  @media screen and (max-width: 767px) {
-    width: 100%;
-  }
-}
-
 .row {
   display: flex;
-  justify-content: space-between;
-
+  gap: 20px;
   @media screen and (max-width: 767px) {
     flex-direction: column;
   }
 }
+
+.row-item {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  @media screen and (max-width: 767px) {
+    width: 100%;
+  }
+  & > :deep(.subpage-col) {
+    flex: 1
+  }
+}
+
 
 .gallery-items-container {
   background-color: white;
