@@ -324,9 +324,11 @@ mapTypes.forEach((map) => {
         cy.get('.title-text').then((text) => {
           expect(text, 'Tree control title should exist').to.exist
         })
-        cy.get('.region-tree-node > .lastChildInItem:visible').then((region) => {
+        cy.get('.traditional-container .selections-container').then(() => {
           cy.waitForMapTreeControlLoading()
-          expect(region, 'Tree control helper region should exist').to.contain('_helper')
+          cy.get('.region-tree-node > .lastChildInItem').then((region) => {
+            expect(region, 'Tree control helper region should exist').to.contain('_helper')
+          })
         })
       })
     } else if (map === 'fc') {
