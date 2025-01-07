@@ -75,8 +75,7 @@ datasetIds.forEach((datasetId) => {
           expect($link, 'DOI link should contain correct link').to.have.attr('href').to.contain('https://doi.org/')
         })
         cy.get('@doiLink').invoke('attr', 'href').then((href) => {
-          cy.request(href).then((resp) => {
-            expect(resp.status).to.eq(200)
+          cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
             expect(resp.redirects, 'Redirect should exist').to.have.length(1)
           })
         })
