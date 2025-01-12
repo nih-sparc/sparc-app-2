@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@abi-software/flatmap-viewer@^3.2.10":
+"@abi-software/flatmap-viewer@3.2.10", "@abi-software/flatmap-viewer@^3.2.10":
   version "3.2.10"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.10.tgz#5a1bd0035a7669c41db064a35b58a73cbd355158"
   integrity sha512-jmpZyJBQ7MF4GY4PEAMDpx2ZFel6Id7pacRXVfSVq0JD5zXMVGJ1wn/VJ0AYchSjhp+xYhDy7OjLSEqgxVTYjA==
@@ -31,7 +31,24 @@
     minisearch "^2.2.1"
     polylabel "^2.0.1"
 
-"@abi-software/flatmapvuer@^1.4.1", "@abi-software/flatmapvuer@^1.6.2":
+"@abi-software/flatmapvuer@1.6.2-beta.12":
+  version "1.6.2-beta.12"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.2-beta.12.tgz#39b600447af6d7d9b49d7a48aade9486703bec00"
+  integrity sha512-melmT3+S8d3pXArKhFKUxI7pb5+9/7tefyZjNjGtMB9nkCQqW+b90eHWoboAeCDVFDl8LcPn24PBr8Iru+T0ww==
+  dependencies:
+    "@abi-software/flatmap-viewer" "3.2.10"
+    "@abi-software/map-utilities" "^1.2.2-beta.7"
+    "@abi-software/sparc-annotation" "0.3.2"
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    css-element-queries "^1.2.2"
+    element-plus "2.8.4"
+    mitt "^3.0.1"
+    pinia "^2.1.7"
+    unplugin-vue-components "^0.26.0"
+    vue "^3.4.21"
+
+"@abi-software/flatmapvuer@^1.6.2":
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.2.tgz#79de01e8a3ce2f60a114eb020afb3640b1ba9611"
   integrity sha512-5YFL4TV9pt2DKYEvl0vshvSzlybN35aFl+hiYycLowvizhxg3wYW5j8vbeFDs7mBSTiKxT/329UiXQVdI7YL/w==
@@ -91,6 +108,18 @@
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.2.1.tgz#7234e2f79974e51da78c04ba68053ce02ac633a1"
   integrity sha512-4Dc8ONKaAZLRK8B3L/dGX+vP4cI7ztsvyGwCVbWu14qEe/BvxnGV3sGbcBSGmBoHL9Tef6eWSrVIWquWkeCr/Q==
+  dependencies:
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    cytoscape "^3.30.2"
+    element-plus "2.8.4"
+    mitt "^3.0.1"
+    vue "^3.4.21"
+
+"@abi-software/map-utilities@^1.2.2-beta.7":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.3.1.tgz#660cfbe66204ca8478ba4d01a09d5d8ad93017b7"
+  integrity sha512-gHh/gSC57A9TvnbOMNj8EEgQ1E7s293PckCnpd/ccBpAMHAcK21uFntRbjRoLWc8mljypmI0uRDrkA1cpyIn4A==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -17028,12 +17057,12 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashboard-beta@^0.2.8:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.2.8.tgz#745dea7a76a94bfda6565c2cd9867c105f1e6c6b"
-  integrity sha512-/8EjZlqR9qAfQcRsdICPVurmitoMxjngFca2jYz84rZRS37Lyevlq4Issd7q2DKU+sD5v5hasZoIMbNgb4SncA==
+sparc-dashboard-beta@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.3.0.tgz#ee21772ea2a3994ae54a4334a8450571487e2559"
+  integrity sha512-f0HkxHIAHUcI6cNVrXHl4970RB19wEqJ9nZDSGYSj6TuNQeNkVu4j0cRusRA7ViJXFZnvQzWqyrOPFaawI5phQ==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.4.1"
+    "@abi-software/flatmapvuer" "1.6.2-beta.12"
     "@tsconfig/node21" "^21.0.1"
     axios "^1.6.7"
     chart.js "^4.4.2"
@@ -17043,7 +17072,7 @@ sparc-dashboard-beta@^0.2.8:
     sass "^1.69.5"
     sparc-design-system-components-2 "0.0.26"
     storybook "^7.5.3"
-    vue "^3.3.4"
+    vue "^3.5.10"
     vue-chartjs "^5.3.1"
 
 sparc-design-system-components-2@0.0.26:
@@ -17250,7 +17279,16 @@ string-split-by@^1.0.0:
   dependencies:
     parenthesis "^3.1.5"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17332,7 +17370,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -18753,7 +18798,7 @@ vue3-component-svg-sprite@^0.0.1:
   dependencies:
     vue "^3.3.13"
 
-vue@3.4.21, vue@^3.3.13, vue@^3.3.4, vue@^3.4.15, vue@^3.4.21:
+vue@3.4.21, vue@^3.3.13, vue@^3.3.4, vue@^3.4.15, vue@^3.4.21, vue@^3.5.10:
   version "3.4.21"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.4.21.tgz#69ec30e267d358ee3a0ce16612ba89e00aaeb731"
   integrity sha512-5hjyV/jLEIKD/jYl4cavMcnzKwjMKohureP8ejn3hhEjwhWIhWeuzL2kJAjzl/WyVsgPY56Sy4Z40C3lVshxXA==
@@ -18996,8 +19041,7 @@ world-calendars@^1.0.3:
   dependencies:
     object-assign "^4.1.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
-  name wrap-ansi-cjs
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19010,6 +19054,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
