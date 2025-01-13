@@ -108,6 +108,13 @@ Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForSidebarReferenceLoading', () => {
+  cy.get('.resource-container > .citation-list > .loading', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Sidebar reference loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 /**
  * Databrowser commands
  */

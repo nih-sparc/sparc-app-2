@@ -110,6 +110,7 @@ mapTypes.forEach((map) => {
                 message: `Clicked on the ${$title.text()}`,
                 type: 'info'
               })
+              // Check for copy button
               cy.get('.el-button.copy-clipboard-button:visible').click()
               cy.window().then(win => {
                 win.navigator.clipboard.readText().then(text => {
@@ -180,6 +181,21 @@ mapTypes.forEach((map) => {
             cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
               expect($keys, 'The control panel nodes should have at least one key').to.have.length.greaterThan(0)
             })
+          })
+          // Check for references
+          cy.get('.sidebar-container > .main > .content-container').then(($content) => {
+            if ($content.text().includes('References')) {
+              cy.get('.resource-container > .attribute-title-container').then(($title) => {
+                expect($title, 'Reference section should exist').to.exist
+              })
+              cy.get('.citation-tabs > .el-button').each(($citation) => {
+                cy.wrap($citation).click()
+                cy.waitForSidebarReferenceLoading()
+                cy.get('.citation-list > li').then(($content) => {
+                  expect($content, 'Citation content should exist').to.exist
+                })
+              })
+            }
           })
           // Close the provenance card
           cy.get('.active-tab > .el-button').as('closeTabButton').click()
