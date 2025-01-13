@@ -238,6 +238,6 @@ export default defineNuxtConfig({
       '/news-and-events/community-spotlight/submit'
     ] : ['/'],
     blockNonSeoBots: true,
-    crawlDelay: 3600
+    crawlDelay: 300
   }
 })

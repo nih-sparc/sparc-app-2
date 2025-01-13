@@ -23,10 +23,6 @@ export default defineEventHandler((event) => {
     if (userAgent && botNames.some(botName => userAgent.indexOf(botName.toLowerCase()) !== -1)) {
       res.statusCode = 403
       res.end('Bot detected, serving 403 response.')
-    } else if (userAgent && (userAgent.includes('googlebot') || userAgent.includes("google.com/bot.html"))) {
-      res.statusCode = 200
-      res.setHeader('Content-Type', 'text/plain')
-      res.end('Googlebot detected, serving empty response.')
     }
   }
 })
