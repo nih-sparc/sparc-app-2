@@ -275,7 +275,7 @@ mapTypes.forEach((map) => {
         })
       })
 
-      scaffoldDatasetIds.forEach((datasetId) => {
+      scaffoldDatasetIds.forEach((datasetId, index) => {
 
         it(`Context card for scaffold dataset ${datasetId}`, function () {
           cy.waitForMapLoading()
@@ -285,9 +285,41 @@ mapTypes.forEach((map) => {
           cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
           cy.get('@searchBox').clear()
           cy.get('@searchBox').type(datasetId)
+          // Clear all the history
+          if (index === 0) {
+            cy.get('.box-card > .sidebar-container > .el-card:visible > .el-card__body').then(($content) => {
+              if ($content.text().includes('Search history')) {
+                cy.get('.history-container .el-dropdown:visible').click()
+                cy.get('.el-dropdown__popper:visible > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item').as('dropdownItem')
+                cy.get('@dropdownItem').then(($item) => {
+                  for (let index = 0; index < $item.length; index++) {
+                    cy.get('@dropdownItem').first().within(() => {
+                      cy.get(':nth-child(2) > :nth-child(2)').click()
+                    })
+                  }
+                })
+              }
+            })
+          }
           cy.get('.header > .el-button > span:visible').as('sidebarSearchButton').click()
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
+            // Check for empty history tag message
+            if (index === 0) {
+              cy.get('.history-container .empty-saved-search').then(($message) => {
+                expect($message, 'Empty tag message should exist').to.contain('No Saved Searches')
+              })
+            }
+            cy.get('.history-container .el-dropdown:visible').as('historyDropdown')
+            // Open history dropdown
+            cy.get('@historyDropdown').click()
+            cy.get('.el-dropdown__popper:visible > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item > :nth-child(2) > :nth-child(1)').eq(index).click({ force: true })
+            // Check for history tag
+            cy.get('.saved-search-history > .el-tag:visible').then(($tag) => {
+              expect($tag, 'Maximum 2 history tag should be displayed').to.have.length.of.at.most(2)
+            })
+            // Close history dropdown
+            cy.get('@historyDropdown').click()
             cy.get('.dataset-results-feedback:visible', { timeout: 30000 }).then(($result) => {
               if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
                 // Empty text should show up if no result
