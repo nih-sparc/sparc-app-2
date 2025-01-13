@@ -231,7 +231,7 @@ mapTypes.forEach((map) => {
           expect($icon, 'The new map icon should exist').to.exist
         })
         cy.get('@newMapIcon').click()
-        cy.get('.open-map-popper:visible > :nth-child(4) > .el-button').as('syncMapButton')
+        cy.get('.open-map-popper > :nth-child(4) > .el-button:visible').as('syncMapButton')
         cy.get('@syncMapButton').contains(/Open Sync Map/i).should(($button) => {
           expect($button, 'The sync map button should exist').to.exist
         })
@@ -281,46 +281,51 @@ mapTypes.forEach((map) => {
           cy.waitForMapLoading()
           // Open the sidebar
           cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
-          // Search dataset id
+          // Enter dataset id
           cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
           cy.get('@searchBox').clear()
-          cy.get('@searchBox').type(datasetId)
-          // Clear all the history
+          cy.get('@searchBox').type(`${datasetId} scaffold`)
+          // Show 50 datasets by default
+          cy.get('.filters > .dataset-shown > .number-shown-select:visible').click()
+          cy.get('.el-select-dropdown__item:visible').contains('50').click()
+          // Clear all the history if exist
           if (index === 0) {
-            cy.get('.box-card > .sidebar-container > .el-card:visible > .el-card__body').then(($content) => {
+            cy.get('.box-card > .sidebar-container > .el-card > .el-card__body:visible').then(($content) => {
               if ($content.text().includes('Search history')) {
                 cy.get('.history-container .el-dropdown:visible').click()
-                cy.get('.el-dropdown__popper:visible > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item').as('dropdownItem')
-                cy.get('@dropdownItem').then(($item) => {
+                cy.get('.el-dropdown__popper > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item:visible').then(($item) => {
                   for (let index = 0; index < $item.length; index++) {
-                    cy.get('@dropdownItem').first().within(() => {
-                      cy.get(':nth-child(2) > :nth-child(2)').click()
-                    })
+                    cy.get('.el-dropdown__popper > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item > :nth-child(2) > :nth-child(2):visible').first().click()
                   }
                 })
               }
             })
           }
+          // Search dataset
           cy.get('.header > .el-button > span:visible').as('sidebarSearchButton').click()
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
-            // Check for empty history tag message
-            if (index === 0) {
-              cy.get('.history-container .empty-saved-search').then(($message) => {
-                expect($message, 'Empty tag message should exist').to.contain('No Saved Searches')
-              })
-            }
-            cy.get('.history-container .el-dropdown:visible').as('historyDropdown')
-            // Open history dropdown
-            cy.get('@historyDropdown').click()
-            cy.get('.el-dropdown__popper:visible > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item > :nth-child(2) > :nth-child(1)').eq(index).click({ force: true })
-            // Check for history tag
-            cy.get('.saved-search-history > .el-tag:visible').then(($tag) => {
-              expect($tag, 'Maximum 2 history tag should be displayed').to.have.length.of.at.most(2)
-            })
-            // Close history dropdown
-            cy.get('@historyDropdown').click()
             cy.get('.dataset-results-feedback:visible', { timeout: 30000 }).then(($result) => {
+              // Check for empty history tag message
+              if (index === 0) {
+                cy.get('.history-container .empty-saved-search').then(($message) => {
+                  expect($message, 'Empty tag message should exist').to.contain('No Saved Searches')
+                })
+              }
+              cy.get('.history-container .el-dropdown:visible').as('historyDropdown')
+              // Open history dropdown
+              cy.get('@historyDropdown').click()
+              cy.get('.el-dropdown__popper > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item:visible').then(($item) => {
+                expect($item, 'Maximum 12 history should be listed').to.have.length.of.at.most(12)
+              })
+              // Save searches
+              cy.get('.el-dropdown__popper > .el-scrollbar .el-dropdown-menu > .el-dropdown-menu__item > :nth-child(2) > :nth-child(1):visible').last().click({ force: true })
+              // Check for history tag
+              cy.get('.saved-search-history > .el-tag:visible').then(($tag) => {
+                expect($tag, 'Maximum 2 history tag should be displayed').to.have.length.of.at.most(2)
+              })
+              // Close history dropdown
+              cy.get('@historyDropdown').click()
               if (intercept.response.body.hits.length === 0 || $result.text().match(/^0 Results \| Showing/i)) {
                 // Empty text should show up if no result
                 cy.get('.error-feedback').should(($text) => {
