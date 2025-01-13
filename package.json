@@ -48,7 +48,7 @@
     "postscribe": "^2.0.8",
     "ramda": "^0.29.0",
     "reva-widget": "^1.0.3",
-    "sparc-dashboard-beta": "^0.3.0",
+    "sparc-dashboard-beta": "^0.3.1",
     "sparc-design-system-components-2": "1.0.1",
     "striptags": "^3.2.0",
     "uint8array-extras": "^1.0.0",
