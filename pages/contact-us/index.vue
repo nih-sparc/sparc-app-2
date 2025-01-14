@@ -6,6 +6,8 @@
     <Meta name="description" hid="description" :content="breadcrumbTitle" />
     <Meta name="og:description" hid="og:description" :content="breadcrumbTitle" />
     <Meta name="twitter:description" :content="breadcrumbTitle" />
+    <link rel="canonical" href="https://sparc.science/contact-us" />
+    <Meta name="robots" content="noindex, nofollow" />
   </Head>
   <div class="contact-us-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="breadcrumbTitle" />
