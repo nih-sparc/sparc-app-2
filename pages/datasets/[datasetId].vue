@@ -22,7 +22,6 @@
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
     <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
-    <Meta name="robots" content="noindex, nofollow" />
   </Head>
   <div class="dataset-details pb-16">
 
