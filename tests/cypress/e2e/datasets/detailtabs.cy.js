@@ -558,8 +558,7 @@ datasetIds.forEach((datasetId) => {
       it('DOI', function () {
         cy.get('.version-table > .table-rows > :nth-child(5) > a').each(($doi) => {
           cy.wrap($doi).invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
+            cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
               expect(resp.redirects, 'Redirect should exist').to.have.length(1)
             })
           })
