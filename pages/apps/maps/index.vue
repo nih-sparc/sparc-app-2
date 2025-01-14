@@ -10,16 +10,27 @@
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
-      <h1>Maps</h1>
-      <p>
-        SPARC is creating detailed PNS maps based on SPARC data and information
-        available from the literature. The maps you see here are not yet
-        comprehensive and are largely derived from regions of the nervous system
-        where SPARC data has been published on this site, supplemented in some
-        regions by published knowledge of rat anatomy. New connectivity and
-        species specificity in anatomy and connectivity will be added as the
-        SPARC program progresses.
-      </p>
+      <div class="content">
+        <div>
+          <h1>Maps</h1>
+          <p>
+            SPARC is creating detailed PNS maps based on SPARC data and information
+            available from the literature. The maps you see here are not yet
+            comprehensive and are largely derived from regions of the nervous system
+            where SPARC data has been published on this site, supplemented in some
+            regions by published knowledge of rat anatomy. New connectivity and
+            species specificity in anatomy and connectivity will be added as the
+            SPARC program progresses.
+          </p>
+        </div>
+        <div class="portal-features">
+          <portal-feature 
+            v-for="(item, index) in appEntries"
+            :key="index"
+            :feature="item"
+          />
+        </div>
+      </div>
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
       <MapViewer class="mapviewer" ref="mapviewer" :state="state" :starting-map="startingMap" :options="options"
@@ -29,12 +40,14 @@
 </template>
 
 <script>
+import PortalFeature from '../../../components/PortalFeatures/PortalFeature/PortalFeature.vue'
 
 import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
+import { pathOr } from 'ramda'
 import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import { getAlgoliaFacets, facetPropPathMapping } from '@/utils/algolia'
@@ -318,11 +331,36 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
 }
 
+const constructPortalFeatureEntries = (apps) => {
+  if (!apps) return []
+  return apps.filter((app)=>app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
+    const buttonLink = app.fields.requiresDetailsPage
+      ? `/resources/${app.sys.id}`
+      : pathOr('', ['fields', 'url'], app)
+    return {
+      fields: {
+        buttonLink,
+        buttonText: pathOr('', ['fields', 'buttonText'], app),
+        icon: {
+          fields: {
+            file: {
+              url: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
+            },
+          },
+        },
+      },
+    }
+  })
+}
+
 export default {
   name: 'MapsPage',
+  components: {
+    PortalFeature,
+  },
   async setup() {
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient, $contentfulClient } = useNuxtApp()
     const router = useRouter()
     const route = useRoute()
     let startingMap = "AC"
@@ -350,6 +388,7 @@ export default {
       options.sparcApi = options.sparcApi + '/'
     }
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
 
     if (route.query.id) {
       [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(route, $axios, options.sparcApi)
@@ -377,7 +416,8 @@ export default {
       facets,
       uuid,
       state,
-      viewingMode
+      viewingMode,
+      appEntries: constructPortalFeatureEntries(appPage.fields?.apps)
     }
   },
   data() {
@@ -510,6 +550,24 @@ export default {
     @media (min-width: 48em) {
       padding-top: 0;
     }
+  }
+}
+
+.content {
+  display: flex;
+
+  @media screen and (max-width: 90rem) {
+    display: block;
+  }
+}
+
+.portal-features {
+  display: flex;
+  width: 33%;
+
+  .feature-container {
+    border: 0;
+    align-items: center;
   }
 }
 </style>
