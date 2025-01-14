@@ -235,7 +235,8 @@ export default defineNuxtConfig({
       '/signup', 
       '/maps',
       '/news-and-events/submit',
-      '/news-and-events/community-spotlight/submit'
+      '/news-and-events/community-spotlight/submit',
+      '/*?source_url='
     ] : ['/'],
     blockNonSeoBots: true,
     crawlDelay: 300
