@@ -156,8 +156,11 @@ export default {
       }
       return path.substring(0, endIndex)
     },
-    currentUrl: function() {
-      return encodeURIComponent(this.$route.fullPath)
+    currentUrl: function () {
+      const config = useRuntimeConfig()
+      const url = new URL(this.$route.fullPath, config.public.ROOT_URL)
+      url.searchParams.delete('source_url') // Remove existing source_url in order to prevent indexing recursion
+      return encodeURIComponent(url.pathname + url.search)
     },
   },
 
