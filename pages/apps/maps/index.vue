@@ -24,11 +24,34 @@
           </p>
         </div>
         <div class="portal-features">
-          <portal-feature 
-            v-for="(item, index) in appEntries"
-            :key="index"
-            :feature="item"
-          />
+          
+          <div class="feature-container" v-for="item in appEntries">
+            <img class="logo" :src="item.logoUrl" />
+            <el-popover :width="'fit-content'">
+              <template #reference>
+                <a :href="item.buttonLink">
+                  <el-button class="secondary">{{ item.buttonText }}</el-button>
+                </a>
+              </template>
+              <template #default>
+                <div style="display: flex; flex-direction: column; gap: 10px">
+                  <el-switch
+                    v-if="item.buttonText === 'View AC Map'"
+                    v-model="openNewMap"
+                    size="large"
+                    active-text="New"
+                    inactive-text="Primary"
+                  />
+                  <el-button
+                    v-for="(entry, label) in mapOptions[item.buttonText]"
+                    @click="setCurrentEntry(entry)"
+                  >
+                    Open {{ label }}
+                  </el-button>
+                </div>
+              </template>
+            </el-popover>
+          </div>
         </div>
       </div>
     </page-hero>
@@ -40,8 +63,6 @@
 </template>
 
 <script>
-import PortalFeature from '../../../components/PortalFeatures/PortalFeature/PortalFeature.vue'
-
 import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 
@@ -331,33 +352,19 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
 }
 
-const constructPortalFeatureEntries = (apps) => {
+const constructMapEntries = (apps) => {
   if (!apps) return []
-  return apps.filter((app)=>app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
-    const buttonLink = app.fields.requiresDetailsPage
-      ? `/resources/${app.sys.id}`
-      : pathOr('', ['fields', 'url'], app)
+  return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
     return {
-      fields: {
-        buttonLink,
-        buttonText: pathOr('', ['fields', 'buttonText'], app),
-        icon: {
-          fields: {
-            file: {
-              url: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
-            },
-          },
-        },
-      },
+      buttonLink: pathOr('', ['fields', 'url'], app),
+      buttonText: pathOr('', ['fields', 'buttonText'], app),
+      logoUrl: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
     }
   })
 }
 
 export default {
   name: 'MapsPage',
-  components: {
-    PortalFeature,
-  },
   async setup() {
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient, $contentfulClient } = useNuxtApp()
@@ -417,7 +424,7 @@ export default {
       uuid,
       state,
       viewingMode,
-      appEntries: constructPortalFeatureEntries(appPage.fields?.apps)
+      appEntries: constructMapEntries(appPage.fields?.apps)
     }
   },
   data() {
@@ -438,7 +445,63 @@ export default {
           label: 'SPARC Apps',
         },
       ],
-      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
+      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
+      openNewMap: false,
+      mapOptions: {
+        'View AC Map': {
+          'Human Female': {
+            type: 'MultiFlatmap',
+            resource: 'Human Female',
+            taxo: 'NCBITaxon:9606',
+            biologicalSex: 'PATO:0000383',
+          },
+          'Human Male': {
+            type: 'MultiFlatmap',
+            resource: 'Human Male',
+            taxo: 'NCBITaxon:9606',
+            biologicalSex: 'PATO:0000384',
+          },
+          'Rat': {
+            type: 'MultiFlatmap',
+            resource: 'Rat',
+            taxo: 'NCBITaxon:10114',
+          },
+          'Mouse': {
+            type: 'MultiFlatmap',
+            resource: 'Mouse',
+            taxo: 'NCBITaxon:10090',
+          },
+          'Pig': {
+            type: 'MultiFlatmap',
+            resource: 'Pig',
+            taxo: 'NCBITaxon:9823',
+          },
+          'Cat': {
+            type: 'MultiFlatmap',
+            resource: 'Cat',
+            taxo: 'NCBITaxon:9685',
+          },
+        },
+        'View 3D Body': {
+          '3D Human': {
+            type: 'Scaffold',
+            label: 'Human',
+            isBodyScaffold: true,
+          },
+          '3D Rat': {
+            type: 'Scaffold',
+            label: 'Rat',
+            isBodyScaffold: true,
+          },
+        },
+        'View FC Map': {
+          'FC': {
+            type: 'Flatmap',
+            resource: 'FunctionalConnectivity',
+            label: 'Functional',
+          },
+        },
+      }
     }
   },
   mounted: function () {
@@ -502,6 +565,15 @@ export default {
         this._instance.setCurrentEntry(this.currentEntry)
       }
     },
+    setCurrentEntry: function (entry) {
+      if (this._instance) {
+        const mapEntry = Object.assign({}, entry)
+        if (entry.type === 'MultiFlatmap' && !this.openNewMap) {
+          delete mapEntry.resource
+        }
+        this._instance.setCurrentEntry(mapEntry)
+      }
+    },
     changeViewingMode: function (map) {
       if (this.viewingMode) {
         map.changeViewingMode(this.viewingMode.charAt(0).toUpperCase() + this.viewingMode.slice(1));
@@ -511,6 +583,10 @@ export default {
       this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
+      const multiflatmap = this._instance.getState().entries.find((entry) => entry.type === 'MultiFlatmap')
+      if (!multiflatmap) {
+        this.openNewMap = true
+      }
     },
     mapMounted: function (map) {
       this.changeViewingMode(map)
@@ -555,8 +631,9 @@ export default {
 
 .content {
   display: flex;
+  align-items: center;
 
-  @media screen and (max-width: 90rem) {
+  @media screen and (max-width: 64rem) {
     display: block;
   }
 }
@@ -564,11 +641,22 @@ export default {
 .portal-features {
   display: flex;
   width: 33%;
+}
 
-  .feature-container {
-    border: 0;
-    align-items: center;
+.feature-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+
+  .logo {
+    height: 6rem;
+    margin-bottom: 1.5rem;
   }
+}
+
+.el-button+.el-button {
+  margin-left: 0px;
 }
 </style>
 
