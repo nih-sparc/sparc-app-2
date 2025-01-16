@@ -28,7 +28,7 @@ export default defineNuxtConfig({
         { hid: 'og:image:secure_url', property: 'og:image:secure_url',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
-        { hid: 'robots', name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1, crawl-delay:3600' },
+        { hid: 'robots', name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
         { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
         { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@sparc_science' },
@@ -180,6 +180,7 @@ export default defineNuxtConfig({
       INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
       SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
       SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || 'false',
+      GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
@@ -202,7 +203,7 @@ export default defineNuxtConfig({
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
-    cacheMaxAgeSeconds: 86400,
+    cacheMaxAgeSeconds: 14400,
     sources: process.env.DEPLOY_ENV === 'production' ?
     [
       '/api/__sitemap__/urls'
@@ -227,11 +228,11 @@ export default defineNuxtConfig({
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
-      '/datasets/',
       '/datasets/*?*',
       '/welcome', 
       '/user', 
       '/contact-us', 
+      '/contact-us/*?*',
       '/help', 
       '/signup', 
       '/maps',
@@ -240,6 +241,6 @@ export default defineNuxtConfig({
       '/*?source_url='
     ] : ['/'],
     blockNonSeoBots: true,
-    crawlDelay: 300
+    sitemap: `${process.env.ROOT_URL}/sitemap.xml`
   }
 })
