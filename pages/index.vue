@@ -87,6 +87,10 @@ export default {
           content: 'SPARC Portal'
         },
         {
+          name: "google-site-verification",
+          content: `${config.public.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID}`
+        },
+        {
           hid: 'og:image',
           property: 'og:image',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'

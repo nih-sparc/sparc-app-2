@@ -60,9 +60,9 @@
         <span class="label4">Internal Server Error</span><br />
         Sorry, something went wrong.<br />
         The dataset citation generator (<a
-          href="https://citation.crosscite.org/"
+          :href="crosscite_host"
           target="_blank"
-        >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
+        >{{crosscite_host}}</a>) encountered an internal error and was unable to complete your
         request.<br />
         Please come back later.
       </div>
@@ -70,10 +70,10 @@
     <p style="text-align: end">
       More citations available at:
       <a
-        :href="`https://citation.crosscite.org/?doi=${doiValue}`"
+        :href="crosscite_host"
         target="_blank"
       >
-        Crosscite.org
+        DOI Citation Formatter
       </a>
     </p>
   </div>
