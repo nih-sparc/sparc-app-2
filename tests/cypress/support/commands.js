@@ -80,6 +80,13 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForMapTreeControlLoading', () => {
+  cy.get('.el-tree > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Map tree control loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForGalleryLoading', () => {
   cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
@@ -97,6 +104,13 @@ Cypress.Commands.add('waitForViewerContainer', (selector) => {
 Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
   cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Connectivity graph loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForSidebarReferenceLoading', () => {
+  cy.get('.resource-container > .citation-list > .loading', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Sidebar reference loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
