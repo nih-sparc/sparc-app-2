@@ -304,7 +304,7 @@ datasetIds.forEach((datasetId) => {
           cy.get('.citation-details > p > a').then(($link) => {
             expect($link, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
             cy.wrap($link).invoke('attr', 'href').then((href) => {
-              expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${doi}`)
+              expect(href, 'Link should have correct href').to.contain(`https://citation.doi.org`)
               cy.request(href).then((resp) => {
                 expect(resp.status).to.eq(200)
               })
