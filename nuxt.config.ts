@@ -238,7 +238,9 @@ export default defineNuxtConfig({
       '/maps',
       '/news-and-events/submit',
       '/news-and-events/community-spotlight/submit',
-      '/*?source_url='
+      '/*?source_url=',
+      '/*&source_url=',
+      '/*source_url='
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
