@@ -39,7 +39,7 @@
                     v-if="item.buttonText === 'View AC Map'"
                     v-model="openNewMap"
                     size="large"
-                    active-text="New"
+                    active-text="New view"
                     inactive-text="Primary"
                   />
                   <el-button
@@ -446,7 +446,7 @@ export default {
         },
       ],
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
-      openNewMap: false,
+      openNewMap: true,
       mapOptions: {
         'View AC Map': {
           'Human Female': {
@@ -583,10 +583,6 @@ export default {
       this._instance = this.$refs.mapviewer.getInstance();
       this.currentEntryUpdated()
       this.facetsUpdated()
-      const multiflatmap = this._instance.getState().entries.find((entry) => entry.type === 'MultiFlatmap')
-      if (!multiflatmap) {
-        this.openNewMap = true
-      }
     },
     mapMounted: function (map) {
       this.changeViewingMode(map)
