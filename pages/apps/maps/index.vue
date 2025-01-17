@@ -26,26 +26,17 @@
         <div class="portal-features">
           <div class="feature-container" v-for="item in appEntries">
             <img class="logo" :src="item.logoUrl" />
-            <el-popover width="fit-content">
+            <el-popover width="fit-content" trigger="click">
               <template #reference>
-                <a :href="item.buttonLink">
-                  <el-button class="secondary">{{ item.buttonText }}</el-button>
-                </a>
+                <el-button class="secondary">Open {{ item.buttonText }}</el-button>
               </template>
               <template #default>
-                <div class="popover-content" style="display: flex; flex-direction: column; gap: 10px">
-                  <el-switch
-                    v-if="item.buttonText === 'View AC Map'"
-                    v-model="openNewMap"
-                    size="large"
-                    active-text="New view"
-                    inactive-text="Primary"
-                  />
-                  <el-button
-                    v-for="(entry, label) in mapOptions[item.buttonText]"
+                <div class="popover-content" style="display: flex; flex-direction: column; gap: 0.5rem">
+                  <el-button 
+                    v-for="entry in mapEntries[item.buttonText]" 
                     @click="setCurrentEntry(entry)"
                   >
-                    Open {{ label }}
+                    {{ entry.resource ? entry.resource : entry.label }}
                   </el-button>
                 </div>
               </template>
@@ -355,8 +346,7 @@ const constructMapEntries = (apps) => {
   if (!apps) return []
   return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
     return {
-      buttonLink: pathOr('', ['fields', 'url'], app),
-      buttonText: pathOr('', ['fields', 'buttonText'], app),
+      buttonText: pathOr('', ['fields', 'buttonText'], app).replace('View', '').trim(),
       logoUrl: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
     }
   })
@@ -445,61 +435,52 @@ export default {
         },
       ],
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
-      openNewMap: true,
-      mapOptions: {
-        'View AC Map': {
-          'Human Female': {
+      mapEntries: {
+        'AC Map': [
+          {
             type: 'MultiFlatmap',
             resource: 'Human Female',
-            taxo: 'NCBITaxon:9606',
-            biologicalSex: 'PATO:0000383',
           },
-          'Human Male': {
+          {
             type: 'MultiFlatmap',
             resource: 'Human Male',
-            taxo: 'NCBITaxon:9606',
-            biologicalSex: 'PATO:0000384',
           },
-          'Rat': {
+          {
             type: 'MultiFlatmap',
             resource: 'Rat',
-            taxo: 'NCBITaxon:10114',
           },
-          'Mouse': {
+          {
             type: 'MultiFlatmap',
             resource: 'Mouse',
-            taxo: 'NCBITaxon:10090',
           },
-          'Pig': {
+          {
             type: 'MultiFlatmap',
             resource: 'Pig',
-            taxo: 'NCBITaxon:9823',
           },
-          'Cat': {
+          {
             type: 'MultiFlatmap',
             resource: 'Cat',
-            taxo: 'NCBITaxon:9685',
           },
-        },
-        'View 3D Body': {
-          '3D Human': {
+        ],
+        '3D Body': [
+          {
             type: 'Scaffold',
             label: 'Human',
             isBodyScaffold: true,
           },
-          '3D Rat': {
+          {
             type: 'Scaffold',
             label: 'Rat',
             isBodyScaffold: true,
           },
-        },
-        'View FC Map': {
-          'FC': {
+        ],
+        'FC Map': [
+          {
             type: 'Flatmap',
             resource: 'FunctionalConnectivity',
             label: 'Functional',
           },
-        },
+        ],
       }
     }
   },
@@ -566,11 +547,7 @@ export default {
     },
     setCurrentEntry: function (entry) {
       if (this._instance) {
-        const mapEntry = Object.assign({}, entry)
-        if (entry.type === 'MultiFlatmap' && !this.openNewMap) {
-          delete mapEntry.resource
-        }
-        this._instance.setCurrentEntry(mapEntry)
+        this._instance.setCurrentEntry(entry)
       }
     },
     changeViewingMode: function (map) {
