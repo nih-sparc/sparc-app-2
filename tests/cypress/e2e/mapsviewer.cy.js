@@ -368,6 +368,33 @@ mapTypes.forEach((map) => {
           })
         })
       })
+
+      it('Quick access', function () {
+        cy.get('.portal-features > :nth-child(2) .el-button').click()
+        cy.waitForPageLoading()
+        cy.url().should((url) => {
+          expect(url, 'URL should match 3D Body map').to.contain('/maps?type=wholebody')
+        })
+        cy.get('.portal-features > :nth-child(3) .el-button').click()
+        cy.waitForPageLoading()
+        cy.url().should((url) => {
+          expect(url, 'URL should match FC map').to.contain('/maps?type=fc')
+        })
+        cy.get('.portal-features > :nth-child(1) .el-button').click()
+        cy.waitForPageLoading()
+        cy.url().should((url) => {
+          expect(url, 'URL should match AC map').to.contain('/maps?type=ac')
+        })
+      })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
+        cy.get('@ViewACMap').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+      })
     } else if (map === 'wholebody') {
       it('Map is loaded', function () {
         cy.get('.toolbar .toolbar-title').then((title) => {
@@ -384,6 +411,15 @@ mapTypes.forEach((map) => {
           })
         })
       })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
+        cy.get('@View3DBody').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+      })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
         cy.get('.toolbar .toolbar-title').then((title) => {
@@ -395,6 +431,15 @@ mapTypes.forEach((map) => {
         })
         cy.get('.checkall-display-text').then((text) => {
           expect(text, 'Tree control checkbox title should exist').to.have.length(3)
+        })
+      })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(3) .el-button').as('ViewFCMap')
+        cy.get('@ViewFCMap').trigger('mouseenter', { eventConstructor: 'MouseEvent' })
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
         })
       })
     }

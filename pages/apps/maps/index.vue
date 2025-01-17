@@ -10,7 +10,7 @@
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
-      <div class="content">
+      <div class="page-hero-content">
         <div>
           <h1>Maps</h1>
           <p>
@@ -24,17 +24,16 @@
           </p>
         </div>
         <div class="portal-features">
-          
           <div class="feature-container" v-for="item in appEntries">
             <img class="logo" :src="item.logoUrl" />
-            <el-popover :width="'fit-content'">
+            <el-popover width="fit-content">
               <template #reference>
                 <a :href="item.buttonLink">
                   <el-button class="secondary">{{ item.buttonText }}</el-button>
                 </a>
               </template>
               <template #default>
-                <div style="display: flex; flex-direction: column; gap: 10px">
+                <div class="popover-content" style="display: flex; flex-direction: column; gap: 10px">
                   <el-switch
                     v-if="item.buttonText === 'View AC Map'"
                     v-model="openNewMap"
@@ -625,7 +624,7 @@ export default {
   }
 }
 
-.content {
+.page-hero-content {
   display: flex;
   align-items: center;
 
