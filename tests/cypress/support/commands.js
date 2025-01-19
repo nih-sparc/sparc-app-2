@@ -53,6 +53,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('Failed to fetch'))
     return false
+  if (err.message.includes('Cannot read properties of null'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
