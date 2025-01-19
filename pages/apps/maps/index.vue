@@ -345,8 +345,12 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
 const constructMapEntries = (apps) => {
   if (!apps) return []
   return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
+    const words = pathOr('', ['fields', 'logo', 'fields', 'title'], app).split(" ");
+    const buttonText = words.map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ");
     return {
-      buttonText: pathOr('', ['fields', 'buttonText'], app).replace('View', '').trim(),
+      buttonText,
       logoUrl: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
     }
   })
@@ -462,7 +466,7 @@ export default {
             resource: 'Cat',
           },
         ],
-        '3D Body': [
+        '3D Whole Body': [
           {
             type: 'Scaffold',
             label: 'Human',
