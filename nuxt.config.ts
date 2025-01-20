@@ -240,7 +240,8 @@ export default defineNuxtConfig({
       '/news-and-events/community-spotlight/submit',
       '/*?source_url=',
       '/*&source_url=',
-      '/*source_url='
+      '/*source_url=',
+      '/communication-preferences'
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`

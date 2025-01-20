@@ -5,43 +5,68 @@
       <div class="body2">Thank you for your interest in SPARC! We want to ensure you receive information that's relevant, impactful, and tailored to your interests. Please fill out this form to update your communication preferences and help us deliver the updates and insights you care about most. It’s quick, easy, and ensures you stay connected to what matters to you.
       <br /><br />To ensure that you receive messages from the SPARC Data and Resource Center, please add info@sparc.science to your Safe Senders list. Be sure to check your SPAM filter for missed messages.</div>
     </page-hero>
-      <div class="container" id="hubspot-form-container"></div>
+    <div>
+      <div class="form-placeholder" v-if="newsletterForm == null" v-loading="newsletterForm == null" />
+      <div v-show="newsletterForm" class="container" id="hubspot-form-container" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, watch, ref } from 'vue'
+import { watch, ref, computed } from 'vue'
 import { useMainStore } from '../../store/index.js'
 import { storeToRefs } from 'pinia'
 
 const mainStore = useMainStore()
+const config = useRuntimeConfig()
+const { $axios } = useNuxtApp()
 const { profileEmail } = storeToRefs(mainStore)
 const newsletterForm = ref(null)
+const communicationPreferences = ref(null)
+const router = useRouter()
 
-const prefillFormValues = (form) => {
-  if (form == null) return
-  // Prepopulate email if they are logged in
-  const emailField = form.querySelector('input[name="email"]')
-  emailField.value = profileEmail.value
-  emailField.dispatchEvent(new Event("input", { bubbles: true }))
+const fetchCommunicationPreferences = async (email) => {
+  try {
+    const { data } = await $axios.get(`${config.public.portal_api}/hubspot_contact_properties/${email}`)
+    communicationPreferences.value = data
+  } catch (error) {
+    prefillForm()
+  }
 }
 
-// Watcher for profileEmail
 watch(profileEmail,
-  async (newEmail) => {
-    if (newEmail && newEmail.trim() !== '') {
-      prefillFormValues(newsletterForm.value)
-    }
+  (newEmail) => {
+      fetchCommunicationPreferences(newEmail)
   },
   { immediate: true }
 )
 
-watch(newsletterForm,
-  (newForm) => {
-    if (newForm == null) return
-    prefillFormValues(newForm)
+watch(communicationPreferences,
+  () => {
+    prefillForm()
   }
 )
+
+const firstName = computed(() => communicationPreferences.value?.properties?.firstname || undefined)
+const lastName = computed(() => communicationPreferences.value?.properties?.lastname || undefined)
+const jobTitle = computed(() => communicationPreferences.value?.properties?.jobtitle || undefined)
+const company = computed(() => communicationPreferences.value?.properties?.company || undefined)
+const newsletterSelections = computed(() => communicationPreferences.value?.properties?.newsletter?.split(",") || undefined)
+
+const prefillForm = () => {
+  router.replace({
+    query: {
+      ...useRoute().query,
+      email: profileEmail.value || undefined,
+      firstname: firstName.value,
+      lastname: lastName.value,
+      jobtitle: jobTitle.value,
+      company: company.value,
+      newsletter: newsletterSelections.value
+    },
+  })
+  initializeForm()
+}
 
 const initializeForm = () => {
   // Generated from Hubspot. Docs: https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site
@@ -67,11 +92,6 @@ const initializeForm = () => {
   // Append the script to the document body
   document.body.appendChild(script)
 }
-
-onMounted(() => {
-  initializeForm()
-})
-
 </script>
 
 <style lang="scss" scoped>
@@ -79,5 +99,11 @@ onMounted(() => {
 
 .container {
   margin-top: 1rem !important;
+}
+.el-loading-mask {
+  position: relative !important;
+}
+.form-placeholder {
+  min-height: 5rem;
 }
 </style>
