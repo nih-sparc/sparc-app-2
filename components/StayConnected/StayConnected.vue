@@ -6,7 +6,13 @@
         <el-col :xs="24" :sm="12" class="newsletter-wrap">
           <div class="heading2">Sign up for the SPARC Newsletter</div>
           <div class="body1 mb-16 mt-8">Keep up to date with all the latest news and events from the SPARC Portal.</div>
-          <newsletter-form />
+          <nuxt-link to="/communication-preferences">
+            <el-button
+              class="secondary"
+            >
+              Sign Up <svgo-icon-open class="tab1" />
+            </el-button>
+          </nuxt-link>
         </el-col>
         <el-col class="office-hours-column" :xs="24" :sm="12">
           <div class="heading2">Open Office Hours</div>

@@ -1,57 +1,83 @@
 <template>
-  <!-- Generated from MailChimp. Docs: https://mailchimp.com/help/add-a-signup-form-to-your-website/ -->
-  <div id="mc_embed_signup">
-    <form
-      id="mc-embedded-subscribe-form"
-      action="https://eepurl.com/hgBxgv"
-      method="post"
-      name="mc-embedded-subscribe-form"
-      class="validate"
-      target="_blank"
-      novalidate
-    >
-      <div id="mc_embed_signup_scroll">
-        <div class="clear">
-          <div class="clear">
-            <el-button
-              id="mc-embedded-subscribe"
-              native-type="submit"
-              name="subscribe"
-              class="secondary"
-            >
-              Sign Up <svgo-icon-open class="tab1" />
-            </el-button>
-          </div>
-        </div>
-      </div>
-    </form>
+  <div>
+    <page-hero class="py-24">
+      <h1 class="mb-8">Communication Preferences</h1>
+      <div class="body2">Thank you for your interest in SPARC! We want to ensure you receive information that's relevant, impactful, and tailored to your interests. Please fill out this form to update your communication preferences and help us deliver the updates and insights you care about most. It’s quick, easy, and ensures you stay connected to what matters to you.
+      <br /><br />To ensure that you receive messages from the SPARC Data and Resource Center, please add info@sparc.science to your Safe Senders list. Be sure to check your SPAM filter for missed messages.</div>
+    </page-hero>
+      <div class="container" id="hubspot-form-container"></div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'NewsletterForm'
+<script setup>
+import { onMounted, watch, ref } from 'vue'
+import { useMainStore } from '../../store/index.js'
+import { storeToRefs } from 'pinia'
+
+const mainStore = useMainStore()
+const { profileEmail } = storeToRefs(mainStore)
+const newsletterForm = ref(null)
+
+const prefillFormValues = (form) => {
+  if (form == null) return
+  // Prepopulate email if they are logged in
+  const emailField = form.querySelector('input[name="email"]')
+  emailField.value = profileEmail.value
+  emailField.dispatchEvent(new Event("input", { bubbles: true }))
 }
+
+// Watcher for profileEmail
+watch(profileEmail,
+  async (newEmail) => {
+    if (newEmail && newEmail.trim() !== '') {
+      prefillFormValues(newsletterForm.value)
+    }
+  },
+  { immediate: true }
+)
+
+watch(newsletterForm,
+  (newForm) => {
+    if (newForm == null) return
+    prefillFormValues(newForm)
+  }
+)
+
+const initializeForm = () => {
+  // Generated from Hubspot. Docs: https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site
+  const script = document.createElement('script')
+  script.src = '//js.hsforms.net/forms/embed/v2.js'
+  script.charset = 'utf-8'
+  script.type = 'text/javascript'
+
+  script.onload = () => {
+    // Once the script is loaded, initialize the form
+    if (window.hbspt) {
+      hbspt.forms.create({
+        portalId: "22776713",
+        formId: "0fb8ac44-1764-40ce-b344-7dfafc8f2f24",
+        target: '#hubspot-form-container',
+        onFormReady: (form) => {
+          newsletterForm.value = form
+        },
+      })
+    }
+  }
+
+  // Append the script to the document body
+  document.body.appendChild(script)
+}
+
+onMounted(() => {
+  initializeForm()
+})
+
 </script>
 
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
-form,
-.mc-field-group {
-  display: flex;
-  flex-direction: column;
-  max-width: 20rem;
-}
-label {
-  font-size: 1.5rem;
-}
-.input-text {
-  border: 1px solid $lineColor1;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-  &:focus {
-    border-color: $purple;
-  }
+.container {
+  margin-top: 1rem !important;
 }
 </style>
