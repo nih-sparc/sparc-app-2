@@ -500,8 +500,9 @@ export default {
       this.organizations.forEach(org => {
         if (org.name === 'SPARC') { orgIntIds = org.intId }
       })
-      if (orgIntIds) {
+      try {
         await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${orgIntIds}&api_key=${this.userToken}`)
+      } catch (e) {
       }
       const headers = {
         "Accept": "application/json; charset=utf-8",
