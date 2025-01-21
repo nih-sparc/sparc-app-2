@@ -24,26 +24,27 @@ const { profileEmail } = storeToRefs(mainStore)
 const newsletterForm = ref(null)
 const communicationPreferences = ref(null)
 const router = useRouter()
+const route = useRoute()
 
-const fetchCommunicationPreferences = async (email) => {
+const fetchCommunicationPreferences = async (email, axios) => {
   try {
-    const { data } = await $axios.get(`${config.public.portal_api}/hubspot_contact_properties/${email}`)
+    const { data } = await axios.get(`${config.public.portal_api}/hubspot_contact_properties/${email}`)
     communicationPreferences.value = data
   } catch (error) {
-    prefillForm()
+    prefillForm(route)
   }
 }
 
 watch(profileEmail,
   (newEmail) => {
-      fetchCommunicationPreferences(newEmail)
+      fetchCommunicationPreferences(newEmail, $axios)
   },
   { immediate: true }
 )
 
 watch(communicationPreferences,
   () => {
-    prefillForm()
+    prefillForm(route)
   }
 )
 
@@ -53,22 +54,8 @@ const jobTitle = computed(() => communicationPreferences.value?.properties?.jobt
 const company = computed(() => communicationPreferences.value?.properties?.company || undefined)
 const newsletterSelections = computed(() => communicationPreferences.value?.properties?.newsletter?.split(",") || undefined)
 
-const prefillForm = () => {
-  router.replace({
-    query: {
-      ...useRoute().query,
-      email: profileEmail.value || undefined,
-      firstname: firstName.value,
-      lastname: lastName.value,
-      jobtitle: jobTitle.value,
-      company: company.value,
-      newsletter: newsletterSelections.value
-    },
-  })
-  initializeForm()
-}
-
 const initializeForm = () => {
+  if (!document) return
   // Generated from Hubspot. Docs: https://knowledge.hubspot.com/forms/how-can-i-share-a-hubspot-form-if-im-using-an-external-site
   const script = document.createElement('script')
   script.src = '//js.hsforms.net/forms/embed/v2.js'
@@ -91,6 +78,21 @@ const initializeForm = () => {
 
   // Append the script to the document body
   document.body.appendChild(script)
+}
+
+const prefillForm = (currentRoute) => {
+  router.replace({
+    query: {
+      ...currentRoute.query,
+      email: profileEmail.value || undefined,
+      firstname: firstName.value,
+      lastname: lastName.value,
+      jobtitle: jobTitle.value,
+      company: company.value,
+      newsletter: newsletterSelections.value
+    },
+  })
+  initializeForm()
 }
 </script>
 
