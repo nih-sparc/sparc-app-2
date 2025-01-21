@@ -498,7 +498,7 @@ export default {
     async fetchAnnotatorAuthentication() {
       let orgIntIds = undefined
       this.organizations.forEach(org => {
-        if (org.name === 'SPARC') {orgIntIds = org.intId}
+        if (org.name === 'SPARC') { orgIntIds = org.intId }
       })
       if (orgIntIds) {
         await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${orgIntIds}&api_key=${this.userToken}`)
