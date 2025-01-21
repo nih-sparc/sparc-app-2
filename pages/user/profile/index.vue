@@ -329,7 +329,6 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
-    const mainStore = useMainStore()
     let downloadsSummary = 0
 
     try {
@@ -345,24 +344,8 @@ export default {
       return 0
     }
 
-    const headers = {
-      "Accept": "application/json; charset=utf-8",
-      "Cache-Control": "no-store"
-    }
-    let annotatorAuthenticated = false
-    const url = `${config.public.flatmap_api}/annotator/authenticate?key=${mainStore.userToken}`
-    annotatorAuthenticated = await $axios.get(url, { headers }).then((response) => {
-      if (response.data.data.canUpdate) {
-        return true
-      }
-      return false
-    }).catch(() => {
-      return false
-    })
-
     return {
-      downloadsSummary,
-      annotatorAuthenticated
+      downloadsSummary
     }
   },
   computed: {
@@ -397,6 +380,7 @@ export default {
           this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
+          this.fetchAnnotatorAuthentication()
         }
       },
       immediate: true
@@ -509,6 +493,28 @@ export default {
       }).catch(() => {
         this.hasError = true
         return []
+      })
+    },
+    async fetchAnnotatorAuthentication() {
+      let orgIntIds = undefined
+      this.organizations.forEach(org => {
+        if (org.name === 'SPARC') {orgIntIds = org.intId}
+      })
+      if (orgIntIds) {
+        await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${orgIntIds}&api_key=${this.userToken}`)
+      }
+      const headers = {
+        "Accept": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      }
+      const url = `${this.$config.public.flatmap_api}/annotator/authenticate?key=${this.userToken}`
+      this.annotatorAuthenticated = await this.$axios.get(url, { headers }).then((response) => {
+        if (response.data.data.canUpdate) {
+          return true
+        }
+        return false
+      }).catch(() => {
+        return false
       })
     },
     getDownloadsCount(id) {
