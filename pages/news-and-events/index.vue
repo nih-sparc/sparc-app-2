@@ -74,7 +74,13 @@
               <div class="body1 mb-16 mt-8">
                 Keep up to date with all the latest news and events from the SPARC Portal.
               </div>
-              <newsletter-form />
+              <nuxt-link to="/communication-preferences">
+                <el-button
+                  class="secondary"
+                >
+                  Sign Up <svgo-icon-open class="tab1" />
+                </el-button>
+              </nuxt-link>
               <div class="newsletter-archive mt-16">
                 <div class="heading2 mt-24">Current Newsletter</div>
                 <a

@@ -105,6 +105,11 @@ export default defineNuxtConfig({
           path: '/tools-and-resources/resources',
           file: resolve('./components/Resources/ResourcePage.vue')
         },
+        {
+          name:'communication',
+          path:'/communication-preferences',
+          file: resolve('./components/NewsletterForm/NewsletterForm.vue')
+        }
       )
     }
   },
@@ -240,7 +245,8 @@ export default defineNuxtConfig({
       '/news-and-events/community-spotlight/submit',
       '/*?source_url=',
       '/*&source_url=',
-      '/*source_url='
+      '/*source_url=',
+      '/communication-preferences'
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
