@@ -69,7 +69,7 @@ export default {
           if (original.length === display.length) return
           setTimeout(() => {
             this.addPublicationsForDisplay(original, display)
-          }, 1000);
+          }, 1000)
         }
       }
     },
@@ -113,8 +113,14 @@ export default {
     }
   },
   mounted: function() {
-    this.updatePrimaryPublicationsDisplay()
-    this.updateAssociatedPublicationsDisplay()
+    //Add a timeout at the beginnering as well as there is a chance
+    //other part of the dataset page are accessing api from the same domain
+    setTimeout(() => {
+      this.updatePrimaryPublicationsDisplay()
+    }, 500)
+    setTimeout(() => {
+      this.updateAssociatedPublicationsDisplay()
+    }, 1000)
   }
 }
 </script>
