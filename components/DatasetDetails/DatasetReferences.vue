@@ -65,6 +65,7 @@ export default {
       const current = display.length
       if (total > current) {
         display.push(original[current])
+        if (original.length === display.length) return
         setTimeout(() => {
           this.addPublicationsForDisplay(original, display)
         }, 500);
