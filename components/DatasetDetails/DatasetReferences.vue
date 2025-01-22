@@ -68,7 +68,7 @@ export default {
         if (original.length === display.length) return
         setTimeout(() => {
           this.addPublicationsForDisplay(original, display)
-        }, 600);
+        }, 1000);
       }
     },
     updatePrimaryPublicationsDisplay: function() {
