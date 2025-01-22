@@ -61,14 +61,16 @@ export default {
   },
   methods: {
     addPublicationsForDisplay: function(original, display) {
-      const total = original.length
-      const current = display.length
-      if (total > current) {
-        display.push(original[current])
-        if (original.length === display.length) return
-        setTimeout(() => {
-          this.addPublicationsForDisplay(original, display)
-        }, 1000);
+      if (original) {
+        const total = original.length
+        const current = display.length
+        if (total > current) {
+          display.push(original[current])
+          if (original.length === display.length) return
+          setTimeout(() => {
+            this.addPublicationsForDisplay(original, display)
+          }, 1000);
+        }
       }
     },
     updatePrimaryPublicationsDisplay: function() {
