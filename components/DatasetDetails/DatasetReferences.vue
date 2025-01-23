@@ -4,7 +4,7 @@
       <div class="heading2 mb-8">
         Primary Publications for this Dataset
       </div>
-      <div v-for="(item, index) in primaryPublications" :key="index">
+      <div v-for="(item, index) in primaryPublicationsDisplay" :key="index">
         <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" />
       </div>
       <hr v-if="associatedPublications" />
@@ -13,7 +13,7 @@
       <div class="heading2 mb-8">
         Associated Publications for this Dataset
       </div>
-      <div v-for="(item, index) in associatedPublications" :key="index">
+      <div v-for="(item, index) in associatedPublicationsDisplay" :key="index">
         <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" />
       </div>
       <hr v-if="preprints" />
@@ -53,6 +53,51 @@ export default {
       default: () => []
     },
   },
+  data() {
+    return {
+      primaryPublicationsDisplay: [],
+      associatedPublicationsDisplay: [],
+    }
+  },
+  methods: {
+    addPublicationsForDisplay: function(original, display) {
+      if (original) {
+        const total = original.length
+        const current = display.length
+        if (total > current) {
+          display.push(original[current])
+          if (original.length === display.length) return
+          setTimeout(() => {
+            this.addPublicationsForDisplay(original, display)
+          }, 1000)
+        }
+      }
+    },
+    updatePrimaryPublicationsDisplay: function() {
+      this.primaryPublicationsDisplay.length = 0
+      this.addPublicationsForDisplay(this.primaryPublications,
+        this.primaryPublicationsDisplay)
+    },
+    updateAssociatedPublicationsDisplay: function() {
+      this.associatedPublicationsDisplay.length = 0
+      this.addPublicationsForDisplay(this.associatedPublications,
+        this.associatedPublicationsDisplay)
+    },
+  },
+  watch: {
+    primaryPublications: {
+      handler: function () {
+        this.updatePrimaryPublicationsDisplay()
+      },
+      immediate: false
+    },
+    associatedPublications: {
+      handler: function () {
+        this.updateAssociatedPublicationsDisplay()
+      },
+      immediate: false
+    },
+  },
   computed: {
     preprints: function() {
       let preprintPublications = []
@@ -66,6 +111,16 @@ export default {
       })
       return isEmpty(preprintPublications) ? undefined : preprintPublications
     }
+  },
+  mounted: function() {
+    //Add a timeout at the beginnering as well as there is a chance
+    //other part of the dataset page are accessing api from the same domain
+    setTimeout(() => {
+      this.updatePrimaryPublicationsDisplay()
+    }, 500)
+    setTimeout(() => {
+      this.updateAssociatedPublicationsDisplay()
+    }, 1000)
   }
 }
 </script>

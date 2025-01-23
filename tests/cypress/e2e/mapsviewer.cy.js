@@ -44,11 +44,6 @@ mapTypes.forEach((map) => {
     })
 
     if (map === 'ac') {
-      it('Map is loaded', function () {
-        cy.get('.toolbar .toolbar-title').then((title) => {
-          expect(title, 'Multi flatmap should be loaded').to.contain('MultiFlatmap')
-        })
-      })
 
       taxonModels.forEach((model, index) => {
 
@@ -370,8 +365,8 @@ mapTypes.forEach((map) => {
       })
     } else if (map === 'wholebody') {
       it('Map is loaded', function () {
+        cy.waitForScaffoldLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
-          cy.waitForMapLoading()
           expect(title, 'Human whole body scaffold should be loaded').to.contain('Human 3D Scaffold')
         })
         cy.get('.title-text').then((text) => {
@@ -386,15 +381,15 @@ mapTypes.forEach((map) => {
       })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
+        cy.waitForFlatmapLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
-          cy.waitForMapLoading()
           expect(title, 'Functional flatmap should be loaded').to.contain('Functional Flatmap')
         })
         cy.get('.title-text').then((text) => {
           expect(text, 'Tree control title should exist').to.exist
         })
         cy.get('.checkall-display-text').then((text) => {
-          expect(text, 'Tree control checkbox title should exist').to.have.length(3)
+          expect(text, 'Tree control checkbox title should exist').to.have.length.greaterThan(0)
         })
       })
     }

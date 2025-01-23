@@ -49,29 +49,18 @@
           <div class="section heading2 p-16 mt-16">
             Available Resources
             <div class="resource-container body1">
-              SPARC Newsletter:
-              <template v-if="!isSubscribed">
-                <span class="label4"><b>You are not subscribed.</b></span>
-                <div class="body4">
-                  Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
-                  newsletter. View all past newsletters <a
-                    href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
-                    target="_blank">here</a>.
-                </div>
-                <div class="mt-8">
-                  <el-button class='secondary' @click="handleSubscribeButtonClicked">Subscribe to newsletter</el-button>
-                </div>
-              </template>
-              <template v-else>
-                <span class="label4"><b>You are currently subscribed.</b></span>
-                <div class="body1">
-                  View all past newsletters <nuxt-link to="/news-and-events#stayConnected">here</nuxt-link>.
-                </div>
-                <div class="mt-8">
-                  <el-button class='secondary' @click="unsubscribeFromNewsletter(profileEmail)">Un-subscribe from
-                    newsletter</el-button>
-                </div>
-              </template>
+              SPARC Communication Preferences:
+              <div class="body4">
+                Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
+                newsletter. View all past newsletters <a
+                  href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                  target="_blank">here</a>. To manage your subscription status click below.
+              </div>
+              <div class="mt-8">
+                <nuxt-link to="/communication-preferences">
+                  <el-button class='secondary'>Manage Communication Preferences</el-button>
+                </nuxt-link>
+              </div>
             </div>
             <div class="resource-container body1">
               Pennsieve:
@@ -276,7 +265,6 @@ import { pathOr, propOr } from 'ramda'
 import { useMainStore } from '@/store/index.js'
 import { mapState } from 'pinia'
 import Gallery from '@/components/Gallery/Gallery.vue'
-import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import DatasetSubmissionModal from '@/components/DatasetSubmissionModal/DatasetSubmissionModal.vue'
 import ConfirmationModal from '@/components/ConfirmationModal/ConfirmationModal.vue'
 import RepositoryCard from '@/components/RepositoryCard/RepositoryCard.vue'
@@ -291,7 +279,6 @@ export default {
     RepositoryCard,
     LoginModal
   },
-  mixins: [NewsletterMixin],
   data: () => {
     return {
       title: "SPARC Profile",
@@ -367,9 +354,6 @@ export default {
   },
   computed: {
     ...mapState(useMainStore, ['profileEmail', 'userProfile', 'userToken', 'firstName', 'lastName']),
-    isSubscribed: function () {
-      return propOr('unsubscribed', 'status', this.memberInfo) === 'subscribed'
-    },
     orcid() {
       return pathOr(null, ['orcid', 'orcid'], this.userProfile)
     },
@@ -381,14 +365,6 @@ export default {
     }
   },
   watch: {
-    profileEmail: {
-      handler: async function (newValue) {
-        if (newValue !== '') {
-          this.getMemberInfo(newValue)
-        }
-      },
-      immediate: true
-    },
     orcid: {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
@@ -593,28 +569,8 @@ export default {
           this.showRetractConfirmationModal = false
         })
     },
-    handleSubscribeButtonClicked() {
-      this.sendGtmEvent()
-      this.subscribeToNewsletter(this.profileEmail, this.firstName, this.lastName)
-    },
     dialogClosed() {
       this.$router.push("/")
-    },
-    sendGtmEvent() {
-      this.$gtm.trackEvent({
-        event: 'interaction_event',
-        event_name: 'newsletter_signup',
-        files: "",
-        file_name: "",
-        file_path: "",
-        file_type: "",
-        location: "profile page",
-        category: "",
-        dataset_id: "",
-        version_id: "",
-        doi: "",
-        citation_type: ""
-      })
     },
     handleAnnotateButtonClicked(type) {
       const link = document.createElement('a')
