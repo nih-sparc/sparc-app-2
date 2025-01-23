@@ -233,7 +233,6 @@ export default defineNuxtConfig({
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
-      '/data',
       '/datasets/file',
       '/datasets/*/version/',
       '/file',
