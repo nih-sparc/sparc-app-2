@@ -22,6 +22,7 @@
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
     <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
+    <Link rel="canonical" :href="canonicalLink" />
   </Head>
   <div class="dataset-details pb-16">
 
@@ -289,6 +290,7 @@ export default {
       })
 
       const creators = contributors?.concat(org)
+      const canonicalLink = `${config.public.ROOT_URL}/datasets/${datasetId}`
       const doi = propOr('', 'doi', datasetDetails)
       const doiLink = doi ? `https://doi.org/${doi}` : ''
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
@@ -308,7 +310,8 @@ export default {
         algoliaIndex,
         hasError: false,
         originallyPublishedDate,
-        creators
+        creators,
+        canonicalLink
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)

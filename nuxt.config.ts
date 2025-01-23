@@ -233,7 +233,10 @@ export default defineNuxtConfig({
     // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
-      '/datasets/*?*',
+      '/data',
+      '/datasets/file',
+      '/datasets/*/version/',
+      '/file',
       '/welcome', 
       '/user', 
       '/contact-us', 
@@ -243,8 +246,8 @@ export default defineNuxtConfig({
       '/maps',
       '/news-and-events/submit',
       '/news-and-events/community-spotlight/submit',
-      '/*?source_url=',
-      '/*&source_url=',
+      '/*?*path=',
+      '/*?*source_url=',
       '/*source_url=',
       '/communication-preferences'
     ] : ['/'],
