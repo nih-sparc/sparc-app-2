@@ -234,6 +234,9 @@ export default defineNuxtConfig({
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
       '/datasets/*?*',
+      '/datasets/file',
+      '/datasets/*/version/',
+      '/file',
       '/welcome', 
       '/user', 
       '/contact-us', 
