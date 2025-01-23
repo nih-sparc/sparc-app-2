@@ -377,7 +377,7 @@ export default {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
           this.fetchPublishedDatasets(newValue)
-          this.fetchInProgressDatasets()
+          await this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
           this.fetchAnnotatorAuthentication()
