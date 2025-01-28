@@ -34,9 +34,9 @@
                 <div class="popover-content" style="display: flex; flex-direction: column; gap: 0.5rem">
                   <el-button 
                     v-for="entry in mapEntries[item.buttonText]" 
-                    @click="setCurrentEntry(entry)"
+                    @click="setCurrentEntry(entry, item.buttonText)"
                   >
-                    {{ entry.resource ? entry.resource : entry.label }}
+                    {{ entry }}
                   </el-button>
                 </div>
               </template>
@@ -440,51 +440,9 @@ export default {
       ],
       shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
       mapEntries: {
-        'AC Map': [
-          {
-            type: 'MultiFlatmap',
-            resource: 'Human Female',
-          },
-          {
-            type: 'MultiFlatmap',
-            resource: 'Human Male',
-          },
-          {
-            type: 'MultiFlatmap',
-            resource: 'Rat',
-          },
-          {
-            type: 'MultiFlatmap',
-            resource: 'Mouse',
-          },
-          {
-            type: 'MultiFlatmap',
-            resource: 'Pig',
-          },
-          {
-            type: 'MultiFlatmap',
-            resource: 'Cat',
-          },
-        ],
-        '3D Whole Body': [
-          {
-            type: 'Scaffold',
-            label: 'Human',
-            isBodyScaffold: true,
-          },
-          {
-            type: 'Scaffold',
-            label: 'Rat',
-            isBodyScaffold: true,
-          },
-        ],
-        'FC Map': [
-          {
-            type: 'Flatmap',
-            resource: 'FunctionalConnectivity',
-            label: 'Functional',
-          },
-        ],
+        'AC Map': ['Human Female', 'Human Male', 'Rat', 'Mouse', 'Pig', 'Cat'],
+        '3D Whole Body': ['Human', 'Rat'],
+        'FC Map': ['FunctionalConnectivity'],
       }
     }
   },
@@ -549,9 +507,17 @@ export default {
         this._instance.setCurrentEntry(this.currentEntry)
       }
     },
-    setCurrentEntry: function (entry) {
+    setCurrentEntry: function (entry, type) {
+      let mapEntry = {}      
+      if (type === 'AC Map') {
+        mapEntry = {type: 'MultiFlatmap', resource: entry}
+      } else if (type === '3D Whole Body') {
+        mapEntry = {type: 'Scaffold', isBodyScaffold: true, label: entry}
+      } else if (type === 'FC Map') {
+        mapEntry = {type: 'Flatmap', resource: entry, resource: entry, label: 'Functional'}
+      }
       if (this._instance) {
-        this._instance.setCurrentEntry(entry)
+        this._instance.setCurrentEntry(mapEntry)
       }
     },
     changeViewingMode: function (map) {
