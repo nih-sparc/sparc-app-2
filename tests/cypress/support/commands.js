@@ -82,6 +82,20 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForFlatmapLoading', () => {
+  cy.get('.flatmap-container > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Flatmap loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForScaffoldLoading', () => {
+  cy.get('.scaffold-container > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Scaffold loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForMapTreeControlLoading', () => {
   cy.get('.el-tree > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Map tree control loading mask should not exist').to.not.exist
@@ -90,7 +104,7 @@ Cypress.Commands.add('waitForMapTreeControlLoading', () => {
 })
 
 Cypress.Commands.add('waitForGalleryLoading', () => {
-  cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
+  cy.get('.loading-gallery > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
@@ -104,7 +118,7 @@ Cypress.Commands.add('waitForViewerContainer', (selector) => {
 })
 
 Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
-  cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
+  cy.get('.connectivity-graph > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Connectivity graph loading mask should not exist').to.not.exist
   })
   cy.wait(5000)

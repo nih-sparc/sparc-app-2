@@ -30,10 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@3.2.10":
-  version "3.2.10"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.10.tgz#5a1bd0035a7669c41db064a35b58a73cbd355158"
-  integrity sha512-jmpZyJBQ7MF4GY4PEAMDpx2ZFel6Id7pacRXVfSVq0JD5zXMVGJ1wn/VJ0AYchSjhp+xYhDy7OjLSEqgxVTYjA==
+"@abi-software/flatmap-viewer@3.2.12":
+  version "3.2.12"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.12.tgz#bd686f9ce1f5a2d9ac0c12ac2ae5f6f16ac6285c"
+  integrity sha512-IwbePQMIZkEK/NN+cEQlI/Viol7WkQ4H4t/bA3NK9Ok1cI5OqS1vLrOHdPG+mSNj5d4vLoEFFC9x/IFhPTDngA==
   dependencies:
     "@deck.gl/core" "^9.0.17"
     "@deck.gl/geo-layers" "^9.0.18"
@@ -59,13 +59,13 @@
     minisearch "^2.2.1"
     polylabel "^2.0.1"
 
-"@abi-software/flatmapvuer@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.2.tgz#a8f0f6e02c5088d663db59f1d9f781ca25a8d0c7"
-  integrity sha512-t0NeIHfj8h4iBXUAMqbelAvyBIV2AF3SC/P0qy2beY4j3QmzwYTCpSDH6bkdMy81wRtJtrrIL0hP+FlYqZYXsQ==
+"@abi-software/flatmapvuer@1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.3.tgz#f9f00a1be55c45b6985902591d45933a259638bb"
+  integrity sha512-X5lMdW7oEj9o9tK2zrddUBReCyja8RH1q5rQsXpRbvYFdPL38bGSiKrLSiFuZQDRXiXTto6pT0VPXidbqx8a6w==
   dependencies:
-    "@abi-software/flatmap-viewer" "3.2.10"
-    "@abi-software/map-utilities" "^1.3.1"
+    "@abi-software/flatmap-viewer" "3.2.12"
+    "@abi-software/map-utilities" "^1.3.2"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -102,13 +102,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@2.6.2":
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.6.2.tgz#962d8f22598b4248d6244cd5f038a64306648bbb"
-  integrity sha512-Ex0n+N3r183VsBSUVAoQXnVNKFO/z2S8B0oHpM+ki2hLN75YL6ucZM73leKnJKlWYncfduezwYADUJTqrvpIiw==
+"@abi-software/map-side-bar@2.6.3":
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.6.3.tgz#a3370ef430f215e9be65f7c7d111eb7e0d255ae3"
+  integrity sha512-W1xkFx/1zM9WcW4EZ2lHgjHGmgMqkDQRw8cJFxdlkfwY3HOgz+rZENsqRbo5o+ZdUnlqtKQ1GtCVsvWccK99RA==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "^1.3.1"
+    "@abi-software/map-utilities" "^1.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -119,10 +119,10 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@1.3.1", "@abi-software/map-utilities@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.3.1.tgz#660cfbe66204ca8478ba4d01a09d5d8ad93017b7"
-  integrity sha512-gHh/gSC57A9TvnbOMNj8EEgQ1E7s293PckCnpd/ccBpAMHAcK21uFntRbjRoLWc8mljypmI0uRDrkA1cpyIn4A==
+"@abi-software/map-utilities@1.3.2", "@abi-software/map-utilities@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.3.2.tgz#b2ed61fb66b17416f15671ea274f0fac2868effe"
+  integrity sha512-Whbt7SqOkWHDFrRYslOJlD6+9qUG7cJnCFIEnwhT20nF8a9iGO7tJijXJGjJUzRhsvuZzIUCGU5kwcBH9nVhMw==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -171,13 +171,13 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.7.1.tgz#23f70aab7b94619e5d929cab98f4407f8e45755c"
-  integrity sha512-SjS6HAL8f8slqRpLnTNm2JXbgVmaEt234X4fl68SUd2MX0eHtIUT6yX0E179s/LBKWfItzTCadpKOrVt7SrXjA==
+"@abi-software/scaffoldvuer@1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.7.2.tgz#ef17bf01b4eadf9f612a97e4260f1fb40df6c69c"
+  integrity sha512-fw10gBb/Q9sllwIACKQEDQ/ti2b4Uk4KeWPgiL/x+A+br8nRF+f1oSSybjawifwCniQ+E7VOU03CzcTuo8hDww==
   dependencies:
-    "@abi-software/map-utilities" "^1.3.1"
-    "@abi-software/sparc-annotation" "^0.3.1"
+    "@abi-software/map-utilities" "^1.3.2"
+    "@abi-software/sparc-annotation" "^0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     core-js "^3.22.5"
@@ -189,7 +189,7 @@
     vue "^3.4.21"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.11.6"
+    zincjs "^1.11.7"
 
 "@abi-software/simulationvuer@1.0.1":
   version "1.0.1"
@@ -211,19 +211,10 @@
     js-cookie "^3.0.5"
     rdflib "^2.2.32"
 
-"@abi-software/sparc-annotation@0.3.2":
+"@abi-software/sparc-annotation@0.3.2", "@abi-software/sparc-annotation@^0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@abi-software/sparc-annotation/-/sparc-annotation-0.3.2.tgz#ee714f2ad29d2edf2c493dc8390ee7599264828e"
   integrity sha512-1ZnKoBJ0thaFqC090oEif3CbbmpY/7FkLxfb3Hx3Ujn8sB5aVQAW9/EfHJMlJwQwlqT8Qmmji9NlEAsYG/UUlQ==
-  dependencies:
-    "@types/js-cookie" "^3.0.6"
-    js-cookie "^3.0.5"
-    rdflib "^2.2.32"
-
-"@abi-software/sparc-annotation@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/sparc-annotation/-/sparc-annotation-0.3.1.tgz#7175f1f94a83700df8bd14a4321abd8466277bb5"
-  integrity sha512-7IoTOEP+8Zzw1eCSv8yO+WOQAZbM/cLmILXT/sZwfNbVhwpzCejxMG8N2kjMBp6glGzNMeWfRjE7Nn78rxwN5g==
   dependencies:
     "@types/js-cookie" "^3.0.6"
     js-cookie "^3.0.5"
@@ -19061,10 +19052,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.11.6:
-  version "1.11.6"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.11.6.tgz#b3c4dbe70f1961574b21c7e28b2b44c3d6caafd9"
-  integrity sha512-kqNoL72ijaBE0reQx/NDk6CAIH/bNy0o0vZUoPjA9WjZVfvznJFzWWF1w6hneDE/eiQqO889Giyq7Fm0fhtgvQ==
+zincjs@^1.11.7:
+  version "1.11.7"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.11.7.tgz#b09acae5228baae33c94d8da321ea2a89c536748"
+  integrity sha512-WWjssIUr4sv4idhEZjMkhedHIvSnnwnYzddraUUDtQlDTtEalllYflXoPMvBs7aqwp8e76IeCYJwZONfkI/nWQ==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
