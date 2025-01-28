@@ -53,7 +53,7 @@
               <div class="body4">
                 Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
                 newsletter. View all past newsletters <a
-                  href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                  href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
                   target="_blank">here</a>. To manage your subscription status click below.
               </div>
               <div class="mt-8">
