@@ -1,5 +1,5 @@
 <template>
-  <div class="feature-container pt-0 px-16 pb-16">
+  <div class="metric-container pt-0 px-16 pb-16">
     <img
       class="icon"
       :src=iconUrl
@@ -57,7 +57,7 @@ export default {
 
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
-.feature-container {
+.metric-container {
   text-align: left;
   display: flex;
   flex-direction: row;
