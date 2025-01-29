@@ -39,7 +39,6 @@
 
 <script>
 import discover from '@/services/discover'
-import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
@@ -160,6 +159,9 @@ export default {
     if (matchedBioData?.length) {
       const image_id = pathOr('', ['biolucida', 'identifier'], matchedBioData[0])
       biolucidaData.biolucida_image_id = image_id
+      // The encoded string is in the following format -
+      // ${image_id}-col-${collection_id}, collection id can be any valid collection id
+      // and 260 is used for now.
       const code = encodeURIComponent(Base64.encode(`${image_id}-col-260`))
       biolucidaData.share_link = `${config.public.BL_SHARE_LINK_PREFIX}${code}`
       biolucidaData.status = "Successful"
