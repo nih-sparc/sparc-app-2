@@ -53,7 +53,7 @@
               <div class="body4">
                 Keep up to date with all the latest news and events from the SPARC Portal by subscribing to our
                 newsletter. View all past newsletters <a
-                  href="//us2.campaign-archive.com/home/?u=e60c48f231a30b544eed731ea&id=c81a347bd8"
+                  href="https://docs.sparc.science/docs/sparc-plug-newsletter-archive"
                   target="_blank">here</a>. To manage your subscription status click below.
               </div>
               <div class="mt-8">
@@ -316,7 +316,6 @@ export default {
   async setup() {
     const config = useRuntimeConfig()
     const { $axios } = useNuxtApp()
-    const mainStore = useMainStore()
     let downloadsSummary = 0
 
     try {
@@ -332,24 +331,8 @@ export default {
       return 0
     }
 
-    const headers = {
-      "Accept": "application/json; charset=utf-8",
-      "Cache-Control": "no-store"
-    }
-    let annotatorAuthenticated = false
-    const url = `${config.public.flatmap_api}/annotator/authenticate?key=${mainStore.userToken}`
-    annotatorAuthenticated = await $axios.get(url, { headers }).then((response) => {
-      if (response.data.data.canUpdate) {
-        return true
-      }
-      return false
-    }).catch(() => {
-      return false
-    })
-
     return {
-      downloadsSummary,
-      annotatorAuthenticated
+      downloadsSummary
     }
   },
   computed: {
@@ -370,9 +353,10 @@ export default {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
           this.fetchPublishedDatasets(newValue)
-          this.fetchInProgressDatasets()
+          await this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
+          this.fetchAnnotatorAuthentication()
         }
       },
       immediate: true
@@ -485,6 +469,29 @@ export default {
       }).catch(() => {
         this.hasError = true
         return []
+      })
+    },
+    async fetchAnnotatorAuthentication() {
+      let orgIntIds = undefined
+      this.organizations.forEach(org => {
+        if (org.name === 'SPARC') { orgIntIds = org.intId }
+      })
+      try {
+        await this.$axios.put(`${this.$config.public.LOGIN_API_URL}/session/switch-organization?organization_id=${orgIntIds}&api_key=${this.userToken}`)
+      } catch (e) {
+      }
+      const headers = {
+        "Accept": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      }
+      const url = `${this.$config.public.flatmap_api}/annotator/authenticate?key=${this.userToken}`
+      this.annotatorAuthenticated = await this.$axios.get(url, { headers }).then((response) => {
+        if (response.data.data.canUpdate) {
+          return true
+        }
+        return false
+      }).catch(() => {
+        return false
       })
     },
     getDownloadsCount(id) {
