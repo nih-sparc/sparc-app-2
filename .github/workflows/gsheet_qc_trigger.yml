@@ -2,7 +2,7 @@ name: Google Sheets Quality Control Trigger
 
 on:
   schedule:
-    - cron: "0 19 * * *"
+    - cron: "0 0 * * 1"
 
   workflow_dispatch:
 
