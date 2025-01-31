@@ -131,16 +131,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.7.2.tgz#786f68d8a701310150335b49ac21f2abeaa8c7ad"
-  integrity sha512-WZjGpRAigkgeO3m18YQJaMuCuRFQblODQYATtplkwX5osS6hUowbAAowfNzxWbBGQbA5uf6nLv7qAcBFDNc9DA==
+"@abi-software/mapintegratedvuer@1.7.1-beta.0":
+  version "1.7.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.7.1-beta.0.tgz#50702cb6ad182e6d6d3227483dfaf5410f15e38c"
+  integrity sha512-WHO2HoXjvD60Wduhr9KB+oBYAslmizUWwE0MoB+DEnh/ioTimX4KnIuau9975qZOGTMptpzWjGFOL6tBX5lXug==
   dependencies:
-    "@abi-software/flatmapvuer" "1.7.3"
-    "@abi-software/map-side-bar" "2.6.3"
-    "@abi-software/map-utilities" "1.3.2"
+    "@abi-software/flatmapvuer" "1.7.2"
+    "@abi-software/map-side-bar" "2.6.2"
+    "@abi-software/map-utilities" "1.3.1"
     "@abi-software/plotvuer" "^1.0.3"
-    "@abi-software/scaffoldvuer" "1.7.2"
+    "@abi-software/scaffoldvuer" "1.7.1"
     "@abi-software/simulationvuer" "1.0.1"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
