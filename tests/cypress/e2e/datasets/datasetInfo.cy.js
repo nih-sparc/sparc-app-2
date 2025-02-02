@@ -94,9 +94,9 @@ datasetIds.forEach((datasetId) => {
             cy.wrap($content).contains('project(s):').siblings('.mt-8').should(($project) => {
               expect($project, 'Project title should exist').to.exist
             })
-            cy.get('.mt-8 > a').then(($link) => {
+            cy.get('.mt-8 > a').each(($link, index) => {
               const title = $link.children().text()
-              cy.get('.mt-8 > a').click()
+              cy.get('.mt-8 > a').eq(index).click()
               cy.waitForPageLoading()
               cy.url().should((url) => {
                 expect(url, 'URL should contain correct slug').to.contain('/about/projects/')

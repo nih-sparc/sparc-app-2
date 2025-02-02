@@ -247,23 +247,25 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().as('project')
         cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().as('institutions')
         cy.get('@awards').then(($award) => {
-          const award = $award.text().replace('Award(s):', '').trim()
+          const awards = $award.text().replace('Award(s):', '').split(',').map((award)=> award.trim())
           cy.get('@project').then(($project) => {
-            const project = $project.text().replace('Associated project(s):', '').trim()
+            const projects = $project.text().replace('Associated project(s):', '').split(',').map((project)=> project.trim())
             cy.get('@institutions').then(($institution) => {
-              const institution = $institution.text().replace('Institution(s):', '').trim()
-              cy.wrap($project).find('a').click()
-              cy.waitForPageLoading()
-              cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
-                expect($title, 'Project title should be the same').to.contain(project)
+              const institutions = $institution.text().replace('Institution(s):', '').split(',').map((institution)=> institution.trim())
+              cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').each(($link, index) => {
+                cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').eq(index).click()
+                cy.waitForPageLoading()
+                cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
+                  expect($title, 'Project title should be the same').to.contain(projects[index])
+                })
+                cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
+                  expect($institution, 'Institution should be the same').to.contain(institutions[index])
+                })
+                cy.get('.link1').should(($award) => {
+                  expect(awards[index], 'Award should be the same').to.include($award.text().trim())
+                })
+                cy.backToDetailPage(datasetId)
               })
-              cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
-                expect($institution, 'Institution should be the same').to.contain(institution)
-              })
-              cy.get('.link1').should(($award) => {
-                expect(award, 'Award should be the same').to.include($award.text().trim())
-              })
-              cy.backToDetailPage(datasetId)
             })
           })
         })
