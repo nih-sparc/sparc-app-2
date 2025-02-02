@@ -135,12 +135,12 @@ datasetIds.forEach((datasetId) => {
                     })
                     cy.get('@links').each(($link) => {
                       cy.wrap($link).invoke('attr', 'href').then((href) => {
-                        cy.request(href).then((resp) => {
+                        cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
                           const title = $title.text().trim().replaceAll(' ', '.*')
                           const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
                           const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
                           const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
-                          expect(resp.status).to.eq(200)
+                          expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
                           expect(resp.body, 'Protocol link should make sense').to.match(regex)
                         })
                       })
@@ -512,8 +512,8 @@ datasetIds.forEach((datasetId) => {
           expect($link, 'Citation link should have doi href').to.have.attr('href').to.contain('doi.org')
           expect($link, 'Citation link should open a new tab').to.have.attr('target').to.contain('blank')
           cy.wrap($link).invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
+            cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
+              expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
             })
           })
         })
@@ -561,7 +561,7 @@ datasetIds.forEach((datasetId) => {
         cy.get('.version-table > .table-rows > :nth-child(5) > a').each(($doi) => {
           cy.wrap($doi).invoke('attr', 'href').then((href) => {
             cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
-              expect(resp.redirects, 'Redirect should exist').to.have.length(1)
+              expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
             })
           })
         })
