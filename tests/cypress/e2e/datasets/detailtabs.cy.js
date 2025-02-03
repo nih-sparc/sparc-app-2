@@ -140,8 +140,9 @@ datasetIds.forEach((datasetId) => {
                           const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
                           const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
                           const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
+                          const match = resp.body.match(regex) || []
                           expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
-                          expect(resp.body, 'Protocol link should make sense').to.match(regex)
+                          expect(match, 'Protocol link should make sense').to.have.length.greaterThan(0)
                         })
                       })
                     })
@@ -247,11 +248,11 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().as('project')
         cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().as('institutions')
         cy.get('@awards').then(($award) => {
-          const awards = $award.text().replace('Award(s):', '').split(',').map((award)=> award.trim())
+          const awards = $award.text().replace('Award(s):', '').split(',').map((award) => award.trim())
           cy.get('@project').then(($project) => {
-            const projects = $project.text().replace('Associated project(s):', '').split(',').map((project)=> project.trim())
+            const projects = $project.text().replace('Associated project(s):', '').split(',').map((project) => project.trim())
             cy.get('@institutions').then(($institution) => {
-              const institutions = $institution.text().replace('Institution(s):', '').split(',').map((institution)=> institution.trim())
+              const institutions = $institution.text().replace('Institution(s):', '').split(',').map((institution) => institution.trim())
               cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').each(($link, index) => {
                 cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').eq(index).click()
                 cy.waitForPageLoading()
