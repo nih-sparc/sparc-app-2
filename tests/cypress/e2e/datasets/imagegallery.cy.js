@@ -149,7 +149,7 @@ datasetIds.forEach((datasetId) => {
                             const link = stub.args[0][0]
                             expect(link.length, 'Button should contain external resource link').to.be.greaterThan(0)
                           })
-                          cy.then(()=>{
+                          cy.then(() => {
                             windowOpenStub.restore()
                           })
                         })

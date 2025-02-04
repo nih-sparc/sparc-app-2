@@ -21,7 +21,7 @@ datasetIds.forEach((datasetId) => {
       cy.get('.el-col-sm-16 > .heading2').then(($title) => {
         cy.get('.similar-datasets-container > .px-8').then(($similar) => {
           if ($similar.text().includes('Type:')) {
-            const title = $title.text()
+            const title = $title.text().replace(/\s\s+/g, ' ')
             const titleList = title.split(' ')
             const input = titleList.slice(0, randomInteger(1, titleList.length - 1)).join(' ')
             cy.wrap($similar).contains(/TYPE:/i).siblings('.facet-button-container').click()
@@ -55,7 +55,7 @@ datasetIds.forEach((datasetId) => {
               cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
               cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
               cy.waitForBrowserLoading()
-              cy.get('.cell').contains($title.text()).should(($dTitle) => {
+              cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).should(($dTitle) => {
                 expect($dTitle, 'Dataset title should exist in search results').to.exist
               })
               cy.backToDetailPage(datasetId)
