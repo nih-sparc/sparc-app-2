@@ -64,8 +64,6 @@
 import StorageMetrics from '@/mixins/bf-storage-metrics'
 import { propOr } from 'ramda'
 
-const DEFAULT_ARCHIVE_NAME = 'sparc-portal-data'
-
 export default {
   name: 'BfDownloadFile',
 
@@ -90,11 +88,11 @@ export default {
     }
   },
 
-  data() {
+  data(props) {
     return {
       zipData: '',
       confirmDownloadVisible: false,
-      archiveName: DEFAULT_ARCHIVE_NAME,
+      archiveName: `sparc-portal-dataset-${this.dataset.id}-version-${this.dataset.version}-data`,
       showReduceSize: false,
       downloadConfirmed: false
     }
@@ -167,15 +165,15 @@ export default {
 
     executeDownload() {
       const mainPayload = {
-        paths: this.selected.map(f => f.path),
+        paths: [...this.selected.map(f => f.path), "manifest.json"],
         datasetId: `${this.dataset.id}`,
         version: `${this.dataset.version}`
       }
 
-      const archiveNamePayload =
-        this.archiveName && this.selected.length > 1
-          ? { archiveName: this.archiveName }
-          : {}
+      if (this.archiveName == "") {
+        this.archiveName = `sparc-portal-dataset-${this.dataset.id}-version-${this.dataset.version}-data`
+      }
+      const archiveNamePayload = { archiveName: this.archiveName }
 
       const payload = {
         ...mainPayload,
@@ -204,7 +202,6 @@ export default {
     },
 
     closeConfirmDownload() {
-      this.archiveName = DEFAULT_ARCHIVE_NAME
       this.downloadConfirmed = false
       this.showReduceSize = false
       this.confirmDownloadVisible = false
