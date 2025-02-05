@@ -1,7 +1,26 @@
 <template>
   <div class="metric-container pt-0 px-16 pb-16">
+    <el-tooltip
+      v-if="tooltip"
+      placement="bottom"
+      popper-class="consortia-tooltips"
+      effect="customized"
+    >
+      <template #default>
+        <img
+          class="icon"
+          :style="imageStyle"
+          :src=iconUrl
+        />
+      </template>
+      <template #content>
+        {{ tooltip }}
+      </template>
+    </el-tooltip>
     <img
+      v-else
       class="icon"
+      :style="imageStyle"
       :src=iconUrl
     />
     <div class="numbers-container">
@@ -45,10 +64,13 @@ export default {
     iconUrl() {
       return pathOr('', ['fields','icon', 'fields', 'file', 'url'], this.metric)
     },
-    descriptionStyle() {
+    tooltip() {
+      return pathOr('', ['fields','buttonText'], this.metric)
+    },
+    imageStyle() {
       if (this.textColor == "") return
       return {
-        color: `#${this.textColor} !important`,
+        border: `1px solid #${this.textColor}`
       }
     }
   },
@@ -71,6 +93,13 @@ export default {
 }
 .icon {
   margin: 0 auto;
-  height: 6rem;
+  margin-right: .5rem;
+}
+img {
+  border-radius: 50%;
+  margin-bottom: 8px;
+  height: 128px;
+  width: 128px;
+  object-fit: contain;
 }
 </style>
