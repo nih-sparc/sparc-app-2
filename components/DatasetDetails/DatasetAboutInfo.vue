@@ -29,14 +29,19 @@
         <nuxt-link :to="getProjectLink(project)">
         {{ getAwardNumber(project) }}
         </nuxt-link>
-        <span v-if="index < associatedProjects.length - 1">, </span>
+        <span v-if="index < associatedProjects.length - 1 || externalProjectAwardIds.length > 0">, </span>
+      </span>
+      <span v-for="(awardId, index) in externalProjectAwardIds" :key="index">
+        {{  awardId }}
+        <span v-if="index < externalProjectAwardIds.length - 1">, </span>
       </span>
     </div>
     <div class="mb-16">
       <span class="label4">
         Funding Program(s): 
       </span>
-      <span v-for="(project, index) in associatedProjects" :key="index">
+      <span v-if="associatedProjects == null">None specified</span>
+      <span v-else v-for="(project, index) in associatedProjects" :key="index">
         {{ getFundingProgram(project) }}
         <span v-if="index < associatedProjects.length - 1">, </span>
       </span>
@@ -46,7 +51,8 @@
       <span class="label4">
         Associated project(s): 
       </span>
-      <span v-for="(project, index) in associatedProjects" :key="index">
+      <span v-if="associatedProjects == null">None specified</span>
+      <span v-else v-for="(project, index) in associatedProjects" :key="index">
         <nuxt-link :to="getProjectLink(project)">
         {{ getProjectTitle(project) }}
         </nuxt-link>
@@ -57,7 +63,8 @@
       <span class="label4">
         Institution(s): 
       </span>
-      <span v-for="(project, index) in associatedProjects" :key="index">
+      <span v-if="associatedProjects == null">None specified</span>
+      <span v-else v-for="(project, index) in associatedProjects" :key="index">
         {{ getProjectInstitution(project) }}<span v-if="index < associatedProjects.length - 1">, </span>
       </span>
     </div>
@@ -98,6 +105,10 @@ export default {
       default: ''
     },
     associatedProjects: {
+      type: Array,
+      default: () => []
+    },
+    awardIds: {
       type: Array,
       default: () => []
     }
@@ -221,6 +232,14 @@ export default {
       let revision = this.datasetInfo.revision ? this.datasetInfo.revision : '0'
       return `Version ${this.datasetInfo.version} Revision ${revision}`
     },
+    externalProjectAwardIds() {
+      if (this.associatedProjects == null || this.associatedProjects.length < 0) {
+        return this.awardIds
+      }
+      return this.awardIds.filter(id => {
+        return !this.associatedProjects.some(project => pathOr(null, ['fields', 'awardId'], project) == id)
+      })
+    }
   },
 }
 </script>
