@@ -19,6 +19,10 @@
         <paper v-if="forInvestigators" class="row-item" :text="parseMarkdown(forInvestigators)"
           :button-text="forInvestigatorsButtonLabel" :button-link-external="forInvestigatorsButtonLink" />
       </div>
+      <div v-if="metrics" class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">By the numbers</div>
+        <consortia-metrics :metrics="metrics" :color="linkColor" />
+      </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
@@ -49,6 +53,7 @@ import Paper from '~/components/Paper/Paper.vue';
 import Gallery from '~/components/Gallery/Gallery.vue';
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue';
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
+import ConsortiaMetrics from '@/components/ConsortiaMetrics/ConsortiaMetrics.vue'
 
 import { pathOr } from 'ramda';
 import { parseMarkdown } from '@/utils/formattingUtils.js'
@@ -83,9 +88,9 @@ const breadcrumb = [
   { to: { name: 'about' }, label: 'About' },
 ];
 
-const title = computed(() => pathOr('', ['fields', 'title'], consortiaItem.value));
-const overview = computed(() => pathOr('', ['fields', 'overview'], consortiaItem.value));
-const whoWeAre = computed(() => pathOr('', ['fields', 'whoWeAre'], consortiaItem.value));
+const title = computed(() => pathOr('', ['fields', 'title'], consortiaItem.value))
+const overview = computed(() => pathOr('', ['fields', 'overview'], consortiaItem.value))
+const whoWeAre = computed(() => pathOr('', ['fields', 'whoWeAre'], consortiaItem.value))
 const whoWeAreButtonText = computed(() => pathOr('', ['fields', 'whoWeAreButtonText'], consortiaItem.value))
 const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonLink'], consortiaItem.value))
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
@@ -96,6 +101,8 @@ const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', '
 const forInvestigators = computed(() => pathOr('', ['fields', 'forInvestigators'], consortiaItem.value))
 const forInvestigatorsButtonLabel = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLabel'], consortiaItem.value))
 const forInvestigatorsButtonLink = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLink'], consortiaItem.value))
+const metrics = computed(() => pathOr(null, ['fields', 'metrics'], consortiaItem.value))
+const linkColor = computed(() => pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
