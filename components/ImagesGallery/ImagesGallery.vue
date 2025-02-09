@@ -60,7 +60,6 @@ import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let scicrunchData = {}
   let scicrunch_response = []
-  let biolucida_response = []
   try {
     await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
