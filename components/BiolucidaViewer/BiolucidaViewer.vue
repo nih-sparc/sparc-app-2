@@ -149,6 +149,15 @@ export default {
         })
     },
     queryView() {
+      if (this.data['share_link']) {
+        try {
+          navigator.clipboard.writeText(this.data['share_link'])
+          successMessage('A link has been copied to the clipboard')
+        } catch (err) {
+          console.error(err)
+          failMessage('The link could not be copied to the clipboard')
+        }
+      }
       this.$refs.biolucida.contentWindow.postMessage(
         'getImgPos',
         this.$config.public.BL_SERVER_URL
