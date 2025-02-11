@@ -138,6 +138,11 @@ datasetIds.forEach((datasetId) => {
                           expect($link, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
                         })
                       }
+                      if (item === 'Plot') {
+                        cy.get('.plot-container > .user-select-none.svg-container').then(($plot) => {
+                          expect($plot, 'Plot should be displayed').to.exist
+                        })
+                      }
                       if (item === 'Image') {
                         let windowOpenStub
                         cy.get('.biolucida-viewer > .el-row > div > .el-button').each(($button, index) => {
