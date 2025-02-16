@@ -45,6 +45,19 @@ mapTypes.forEach((map) => {
 
     if (map === 'ac') {
 
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
+        cy.get('@ViewACMap').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+      })
+
       taxonModels.forEach((model, index) => {
 
         it(`Provenance card for ${model}`, function () {
@@ -379,6 +392,15 @@ mapTypes.forEach((map) => {
           })
         })
       })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
+        cy.get('@View3DBody').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+      })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
         cy.waitForFlatmapLoading()
@@ -390,6 +412,15 @@ mapTypes.forEach((map) => {
         })
         cy.get('.checkall-display-text').then((text) => {
           expect(text, 'Tree control checkbox title should exist').to.have.length.greaterThan(0)
+        })
+      })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(3) .el-button').as('ViewFCMap')
+        cy.get('@ViewFCMap').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
         })
       })
     }
