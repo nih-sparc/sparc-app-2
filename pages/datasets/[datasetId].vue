@@ -448,7 +448,8 @@ export default {
       return pathOr('', ['params', 'datasetId'], this.$route)
     },
     hasFiles: function () {
-      return this.fileCount >= 1
+      // do not show the files tab for code repos
+      return this.fileCount >= 1 && !this.hasSourceCode
     },
     fileCount: function () {
       return propOr('0', 'fileCount', this.datasetInfo)
