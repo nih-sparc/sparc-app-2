@@ -33,9 +33,7 @@
             <td class="property-name-column">
               Institution(s)
             </td>
-            <td>
-              {{ getInstitutionNames(scope.row.fields.institutions) }}
-            </td>
+            <td v-html="highlightMatches(getInstitutionNames(scope.row.fields.institutions), $route.query.search)" />
           </tr>
           <tr v-if="scope.row.fields.program.length > 0">
             <td class="property-name-column">
