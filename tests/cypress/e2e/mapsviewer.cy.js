@@ -41,6 +41,14 @@ mapTypes.forEach((map) => {
       cy.intercept('**/s3-resource/**').as('s3-resource')
       cy.waitForViewerContainer('.mapClass')
       cy.waitForPageLoading()
+      if (map === 'ac') {
+        cy.waitForMapLoading()
+      } else if (map === 'wholebody') {
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
+      } else if (map === 'fc') {
+        cy.waitForFlatmapLoading()
+      }
     })
 
     if (map === 'ac') {
@@ -289,7 +297,8 @@ mapTypes.forEach((map) => {
         })
         cy.get('@syncMapButton').click()
         cy.wait(['@get_body_scaffold_info', '@s3-resource'], { timeout: 20000 })
-        cy.waitForMapLoading()
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
         // Check for the number of displayed viewers
         cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
           expect($toolbar, 'Should have two toolbar').to.have.length(2)
@@ -332,7 +341,6 @@ mapTypes.forEach((map) => {
       scaffoldDatasetIds.forEach((datasetId, index) => {
 
         it(`Context card for scaffold dataset ${datasetId}`, function () {
-          cy.waitForMapLoading()
           // Open the sidebar
           cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
           // Enter dataset id
@@ -404,6 +412,8 @@ mapTypes.forEach((map) => {
                 // Check for button text
                 cy.get('@datasetCards').contains(/View Scaffold/i).click()
                 cy.wait('@s3-resource', { timeout: 20000 })
+                cy.waitForScaffoldLoading()
+                cy.waitForMapTreeControlLoading()
                 // Check for context card
                 cy.get('.context-card').should(($card) => {
                   expect($card, 'The context card should be displayed').to.be.visible
@@ -424,7 +434,6 @@ mapTypes.forEach((map) => {
       })
     } else if (map === 'wholebody') {
       it('Map is loaded', function () {
-        cy.waitForScaffoldLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Human whole body scaffold should be loaded').to.contain('Human 3D Scaffold')
         })
@@ -432,7 +441,6 @@ mapTypes.forEach((map) => {
           expect(text, 'Tree control title should exist').to.exist
         })
         cy.get('.traditional-container .selections-container').then(() => {
-          cy.waitForMapTreeControlLoading()
           cy.get('.region-tree-node > .lastChildInItem').then((region) => {
             expect(region, 'Tree control helper region should exist').to.contain('_helper')
           })
@@ -472,7 +480,6 @@ mapTypes.forEach((map) => {
       })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
-        cy.waitForFlatmapLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Functional flatmap should be loaded').to.contain('Functional Flatmap')
         })
