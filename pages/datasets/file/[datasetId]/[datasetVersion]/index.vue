@@ -39,7 +39,6 @@
 
 <script>
 import discover from '@/services/discover'
-import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
@@ -54,6 +53,7 @@ import Gallery from '@/components/Gallery/Gallery.vue'
 import { extractS3BucketName } from '@/utils/common'
 
 import { isEmpty, pathOr, propOr } from 'ramda'
+import { Base64  } from 'js-base64'
 
 export default {
   name: 'DatasetFileDetailPage',
@@ -107,42 +107,14 @@ export default {
       }
     }
 
-    // We should just be able to do as below and pull the source package id from file, but there are sometimes discrepancies between the pennsieve file sourcePackageId and the biolucida image data sourcePackageId returned from sparc.biolucida.net
-    // const sourcePackageId = file.sourcePackageId
-    // So now we must pull all the images from the dataset, then get each ones dataset info (to use the file name to map it) so that we can get the source package id from the right image 
     let sourcePackageId = ""
-    let biolucidaData = {}
-    try {
-      const biolucidaSearchResults = await biolucida.searchDataset(route.params.datasetId)
-      //sort the following with reverse order, make sure the latest images get prioritised
-      let imagesData = biolucidaSearchResults['dataset_images']
-      imagesData = imagesData.reverse()
-      if (packageType == 'Image' && imagesData != undefined) {
-        await Promise.all(imagesData.map(async image => {
-          const imageInfo = await biolucida.getImageInfo(image.image_id)
-          if (imageInfo['name'] == file.name)
-          {
-            sourcePackageId = image['sourcepkg_id']
-            biolucidaData.biolucida_image_id = image.image_id
-            biolucidaData.share_link = image.share_link
-            biolucidaData.status = imageInfo.status
-            biolucidaData.type_field = image.type_field
-            return
-          }
-        }))
-      }
-    } catch (e) {
-      console.log(`Error retrieving biolucida data (possibly because there is none for this file): ${e}`)
-    }
-
-    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
-
     // We must remove the N: in order for scicrunch to realize the package
     sourcePackageId = file.sourcePackageId
     const expectedScicrunchIdentifier = sourcePackageId != undefined ? sourcePackageId.replace("N:", "") : ""
     let scicrunchData = {}
     try {
-      if (packageType == 'Others' && expectedScicrunchIdentifier != "") {
+      if ((packageType == 'Others' || packageType == 'Image') &&
+        expectedScicrunchIdentifier != "") {
         const scicrunchResponse = await scicrunch.getDatasetInfoFromObjectIdentifier(expectedScicrunchIdentifier)
         const result = pathOr([], ['data', 'result'], scicrunchResponse)
         scicrunchData = result?.length > 0 ? result[0] : []
@@ -174,6 +146,27 @@ export default {
       console.log(`Error retrieving segmentation data (possibly because there is none for this file): ${e}`)
     }
     const hasSegmentationViewer = !isEmpty(segmentationData)
+
+    let biolucidaData = {}
+    let matchedBioData = scicrunchData['biolucida-2d']?.filter(function(el) {
+      return el.identifier == expectedScicrunchIdentifier
+    })
+    if (!matchedBioData?.length) {
+      matchedBioData = scicrunchData['biolucida-3d']?.filter(function(el) {
+        return el.identifier == expectedScicrunchIdentifier
+      })
+    }
+    if (matchedBioData?.length) {
+      const image_id = pathOr('', ['biolucida', 'identifier'], matchedBioData[0])
+      biolucidaData.biolucida_image_id = image_id
+      // The encoded string is in the following format -
+      // ${image_id}-col-${collection_id}, collection id can be any valid collection id
+      // and 260 is used for now.
+      const code = encodeURIComponent(Base64.encode(`${image_id}-col-260`))
+      biolucidaData.share_link = `${config.public.BL_SHARE_LINK_PREFIX}${code}`
+      biolucidaData.status = "Successful"
+    }
+    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
     
     let plotData = {}
     const matchedPlotData = scicrunchData['abi-plot']?.filter(function(el) {
@@ -418,9 +411,10 @@ export default {
       const matches = params.match(datasetVersionRegexp)
 
       const payload = {
-        paths: [matches.groups.filePath],
+        paths: [matches.groups.filePath, "manifest.json"],
         datasetId: matches.groups.datasetId,
-        version: version
+        version: version,
+        archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${this.datasetInfo.version}-data`
       }
 
       this.zipData = JSON.stringify(payload, undefined)

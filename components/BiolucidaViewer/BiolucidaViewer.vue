@@ -174,7 +174,7 @@ export default {
           } else {
             linkPath += `&location=${message}`
           }
-          this.$copyText(linkPath).then(
+          navigator.clipboard.writeText(linkPath).then(
             () => {
               successMessage('Share link copied to clipboard.')
             },

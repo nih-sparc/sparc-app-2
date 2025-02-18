@@ -40,6 +40,7 @@
     "date-fns": "^2.30.0",
     "gridstack": "^10.1.2",
     "isomorphic-dompurify": "^1.9.0",
+    "js-base64": "^3.7.7",
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.21",
     "marked": "^8.0.1",
