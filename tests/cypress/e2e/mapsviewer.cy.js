@@ -41,9 +41,75 @@ mapTypes.forEach((map) => {
       cy.intercept('**/s3-resource/**').as('s3-resource')
       cy.waitForViewerContainer('.mapClass')
       cy.waitForPageLoading()
+      if (map === 'ac') {
+        cy.waitForMapLoading()
+      } else if (map === 'wholebody') {
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
+      } else if (map === 'fc') {
+        cy.waitForFlatmapLoading()
+      }
     })
 
     if (map === 'ac') {
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
+        cy.get('@ViewACMap').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForMapLoading()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+      })
+
+      it('In-display search', function () {
+        // Search keyword in displayed viewers
+        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type('neuron type aacar 11')
+        cy.get('.search-container > .map-icon > use').as('mapSearchIcon')
+        cy.get('@mapSearchIcon').click()
+        cy.wait(5000)
+        // Check for the sidebar tabs
+        cy.get('.title-text-table > .title-text').should(($title) => {
+          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+        })
+        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+        cy.get('@ActiveTab').should(($tab) => {
+          expect($tab, 'Active tab should be Connectivity after searching').to.have.text('Connectivity')
+        })
+        cy.get('.active-tab > .el-button').as('closeTabButton')
+        cy.get('@closeTabButton').click()
+        cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
+        // Switch to Annotation viewing mode
+        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
+        cy.get('@settingIcon').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
+        cy.get('@settingIcon').click()
+        cy.waitForMapLoading()
+        // Search keyword in displayed viewers
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type('neuron type aacar 11')
+        cy.get('@mapSearchIcon').click()
+        cy.wait(5000)
+        // Check for the sidebar tabs
+        cy.get('.title-text-table > .title-text').should(($title) => {
+          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+        })
+        cy.get('@ActiveTab').should(($tab) => {
+          expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
+        })
+        cy.get('@closeTabButton').click()
+        // Switch back to default viewing mode
+        cy.get('@settingIcon').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
+        cy.get('@settingIcon').click()
+      })
 
       taxonModels.forEach((model, index) => {
 
@@ -232,7 +298,8 @@ mapTypes.forEach((map) => {
         })
         cy.get('@syncMapButton').click()
         cy.wait(['@get_body_scaffold_info', '@s3-resource'], { timeout: 20000 })
-        cy.waitForMapLoading()
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
         // Check for the number of displayed viewers
         cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
           expect($toolbar, 'Should have two toolbar').to.have.length(2)
@@ -262,8 +329,10 @@ mapTypes.forEach((map) => {
         // Close the pathway sidebar
         cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button').click()
         // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper').type(searchInMap)
-        cy.get('.search-container > .map-icon > use').as('mapSearchIcon').click()
+        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type(searchInMap)
+        cy.get('.search-container > .map-icon > use').click()
         // Check for keyword(highlighted part) in displayed viewers
         cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
           expect($tooltip, 'The tooltip should contain the search keyword').to.exist
@@ -273,7 +342,6 @@ mapTypes.forEach((map) => {
       scaffoldDatasetIds.forEach((datasetId, index) => {
 
         it(`Context card for scaffold dataset ${datasetId}`, function () {
-          cy.waitForMapLoading()
           // Open the sidebar
           cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
           // Enter dataset id
@@ -345,6 +413,8 @@ mapTypes.forEach((map) => {
                 // Check for button text
                 cy.get('@datasetCards').contains(/View Scaffold/i).click()
                 cy.wait('@s3-resource', { timeout: 20000 })
+                cy.waitForScaffoldLoading()
+                cy.waitForMapTreeControlLoading()
                 // Check for context card
                 cy.get('.context-card').should(($card) => {
                   expect($card, 'The context card should be displayed').to.be.visible
@@ -365,7 +435,6 @@ mapTypes.forEach((map) => {
       })
     } else if (map === 'wholebody') {
       it('Map is loaded', function () {
-        cy.waitForScaffoldLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Human whole body scaffold should be loaded').to.contain('Human 3D Scaffold')
         })
@@ -373,15 +442,51 @@ mapTypes.forEach((map) => {
           expect(text, 'Tree control title should exist').to.exist
         })
         cy.get('.traditional-container .selections-container').then(() => {
-          cy.waitForMapTreeControlLoading()
           cy.get('.region-tree-node > .lastChildInItem').then((region) => {
             expect(region, 'Tree control helper region should exist').to.contain('_helper')
           })
         })
       })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
+        cy.get('@View3DBody').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+      })
+
+      it('In-display search', function () {
+        // Switch to Annotation viewing mode
+        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
+        cy.get('@settingIcon').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
+        cy.get('@settingIcon').click()
+        // Search keyword in displayed viewers
+        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type('heart')
+        cy.get('.search-container > .map-icon > use').click()
+        cy.wait(5000)
+        // Check for the sidebar tabs
+        cy.get('.title-text-table > .title-text').should(($title) => {
+          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+        })
+        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+        cy.get('@ActiveTab').should(($tab) => {
+          expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
+        })
+        cy.get('.active-tab > .el-button').as('closeTabButton').click()
+      })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
-        cy.waitForFlatmapLoading()
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Functional flatmap should be loaded').to.contain('Functional Flatmap')
         })
@@ -391,6 +496,20 @@ mapTypes.forEach((map) => {
         cy.get('.checkall-display-text').then((text) => {
           expect(text, 'Tree control checkbox title should exist').to.have.length.greaterThan(0)
         })
+      })
+
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(3) .el-button').as('ViewFCMap')
+        cy.get('@ViewFCMap').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForFlatmapLoading()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
     }
   })
