@@ -57,6 +57,7 @@ mapTypes.forEach((map) => {
         cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
         cy.get('@ViewACMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForMapLoading()
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
@@ -88,7 +89,7 @@ mapTypes.forEach((map) => {
         // Switch to Annotation viewing mode
         cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
         cy.get('@settingIcon').click()
-        cy.get('[style="margin-bottom: 2px;"]:visible').contains('Annotation').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
         cy.get('@settingIcon').click()
         cy.waitForMapLoading()
         // Search keyword in displayed viewers
@@ -106,7 +107,7 @@ mapTypes.forEach((map) => {
         cy.get('@closeTabButton').click()
         // Switch back to default viewing mode
         cy.get('@settingIcon').click()
-        cy.get('[style="margin-bottom: 2px;"]:visible').contains('Exploration').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
         cy.get('@settingIcon').click()
       })
 
@@ -447,11 +448,26 @@ mapTypes.forEach((map) => {
         })
       })
 
+      it('Open new map', function () {
+        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
+        cy.get('@View3DBody').click()
+        cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForScaffoldLoading()
+        cy.waitForMapTreeControlLoading()
+        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
+          expect($select, 'Multiple maps should be loaded').to.exist
+        })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+      })
+
       it('In-display search', function () {
         // Switch to Annotation viewing mode
         cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
         cy.get('@settingIcon').click()
-        cy.get('[style="margin-bottom: 2px;"]:visible').contains('Annotation').click()
+        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
         cy.get('@settingIcon').click()
         // Search keyword in displayed viewers
         cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
@@ -468,15 +484,6 @@ mapTypes.forEach((map) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
         cy.get('.active-tab > .el-button').as('closeTabButton').click()
-      })
-
-      it('Open new map', function () {
-        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
-        cy.get('@View3DBody').click()
-        cy.get('.popover-content > .el-button:visible').first().click()
-        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
-          expect($select, 'Multiple maps should be loaded').to.exist
-        })
       })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
@@ -495,9 +502,14 @@ mapTypes.forEach((map) => {
         cy.get('.portal-features > :nth-child(3) .el-button').as('ViewFCMap')
         cy.get('@ViewFCMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
+        cy.waitForFlatmapLoading()
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
+        // Close new opened dialog
+        cy.get('.header > .icon-group > .map-icon:visible').first().click()
+        cy.contains('Vertical split').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
     }
   })
