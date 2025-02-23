@@ -307,3 +307,21 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   }
   clickOnNeuron()
 })
+
+Cypress.Commands.add('checkScaffoldContextCard', () => {
+  cy.get('.context-card').should(($card) => {
+    expect($card, 'The context card should be displayed').to.be.visible
+  })
+  cy.get('.context-image').should(($image) => {
+    expect($image, 'Context image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
+  })
+  cy.get('.view-image').should(($image) => {
+    expect($image, 'View image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
+  })
+  cy.get('.card-right > :nth-child(1) > .title').should(($title) => {
+    expect($title, 'The context card should have a title class').to.have.class('title')
+  })
+  cy.get('.card-right > :nth-child(1) > :nth-child(2) > :nth-child(1)').should(($description) => {
+    expect($description, 'The context card should have a description').to.exist
+  })
+})
