@@ -416,18 +416,7 @@ mapTypes.forEach((map) => {
                 cy.waitForScaffoldLoading()
                 cy.waitForMapTreeControlLoading()
                 // Check for context card
-                cy.get('.context-card').should(($card) => {
-                  expect($card, 'The context card should be displayed').to.be.visible
-                })
-                cy.get('.context-image').should(($image) => {
-                  expect($image, 'The context card should have an image').to.exist
-                })
-                cy.get('.card-right > :nth-child(1) > .title').should(($title) => {
-                  expect($title, 'The context card should have a title class').to.have.class('title')
-                })
-                cy.get('.card-right > :nth-child(1) > :nth-child(2) > :nth-child(1)').should(($description) => {
-                  expect($description, 'The context card should have a description').to.exist
-                })
+                cy.checkScaffoldContextCard()
               }
             })
           })
