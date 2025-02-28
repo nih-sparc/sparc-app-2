@@ -96,6 +96,7 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
     const { items } = await $contentfulClient.getEntries({
       content_type: config.public.ctf_consortia_content_type_id,
       order: 'fields.displayOrder',
+      'fields.displayOnAboutPage': true
     })
     return items
   } catch (err) {
