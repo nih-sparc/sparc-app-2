@@ -165,10 +165,10 @@
     element-plus "^2.9.3"
     vue "^3.5.13"
 
-"@abi-software/plotdatahelpers@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotdatahelpers/-/plotdatahelpers-0.1.0.tgz#3cad082367e0c5292e150f7c69f014d73a67ec1f"
-  integrity sha512-Oki5Wk0BlXepyTloljXmypGEZeAU6qz/AVk3cypDce5fMJGUF785PnJGPTeRgMadgCbLpLNMIBN/FLcF/Kvr6g==
+"@abi-software/plotdatahelpers@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotdatahelpers/-/plotdatahelpers-0.1.1.tgz#9ec623123703c9dfd403283980485f95d161bf91"
+  integrity sha512-lZxiyipRKP/k2H7A+Tg7EFG5iqAgGRQ1mlwX50NQd4tgTYSg5s4QPT6oEbbudL67NQkGnjoQkq1KhEQ48uAfNw==
   dependencies:
     papaparse "^5.5.1"
 
