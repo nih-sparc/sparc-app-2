@@ -17,7 +17,7 @@
             :datasetInfo="datasetInfo" :file="file" />
           <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
             :data="segmentationData" :datasetInfo="datasetInfo" :file="file" />
-          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotData="plotData"
+          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
             :datasetInfo="datasetInfo" :file="file" />
           <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
             :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" />
@@ -43,7 +43,7 @@ import biolucida from '@/services/biolucida'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
-import PlotViewer from '@/components/PlotViewer/PlotViewer'
+import PlotViewer from '@/components/PlotViewer/PlotViewer.client.vue'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 import FormatDate from '@/mixins/format-date'
@@ -175,12 +175,12 @@ export default {
     }
     const hasSegmentationViewer = !isEmpty(segmentationData)
     
-    let plotData = {}
-    const matchedPlotData = scicrunchData['abi-plot']?.filter(function(el) {
+    let plotInfo = {}
+    const matchedplotInfo = scicrunchData['abi-plot']?.filter(function(el) {
       return el.identifier == expectedScicrunchIdentifier
     })
-    plotData = matchedPlotData?.length > 0 ? matchedPlotData[0] : {}
-    const hasPlotViewer = !isEmpty(plotData)
+    plotInfo = matchedplotInfo?.length > 0 ? matchedplotInfo[0] : {}
+    const hasPlotViewer = !isEmpty(plotInfo)
 
     let videoData = {}
     const matchedVideoData = scicrunchData['video']?.filter(function(el) {
@@ -252,7 +252,7 @@ export default {
     return {
       biolucidaData,
       videoData,
-      plotData,
+      plotInfo,
       segmentationData: {
         share_link: `${config.public.NL_LINK_PREFIX}/dataviewer?datasetId=${route.params.datasetId}&version=${route.params.datasetVersion}&path=${filePath}`,
         status: ''

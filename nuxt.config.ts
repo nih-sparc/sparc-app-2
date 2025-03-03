@@ -59,6 +59,7 @@ export default defineNuxtConfig({
     '@zadigetvoltaire/nuxt-gtm',
     '@nuxtjs/turnstile',
     '@nuxtjs/sitemap',
+    "nuxt-plotly",
     "nuxt-simple-robots"
   ],
   turnstile: {
@@ -66,8 +67,11 @@ export default defineNuxtConfig({
   },
   vite: {
     define: {
-      'window.global': {}
-    }
+      'window.global': {matchMedia: () => false}
+    },
+    optimizeDeps: {
+      include: ["plotly.js-dist-min"],
+    },
     /*css: {
       preprocessorOptions: {
         scss: {
@@ -224,7 +228,7 @@ export default defineNuxtConfig({
   },
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
-    // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
+    // disallowing certain pages that are either redirects, authenticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
       '/datasets/*?*',
