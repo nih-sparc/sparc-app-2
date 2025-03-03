@@ -59,7 +59,6 @@ export default defineNuxtConfig({
     '@zadigetvoltaire/nuxt-gtm',
     '@nuxtjs/turnstile',
     '@nuxtjs/sitemap',
-    "nuxt-plotly",
     "nuxt-simple-robots"
   ],
   turnstile: {

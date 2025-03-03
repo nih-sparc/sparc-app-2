@@ -35,7 +35,6 @@ import PlotViewerMetadata from "@/components/ViewersMetadata/PlotViewerMetadata.
 
 import discover from "@/services/discover";
 import { extractS3BucketName } from "@/utils/common";
-// import Plotly from "@/utils/setupPlotly";
 import { getPlotlyInstance } from "@/utils/setupPlotly";
 
 import { ZoomManagement, DataFiltering } from "@abi-software/plotcomponents";
@@ -44,7 +43,6 @@ import {
   extractTitles,
   convertToPlotlyData,
 } from "@abi-software/plotdatahelpers";
-// import { ClientOnly } from "#build/components";
 
 const { plotInfo, file, datasetInfo } = defineProps({
   plotInfo: {
@@ -66,9 +64,6 @@ const { plotInfo, file, datasetInfo } = defineProps({
   },
 });
 
-// const ZoomManagement = ref(null);
-// const DataFiltering = ref(null);
-
 let plotly_data = ref(null);
 let plotly_layout = ref(null);
 let plotly_options = ref(null);
@@ -89,16 +84,6 @@ const isLoading = computed(
   () => toValue(plotly_plot_ref) === null || toValue(plotly_data) === null
 );
 const plotType = computed(() => pathOr("", ["attrs", "style"], metadata));
-
-// const result = defineAsyncComponent(() =>
-//   import("@abi-software/plotcomponents").then(module => {
-//     console.log("Module:");
-//     console.log(module);
-//     return [module.ZoomManagement, module.DataFiltering];
-//   })
-// );
-// console.log("Result:");
-// console.log(result);
 
 function handlePlotDataError(error) {
   if (error.message === "Not Found") {
@@ -226,75 +211,6 @@ watch(
   },
   { deep: true }
 );
-
-// async setup(props) {
-//   try {
-//     const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
-
-//     const plot_annotation = plotInfo.datacite
-//     const file_path = `${datasetInfo.id}/files/${plotInfo.dataset.path}`
-//     const source_url_response = await discover.downloadLink(file_path, s3Bucket)
-//     let source_url = source_url_response.data
-//     console.log("-----------------------")
-//     console.log(file_path)
-//     console.log(s3Bucket)
-//     console.log(source_url)
-//     console.log('--- end ---')
-
-//     const metadata = JSON.parse(
-//       plot_annotation.supplemental_json_metadata.description
-//     )
-
-//     let supplemental_data = []
-//     console.log("plot annotation:")
-//     console.log(plot_annotation)
-//     console.log(plot_annotation.isSupplementedBy)
-//     if (plot_annotation.isSupplementedBy && !isArrayWithEmptyString(plot_annotation.isSupplementedBy.path)) {
-//       console.log("doing this bit.")
-//       console.log(plot_annotation.isSupplementedBy)
-//       let tmp_path = plot_annotation.isSupplementedBy.path[0]
-//       console.log('tmp path:', tmp_path)
-//       if (tmp_path) {
-//         console.log('tmp path is something')
-//       } else {
-//         console.log('do nothing, no tmp path.')
-//       }
-//       // Hack to fix path entry.
-//       if (tmp_path === '../derivative/sub-1/subject1_header.txt') {
-//         tmp_path = 'derivative/sub-1/sam-1/subject1_header.txt'
-//       }
-
-//       const supplemental_file_path = `${props.datasetInfo.id}/files/${tmp_path}`
-
-//       const supplemental_url_response = await discover.downloadLink(
-//         supplemental_file_path,
-//         s3Bucket
-//       )
-//       let supplemental_url = supplemental_url_response.data
-//       supplemental_data.push({
-//         url: supplemental_url
-//       })
-//     }
-//     console.log("return:")
-//     console.log(source_url)
-//     console.log(metadata)
-//     console.log(supplemental_data)
-//     console.log('--- end ---')
-//     return {
-//       source_url,
-//       metadata: metadata ? metadata : {
-//         version: "1.1.0",
-//         type: "plot",
-//         attrs: {
-//           style: "timeseries"
-//         }
-//       },
-//       supplemental_data
-//     }
-//   } catch(e) {
-//     console.log(e)
-//   }
-// },
 </script>
 
 <style lang="scss">
