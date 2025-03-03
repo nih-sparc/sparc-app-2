@@ -1,29 +1,27 @@
 <template>
-  <div class="section-container container pt-24 pb-48">
-    <div class="heading2 mb-24">{{ title }}</div>
+  <div class="section-container">
     <div v-if="maxSet" class="max-set-row" :style="`grid-template-columns: repeat(${maxPerRow}, 1fr)`">
       <div 
-        v-for="(item, index) in features"
+        v-for="(item, index) in metrics"
         :key="index"
         class="max-row-col"
         :style="`width: ${featureWidth}%`"
       >
-        <portal-feature
-          :feature="item"
-          :icon-is-top-element="iconIsTopElement"
+        <consortia-metric
+          :metric="item"
         />
       </div>
     </div>
     <div v-else class="row">
       <div 
-        v-for="(item, index) in features"
+        v-for="(item, index) in metrics"
         :key="index"
         class="col"
         :style="`width: ${featureWidth}%`"
       >
-        <portal-feature
-          :feature="item"
-          :icon-is-top-element="iconIsTopElement"
+        <consortia-metric
+          :metric="item"
+          :text-color="color"
         />
       </div>
     </div>
@@ -31,29 +29,25 @@
 </template>
 
 <script>
-import PortalFeature from './PortalFeature/PortalFeature.vue'
+import ConsortiaMetric from './ConsortiaMetric.vue'
 
 export default {
-  name: 'PortalFeatures',
+  name: 'ConsortiaMetrics',
   components: {
-    PortalFeature
+    ConsortiaMetric
   },
   props: {
-    features: {
+    metrics: {
       type: Array,
       default: () => []
-    },
-    title: {
-      type: String,
-      default: "What Can I Do with SPARC?"
-    },
-    iconIsTopElement: {
-      type: Boolean,
-      default: true
     },
     maxPerRow: {
       type: Number,
       default: Number.NaN
+    },
+    color: {
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -62,7 +56,7 @@ export default {
         return 100.0
       }
       // Use 90 so that 10% of the width can be used for spacing between columns
-      return 90.0 / this.features.length
+      return 90.0 / this.metrics.length
     },
     maxSet() {
       return !isNaN(this.maxPerRow)
@@ -70,7 +64,7 @@ export default {
     numRows() {
       if (isNaN(this.maxPerRow))
         return 1
-      return Math.ceil(this.features.length / this.maxPerRow)
+      return Math.ceil(this.metrics.length / this.maxPerRow)
     }
   }
 }

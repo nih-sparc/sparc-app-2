@@ -154,6 +154,42 @@
           <span class="label4">Dataset size: </span>{{ formatMetric(datasetInfo.size) }}
         </div>
       <files-table :osparc-viewers="osparcViewers" :dataset-scicrunch="datasetScicrunch" />
+      <div class="mt-16">
+        <div class="label4 mb-8">How to cite files from this dataset:</div>
+        <div>To promote reproducibility and give credit to your colleagues who publish their data, we recommend the following practices for citing a SPARC Dataset: acknowledge the contributors, cite the dataset(s) that contained the files that you used, and include the SPARC Portal DOI & RRID in your publications. Cite this dataset as:</div>
+        <div class="citation-details my-8">
+          <div class="info-citation py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
+            <button class="copy-button" @click="handleCitationCopy(citationText)">
+              <img src="../../static/images/copyIcon.png" />
+            </button>
+            <div
+              class="citation-text"
+              aria-live="polite"
+              v-html="citationText"
+            />
+          </div>
+          <div class="info-citation py-16 pl-16 pr-24" v-else>
+            <span class="label4">Internal Server Error</span><br />
+            Sorry, something went wrong.<br />
+            The dataset citation generator (<a
+              :href="crosscite_host"
+              target="_blank"
+            >{{crosscite_host}}</a>) encountered an internal error and was unable to complete your
+            request.<br />
+            Please come back later.
+          </div>
+        </div>
+        <div>
+          To make it easy, the SPARC Portal provides the option of different citation formats in the 
+          <nuxt-link :to="{
+            query: {
+              ...route.query,
+              datasetDetailsTab: 'cite'
+            }
+          }">cite tab</nuxt-link>,
+          to incorporate into your manuscript.
+        </div>
+      </div>
     </div>
     <data-use-agreement-popup :show-dialog="showAgreementPopup" @agreement-loaded="agreementLoaded"
       @dialog-closed="showAgreementPopup = false" @agreement-signed="requestAccess" />
@@ -162,6 +198,51 @@
       @close-rehydration-dialog="showRehydrationModal = false" :version="versionId" :dataset-id="datasetId" />
   </div>
 </template>
+
+<script setup>
+import { useMainStore } from '../../store'
+import { storeToRefs } from 'pinia'
+import ErrorMessages from '@/mixins/error-messages'
+
+const mainStore = useMainStore()
+const config = useRuntimeConfig()
+const { $axios } = useNuxtApp()
+const route = useRoute()
+const { datasetInfo } = storeToRefs(mainStore)
+const doi = datasetInfo.value.doi
+const osparcViewers = ref({})
+const hasCitationError = ref(false)
+const citationLoading = ref(true)
+const crosscite_host = ref('')
+crosscite_host.value = config.public.crosscite_api_host
+
+osparcViewers.value = 
+  await $axios
+    .get(`${config.public.portal_api}/sim/file`)
+    .then(({ data }) => data['file_viewers'])
+    .catch(() => {
+      return {}
+    })
+
+const url = `${config.public.crosscite_api_host}/format?doi=${doi}&style=apa&lang=en-US`
+const citationText = ref('')
+try {
+  const crossciteResponse = await fetch(url)
+  if (crossciteResponse.status != '200') {
+    hasCitationError.value = true
+    failMessage(await crossciteResponse.text())
+  }
+  else {
+    citationText.value = await crossciteResponse.text()
+  }
+} catch (e) {
+  hasCitationError.value = true
+  failMessage(ErrorMessages.methods.crosscite())
+} finally {
+  citationLoading.value = false
+}
+
+</script>
 
 <script>
 import { mapActions, mapState } from 'pinia'
@@ -186,22 +267,6 @@ export default {
   },
 
   mixins: [DateUtils, FormatMetric],
-
-  async setup() {
-    const config = useRuntimeConfig()
-    const { $axios } = useNuxtApp()
-    // Get oSPARC file viewers
-    const osparcViewers = 
-      await $axios
-        .get(`${config.public.portal_api}/sim/file`)
-        .then(({ data }) => data['file_viewers'])
-        .catch(() => {
-          return {}
-        })
-    return {
-      osparcViewers
-    }
-  },
 
   computed: {
     /**
@@ -425,5 +490,27 @@ hr {
 
 .sign-in-link:hover {
   cursor: pointer;
+}
+
+.citation-details {
+  .info-citation {
+    background-color: $background;
+    position: relative;
+    .copy-button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: .25rem;
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .citation-text {
+    word-wrap: break-word;
+  }
 }
 </style>

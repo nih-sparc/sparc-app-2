@@ -9,7 +9,7 @@
     <div class="mb-8">
       To promote reproducibility and give credit to your colleagues who publish their data, we recommend the following practices for 
       citing a SPARC Dataset. Please acknowledge the contributors, cite the dataset(s) that contained the files that you used, and 
-      include the SPARC Portal URL & RRID in your publications. To make it easy, the SPARC Portal provides the full data 
+      include the SPARC Portal DOI & RRID in your publications. To make it easy, the SPARC Portal provides the full data 
       citation, including the option of different citation formats below, to incorporate into your manuscript. For more Information, 
       including examples of how to include multiple datasets and repositories, please see our
       <a
@@ -60,9 +60,9 @@
         <span class="label4">Internal Server Error</span><br />
         Sorry, something went wrong.<br />
         The dataset citation generator (<a
-          href="https://citation.crosscite.org/"
+          :href="crosscite_host"
           target="_blank"
-        >https://citation.crosscite.org/</a>) encountered an internal error and was unable to complete your
+        >{{crosscite_host}}</a>) encountered an internal error and was unable to complete your
         request.<br />
         Please come back later.
       </div>
@@ -70,10 +70,10 @@
     <p style="text-align: end">
       More citations available at:
       <a
-        :href="`https://citation.crosscite.org/?doi=${doiValue}`"
+        :href="crosscite_host"
         target="_blank"
       >
-        Crosscite.org
+        DOI Citation Formatter
       </a>
     </p>
   </div>

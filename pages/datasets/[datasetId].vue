@@ -22,7 +22,7 @@
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
     <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
-    <Meta name="robots" content="noindex, nofollow" />
+    <Link rel="canonical" :href="canonicalLink" />
   </Head>
   <div class="dataset-details pb-16">
 
@@ -54,7 +54,7 @@
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" />
+                  :associated-projects="associatedProjects" :award-ids="sparcAwardNumbers"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
@@ -290,6 +290,7 @@ export default {
       })
 
       const creators = contributors?.concat(org)
+      const canonicalLink = `${config.public.ROOT_URL}/datasets/${datasetId}`
       const doi = propOr('', 'doi', datasetDetails)
       const doiLink = doi ? `https://doi.org/${doi}` : ''
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
@@ -309,7 +310,8 @@ export default {
         algoliaIndex,
         hasError: false,
         originallyPublishedDate,
-        creators
+        creators,
+        canonicalLink
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
@@ -446,7 +448,8 @@ export default {
       return pathOr('', ['params', 'datasetId'], this.$route)
     },
     hasFiles: function () {
-      return this.fileCount >= 1
+      // do not show the files tab for code repos
+      return this.fileCount >= 1 && !this.hasSourceCode
     },
     fileCount: function () {
       return propOr('0', 'fileCount', this.datasetInfo)

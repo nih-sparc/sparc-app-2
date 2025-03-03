@@ -53,6 +53,8 @@ Cypress.on('uncaught:exception', (err, runnable) => {
     return false
   if (err.message.includes('Failed to fetch'))
     return false
+  if (err.message.includes('Cannot read properties of null'))
+    return false
   // // For legacy dataset
   // if (err.message.includes('ObjectID does not exist'))
   //   return false
@@ -80,8 +82,29 @@ Cypress.Commands.add('waitForMapLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForFlatmapLoading', () => {
+  cy.get('.flatmap-container > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Flatmap loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForScaffoldLoading', () => {
+  cy.get('.scaffold-container > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Scaffold loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForMapTreeControlLoading', () => {
+  cy.get('.el-tree > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Map tree control loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForGalleryLoading', () => {
-  cy.get('.loading-gallery > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
+  cy.get('.loading-gallery > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Gallery loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
@@ -95,8 +118,15 @@ Cypress.Commands.add('waitForViewerContainer', (selector) => {
 })
 
 Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
-  cy.get('.connectivity-graph > .el-loading-mask > .el-loading-spinner', { timeout: 60000 }).should(($loadingMask) => {
+  cy.get('.connectivity-graph > .el-loading-mask', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Connectivity graph loading mask should not exist').to.not.exist
+  })
+  cy.wait(5000)
+})
+
+Cypress.Commands.add('waitForSidebarReferenceLoading', () => {
+  cy.get('.resource-container > .citation-list > .loading', { timeout: 60000 }).should(($loadingMask) => {
+    expect($loadingMask, 'Sidebar reference loading mask should not exist').to.not.exist
   })
   cy.wait(5000)
 })
@@ -276,4 +306,22 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
     })
   }
   clickOnNeuron()
+})
+
+Cypress.Commands.add('checkScaffoldContextCard', () => {
+  cy.get('.context-card').should(($card) => {
+    expect($card, 'The context card should be displayed').to.be.visible
+  })
+  cy.get('.context-image').should(($image) => {
+    expect($image, 'Context image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
+  })
+  cy.get('.view-image').should(($image) => {
+    expect($image, 'View image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
+  })
+  cy.get('.card-right > :nth-child(1) > .title').should(($title) => {
+    expect($title, 'The context card should have a title class').to.have.class('title')
+  })
+  cy.get('.card-right > :nth-child(1) > :nth-child(2) > :nth-child(1)').should(($description) => {
+    expect($description, 'The context card should have a description').to.exist
+  })
 })

@@ -19,6 +19,24 @@
         <paper v-if="forInvestigators" class="row-item" :text="parseMarkdown(forInvestigators)"
           :button-text="forInvestigatorsButtonLabel" :button-link-external="forInvestigatorsButtonLink" />
       </div>
+      <div v-if="metrics" class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">{{ metricsTitle }}
+          <el-tooltip
+            v-if="metricsTooltip"
+            placement="right-start"
+            popper-class="consortia-tooltips"
+            effect="customized"
+          >
+            <template #default>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <template #content>
+              {{ metricsTooltip }}
+            </template>
+          </el-tooltip>
+        </div>
+        <consortia-metrics :metrics="metrics" :color="linkColor" />
+      </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
@@ -49,6 +67,7 @@ import Paper from '~/components/Paper/Paper.vue';
 import Gallery from '~/components/Gallery/Gallery.vue';
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue';
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
+import ConsortiaMetrics from '@/components/ConsortiaMetrics/ConsortiaMetrics.vue'
 
 import { pathOr } from 'ramda';
 import { parseMarkdown } from '@/utils/formattingUtils.js'
@@ -58,15 +77,15 @@ const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPa
 
 const route = useRoute();
 const { $contentfulClient, $pennsieveApiClient } = useNuxtApp();
-const config = useRuntimeConfig();
+const config = useRuntimeConfig()
 
 const { data: consortiaItem, error: contentfulError } = await useAsyncData(async () => {
   const response = await $contentfulClient.getEntries({
     content_type: config.public.ctf_consortia_content_type_id,
     'fields.slug': route.params.id.toLowerCase(),
-  });
+  })
   return pathOr([], ['items'], response)[0];
-});
+})
 
 const highlights = ref([]);
 const { items } = await $contentfulClient
@@ -81,11 +100,11 @@ const { items } = await $contentfulClient
 const breadcrumb = [
   { to: { name: 'index' }, label: 'Home' },
   { to: { name: 'about' }, label: 'About' },
-];
+]
 
-const title = computed(() => pathOr('', ['fields', 'title'], consortiaItem.value));
-const overview = computed(() => pathOr('', ['fields', 'overview'], consortiaItem.value));
-const whoWeAre = computed(() => pathOr('', ['fields', 'whoWeAre'], consortiaItem.value));
+const title = computed(() => pathOr('', ['fields', 'title'], consortiaItem.value))
+const overview = computed(() => pathOr('', ['fields', 'overview'], consortiaItem.value))
+const whoWeAre = computed(() => pathOr('', ['fields', 'whoWeAre'], consortiaItem.value))
 const whoWeAreButtonText = computed(() => pathOr('', ['fields', 'whoWeAreButtonText'], consortiaItem.value))
 const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonLink'], consortiaItem.value))
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
@@ -96,6 +115,11 @@ const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', '
 const forInvestigators = computed(() => pathOr('', ['fields', 'forInvestigators'], consortiaItem.value))
 const forInvestigatorsButtonLabel = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLabel'], consortiaItem.value))
 const forInvestigatorsButtonLink = computed(() => pathOr('', ['fields', 'forInvestigatorsButtonLink'], consortiaItem.value))
+const metrics = computed(() => pathOr(null, ['fields', 'metrics'], consortiaItem.value))
+const linkColor = computed(() => pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value))
+const secondaryButtonColor = computed(() => pathOr('', ['fields', 'buttonSecondaryColor'], consortiaItem.value))
+const metricsTitle = computed(() => pathOr('', ['fields', 'metricsTitle'], consortiaItem.value))
+const metricsTooltip = computed(() => pathOr('', ['fields', 'metricsTooltip'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
@@ -137,14 +161,15 @@ watch(
 
 // Styling for consortia
 const consortiaStyle = computed(() => {
-  const bg1 = pathOr('f5f7fa', ['fields', 'firstColor'], consortiaItem.value);
-  const bg2 = pathOr('f5f7fa', ['fields', 'secondColor'], consortiaItem.value);
-  const bg3 = pathOr('', ['fields', 'thirdColor'], consortiaItem.value);
-  const linkColor = pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value);
+  const bg1 = pathOr('f5f7fa', ['fields', 'firstColor'], consortiaItem.value)
+  const bg2 = pathOr('f5f7fa', ['fields', 'secondColor'], consortiaItem.value)
+  const bg3 = pathOr('', ['fields', 'thirdColor'], consortiaItem.value)
+  const linkColor = pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value)
+  const secondaryButtonColor = pathOr('', ['fields', 'buttonSecondaryColor'], consortiaItem.value);
   return {
     backgroundImage: `linear-gradient(#${bg1}, #${bg2}${bg3 ? `, #${bg3}` : ''})`,
     '--button-and-link-color': `#${linkColor}`,
-    '--button-and-link-secondary-color': `#${linkColor}16`,
+    '--button-and-link-secondary-color': `#${secondaryButtonColor}`,
   }
 })
 
@@ -165,7 +190,7 @@ const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeat
   } catch {
     storeInLocalStorage(listOfAvailableDatasetIdsKey.value, null);
   }
-};
+}
 
 onMounted(async () => {
   const featuredDatasetIds = pathOr('', ['fields', 'featuredDatasets'], consortiaItem.value)
@@ -200,6 +225,13 @@ onMounted(async () => {
     }
   }
   featuredDatasetId.value = getFromLocalStorage(featuredDatasetIdKey.value)
+
+  watch(linkColor, (newColor) => {
+    document.body.style.setProperty("--consortia-tooltip-color", `#${newColor}`)
+  }, { immediate: true })
+  watch(secondaryButtonColor, (newColor) => {
+    document.body.style.setProperty("--consortia-tooltip-background-color", `#${newColor}`)
+  }, { immediate: true })
 })
 </script>
 
@@ -229,7 +261,6 @@ onMounted(async () => {
     flex: 1
   }
 }
-
 
 .gallery-items-container {
   background-color: white;
@@ -271,5 +302,18 @@ onMounted(async () => {
     fill: var(--button-and-link-color) !important;
   }
 }
-
+.help-icon {
+  color: var(--button-and-link-color);
+  height: 1.5rem;
+  width: 1.5rem;
+}
+:global(.consortia-tooltips.el-popper.is-customized .el-popper__arrow::before) {
+  background-color: var(--consortia-tooltip-background-color) !important;
+}
+:global(.consortia-tooltips.el-popper.is-customized) {
+  background: var(--consortia-tooltip-background-color) !important;
+  border-color: var(--consortia-tooltip-color) !important;
+  color: $grey !important;
+  border-radius: 4px;
+}
 </style>

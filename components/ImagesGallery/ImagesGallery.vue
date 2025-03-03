@@ -60,31 +60,16 @@ import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let scicrunchData = {}
   let scicrunch_response = []
-  let biolucida_response = []
   try {
     await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
     })
-    // Inner try-catch for biolucida request errors
-    try {
-      await biolucida.searchDataset(datasetId).then(response => {
-        biolucida_response = response
-      })
-    } catch (error) {
-      console.error(
-        'Hit error in the biolucida request. ( pages/_datasetId.vue ). Error: ',
-        error
-      )
-    }
 
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
       scicrunchData.discover_dataset = {
         id: Number(datasetId),
         version: datasetVersion
-      }
-      if (biolucida_response.status === 'success') {
-        scicrunchData['dataset_images'] = pathOr([], ['dataset_images'], biolucida_response)
       }
       // Check for flatmap data
       if (scicrunchData.organs) {
@@ -536,50 +521,41 @@ export default {
         }
         this.scicrunchItems = items
 
-        if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
+        if ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData) {
           const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
           biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach((bObject) => {
             const biolucidaId = pathOr("", ['biolucida','identifier'], bObject)
             if (biolucidaId) {
-              const dataset_image = scicrunchData['dataset_images'].findLast((image) => {
-                return image.image_id == biolucidaId
-              })
-              if (dataset_image) {
+              const sourcepkg_id = pathOr("", ['identifier'], bObject)
+              if (sourcepkg_id) {
                 let filePath = ""
                 filePath = "files/" + pathOr("", ['dataset','path'], bObject)
-                // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
-                const viewEncoding = dataset_image.share_link.replace(
-                  this.$config.public.BL_SHARE_LINK_PREFIX,
-                  ''
-                )
                 let linkUrl = filePath != "" ?
                   baseRoute +
                   `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
                   baseRoute +
                   'datasets/biolucidaviewer/' +
-                  dataset_image.image_id +
-                  '?view=' +
-                  viewEncoding +
+                  biolucidaId +
                   '&dataset_version=' +
                   datasetVersion +
                   '&dataset_id=' +
                   datasetId +
                   '&item_id=' +
-                  dataset_image.sourcepkg_id
+                  sourcepkg_id
                 bItems.push({
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   title: null,
                   type: 'Image',
                   thumbnail: null,
                   link: linkUrl
                 })
                 this.getThumbnailFromBiolucida(bItems, {
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   fetchAttempts: 0
                 })
                 this.getImageInfoFromBiolucida(bItems, {
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   fetchAttempts: 0
                 })
               }

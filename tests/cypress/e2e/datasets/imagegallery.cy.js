@@ -110,6 +110,8 @@ datasetIds.forEach((datasetId) => {
                         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container > .el-select > .el-select__wrapper > .el-select__selection > .el-select__placeholder > span').should(($title) => {
                           expect($title, 'Map Viewer should display scaffold').to.contain('Scaffold')
                         })
+                        cy.waitForScaffoldLoading()
+                        cy.checkScaffoldContextCard()
                       }
                       if (item === 'Flatmap') {
                         cy.get('.toolbar-title').should(($title) => {
@@ -138,6 +140,11 @@ datasetIds.forEach((datasetId) => {
                           expect($link, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
                         })
                       }
+                      if (item === 'Plot') {
+                        cy.get('.plot-container > .user-select-none.svg-container').then(($plot) => {
+                          expect($plot, 'Plot should be displayed').to.exist
+                        })
+                      }
                       if (item === 'Image') {
                         let windowOpenStub
                         cy.get('.biolucida-viewer > .el-row > div > .el-button').each(($button, index) => {
@@ -149,7 +156,7 @@ datasetIds.forEach((datasetId) => {
                             const link = stub.args[0][0]
                             expect(link.length, 'Button should contain external resource link').to.be.greaterThan(0)
                           })
-                          cy.then(()=>{
+                          cy.then(() => {
                             windowOpenStub.restore()
                           })
                         })

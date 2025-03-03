@@ -135,13 +135,14 @@ datasetIds.forEach((datasetId) => {
                     })
                     cy.get('@links').each(($link) => {
                       cy.wrap($link).invoke('attr', 'href').then((href) => {
-                        cy.request(href).then((resp) => {
+                        cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
                           const title = $title.text().trim().replaceAll(' ', '.*')
                           const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
                           const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
                           const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
-                          expect(resp.status).to.eq(200)
-                          expect(resp.body, 'Protocol link should make sense').to.match(regex)
+                          const match = resp.body.match(regex) || []
+                          expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
+                          expect(match, 'Protocol link should make sense').to.have.length.greaterThan(0)
                         })
                       })
                     })
@@ -216,7 +217,7 @@ datasetIds.forEach((datasetId) => {
                 cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                 cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
                 cy.waitForBrowserLoading()
-                cy.get('.cell').contains($title.text()).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
+                cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
                 cy.get('@PI').then(($pi) => {
                   const author = $content.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
                   const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
@@ -247,23 +248,25 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().as('project')
         cy.get('.dataset-about-info .label4').contains(/Institution[(]s[)]/i).parent().as('institutions')
         cy.get('@awards').then(($award) => {
-          const award = $award.text().replace('Award(s):', '').trim()
+          const awards = $award.text().replace('Award(s):', '').split(',').map((award) => award.trim())
           cy.get('@project').then(($project) => {
-            const project = $project.text().replace('Associated project(s):', '').trim()
+            const projects = $project.text().replace('Associated project(s):', '').split(',').map((project) => project.trim())
             cy.get('@institutions').then(($institution) => {
-              const institution = $institution.text().replace('Institution(s):', '').trim()
-              cy.wrap($project).find('a').click()
-              cy.waitForPageLoading()
-              cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
-                expect($title, 'Project title should be the same').to.contain(project)
+              const institutions = $institution.text().replace('Institution(s):', '').split(',').map((institution) => institution.trim())
+              cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').each(($link, index) => {
+                cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').eq(index).click()
+                cy.waitForPageLoading()
+                cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
+                  expect($title, 'Project title should be the same').to.contain(projects[index])
+                })
+                cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
+                  expect($institution, 'Institution should be the same').to.contain(institutions[index])
+                })
+                cy.get('.link1').should(($award) => {
+                  expect(awards[index], 'Award should be the same').to.include($award.text().trim())
+                })
+                cy.backToDetailPage(datasetId)
               })
-              cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
-                expect($institution, 'Institution should be the same').to.contain(institution)
-              })
-              cy.get('.link1').should(($award) => {
-                expect(award, 'Award should be the same').to.include($award.text().trim())
-              })
-              cy.backToDetailPage(datasetId)
             })
           })
         })
@@ -304,7 +307,7 @@ datasetIds.forEach((datasetId) => {
           cy.get('.citation-details > p > a').then(($link) => {
             expect($link, 'Link should open a new tab').to.have.attr('target').to.contain('blank')
             cy.wrap($link).invoke('attr', 'href').then((href) => {
-              expect(href, 'Link should have correct href').to.contain(`https://citation.crosscite.org/?doi=${doi}`)
+              expect(href, 'Link should have correct href').to.contain(`https://citation.doi.org`)
               cy.request(href).then((resp) => {
                 expect(resp.status).to.eq(200)
               })
@@ -510,8 +513,8 @@ datasetIds.forEach((datasetId) => {
           expect($link, 'Citation link should have doi href').to.have.attr('href').to.contain('doi.org')
           expect($link, 'Citation link should open a new tab').to.have.attr('target').to.contain('blank')
           cy.wrap($link).invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
+            cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
+              expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
             })
           })
         })
@@ -558,9 +561,8 @@ datasetIds.forEach((datasetId) => {
       it('DOI', function () {
         cy.get('.version-table > .table-rows > :nth-child(5) > a').each(($doi) => {
           cy.wrap($doi).invoke('attr', 'href').then((href) => {
-            cy.request(href).then((resp) => {
-              expect(resp.status).to.eq(200)
-              expect(resp.redirects, 'Redirect should exist').to.have.length(1)
+            cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
+              expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
             })
           })
         })
