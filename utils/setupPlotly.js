@@ -1,9 +1,9 @@
 let plotlyInstance = null;
-let global = undefined
+let global = undefined;
 
 if (process.client) {
-    // Plotly requires a matchMedia function on the global object. Why is plotly making me do this?
-    global = { matchMedia: window.matchMedia };
+  // Plotly requires a matchMedia function on the global object. Why is plotly making me do this?
+  global = { matchMedia: window.matchMedia };
 }
 
 export async function getPlotlyInstance() {
