@@ -83,7 +83,7 @@ let filtered_plotly_data = ref(null);
 const isLoading = computed(
   () => toValue(plotly_plot_ref) === null || toValue(plotly_data) === null
 );
-const plotType = computed(() => pathOr("", ["attrs", "style"], metadata));
+const plotType = computed(() => pathOr("", ["attrs", "style"], toValue(metadata)));
 
 function handlePlotDataError(error) {
   if (error.message === "Not Found") {
