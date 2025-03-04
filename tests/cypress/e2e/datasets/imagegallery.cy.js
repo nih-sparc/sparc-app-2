@@ -99,13 +99,6 @@ datasetIds.forEach((datasetId) => {
                     const element = stub.args[0][0]
                     expect(element, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
                     cy.visit(element.href)
-                    if (item === 'Plot') {
-                      Cypress.on('uncaught:exception', (err, runnable) => {
-                        if (err.message.includes('global is not defined'))
-                          return false
-                        return true
-                      })
-                    }
                     cy.waitForPageLoading()
                     if (item === 'Scaffold' || item === 'Flatmap') {
                       // Check whether map viewer loaded or not
