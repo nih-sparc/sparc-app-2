@@ -187,7 +187,7 @@
               datasetDetailsTab: 'cite'
             }
           }">cite tab</nuxt-link>,
-          to incorporate into your manuscript.
+          to incorporate into your manuscript. For further information on citing files in datasets, please refer to the <a href="https://docs.sparc.science/docs/citing-a-dataset-from-the-manifest-json-file">Help Center documentation</a>.
         </div>
       </div>
     </div>
@@ -227,18 +227,22 @@ osparcViewers.value =
 const url = `${config.public.crosscite_api_host}/format?doi=${doi}&style=apa&lang=en-US`
 const citationText = ref('')
 try {
-  const crossciteResponse = await fetch(url)
-  if (crossciteResponse.status != '200') {
-    hasCitationError.value = true
-    failMessage(await crossciteResponse.text())
-  }
-  else {
-    citationText.value = await crossciteResponse.text()
-  }
+  fetch(url).then((crossciteResponse) => {
+    if (crossciteResponse.status != '200') {
+      hasCitationError.value = true
+      failMessage(crossciteResponse.text())
+    }
+    else {
+      crossciteResponse.text().then((text) => {
+        citationText.value = text
+      })
+    }
+  }).finally(() => {
+    citationLoading.value = false
+  })
 } catch (e) {
   hasCitationError.value = true
   failMessage(ErrorMessages.methods.crosscite())
-} finally {
   citationLoading.value = false
 }
 
