@@ -61,6 +61,16 @@ mapTypes.forEach((map) => {
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
+        // Use Human Female to check alert
+        cy.get('.el-icon.minimap-resize.shrink:visible').click()
+        cy.get('[label="withoutAlert"] > .checkbox-container > .el-checkbox:visible').click()
+        cy.get('.pathway-location > .drawer-button:visible').click()
+        // retina display has a devicePixelRatio of 2
+        const snapshot = window.devicePixelRatio > 1 ? 'mapalert_hr' : 'mapalert_lr'
+        cy.wait(5000)
+        cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').compareSnapshot(snapshot).then(comparisonResults => {
+          expect(comparisonResults.percentage).to.equal(0)
+        })
         // Close new opened dialog
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
         cy.contains('Vertical split').click()
