@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "1.8.0",
-    "@abi-software/plotvuer": "1.0.3",
+    "@abi-software/plotcomponents": "^0.1.0",
+    "@abi-software/plotdatahelpers": "^0.1.1",
     "@abi-software/simulationvuer": "1.0.1",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
