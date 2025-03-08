@@ -134,7 +134,7 @@ export default defineNuxtConfig({
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
       ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
-      ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
+      ctf_get_involved_page_id: '1UUoE2ICWvdsQo0npvJcpq',
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
