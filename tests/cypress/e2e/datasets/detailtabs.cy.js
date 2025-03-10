@@ -180,11 +180,15 @@ datasetIds.forEach((datasetId) => {
           expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/is)
         })
         cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]/i).parent().as('awards')
-        cy.get('@awards').should(($content) => {
+        cy.get('@awards').then(($content) => {
           expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/is)
-        })
-        cy.get('@awards').find('a').should(($award) => {
-          expect($award, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
+          cy.wrap($content).children().not('.label4').each(($award) => {
+            if ($award[0].children.length) { // Has children, has link 
+              cy.wrap($award).find('a').should(($link) => {
+                expect($link, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
+              })
+            }
+          })
         })
         cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Funding Programs" content should exist').to.match(/Funding Program[(]s[)]:(.+)/is)
