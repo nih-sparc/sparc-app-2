@@ -76,8 +76,9 @@ import { useLocalStorage } from '~/composables/useLocalStorage';
 const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage();
 
 const route = useRoute();
-const { $contentfulClient, $pennsieveApiClient } = useNuxtApp();
+const { $contentfulClient, $pennsieveApiClient, $algoliaClient } = useNuxtApp();
 const config = useRuntimeConfig()
+const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
 
 const { data: consortiaItem, error: contentfulError } = await useAsyncData(async () => {
   const response = await $contentfulClient.getEntries({
@@ -132,7 +133,7 @@ const featuredDatasetLink = computed(() => {
 const featuredDatasetIdKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetId`);
 const featuredDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetIds`);
 const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_listOfAvailableDatasetIds`);
-const organizationFilterKey = computed(() => `${consortiaItem.value.fields.slug}_organizationFilter`);
+const organizationIdFilterKey = computed(() => `${consortiaItem.value.fields.slug}_organizationIdFilter`);
 const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value.fields.slug}_dateToShowFeaturedDatasetsUntil`);
 const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value.fields.slug}_timeDeltaForFeaturedDatasets`);
 
@@ -173,7 +174,7 @@ const consortiaStyle = computed(() => {
   }
 })
 
-const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizations) => {
+const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizationIds) => {
   if (featuredDatasetIds?.length > 0) {
     const currentDate = new Date();
     // If the reset time has not passed or it is not set then just use the list of featured dataset ids set in Contentful
@@ -183,10 +184,21 @@ const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeat
     }
   }
 
-  const pennsieveDatasetUrl = `${config.public.discover_api_host}/search/datasets?limit=999&organization=${organizations}`;
+  let orgFilter = ''
+
+  organizationIds.forEach((orgId, index) => {
+    orgFilter += `pennsieve.organization.identifier:${orgId}`
+    if (index < organizationIds.length - 1) {
+      orgFilter += ' OR '
+    }
+  })
+
   try {
-    const { data } = await $pennsieveApiClient.value.get(pennsieveDatasetUrl);
-    storeInLocalStorage(listOfAvailableDatasetIdsKey.value, data.datasets.map(dataset => dataset.id));
+    const { hits } = await algoliaIndex.search('', {
+      hitsPerPage: 9999,
+      filters: orgFilter
+    })
+    storeInLocalStorage(listOfAvailableDatasetIdsKey.value, hits.map(dataset => dataset.objectID));
   } catch {
     storeInLocalStorage(listOfAvailableDatasetIdsKey.value, null);
   }
@@ -194,20 +206,20 @@ const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeat
 
 onMounted(async () => {
   const featuredDatasetIds = pathOr('', ['fields', 'featuredDatasets'], consortiaItem.value)
-  const organizationFilter = pathOr('', ['fields', 'organizations'], consortiaItem.value)
+  const organizationIdFilter = pathOr('', ['fields', 'organizationIdsForFeaturedDatasets'], consortiaItem.value)
   const dateToShowFeaturedDatasetsUntil = pathOr('', ['fields', 'dateToShowFeaturedDatasets'], consortiaItem.value)
   const timeDeltaForFeaturedDatasets = pathOr('', ['fields', 'timeDelta'], consortiaItem.value)
 
   const updatedFeaturedDatasetIds = storeInLocalStorage(featuredDatasetIdsKey.value, featuredDatasetIds)
-  const updatedOrganizationFilter = storeInLocalStorage(organizationFilterKey.value, organizationFilter)
+  const updatedOrganizationIdFilter = storeInLocalStorage(organizationIdFilterKey.value, organizationIdFilter)
   const updatedDateToShowFeaturedDatasetsUntil = storeInLocalStorage(dateToShowFeaturedDatasetsUntilKey.value, dateToShowFeaturedDatasetsUntil)
   const updatedTimeDeltaForFeaturedDatasets = storeTimeDelta(timeDeltaForFeaturedDatasetsKey.value, timeDeltaForFeaturedDatasets)
-  const hasAnyFeaturedDatasetsValuesChanged = updatedFeaturedDatasetIds || updatedOrganizationFilter || updatedDateToShowFeaturedDatasetsUntil || updatedTimeDeltaForFeaturedDatasets
+  const hasAnyFeaturedDatasetsValuesChanged = updatedFeaturedDatasetIds || updatedOrganizationIdFilter || updatedDateToShowFeaturedDatasetsUntil || updatedTimeDeltaForFeaturedDatasets
 
   let listWasReset = false
   let availableFeaturedDatasetIds = getFromLocalStorage(listOfAvailableDatasetIdsKey.value)
   if (hasAnyFeaturedDatasetsValuesChanged || availableFeaturedDatasetIds == null || availableFeaturedDatasetIds.length < 1) {
-    await resetListOfAvailableDatasetIds(featuredDatasetIds.value, new Date(dateToShowFeaturedDatasetsUntil), organizationFilter)
+    await resetListOfAvailableDatasetIds(featuredDatasetIds.value, new Date(dateToShowFeaturedDatasetsUntil), organizationIdFilter)
     listWasReset = true
   }
   if (hasTimeDeltaPassed(timeDeltaForFeaturedDatasetsKey.value) || listWasReset) {
