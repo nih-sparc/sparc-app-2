@@ -57,7 +57,6 @@ export const getAlgoliaFacets = function(algoliaIndex : SearchIndex, propPathMap
   const facetPropPaths = propPathMapping.map(item => item.facetPropPath)
   const facetSubpropPaths = propPathMapping.map(item => item.facetSubpropPath)
   var facetData: { label: string, id: string, children: object[], key: string }[] = []
-  var facetId = 0
   return algoliaIndex
     .search('', {
       hitsPerPage: 0,
