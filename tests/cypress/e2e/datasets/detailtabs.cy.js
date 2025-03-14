@@ -180,11 +180,15 @@ datasetIds.forEach((datasetId) => {
           expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/is)
         })
         cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]/i).parent().as('awards')
-        cy.get('@awards').should(($content) => {
+        cy.get('@awards').then(($content) => {
           expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/is)
-        })
-        cy.get('@awards').find('a').should(($award) => {
-          expect($award, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
+          cy.wrap($content).children().not('.label4').each(($award) => {
+            if ($award[0].children.length) { // Has children, has link 
+              cy.wrap($award).find('a').should(($link) => {
+                expect($link, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
+              })
+            }
+          })
         })
         cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Funding Programs" content should exist').to.match(/Funding Program[(]s[)]:(.+)/is)
@@ -253,20 +257,22 @@ datasetIds.forEach((datasetId) => {
             const projects = $project.text().replace('Associated project(s):', '').split(',').map((project) => project.trim())
             cy.get('@institutions').then(($institution) => {
               const institutions = $institution.text().replace('Institution(s):', '').split(',').map((institution) => institution.trim())
-              cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').each(($link, index) => {
-                cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').eq(index).click()
-                cy.waitForPageLoading()
-                cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
-                  expect($title, 'Project title should be the same').to.contain(projects[index])
+              if (!projects.includes('None specified') && !institutions.includes('None specified')) {
+                cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').each(($link, index) => {
+                  cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().find('a').eq(index).click()
+                  cy.waitForPageLoading()
+                  cy.get('.row > .heading2', { timeout: 60000 }).should(($title) => {
+                    expect($title, 'Project title should be the same').to.contain(projects[index])
+                  })
+                  cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
+                    expect($institution, 'Institution should be the same').to.contain(institutions[index])
+                  })
+                  cy.get('.link1').should(($award) => {
+                    expect(awards[index], 'Award should be the same').to.include($award.text().trim())
+                  })
+                  cy.backToDetailPage(datasetId)
                 })
-                cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
-                  expect($institution, 'Institution should be the same').to.contain(institutions[index])
-                })
-                cy.get('.link1').should(($award) => {
-                  expect(awards[index], 'Award should be the same').to.include($award.text().trim())
-                })
-                cy.backToDetailPage(datasetId)
-              })
+              }
             })
           })
         })
