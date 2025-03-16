@@ -37,6 +37,12 @@
         </div>
         <consortia-metrics :metrics="metrics" :color="linkColor" />
       </div>
+      <div v-if="facetMetrics" class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">
+          {{ facetMetricsTitle }}
+        </div>
+        <consortia-metrics :metrics="facetMetrics" :color="linkColor" :automaticMetric="true"/>
+      </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
@@ -121,6 +127,11 @@ const linkColor = computed(() => pathOr('', ['fields', 'buttonAndLinkColor'], co
 const secondaryButtonColor = computed(() => pathOr('', ['fields', 'buttonSecondaryColor'], consortiaItem.value))
 const metricsTitle = computed(() => pathOr('', ['fields', 'metricsTitle'], consortiaItem.value))
 const metricsTooltip = computed(() => pathOr('', ['fields', 'metricsTooltip'], consortiaItem.value))
+const facetMetrics = computed(() => pathOr(null, ['fields', 'facetMetrics'], consortiaItem.value)?.map(item => ({
+  ...item,
+  'automaticMetric': true
+})))
+const facetMetricsTitle = computed(() => pathOr('', ['fields', 'facetMetricsTitle'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
