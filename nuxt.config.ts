@@ -66,10 +66,7 @@ export default defineNuxtConfig({
   },
   vite: {
     define: {
-      'window.global': {matchMedia: () => false}
-    },
-    optimizeDeps: {
-      include: ["plotly.js-dist-min"],
+      'window.global': {}
     },
     /*css: {
       preprocessorOptions: {
