@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   vite: {
     define: {
       'window.global': {}
-    }
+    },
     /*css: {
       preprocessorOptions: {
         scss: {
@@ -230,7 +230,7 @@ export default defineNuxtConfig({
   },
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
-    // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
+    // disallowing certain pages that are either redirects, authenticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
       '/datasets/file',
