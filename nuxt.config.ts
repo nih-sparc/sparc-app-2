@@ -252,5 +252,12 @@ export default defineNuxtConfig({
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag: string) => [
+        'bsky-embed'
+      ].includes(tag)
+    }
   }
 })
