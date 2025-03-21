@@ -53,6 +53,10 @@ export default {
       type: Object,
       default: () => {}
     },
+    consortiaIds: {
+      type: Array,
+      default: []
+    },
     textColor: {
       type: String,
       default: ""
@@ -67,12 +71,22 @@ export default {
     const { $algoliaClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
     const facetId = props.metric?.fields?.description
+    let orgsFilter = ''
+    if (props.consortiaIds) {
+      props.consortiaIds.forEach((orgId, index) => {
+        orgsFilter += `pennsieve.organization.identifier:${orgId}`
+        if (index < props.consortiaIds.length - 1) {
+          orgsFilter += ' OR '
+        }
+      })
+    }
     const { facets } = await algoliaIndex.search('', {
       hitsPerPage: 9999,
-      facets: `${facetId}`
+      facets: `${facetId}`,
+      filters: orgsFilter
     })
     return {
-      automaticDescription: Object.keys(facets[facetId]).length
+      automaticDescription: facets[facetId] ? Object.keys(facets[facetId]).length : 0
     }
   },
 

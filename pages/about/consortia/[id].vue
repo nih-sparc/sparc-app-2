@@ -41,7 +41,7 @@
         <div class="heading2 mb-16">
           {{ facetMetricsTitle }}
         </div>
-        <consortia-metrics :metrics="facetMetrics" :color="linkColor" :automaticMetric="true"/>
+        <consortia-metrics :metrics="facetMetrics" :color="linkColor" :consortia-ids="facetMetricsConsortiaIds" :automaticMetric="true"/>
       </div>
       <div v-if="featuredDataset?.title" class="featured-dataset-container p-24 mt-32">
         <div class="heading2 mb-16">Here is a dataset you might be interested in:</div>
@@ -132,6 +132,7 @@ const facetMetrics = computed(() => pathOr(null, ['fields', 'facetMetrics'], con
   'automaticMetric': true
 })))
 const facetMetricsTitle = computed(() => pathOr('', ['fields', 'facetMetricsTitle'], consortiaItem.value))
+const facetMetricsConsortiaIds = computed(() => pathOr([], ['fields', 'organizationIdsForFacetMetrics'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
   const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
@@ -196,13 +197,14 @@ const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeat
   }
 
   let orgFilter = ''
-
-  organizationIds.forEach((orgId, index) => {
-    orgFilter += `pennsieve.organization.identifier:${orgId}`
-    if (index < organizationIds.length - 1) {
-      orgFilter += ' OR '
-    }
-  })
+  if (organizationIds) {
+    organizationIds.forEach((orgId, index) => {
+      orgFilter += `pennsieve.organization.identifier:${orgId}`
+      if (index < organizationIds.length - 1) {
+        orgFilter += ' OR '
+      }
+    })
+  }
 
   try {
     const { hits } = await algoliaIndex.search('', {
