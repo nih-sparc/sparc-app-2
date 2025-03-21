@@ -9,6 +9,8 @@
       >
         <consortia-metric
           :metric="item"
+          :text-color="color"
+          :consortia-ids="consortiaIds"
         />
       </div>
     </div>
@@ -22,6 +24,7 @@
         <consortia-metric
           :metric="item"
           :text-color="color"
+          :consortia-ids="consortiaIds"
         />
       </div>
     </div>
@@ -40,6 +43,10 @@ export default {
     metrics: {
       type: Array,
       default: () => []
+    },
+    consortiaIds: {
+      type: Array,
+      default: []
     },
     maxPerRow: {
       type: Number,
