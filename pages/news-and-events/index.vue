@@ -116,8 +116,8 @@
                 </nuxt-link>
               </div>
             </el-col>
-            <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel">
-              <bsky-embed username="sparc-science.bsky.social" limit="1" load-more custom-styles="*, :before, :after { border-style: none; }" />
+            <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel bluesky-container">
+              <bsky-embed username="sparc-science.bsky.social" limit="4" load-more custom-styles="*, :before, :after { border-style: none; }" />
             </el-col>
           </el-row>
         </div>
@@ -244,6 +244,11 @@ onMounted(() => {
   margin-left: 0 !important;
 }
 :deep(.campaign) {
-   margin-top: .5rem; 
+  margin-top: .5rem; 
+}
+
+.bluesky-container {
+  max-height: 26rem;
+  overflow: auto;
 }
 </style>
