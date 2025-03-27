@@ -98,8 +98,6 @@
                   View Newsletters Archive<svgo-icon-open />
                 </a>
               </div>
-            </el-col>
-            <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel">
               <div class="heading2 mt-24">Get Involved</div>
               <div class="body1 mb-16 mt-8">
                 Empower SPARC to promote your science and interests by submitting your science
@@ -117,6 +115,9 @@
                   </el-button>
                 </nuxt-link>
               </div>
+            </el-col>
+            <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel bluesky-container">
+              <bsky-embed username="sparc-science.bsky.social" limit="4" load-more custom-styles="*, :before, :after { border-style: none; }" />
             </el-col>
           </el-row>
         </div>
@@ -151,6 +152,13 @@ const news = computed(() => pageData.value?.news || {})
 const upcomingEvents = computed(() => pageData.value?.upcomingEvents || {})
 const stories = computed(() => pageData.value?.stories || {})
 const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {})
+
+onMounted(() => {
+  const script = document.createElement('script')
+  script.type = 'module'
+  script.src = 'https://cdn.jsdelivr.net/npm/bsky-embed/dist/bsky-embed.es.js'
+  document.body.appendChild(script)
+})
 
 </script>
 
@@ -236,6 +244,11 @@ const featuredEvent = computed(() => page.value?.fields?.featuredEvent || {})
   margin-left: 0 !important;
 }
 :deep(.campaign) {
-   margin-top: .5rem; 
+  margin-top: .5rem; 
+}
+
+.bluesky-container {
+  max-height: 26rem;
+  overflow: auto;
 }
 </style>
