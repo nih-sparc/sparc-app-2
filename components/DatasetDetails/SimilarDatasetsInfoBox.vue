@@ -2,8 +2,23 @@
   <client-only>
     <div class="mt-16 similar-datasets-container">
       <div class="header">
-        <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
-        <div v-else class="p-8 mb-0">Search related models/simulations</div>
+        <div class="header-content">
+          <div v-if="datasetTypeName === 'dataset'" class="p-8 mb-0">Search related datasets</div>
+          <div v-else class="p-8 mb-0">Search related models/simulations</div>
+          <el-popover
+            width="160"
+            trigger="hover"
+            :append-to-body=false
+            class="popover"
+          >
+            <template v-slot:reference>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <div>
+              Click a button below to search within that facet.
+            </div>
+          </el-popover>
+        </div>
         <hr />
       </div>
       <div class="px-8">
@@ -248,6 +263,17 @@ hr {
 }
 .header {
   font-weight: 500;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+}
+
+.help-icon {
+  color: $purple;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 
 .facet-button {
