@@ -11,6 +11,7 @@
               :titles="titles"
               @filter-clicked="onFilterClicked"
             ></data-filtering>
+            <log-switch v-model="scaleState"></log-switch>
             <zoom-management
               v-model="plotly_layout"
               :plotlyPlot="plotly_plot_ref"
@@ -37,7 +38,7 @@ import discover from "@/services/discover";
 import { extractS3BucketName } from "@/utils/common";
 import { getPlotlyInstance } from "@/utils/setupPlotly";
 
-import { ZoomManagement, DataFiltering } from "@abi-software/plotcomponents";
+import { ZoomManagement, LogSwitch, DataFiltering } from "@abi-software/plotcomponents";
 import {
   applyFilter,
   extractTitles,
@@ -84,6 +85,11 @@ const isLoading = computed(
   () => toValue(plotly_plot_ref) === null || toValue(plotly_data) === null
 );
 const plotType = computed(() => pathOr("", ["attrs", "style"], toValue(metadata)));
+
+const scaleState = computed({
+  get: () => toValue(metadata)?.attrs?.logScale,
+  set: (value) => (metadata.value.attrs.logScale = value),
+});
 
 function handlePlotDataError(error) {
   if (error.message === "Not Found") {
@@ -141,7 +147,7 @@ watch(
   { immediate: true, deep: true }
 );
 
-watch(source_uri, () => {
+watch([source_uri, scaleState], () => {
   convertToPlotlyData(
     toValue(source_uri),
     toValue(metadata),
