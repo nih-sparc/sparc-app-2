@@ -15,8 +15,8 @@
               </p>
             </div>
             <div class="footer__info--social">
-              <a href="https://twitter.com/sparc_science" target="_blank">
-                <svgo-icon-twitter class="social-media-icon pr-16"/>
+              <a href="https://bsky.app/profile/sparc-science.bsky.social" target="_blank">
+                <svgo-icon-bluesky class="social-media-icon pr-16"/>
               </a>
               <a
                 href="https://www.linkedin.com/groups/12694019"

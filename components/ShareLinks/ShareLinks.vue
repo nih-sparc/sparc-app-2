@@ -11,16 +11,16 @@
           </template>
         </sparc-tooltip>
       </ShareNetwork>
-      <ShareNetwork network="twitter" :url="pageUrl" :title="title">
+      <a :href="blueskyUrl" target="_blank">
         <sparc-tooltip
           placement="bottom-center"
-          content="Share on Twitter"
+          content="Share on Bluesky"
         >
           <template #item>
-            <svgo-icon-share-twitter class="link-icon"/>
+            <svgo-icon-share-bluesky class="link-icon"/>
           </template>
         </sparc-tooltip>
-      </ShareNetwork>
+      </a>
       <ShareNetwork network="linkedin" :url="pageUrl" :title="title">
         <sparc-tooltip
           placement="bottom-center"
@@ -51,12 +51,15 @@ import { successMessage, failMessage } from '@/utils/notification-messages'
 export default {
   name: 'ShareLinks',
 
-  setup() {
+  setup(props) {
     const route = useRoute()
     const config = useRuntimeConfig()
     const pageUrl = config.public.ROOT_URL + route.fullPath
+    const blueskyUrl = new URL('https://bsky.app/intent/compose')
+    blueskyUrl.searchParams.append('text', props.title ? `${props.title} - ${pageUrl}` : pageUrl)
     return {
-      pageUrl
+      pageUrl,
+      blueskyUrl: blueskyUrl.toString()
     }
   },
 
