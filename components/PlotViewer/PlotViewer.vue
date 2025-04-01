@@ -38,12 +38,17 @@ import discover from "@/services/discover";
 import { extractS3BucketName } from "@/utils/common";
 import { getPlotlyInstance } from "@/utils/setupPlotly";
 
-import { ZoomManagement, LogSwitch, DataFiltering } from "@abi-software/plotcomponents";
+import {
+  ZoomManagement,
+  LogSwitch,
+  DataFiltering,
+} from "@abi-software/plotcomponents";
 import {
   applyFilter,
   extractTitles,
   convertToPlotlyData,
 } from "@abi-software/plotdatahelpers";
+import { failMessage } from "@/utils/notification-messages";
 
 const { plotInfo, file, datasetInfo } = defineProps({
   plotInfo: {
@@ -84,20 +89,20 @@ let filtered_plotly_data = ref(null);
 const isLoading = computed(
   () => toValue(plotly_plot_ref) === null || toValue(plotly_data) === null
 );
-const plotType = computed(() => pathOr("", ["attrs", "style"], toValue(metadata)));
+const plotType = computed(() =>
+  pathOr("", ["attrs", "style"], toValue(metadata))
+);
 
 const scaleState = computed({
   get: () => toValue(metadata)?.attrs?.logScale,
-  set: (value) => (metadata.value.attrs.logScale = value),
+  set: value => (metadata.value.attrs.logScale = value),
 });
 
 function handlePlotDataError(error) {
   if (error.message === "Not Found") {
-    console.log(
-      "Some of the data for the plot is missing or incorrectly referenced."
-    );
+    failMessage("Some of the data for the plot is missing or incorrectly referenced, unable to show plot data.");
   } else {
-    console.log("An unknown error occured:", error.message);
+    failMessage(`An unknown error occured, unable to show plot data: ${error.message}`)
   }
 }
 
@@ -112,9 +117,13 @@ watch(
       ? extractS3BucketName(datasetInfo.uri)
       : undefined;
 
-    metadata.value = JSON.parse(
-      toValue(plotInfo).datacite.supplemental_json_metadata.description
-    );
+    try {
+      metadata.value = JSON.parse(
+        toValue(plotInfo).datacite.supplemental_json_metadata.description
+      );
+    } catch {
+      failMessage("Metadata for plot is invalid, unable to show plot data.");
+    }
     let apiCalls = [
       discover.downloadLink(
         `${toValue(datasetInfo).id}/files/${toValue(plotInfo).dataset.path}`,
@@ -221,7 +230,7 @@ watch(
 
 <style lang="scss">
 @import "@abi-software/plotcomponents/dist/plotcomponents.css";
-@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+@import "sparc-design-system-components-2/src/assets/_variables.scss";
 
 .plot-container {
   margin-top: 1.5rem;
@@ -236,7 +245,7 @@ watch(
 }
 
 .map-icon {
-  color: $purple
+  color: $purple;
 }
 
 .page-heading {
