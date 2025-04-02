@@ -190,8 +190,8 @@ datasetIds.forEach((datasetId) => {
             }
           })
         })
-        cy.get('.dataset-about-info .label4').contains(/Consortia[(]s[)]/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Consortia" content should exist').to.match(/Consortia[(]s[)]:(.+)/is)
+        cy.get('.dataset-about-info .label4').contains(/Funding Program[(]s[)]/i).parent().should(($content) => {
+          expect($content.text().trim(), '"Funding Programs" content should exist').to.match(/Funding Program[(]s[)]:(.+)/is)
         })
         cy.get('.dataset-about-info .label4').contains(/Associated project[(]s[)]/i).parent().should(($content) => {
           expect($content.text().trim(), '"Associated projects" content should exist').to.match(/Associated project[(]s[)]:(.+)/is)
