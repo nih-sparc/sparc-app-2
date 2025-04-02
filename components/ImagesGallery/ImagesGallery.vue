@@ -586,7 +586,7 @@ export default {
     findEntryWithPathInArray(array, path) {
       if (path && array) {
         for (let i = 0; i < array.length; i++) {
-          if (path === array[i].dataset.path.replace(/ /g, '_')) return array[i]
+          if (path === array[i].dataset.path) return array[i]
         }
       }
       return undefined
@@ -637,7 +637,7 @@ export default {
       }
     },
     retrieveThumbnailFromInfo(items, info, defaultImg) {
-      discover.fetch(info.datasetId, info.file_path.replace(/ /g, '_'), true, info.s3Bucket).then(
+      discover.fetch(info.datasetId, info.file_path, true, info.s3Bucket).then(
         response => {
           let item = items.find(x => x.id === info.id)
           this.scaleThumbnailImage(item, {
