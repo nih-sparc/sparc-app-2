@@ -46,10 +46,10 @@ export const facetPropPathMapping = [
     facetSubpropPath: 'attributes.subject.ageCategory.subcategory.name'
   },
   {
-    label: 'Funding Program',
-    id: 'pennsieve.organization',
-    facetPropPath: 'pennsieve.organization.name',
-    facetSubpropPath: 'pennsieve.organization.subCategory.name'
+    label: 'Consortia',
+    id: 'supportingAwards.consortium',
+    facetPropPath: 'supportingAwards.consortium.name',
+    facetSubpropPath: 'supportingAwards.consortium.subCategory.name'
   },
 ]
 
