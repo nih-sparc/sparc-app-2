@@ -37,7 +37,7 @@
             </sparc-tooltip>
           </client-only>
           <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
-            SPARC
+            SPARC Program
           </span>
           <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
             Codeathon
@@ -66,7 +66,7 @@
           </template>
           <template v-if="resource.fields.program">
             <div class="label4">
-              Funding Program(s)
+              Consortia(s)
             </div>
             <div class="truncated">
               {{ fundingPrograms }}

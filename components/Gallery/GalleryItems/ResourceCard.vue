@@ -8,7 +8,7 @@
         {{title}}
       </div>
       <sparc-pill class="pill ml-16" v-if="showSparcTag">
-        SPARC
+        SPARC Program
       </sparc-pill>
     </div>
     <div class="heading3">

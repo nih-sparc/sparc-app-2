@@ -92,7 +92,6 @@
                 <alternative-search-results
                   ref="altSearchResults"
                   :search-had-results="resources?.items?.length > 0"
-                  @vue:mounted="altResultsMounted"
                 />
               </div>
               <div class="search-heading">
@@ -141,16 +140,7 @@ import { fetchResources, searchTypes, sortOptions } from '@/pages/resources/util
 
 const route = useRoute()
 const { $contentfulClient } = useNuxtApp()
-const searchType = searchTypes.find(searchType => searchType.path === route.path)
-const title = searchType.label
-const isTool = title === 'Tools'
-
-const { data : resources } = await useAsyncData(
-  'resources',
-  () => {
-    return fetchResources(route.query.resourceType, route.query.selectedResourcesFundingIds, isTool, route.query.search, undefined, route.query.type, 10, 0)
-  }
-)
+const resources = ref(null)
 
 const { data: resourcesFundingFacets } = await useAsyncData(
   'resources-funding-facets',
@@ -193,34 +183,33 @@ const resourceType = computed(() => route.query.resourceType || undefined)
 const fundingProgram = computed(() => route.query.selectedResourcesFundingIds || undefined)
 const type = computed(() => route.query.type || undefined)
 const path = computed(() => route.path)
-const isToolComputed = computed(() => title === 'Tools')
+const searchType = computed(() => searchTypes.find(searchType => searchType.path === route.path))
+const title = computed(() => searchType.value?.label)
+const isTool = computed(() => title.value === 'Tools')
 
 const onPaginationPageChange = async (page) => {
   const { limit } = resources.value
   const offset = (page - 1) * limit
-  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, limit, offset)
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isTool.value, route.query.search, sortOrder.value, type.value, limit, offset)
   resources.value = response
 }
 
 const onPaginationLimitChange = async (limit) => {
   const newLimit = limit === 'View All' ? resources.value.total : limit
-  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, newLimit, 0)
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isTool.value, route.query.search, sortOrder.value, type.value, newLimit, 0)
   resources.value = response
 }
 
 const onSortOptionChange = async (option) => {
   selectedSortOption.value = option
-  const response = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, resources.value.limit, 0)
+  const response = await fetchResources(resourceType.value, fundingProgram.value, isTool.value, route.query.search, sortOrder.value, type.value, resources.value.limit, 0)
   resources.value = response
 }
 
-const altResultsMounted = () => {
-  altSearchResults.value?.retrieveAltTotals()
-}
-
 watch(() => route.query, async () => {
-  resources.value = await fetchResources(resourceType.value, fundingProgram.value, isToolComputed.value, route.query.search, sortOrder.value, type.value, 10, 0)
-})
+  resources.value = await fetchResources(resourceType.value, fundingProgram.value, isTool.value, route.query.search, sortOrder.value, type.value, 10, 0)
+  altSearchResults.value?.retrieveAltTotals()
+}, { immediate: true })
 </script>
 
 <style lang="scss" scoped>

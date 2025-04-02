@@ -1,9 +1,14 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <sparc-pill class="sparc-pill" v-if="embargoed">
-      Embargoed
-    </sparc-pill>
+    <div class="pill-container" v-if="embargoed || isCommunityConsortia">
+      <sparc-pill v-if="embargoed" class="mb-4">
+        Embargoed
+      </sparc-pill>
+      <sparc-pill v-if="isCommunityConsortia">
+        Community
+      </sparc-pill>
+    </div>
     <div class="button-container">
       <template v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
         <template v-if="hasFiles">
@@ -106,7 +111,7 @@ export default {
   },
 
   computed: {
-    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName', 'userToken']),
+    ...mapState(useMainStore, ['datasetInfo', 'datasetFacetsData', 'datasetTypeName', 'userToken']),
     /**
      * Gets dataset version
      * @returns {Number}
@@ -148,6 +153,10 @@ export default {
     },
     embargoed: function() {
       return propOr(false, 'embargo', this.datasetInfo)
+    },
+    isCommunityConsortia: function () {
+      const consortiaFacet = this.datasetFacetsData.find(data => data.id === 'Consortia')
+      return consortiaFacet.children.some(child => child.id === 'Community')
     },
     sdsViewer: function() {
       if (this.datasetInfo.doi) {
@@ -221,11 +230,6 @@ export default {
   text-align: center;
   background: white;
   position: relative;
-  .sparc-pill {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-  }
   button {
     margin: .25rem 0;
   }
@@ -242,5 +246,10 @@ export default {
   .ospac-tooltip {
     color: $purple;
   }
+}
+.pill-container {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 }
 </style>
