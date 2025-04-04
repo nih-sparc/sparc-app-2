@@ -337,7 +337,7 @@ export default {
   props: {
     osparcViewers: {
       type: Object,
-      default: function () {
+      default: function() {
         return {}
       }
     },
@@ -349,7 +349,7 @@ export default {
     }
   },
 
-  data: function () {
+  data: function() {
     return {
       previousPath: '',
       schemaRootPath: 'files',
@@ -374,11 +374,11 @@ export default {
      * Compute the current path for the dataset's files.
      * @returns {String}
      */
-    path: function () {
+    path: function() {
       return this.$route.query.path ? this.$route.query.path : this.schemaRootPath
     },
 
-    breadcrumbs: function () {
+    breadcrumbs: function() {
       return compose(reject(isEmpty), split('/'))(this.path)
     },
 
@@ -386,7 +386,7 @@ export default {
      * Compute endpoint URL to get dataset's files
      * @returns {String}
      */
-    getFilesurl: function () {
+    getFilesurl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       const url = `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
@@ -401,7 +401,7 @@ export default {
      * Url to retrieve the dataset to get the version number
      * @returns {String}
      */
-    getFilesIdUrl: function () {
+    getFilesIdUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       return `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}`
@@ -411,17 +411,17 @@ export default {
      * Compute the version of this dataset.
      * @returns {String}
      */
-    datasetVersion: function () {
+    datasetVersion: function() {
       return propOr(1, 'version', this.datasetInfo)
     },
     /**
      * Compute URL for zipit service
      * @returns {String}
      */
-    zipitUrl: function () {
+    zipitUrl: function() {
       return this.$config.public.zipit_api_host
     },
-    selectedFilesSizeTooLarge: function () {
+    selectedFilesSizeTooLarge: function() {
       let totalSize = 0
       this.selected.forEach(file => {
         totalSize += file.size
@@ -436,7 +436,7 @@ export default {
   watch: {
     '$route.query.path': 'pathQueryChanged',
     userToken: {
-      handler: function () {
+      handler: function() {
         this.getFiles()
       },
       immediate: true
@@ -475,7 +475,7 @@ export default {
      * Converts a semver version string to an integer
      * @param {String} semverVersion
      */
-    convertSchemaVersionToInteger: function (semverVersion) {
+    convertSchemaVersionToInteger: function(semverVersion) {
       // split version number into parts
       let parts = semverVersion.split('.')
       // make sure no part is larger than 1023 or else it won't fit
@@ -496,7 +496,7 @@ export default {
     /**
      * Gets the dataset version number to get the files for the dataset
      */
-    getDatasetVersionNumber: function () {
+    getDatasetVersionNumber: function() {
       this.isLoading = true
       this.hasError = false
 
@@ -517,13 +517,13 @@ export default {
      * Checks if file is MS Word, MS Excel, or MS Powerpoint
      * @param {Object} scope
      */
-    isMicrosoftFileType: function (scope) {
+    isMicrosoftFileType: function(scope) {
       return scope.row.fileType == 'MSWord' || scope.row.fileType == 'MSExcel' || scope.row.fileType == 'PowerPoint'
     },
     /**
      * Get contents of directory
      */
-    getFiles: function () {
+    getFiles: function() {
       this.hasError = false
       this.isLoading = true
       this.previousPath = this.path
@@ -544,7 +544,7 @@ export default {
     /**
      * When the path query changes get files.
      */
-    pathQueryChanged: function () {
+    pathQueryChanged: function() {
       this.$refs.table.clearFilter()
       this.handleResetFilters('fileType')
       this.getFiles()
@@ -554,7 +554,7 @@ export default {
      * Navigate to another directory via breadcrumb
      * @param {Integer} idx
      */
-    breadcrumbNavigation: function (idx) {
+    breadcrumbNavigation: function(idx) {
       const itemIdx = idx + 1
 
       return compose(join('/'), slice(0, itemIdx))(this.breadcrumbs)
@@ -567,14 +567,14 @@ export default {
      * @param {Number} cellValue
      * @returns {String}
      */
-    formatStorage: function (row, column, cellValue) {
+    formatStorage: function(row, column, cellValue) {
       return this.formatMetric(cellValue)
     },
 
     /**
      * Shows the oSPARC viewers selector
      */
-    setDialogSelectedFile: function (scope) {
+    setDialogSelectedFile: function(scope) {
       this.dialogSelectedFile = scope ? scope.row : null
     },
 
@@ -600,7 +600,7 @@ export default {
      * This is currently for MS Word, MS Excel, and Powerpoint files only
      * @param {Object} scope
      */
-    openFile: function (scope) {
+    openFile: function(scope) {
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'view_file_in_web_browser',
@@ -658,7 +658,7 @@ export default {
      * Create nuxt-link object for opening a scaffold.
      * @param {Object} scope
      */
-    getScaffoldLink: function (path) {
+    getScaffoldLink: function(path) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       return {
@@ -672,7 +672,7 @@ export default {
      * Create nuxt-link object for opening a scaffold.
      * @param {Object} scope
      */
-    getScaffoldViewLink: function (filePath, name) {
+    getScaffoldViewLink: function(filePath, name) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
       if (filePath && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-view-file']) {
@@ -701,7 +701,7 @@ export default {
      * Open scaffold
      * @param {Object} scope
      */
-    openScaffold: function (path) {
+    openScaffold: function(path) {
       this.$router.push(this.getScaffoldLink(path))
     },
 
@@ -709,7 +709,7 @@ export default {
      * Open scaffold view file
      * @param {Object} scope
      */
-    openScaffoldView: function (path, name) {
+    openScaffoldView: function(path, name) {
       const scaffoldViewLink = this.getScaffoldViewLink(path, name)
       if (scaffoldViewLink) {
         this.$router.push(scaffoldViewLink)
@@ -719,7 +719,7 @@ export default {
      * Checks if file is a scaffold view port
      * @param {Object} scope
      */
-    isScaffoldViewFile: function (path) {
+    isScaffoldViewFile: function(path) {
       if (path && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-view-file']) {
         path = path.replace('files/', '')
         for (let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
@@ -732,7 +732,7 @@ export default {
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
-    isScaffoldMetaFile: function (path) {
+    isScaffoldMetaFile: function(path) {
       if (path && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-metadata-file']) {
         path = path.replace('files/', '')
         for (let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file']?.length; i++) {
@@ -741,7 +741,7 @@ export default {
       }
       return false
     },
-    isBiolucidaViewFile: function (path) {
+    isBiolucidaViewFile: function(path) {
       if (
         path &&
         this.datasetScicrunch &&
@@ -763,7 +763,7 @@ export default {
       }
       return false
     },
-    isPlotViewFile: function (path) {
+    isPlotViewFile: function(path) {
       if (path && this.datasetScicrunch && this.datasetScicrunch['abi-plot']) {
         let plotObjects = this.datasetScicrunch['abi-plot']
         path = path.replace('files/', '')
@@ -773,7 +773,7 @@ export default {
       }
       return false
     },
-    isVideoViewFile: function (path) {
+    isVideoViewFile: function(path) {
       if (path && this.datasetScicrunch && this.datasetScicrunch['video']) {
         let videoObjects = this.datasetScicrunch['video']
         path = path.replace('files/', '')
@@ -783,7 +783,7 @@ export default {
       }
       return false
     },
-    isSegmentationViewFile: function (path) {
+    isSegmentationViewFile: function(path) {
       if (path && this.datasetScicrunch && this.datasetScicrunch['mbf-segmentation']) {
         let segmentationObjects = this.datasetScicrunch['mbf-segmentation']
         path = path.replace('files/', '')
@@ -811,7 +811,7 @@ export default {
      * Compute if the file is an image
      * @returns {Boolean}
      */
-    isImage: function (fileType) {
+    isImage: function(fileType) {
       const images = ['JPG', 'PNG', 'JPEG', 'TIFF', 'GIF']
       return images.indexOf(fileType) >= 0
     },
@@ -856,7 +856,7 @@ export default {
       const uri = file.uri
       return uri.substring(uri.indexOf('files/'))
     },
-    getFileTypeFilters: function (data) {
+    getFileTypeFilters: function(data) {
       let fileTypeLabels = [...new Set(data.map(item => (item.fileType ? item.fileType : item.type)))]
       return fileTypeLabels.map(label => {
         if (label == 'Directory') {
@@ -872,7 +872,7 @@ export default {
         }
       })
     },
-    fileTypeFilterStatus: function (value, row, col) {
+    fileTypeFilterStatus: function(value, row, col) {
       return row.fileType ? row.fileType == value : row.type == value
     },
     handleFilterChange(filters) {
