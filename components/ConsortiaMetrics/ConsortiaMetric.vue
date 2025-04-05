@@ -123,7 +123,6 @@ export default {
   text-align: left;
   display: flex;
   flex-direction: row;
-  width: 100%;
   height: fit-content;
 }
 .numbers-container {
