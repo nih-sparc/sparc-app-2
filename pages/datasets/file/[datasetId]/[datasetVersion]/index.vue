@@ -166,7 +166,7 @@ export default {
       biolucidaData.share_link = `${config.public.BL_SHARE_LINK_PREFIX}${code}`
       biolucidaData.status = "Successful"
     }
-    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
+    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error' && biolucidaData.biolucida_image_id
     
     let plotInfo = {}
     const matchedplotInfo = scicrunchData['abi-plot']?.filter(function(el) {
