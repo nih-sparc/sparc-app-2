@@ -38,6 +38,15 @@
       <div v-else-if="showTombstone">
         <tombstone :dataset-details="datasetInfo" />
       </div>
+      <div v-else-if="!isDatasetIndexed" class="container">
+        <div class="heading2 subpage">
+          <b>{{datasetName}}</b>
+          <hr class="my-16"/>
+          <div class="heading3">
+            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }} and is currently being indexed into the SPARC Portal. Please check back periodically for updates.
+          </div>
+        </div>
+      </div>
       <div class="details-container" v-else>
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
@@ -234,7 +243,8 @@ export default {
     const datasetFacetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
       return data
     })
-
+    // If the algolia index returns nothing than the dataset has not been indexed and we should not display the details page
+    const isDatasetIndexed = !isEmpty(datasetFacetsData)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
@@ -311,7 +321,8 @@ export default {
         hasError: false,
         originallyPublishedDate,
         creators,
-        canonicalLink
+        canonicalLink,
+        isDatasetIndexed
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
