@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <div class="pill-container" v-if="embargoed || isCommunityConsortia">
+    <div class="pill-container" v-if="embargoed">
       <sparc-pill v-if="embargoed" class="mb-4">
         Embargoed
       </sparc-pill>
