@@ -117,6 +117,7 @@
               </div>
             </el-col>
             <el-col :xs="24" :sm="12" class="newsletter-wrap right-panel bluesky-container">
+              <div class="heading2">SPARC on Bluesky</div>
               <bsky-embed username="sparc-science.bsky.social" limit="4" load-more custom-styles="*, :before, :after { border-style: none; }" />
             </el-col>
           </el-row>
@@ -250,5 +251,11 @@ onMounted(() => {
 .bluesky-container {
   max-height: 26rem;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  & > bsky-embed {
+    flex: 1;
+    overflow: auto;
+  }
 }
 </style>
