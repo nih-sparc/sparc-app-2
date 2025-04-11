@@ -144,10 +144,10 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.8.2-beta.0":
-  version "1.8.2-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.8.2-beta.0.tgz#4581718fa436f74cdc8477585b80d248a9e5c785"
-  integrity sha512-eEWEXGXmf7lsuNqx2XmukvuakPsPBHUcafk+Guaugnulz4pxVsk6u9aJqlNyiOvCh0OQpixP2EA739/c+nPXFg==
+"@abi-software/mapintegratedvuer@1.8.2-beta.1":
+  version "1.8.2-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.8.2-beta.1.tgz#8c062b0c45643355f4420e2a245f79f840eb0889"
+  integrity sha512-BdVeqjdGZhsQbwkAlbY3sZaz0FpHdjSo3XsQZFB8K2eUkttxDD4ozIe4pXaOj9nydQliCtkbp2tzbGbzlaCStw==
   dependencies:
     "@abi-software/flatmapvuer" "^1.8.2-beta.0"
     "@abi-software/map-side-bar" "^2.7.1"
@@ -18940,6 +18940,7 @@ world-calendars@^1.0.3:
     object-assign "^4.1.0"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
