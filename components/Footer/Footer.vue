@@ -15,7 +15,7 @@
               </p>
             </div>
             <div class="footer__info--social">
-              <a href="https://bsky.app/profile/sparc-science.bsky.social" target="_blank">
+              <a href="https://bsky.app/profile/sparc.science" target="_blank">
                 <svgo-icon-bluesky class="social-media-icon pr-16"/>
               </a>
               <a

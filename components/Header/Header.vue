@@ -77,7 +77,7 @@
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
-                <a href="https://bsky.app/profile/sparc-science.bsky.social" target="_blank">
+                <a href="https://bsky.app/profile/sparc.science" target="_blank">
                   <svgo-icon-bluesky class="social-media-icon pr-16"/>
                 </a>
                 <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
