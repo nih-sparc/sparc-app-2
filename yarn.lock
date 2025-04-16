@@ -102,13 +102,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.7.1":
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.1.tgz#f9ca167f7a14a7f8a702e805cbeba6a6fb6cc7be"
-  integrity sha512-CtSi3yiYOqsRpgtkaWrw8PYK3UrDVWYwMqZOJdmlb+VG/qAHDp5uj7HigWPsS/y6AFVfa0FdgwEfu9p0+o9ARQ==
+"@abi-software/map-side-bar@^2.7.2":
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.2.tgz#87d5c740ae6195559342a94a262516fdb68bb18e"
+  integrity sha512-3GgX70DuIBbk115iZp/TgfoI5+oQQ+FvCbiBSnG9fOG+mUEDYd5z4mef7UTaQDT7dkvvsdA3QoGoQhVurIM/CQ==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "^1.4.0"
+    "@abi-software/map-utilities" "^1.4.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -144,13 +144,13 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.8.2":
-  version "1.8.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.8.2.tgz#447b17450eb739e4247e1568ea203758a3c463e3"
-  integrity sha512-2oceH/39jXFCE9gaA94+PILQyzRvCR8766DLaIM8srchEuyFY3GXDHDJJjdTDERTWRWlJJL/Lsznu8MzYw9EDA==
+"@abi-software/mapintegratedvuer@1.8.3":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.8.3.tgz#73fa0d2994df893ccade30f1a30906cb1625d35d"
+  integrity sha512-34RvyuXxWULA/RrXj+Kvk7+RTGQCm+E1b/Q0PJA3AgdRXzTJnsigdJQjvP6WioT1/0dbga1BjaiQ3pmgvnCQig==
   dependencies:
     "@abi-software/flatmapvuer" "^1.8.2"
-    "@abi-software/map-side-bar" "^2.7.1"
+    "@abi-software/map-side-bar" "^2.7.2"
     "@abi-software/map-utilities" "^1.4.2"
     "@abi-software/plotvuer" "^1.0.3"
     "@abi-software/scaffoldvuer" "^1.8.0"
