@@ -3,7 +3,7 @@
     <el-table-column width="160">
       <template v-slot="scope">
         <div class="image-container">
-          <img v-if="scope.row.fields.institution" class="img-project" :src="getImageSrc(scope)"
+          <img v-if="scope.row.fields.institutions" class="img-project" :src="getImageSrc(scope)"
             :alt="getImageAlt(scope)" />
         </div>
       </template>
@@ -29,7 +29,7 @@
             </td>
             <td v-html="highlightMatches(scope.row.fields.principalInvestigators.join(', '), $route.query.search)" />
           </tr>
-          <tr v-if="scope.row.fields.institution">
+          <tr v-if="scope.row.fields.institutions">
             <td class="property-name-column">
               Institution(s)
             </td>
@@ -62,6 +62,7 @@
 import Truncate from '@/mixins/truncate'
 import { isInternalLink } from '@/mixins/marked/index'
 import { highlightMatches } from '@/utils/utils'
+import { pathOr } from 'ramda'
 
 export default {
   name: 'ProjectSearchResults',
@@ -81,20 +82,17 @@ export default {
      * @param {Object} scope
      * @returns {String}
      */
-    getImageSrc: function(scope) {
-      return scope.row.fields.institution.fields.logo
-        ? scope.row.fields.institution.fields.logo.fields.file.url
-        : ''
+    getImageSrc: function (scope) {
+      return pathOr('', ['row', 'fields', 'institutions', 0, 'fields', 'logo', 'fields', 'file', 'url'], scope)
     },
     /**
      * Get image source
      * @param {Object} scope
      * @returns {String}
      */
-    getImageAlt: function(scope) {
-      return scope.row.fields.institution.fields.logo
-        ? scope.row.fields.institution.fields.logo.fields.file.description
-        : `Logo for ${scope.row.fields.institution.fields.name}`
+    getImageAlt: function (scope) {
+      const defaultText = `Logo for ${pathOr('', ['row', 'fields', 'institutions', 0, 'fields', 'name'], scope)}`
+      return pathOr(defaultText, ['row', 'fields', 'institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], scope)
     },
 
     /**
