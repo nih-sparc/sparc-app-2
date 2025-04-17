@@ -76,7 +76,7 @@ import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
-import { propOr, isEmpty } from 'ramda'
+import { pathOr, propOr, isEmpty } from 'ramda'
 import consortiaMixin from '@/mixins/consortia'
 import { ref } from 'vue'
 
@@ -139,6 +139,12 @@ export default {
         },
         {
           to: {
+            path: '/about/projects',
+          },
+          label: 'Projects'
+        },
+        {
+          to: {
             name: 'about-projects',
             query: {
               consortiaType: this.fundingProgram
@@ -153,9 +159,10 @@ export default {
      * @returns {String}
      */
     getImageSrc: function () {
-      return this.fields.institutions[0].fields.logo
-        ? this.fields.institutions[0].fields.logo.fields.file.url
-        : ''
+      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'url'], this.fields)
+    },
+    getImageAlt: function () {
+      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], this.fields)
     },
     title: function () {
       return this.fields.title
@@ -181,15 +188,6 @@ export default {
     },
     nihReporterUrl: function () {
       return this.fields.nihReporterUrl || '#'
-    },
-    /**
-     * Get image source
-     * @returns {String}
-     */
-    getImageAlt: function () {
-      return this.fields.institutions[0].fields.logo
-        ? this.fields?.institutions[0].fields.logo.fields.file.description
-        : ''
     },
     /**
      * Compute subtitle based on its project section

@@ -149,7 +149,7 @@ const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('f
 const institutionId = computed(() => 
   pathOr(
     undefined,
-    ['featuredProject', 'fields', 'institution', 'sys', 'id'],
+    ['featuredProject', 'fields', 'institutions', 0, 'sys', 'id'],
     homepageData?.value?.fields
   )
 );
