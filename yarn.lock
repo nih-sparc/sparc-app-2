@@ -31,13 +31,42 @@
     minisearch "^2.2.1"
     polylabel "^2.0.1"
 
-"@abi-software/flatmapvuer@1.6.2-beta.12":
-  version "1.6.2-beta.12"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.6.2-beta.12.tgz#39b600447af6d7d9b49d7a48aade9486703bec00"
-  integrity sha512-melmT3+S8d3pXArKhFKUxI7pb5+9/7tefyZjNjGtMB9nkCQqW+b90eHWoboAeCDVFDl8LcPn24PBr8Iru+T0ww==
+"@abi-software/flatmap-viewer@3.2.13":
+  version "3.2.13"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-3.2.13.tgz#1781c914a02a24e7da726bfc1ab35aaa0d52cbdf"
+  integrity sha512-sYkdSTW5D9YMGR/Dp+lfXYkuXI58kytSU0UPQ97mF9WeT7IXEx6zfOPmNlUCrjz3G29Am6tM567BrllKrTmVcQ==
+  dependencies:
+    "@deck.gl/core" "^9.0.17"
+    "@deck.gl/geo-layers" "^9.0.18"
+    "@deck.gl/layers" "^9.0.17"
+    "@deck.gl/mapbox" "^9.0.17"
+    "@mapbox/mapbox-gl-draw" "^1.4.3"
+    "@turf/along" "^7.1.0"
+    "@turf/area" "^6.5.0"
+    "@turf/bbox" "^6.5.0"
+    "@turf/helpers" "^6.5.0"
+    "@turf/length" "^7.0.0"
+    "@turf/nearest-point-on-line" "^7.0.0"
+    "@turf/projection" "^6.5.0"
+    bezier-js "^6.1.0"
+    colord "^2.9.3"
+    core-js "^3.37.0"
+    graphology "^0.25.4"
+    graphology-operators "^1.6.0"
+    graphology-shortest-path "^2.1.0"
+    html-es6cape "^2.0.2"
+    maplibre-gl ">=4.7.1"
+    mathjax-full "^3.2.2"
+    minisearch "^2.2.1"
+    polylabel "^2.0.1"
+
+"@abi-software/flatmapvuer@1.7.2":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.2.tgz#a8f0f6e02c5088d663db59f1d9f781ca25a8d0c7"
+  integrity sha512-t0NeIHfj8h4iBXUAMqbelAvyBIV2AF3SC/P0qy2beY4j3QmzwYTCpSDH6bkdMy81wRtJtrrIL0hP+FlYqZYXsQ==
   dependencies:
     "@abi-software/flatmap-viewer" "3.2.10"
-    "@abi-software/map-utilities" "^1.2.2-beta.7"
+    "@abi-software/map-utilities" "^1.3.1"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -48,13 +77,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/flatmapvuer@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.2.tgz#a8f0f6e02c5088d663db59f1d9f781ca25a8d0c7"
-  integrity sha512-t0NeIHfj8h4iBXUAMqbelAvyBIV2AF3SC/P0qy2beY4j3QmzwYTCpSDH6bkdMy81wRtJtrrIL0hP+FlYqZYXsQ==
+"@abi-software/flatmapvuer@1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.4.tgz#fbe376eeadba91d7178d0e53ce61e67abdf34c57"
+  integrity sha512-UIUrfJFD7U5mI6iGmPkj4NI2mLRC3MT3d56vIX3CUoLwMDjzbIZolSO6RXUXczDv+ZbaByHFFsHmO94lLvhrKg==
   dependencies:
-    "@abi-software/flatmap-viewer" "3.2.10"
-    "@abi-software/map-utilities" "^1.3.1"
+    "@abi-software/flatmap-viewer" "3.2.13"
+    "@abi-software/map-utilities" "^1.3.2"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -92,10 +121,22 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@1.3.1", "@abi-software/map-utilities@^1.2.2-beta.7", "@abi-software/map-utilities@^1.3.1":
+"@abi-software/map-utilities@1.3.1", "@abi-software/map-utilities@^1.3.1":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.3.1.tgz#660cfbe66204ca8478ba4d01a09d5d8ad93017b7"
   integrity sha512-gHh/gSC57A9TvnbOMNj8EEgQ1E7s293PckCnpd/ccBpAMHAcK21uFntRbjRoLWc8mljypmI0uRDrkA1cpyIn4A==
+  dependencies:
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    cytoscape "^3.30.2"
+    element-plus "2.8.4"
+    mitt "^3.0.1"
+    vue "^3.4.21"
+
+"@abi-software/map-utilities@^1.3.2", "@abi-software/map-utilities@^1.4.0":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.4.2.tgz#5989b260e42cb0915c00dad05be595b3b42a52fa"
+  integrity sha512-RbumWrn9+WkRS1cSQBKcywkNPJUs8xEwmtf9LbkkJeyeNrULKDuRinpnww+8bX2zGB/5jzP1BfzEYcZEesLSrQ==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -164,6 +205,26 @@
     vue3-component-svg-sprite "^0.0.1"
     zincjs "^1.11.6"
 
+"@abi-software/scaffoldvuer@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.8.0.tgz#b74d1c8023baa8f2bf2e52033150729c546ccd9a"
+  integrity sha512-DHvz3V4UQaxtoHI9N1MmINGyUacLeyHyYJQy7qDDXHqX9TnsiibBXkPRmNr/iG6TKmtvirdD2NXKAhJnmOTNWA==
+  dependencies:
+    "@abi-software/map-utilities" "^1.4.0"
+    "@abi-software/sparc-annotation" "^0.3.2"
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    core-js "^3.22.5"
+    element-plus "2.8.4"
+    minisearch "^6.0.1"
+    pinia "^2.1.7"
+    simple-dropzone "^0.8.3"
+    unplugin-vue-components "^0.26.0"
+    vue "^3.4.21"
+    vue-router "^4.2.5"
+    vue3-component-svg-sprite "^0.0.1"
+    zincjs "^1.12.4"
+
 "@abi-software/simulationvuer@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-1.0.1.tgz#0d1a95679f7552ee7b8c86da2e788fb5b064b039"
@@ -175,7 +236,7 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/sparc-annotation@0.3.2":
+"@abi-software/sparc-annotation@0.3.2", "@abi-software/sparc-annotation@^0.3.2":
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/@abi-software/sparc-annotation/-/sparc-annotation-0.3.2.tgz#ee714f2ad29d2edf2c493dc8390ee7599264828e"
   integrity sha512-1ZnKoBJ0thaFqC090oEif3CbbmpY/7FkLxfb3Hx3Ujn8sB5aVQAW9/EfHJMlJwQwlqT8Qmmji9NlEAsYG/UUlQ==
@@ -10151,6 +10212,27 @@ element-plus@^2.4.2:
     memoize-one "^6.0.0"
     normalize-wheel-es "^1.2.0"
 
+element-plus@^2.8.4:
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/element-plus/-/element-plus-2.9.7.tgz#05bcc35de1d98192d25ebfd06fff7d6d2de9f911"
+  integrity sha512-6vjZh5SXBncLhUwJGTVKS5oDljfgGMh6J4zVTeAZK3YdMUN76FgpvHkwwFXocpJpMbii6rDYU3sgie64FyPerQ==
+  dependencies:
+    "@ctrl/tinycolor" "^3.4.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    "@floating-ui/dom" "^1.0.1"
+    "@popperjs/core" "npm:@sxzz/popperjs-es@^2.11.7"
+    "@types/lodash" "^4.14.182"
+    "@types/lodash-es" "^4.17.6"
+    "@vueuse/core" "^9.1.0"
+    async-validator "^4.2.5"
+    dayjs "^1.11.13"
+    escape-html "^1.0.3"
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+    lodash-unified "^1.0.2"
+    memoize-one "^6.0.0"
+    normalize-wheel-es "^1.2.0"
+
 element-size@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/element-size/-/element-size-1.1.1.tgz#64e5f159d97121631845bcbaecaf279c39b5e34e"
@@ -15268,6 +15350,14 @@ pinia@>=2.1.7:
     "@vue/devtools-api" "^6.5.0"
     vue-demi ">=0.14.5"
 
+pinia@^2.0.0:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.3.1.tgz#54c476675b72f5abcfafa24a7582531ea8c23d94"
+  integrity sha512-khUlZSwt9xXCaTbbxFYBKDc/bWAGWJjOgvxETwkTN7KRm66EeT1ZdZj6i2ceh9sP2Pzqsbc704r2yngBrxBVug==
+  dependencies:
+    "@vue/devtools-api" "^6.6.3"
+    vue-demi "^0.14.10"
+
 pinia@^2.1.7:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/pinia/-/pinia-2.3.0.tgz#b81f4ac7da1031af8d8f7007686c4b2799a55b9f"
@@ -17049,36 +17139,26 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashboard-beta@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.3.1.tgz#4428c4eab3943443450aeab80f8c613250697cd2"
-  integrity sha512-Cmnz+yGS6NjCvSxqiWbhxSQWMb7LDl7xl7B7fRVyvo869H/Ne1L4v8xxVoxiYqjQsIMApo/rrIWtVnLFMw2n0g==
+sparc-dashboard-beta@0.4.18:
+  version "0.4.18"
+  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.4.18.tgz#89b4155820e21781c2c8a4633e471b0eda6834e9"
+  integrity sha512-XwuH+7WFoC7x0NlW5tKrDVzEyI4FfBBVNP//fkMOG1xtBm+Sal26YIYFLow15ibI3sA2BysG0xVu/J/s0D/dkA==
   dependencies:
-    "@abi-software/flatmapvuer" "1.6.2-beta.12"
+    "@abi-software/flatmapvuer" "1.7.4"
+    "@abi-software/scaffoldvuer" "^1.8.0"
+    "@element-plus/icons-vue" "^2.3.1"
     "@tsconfig/node21" "^21.0.1"
     axios "^1.6.7"
     chart.js "^4.4.2"
+    element-plus "^2.8.4"
     gridstack "^9.5.0"
     mitt "^3.0.1"
-    pinia "^2.1.7"
+    pinia "^2.0.0"
     sass "^1.69.5"
-    sparc-design-system-components-2 "0.0.26"
     storybook "^7.5.3"
-    vue "^3.5.10"
+    vite-plugin-css-injected-by-js "^3.5.2"
+    vue "^3.5.13"
     vue-chartjs "^5.3.1"
-
-sparc-design-system-components-2@0.0.26:
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/sparc-design-system-components-2/-/sparc-design-system-components-2-0.0.26.tgz#943d71a00a97aa6c7701f559b2bcfccdc1fe40c1"
-  integrity sha512-BkJCd9SLgSs54EIp5nZxFMNS9bBdP2LYeF/cKh8of6dn65x2Eb61eJCYcNuNN3fa+EsZlkELtykPPr0vZ5UXwQ==
-  dependencies:
-    "@carbon/grid" "^11.20.0"
-    "@element-plus/icons-vue" "^2.3.1"
-    date-fns "^2.3.0"
-    element-plus "^2.4.2"
-    ramda "^0.29.1"
-    vue "^3.3.4"
-    vue-router "^4.2.5"
 
 sparc-design-system-components-2@1.0.1:
   version "1.0.1"
@@ -17264,7 +17344,16 @@ string-split-by@^1.0.0:
   dependencies:
     parenthesis "^3.1.5"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17351,7 +17440,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -18564,6 +18660,11 @@ vite-plugin-checker@^0.6.4:
     vscode-languageserver-textdocument "^1.0.1"
     vscode-uri "^3.0.2"
 
+vite-plugin-css-injected-by-js@^3.5.2:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-3.5.2.tgz#1f75d16ad5c05b6b49bf18018099a189ec2e46ad"
+  integrity sha512-2MpU/Y+SCZyWUB6ua3HbJCrgnF0KACAsmzOQt1UvRVJCGF6S8xdA3ZUhWcWdM9ivG4I5az8PnQmwwrkC2CAQrQ==
+
 vite-plugin-inspect@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/vite-plugin-inspect/-/vite-plugin-inspect-0.8.3.tgz#06ff565f1df84f2ce607007493301579d288cf60"
@@ -18739,7 +18840,7 @@ vue3-component-svg-sprite@^0.0.1:
   dependencies:
     vue "^3.3.13"
 
-vue@3.4.21, vue@^3.3.13, vue@^3.3.4, vue@^3.4.15, vue@^3.4.21, vue@^3.5.10:
+vue@3.4.21, vue@^3.3.13, vue@^3.3.4, vue@^3.4.15, vue@^3.4.21, vue@^3.5.13:
   version "3.4.21"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.4.21.tgz#69ec30e267d358ee3a0ce16612ba89e00aaeb731"
   integrity sha512-5hjyV/jLEIKD/jYl4cavMcnzKwjMKohureP8ejn3hhEjwhWIhWeuzL2kJAjzl/WyVsgPY56Sy4Z40C3lVshxXA==
@@ -18973,8 +19074,7 @@ world-calendars@^1.0.3:
   dependencies:
     object-assign "^4.1.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
-  name wrap-ansi-cjs
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -18987,6 +19087,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
@@ -19155,6 +19264,20 @@ zincjs@^1.11.6:
   version "1.11.6"
   resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.11.6.tgz#b3c4dbe70f1961574b21c7e28b2b44c3d6caafd9"
   integrity sha512-kqNoL72ijaBE0reQx/NDk6CAIH/bNy0o0vZUoPjA9WjZVfvznJFzWWF1w6hneDE/eiQqO889Giyq7Fm0fhtgvQ==
+  dependencies:
+    css-element-queries "^1.2.2"
+    lodash "^4.17.19"
+    promise-polyfill "^8.1.3"
+    three "^0.130.1"
+    three-spritetext "1.6.2"
+    url-loader "^4.1.1"
+    url-polyfill "^1.1.7"
+    webworkify-webpack "^2.1.5"
+
+zincjs@^1.12.4:
+  version "1.12.4"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.12.4.tgz#78bbe853c7d54d325e425063ef2fae7f78775050"
+  integrity sha512-YkhSOIsW7BhfvElAz7qOdRNlr3SNU2n+A43eYb1ep5pM9Ube/L6famaC3SjNGLd+081yEJrpK0IfC0WhVdoHJQ==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
