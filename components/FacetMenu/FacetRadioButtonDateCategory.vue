@@ -6,7 +6,9 @@
       class="indent"
       @change="selectedDateOptionChanged"
     >
-      <el-radio class="pb-16" :label="showAllOption" />
+      <el-radio class="pb-16" :value="showAllOption">
+        Show All
+      </el-radio>
       <radio-date-option
         v-for="(option, index) in dateOptions"
         :key="index"

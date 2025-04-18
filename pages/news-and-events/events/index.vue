@@ -68,11 +68,11 @@
               :lg='18'
             >
               <div class="search-heading mt-32 mb-16">
-                <div class="label1" v-show="events?.items.length">
-                  {{ events?.total }} Results | Showing
+                <div class="label1" v-show="eventItems?.length">
+                  {{ eventsData?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="events?.limit"
+                      :page-size="eventsData?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
@@ -91,34 +91,34 @@
               <div ref="eventsWrap" class="subpage">
                 <client-only>
                   <event-list-item
-                    v-for="item in events?.items"
-                    :key="item.sys.id"
+                    v-for="(item, index) in eventItems"
+                    :key="`${item.sys.id} - ${index}`"
                     :item="item"
                     :show-past-events-divider="showPastEventsDivider && item.sys.id == firstPastEventId"
                   />
                   <alternative-search-results-news
                     ref="altSearchResults"
-                    :search-had-results="events?.items?.length > 0"
+                    :search-had-results="eventItems?.length > 0"
                     @vue:mounted="altResultsMounted"
                   />
                 </client-only>
               </div>
               <div class="search-heading">
-                <div class="label1" v-if="events?.items?.length">
-                  {{ events?.total }} Results | Showing
+                <div class="label1" v-if="eventItems?.length">
+                  {{ eventsData?.total }} Results | Showing
                   <client-only>
                     <pagination-menu
-                      :page-size="events?.limit"
+                      :page-size="eventsData?.limit"
                       @update-page-size="onPaginationLimitChange"
                     />
                   </client-only>
                 </div>
                 <client-only>
                   <pagination
-                    v-if="events?.limit < events?.total"
+                    v-if="eventsData?.limit < eventsData?.total"
                     :selected="curSearchPage"
-                    :page-size="events?.limit"
-                    :total-count="events?.total"
+                    :page-size="eventsData?.limit"
+                    :total-count="eventsData?.total"
                     @select-page="onPaginationPageChange"
                   />
                 </client-only>
@@ -172,6 +172,15 @@ const breadcrumb = [
   { label: 'News & Events', to: { name: 'news-and-events' } }
 ]
 
+// Fetch events data using `useAsyncData` for server-side rendering
+const { data: eventsData } = useAsyncData('eventsData', async () => {
+  return await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, 10, 0)
+})
+
+const eventItems = computed(() => {
+  return eventsData.value?.items
+})
+
 const startLessThanDate = computed(() => {
   return eventsFacetMenu.value?.getStartLessThanDate()
 })
@@ -189,14 +198,14 @@ const sortOrder = computed(() => {
 })
 
 const curSearchPage = computed(() => {
-  return events.value?.skip / events.value?.limit + 1
+  return eventsData.value?.skip / eventsData.value?.limit + 1
 })
 
 const firstPastEventId = computed(() => {
-  if (!events.value?.items) return -1
+  if (!eventItems?.value) return -1
 
-  for (let i = 0; i < events.value?.items?.length; i++) {
-    const event = events.value?.items[i];
+  for (let i = 0; i < eventItems.value.length; i++) {
+    const event = eventItems.value[i];
     const upcomingSortOrder = pathOr("", ['fields', 'upcomingSortOrder'], event);
     if (upcomingSortOrder < 0) {
       return pathOr("", ['sys', 'id'], event)
@@ -206,28 +215,20 @@ const firstPastEventId = computed(() => {
 })
 
 const showPastEventsDivider = computed(() => {
-  if (!events.value?.items || selectedSortOption.value?.id !== "upcoming") {
+  if (selectedSortOption.value?.id !== "upcoming") {
     return false
   }
 
-  const items = events.value?.items;
-  if (!items?.length) {
-    return false
-  }
-
-  const firstEventId = pathOr(-1, ['sys', 'id'], items[0]);
+  const firstEventId = pathOr(-1, [0, 'sys', 'id'], eventItems?.value)
   return firstPastEventId.value !== firstEventId
-})
-
-// Fetch events data using `useAsyncData` for server-side rendering
-const { data: events } = useAsyncData('events', () => {
-  return fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, 10, 0)
 })
 
 watch(
   () => route.query,
   async () => {
-    events.value = await fetchEvents(
+    eventsData.value = { ...eventsData.value, items: [] }
+    await nextTick()
+    eventsData.value = await fetchEvents(
       $contentfulClient,
       route.query.search, 
       startLessThanDate.value, 
@@ -237,28 +238,50 @@ watch(
       10, 
       0
     )
-    altSearchResults.value?.retrieveAltTotals();
-  },
-  { immediate: true }
+    altSearchResults.value?.retrieveAltTotals()
+  }
 )
 
+onMounted(async () => {
+  eventsData.value = await fetchEvents(
+      $contentfulClient,
+      route.query.search, 
+      startLessThanDate.value, 
+      startGreaterThanOrEqualToDate.value,
+      eventTypes.value, 
+      sortOrder.value, 
+      10, 
+      0
+    )
+  altSearchResults.value?.retrieveAltTotals()
+})
+
 const onPaginationPageChange = async (page) => {
-  const { limit } = events.value
-  const offset = (page - 1) * limit
+  const limit = eventsData.value?.limit || 10
+  const offset = (page - 1) * limit || 0
   const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, limit, offset)
-  events.value = response
+  // Have to do this in order to force reactivity to work since we are relying on nested reactivity causing some Vue reactivity quirkyness with eventsData.items.
+  // Without first resetting the items, eventhough eventData.items in the network response was coming back in the right order for page refresh and on page change, 
+  // for some reason they were rendering in the reverse order on page change (eventhough they looked correct and the same as in the network response during refresh) 
+  eventsData.value = { ...eventsData.value, items: [] }
+  await nextTick()
+  eventsData.value = response
 }
 
 const onPaginationLimitChange = async (limit) => {
-  const newLimit = limit === 'View All' ? events.value?.total : limit
+  const newLimit = limit === 'View All' ? eventsData.value?.total : limit
   const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, newLimit, 0)
-  events.value = response
+  eventsData.value = { ...eventsData.value, items: [] }
+  await nextTick()
+  eventsData.value = response
 }
 
 const onSortOptionChange = async (option) => {
   selectedSortOption.value = option
-  const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, events.value.limit, 0)
-  events.value = response
+  const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, eventsData.value.limit, 0)
+  eventsData.value = { ...eventsData.value, items: [] }
+  await nextTick()
+  eventsData.value = response
 }
 
 const altResultsMounted = () => {
