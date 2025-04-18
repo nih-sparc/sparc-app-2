@@ -226,6 +226,7 @@ const showPastEventsDivider = computed(() => {
 watch(
   () => route.query,
   async () => {
+    // Have to do this anywhere we are setting eventsData.value in order to force reactivity to work since we are relying on nested reactivity causing some Vue reactivity quirkyness with eventsData.items.
     eventsData.value = { ...eventsData.value, items: [] }
     await nextTick()
     eventsData.value = await fetchEvents(
@@ -260,9 +261,6 @@ const onPaginationPageChange = async (page) => {
   const limit = eventsData.value?.limit || 10
   const offset = (page - 1) * limit || 0
   const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, limit, offset)
-  // Have to do this in order to force reactivity to work since we are relying on nested reactivity causing some Vue reactivity quirkyness with eventsData.items.
-  // Without first resetting the items, eventhough eventData.items in the network response was coming back in the right order for page refresh and on page change, 
-  // for some reason they were rendering in the reverse order on page change (eventhough they looked correct and the same as in the network response during refresh) 
   eventsData.value = { ...eventsData.value, items: [] }
   await nextTick()
   eventsData.value = response
