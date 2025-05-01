@@ -29,5 +29,4 @@ public/sitemap*
 
 tests/cypress/videos
 tests/cypress/downloads
-tests/cypress/screenshots/*
-!tests/cypress/screenshots/base
+tests/cypress/screenshots

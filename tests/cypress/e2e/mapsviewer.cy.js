@@ -61,15 +61,23 @@ mapTypes.forEach((map) => {
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
-        // Use Human Female to check alert
-        cy.get('.el-icon.minimap-resize.shrink:visible').click()
-        cy.get('[label="withoutAlert"] > .checkbox-container > .el-checkbox:visible').click()
-        cy.get('.pathway-location > .drawer-button:visible').click()
-        // retina display has a devicePixelRatio of 2
-        const snapshot = window.devicePixelRatio > 1 ? 'mapalert_hr' : 'mapalert_lr'
+        cy.get('@ViewACMap').click()
         cy.wait(5000)
-        cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').compareSnapshot(snapshot).then(comparisonResults => {
-          expect(comparisonResults.percentage).to.equal(0)
+        // Check if alert exist in Human Female
+        cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('Canvas')
+        cy.get('.checkall-display-text:visible').then(($label) => {
+          expect($label, 'Alter filter should exist').to.contain('Alert')
+        })
+        // Take a screenshot of no path flatmap
+        cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
+        cy.get('.pathway-location > .drawer-button:visible').click()
+        cy.get('@Canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+        // Compare previous screenshot with alter paths displayed flatmap
+        cy.get('.pathway-location > .drawer-button:visible').click()
+        cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
+        cy.get('.pathway-location > .drawer-button:visible').click()
+        cy.get('@Canvas').compareSnapshot('mapalert').then(comparisonResults => {
+          expect(comparisonResults.percentage).to.greaterThan(0)
         })
         // Close new opened dialog
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
