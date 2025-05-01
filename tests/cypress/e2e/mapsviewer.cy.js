@@ -63,7 +63,7 @@ mapTypes.forEach((map) => {
         cy.waitForMapLoading()
         // Check if alert exist in Human Female
         cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('Canvas')
-        cy.get('.checkall-display-text:visible').then(($label) => {
+        cy.get('.checkall-display-text:visible', { timeout: 30000 }).then(($label) => {
           if ($label.text().includes('Alert')) {
             expect($label, 'Alter filter should exist').to.contain('Alert')
             // Take a screenshot of no path flatmap

@@ -25,7 +25,7 @@ export default defineConfig({
     },
     env: {
       visualRegressionType: 'regression',
-      visualRegressionBaseDirectory: 'tests/cypress/screenshots/base',
+      visualRegressionBaseDirectory: 'tests/cypress/screenshots/mapsviewer.cy.js/base',
       visualRegressionDiffDirectory: 'tests/cypress/screenshots/diff',
       visualRegressionGenerateDiff: 'always',
       visualRegressionFailSilently: true,
