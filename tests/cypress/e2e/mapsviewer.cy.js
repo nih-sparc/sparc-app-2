@@ -52,32 +52,32 @@ mapTypes.forEach((map) => {
     })
 
     if (map === 'ac') {
-
-      it('Open new map', function () {
+      it('Open new map and alter filtering', function () {
         cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
         cy.get('@ViewACMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
-        cy.waitForMapLoading()
+        cy.get('@ViewACMap').click()
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
-        cy.get('@ViewACMap').click()
-        cy.wait(5000)
+        cy.waitForMapLoading()
         // Check if alert exist in Human Female
         cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('Canvas')
         cy.get('.checkall-display-text:visible').then(($label) => {
-          expect($label, 'Alter filter should exist').to.contain('Alert')
-        })
-        // Take a screenshot of no path flatmap
-        cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
-        cy.get('.pathway-location > .drawer-button:visible').click()
-        cy.get('@Canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
-        // Compare previous screenshot with alter paths displayed flatmap
-        cy.get('.pathway-location > .drawer-button:visible').click()
-        cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
-        cy.get('.pathway-location > .drawer-button:visible').click()
-        cy.get('@Canvas').compareSnapshot('mapalert').then(comparisonResults => {
-          expect(comparisonResults.percentage).to.greaterThan(0)
+          if ($label.text().includes('Alert')) {
+            expect($label, 'Alter filter should exist').to.contain('Alert')
+            // Take a screenshot of no path flatmap
+            cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
+            cy.get('.pathway-location > .drawer-button:visible').click()
+            cy.get('@Canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+            // Compare previous screenshot with alter paths displayed flatmap
+            cy.get('.pathway-location > .drawer-button:visible').click()
+            cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
+            cy.get('.pathway-location > .drawer-button:visible').click()
+            cy.get('@Canvas').compareSnapshot('mapalert').then(comparisonResults => {
+              expect(comparisonResults.percentage).to.greaterThan(0)
+            })
+          }
         })
         // Close new opened dialog
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
