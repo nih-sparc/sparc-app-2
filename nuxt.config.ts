@@ -160,6 +160,8 @@ export default defineNuxtConfig({
       AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
       AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
       AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+      GITHUB_ORG: process.env.GITHUB_ORG || 'nih-sparc',
+      GITHUB_REPO: process.env.GITHUB_REPO || 'sparc-app-2',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',

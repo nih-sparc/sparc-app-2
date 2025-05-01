@@ -72,6 +72,7 @@
 <script>
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
+import ParseInputMixin from '@/mixins/parse-input/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
@@ -80,7 +81,7 @@ import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 export default {
   name: 'FeedbackForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
     UserContactFormItem
@@ -164,7 +165,11 @@ export default {
   computed: {
     ...mapState(useMainStore, {
       areasOfSparc: state => state.formOptions.areasOfSparc
-    })
+    }),
+    formattedDetailedDescription() {
+      // GitHub only treats double line breaks as a line break, so must do this to retain when the user presses enter key
+      return this.form.detailedDescription?.replace(/\n/g, '<br>\n')
+    },
   },
 
   mounted() {
@@ -188,41 +193,45 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const description = `
-        <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
-        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
-        <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
-        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
-        <b>Email:</b><br>${this.form.user.email}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
-      `
+      const body = `
+<h3>What area of the SPARC Portal is this related to?</h3>${this.form.pageOrResource}\n\n
+<h3>Detailed description:</h3>${this.formattedDetailedDescription}\n\n
+<h3>Screenshots</h3>If applicable, add any screenshots or images here to help explain your feedback.\n\n
+<h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
+<h3>Would you like to receive updates about this submission:</h3>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+<h2>Contact Info</h2>
+<h3>Name</h3>${this.form.user.firstName} ${this.form.user.lastName}\n\n
+<h3>Email</h3>${this.form.user.email}\n\n`
+
       let formData = new FormData();
       formData.append("type", "feedback")
-      formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Feedback Submission: ${this.form.shortDescription}`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
+      formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
+      formData.append("title", `${this.form.shortDescription}`)
+      formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.firstName)
-          }
+      try {
+        const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
+        const url = data?.url
+        if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        } else {
+          this.$emit('submit', this.form.user.firstName, url)
+        }
+      } catch (e) {
+        ElMessage({
+          showClose: true,
+          message: `There was a problem when attempting to submit feedback. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+          type: 'error',
+          duration: 0,
+          dangerouslyUseHTMLString: true
         })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+        this.hasError = true
+      }
+      this.isSubmitting = false
     }
   },
 
