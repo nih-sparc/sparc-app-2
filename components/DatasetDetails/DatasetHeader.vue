@@ -69,7 +69,8 @@
               </span>
             </div>
             <div class="metics-container">
-              <span class="label4">Downloads: {{numDownloadsText}}</span>
+              <span class="label4 mr-32">Citations: {{numCitations}}</span>
+              <span class="label4">Downloads: {{numDownloads}}</span>
             </div>
           </div>
         </el-col>
@@ -186,12 +187,6 @@ export default {
     showCitations: function() {
       return !this.embargoed && this.numCitations !== 0
     },
-    numCitationsText: function() {
-      return this.showCitations ? `${this.numCitations}` : 'N/A'
-    },
-    numDownloadsText: function() {
-      return this.embargoed ? 'N/A' : `${this.numDownloads}`
-    }
   },
 
   methods: {

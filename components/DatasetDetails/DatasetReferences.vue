@@ -16,6 +16,15 @@
       <div v-for="(item, index) in associatedPublicationsDisplay" :key="index">
         <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" />
       </div>
+      <hr v-if="citingPublications" />
+    </div>
+    <div v-if="showCitingPublications">
+      <div class="heading2 mb-8">
+        Publications That Cite This Dataset
+      </div>
+      <div v-for="(item, index) in citingPublicationsDisplay" :key="index">
+        <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.curie" />
+      </div>
       <hr v-if="preprints" />
     </div>
     <div v-if="showPreprints">
@@ -52,11 +61,16 @@ export default {
       type: Array,
       default: () => []
     },
+    citingPublications: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
       primaryPublicationsDisplay: [],
       associatedPublicationsDisplay: [],
+      citingPublicationsDisplay: []
     }
   },
   methods: {
@@ -83,6 +97,11 @@ export default {
       this.addPublicationsForDisplay(this.associatedPublications,
         this.associatedPublicationsDisplay)
     },
+    updateCitingPublicationsDisplay: function() {
+      this.citingPublicationsDisplay.length = 0
+      this.addPublicationsForDisplay(this.citingPublications,
+        this.citingPublicationsDisplay)
+    },
   },
   watch: {
     primaryPublications: {
@@ -94,6 +113,12 @@ export default {
     associatedPublications: {
       handler: function () {
         this.updateAssociatedPublicationsDisplay()
+      },
+      immediate: false
+    },
+    citingPublications: {
+      handler: function () {
+        this.updateCitingPublicationsDisplay()
       },
       immediate: false
     },
@@ -121,6 +146,9 @@ export default {
     setTimeout(() => {
       this.updateAssociatedPublicationsDisplay()
     }, 1000)
+    setTimeout(() => {
+      this.updateCitingPublicationsDisplay()
+    }, 1500)
   }
 }
 </script>
