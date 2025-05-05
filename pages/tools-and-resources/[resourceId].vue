@@ -50,7 +50,7 @@
           </a>
           <template v-if="resource.fields.owner">
             <div class="label4">
-              Owner
+              Contact
             </div>
             <div class="truncated">
               {{ resource.fields.owner }}
