@@ -114,28 +114,6 @@ export default {
               trigger: 'change'
             }
           ],
-          email: [
-            {
-              required: true,
-              message: 'Please enter your email',
-              type: 'email',
-              trigger: 'blur',
-            }
-          ],
-          firstName: [
-            {
-              required: true,
-              message: 'Please enter your first name',
-              trigger: 'blur',
-            }
-          ],
-          lastName: [
-            {
-              required: true,
-              message: 'Please enter your last name',
-              trigger: 'blur',
-            }
-          ]
         },
         shortDescription: [
           {
@@ -196,7 +174,6 @@ export default {
       const body = `
 <h3>What area of the SPARC Portal is this related to?</h3>${this.form.pageOrResource}\n\n
 <h3>Detailed description:</h3>${this.formattedDetailedDescription}\n\n
-<h3>Screenshots</h3>If applicable, add any screenshots or images here to help explain your feedback.\n\n
 <h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
 <h3>Would you like to receive updates about this submission:</h3>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
 <h2>Contact Info</h2>
@@ -209,18 +186,50 @@ export default {
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
+      if (this.isValidEmail(this.form.user.email)) {
+        formData.append("email", this.form.user.email)
+      }
 
       // Save form to sessionStorage
       saveForm(this.form)
 
       try {
         const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
-        const url = data?.url
         if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-        } else {
-          this.$emit('submit', this.form.user.firstName, url)
         }
+        const url = data?.url
+        const status = data?.status
+        const message = data?.message
+        console.log("STATUS = ", status)
+        switch (status) {
+          case 'success':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 'warning':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 'error':
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to create a bug report. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName, url)
       } catch (e) {
         ElMessage({
           showClose: true,

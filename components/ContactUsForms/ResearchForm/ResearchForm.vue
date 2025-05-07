@@ -332,9 +332,8 @@ export default {
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
           }
+          this.$emit('submit', this.form.user.firstName)
         })
         .catch(() => {
           this.hasError = true
