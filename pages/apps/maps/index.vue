@@ -256,12 +256,11 @@ const processEntry = async (route) => {
 }
 
 
-const getAnnotationId = (meta, api, withAnnotation) => {
+const getAnnotationId = (clientOnly, api, withAnnotation) => {
   return new Promise((resolve, reject) => {
     let anonymousAnnotations = undefined
     //Session Storage only available from process
-    if (meta.client)
-      JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
+    if (clientOnly) JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
     if (withAnnotation && anonymousAnnotations) {
       let maxRetry = 3
       const annotationUrl = api + '/annotation/getshareid'
@@ -317,7 +316,7 @@ const getAnnotationState = async ($axios, api, annotationId) => {
   return state
 }
 
-const restoreStateWithUUID = async (meta, route, $axios, sparcApi) => {
+const restoreStateWithUUID = async (clientOnly, route, $axios, sparcApi) => {
   //Restore settings from a saved state
   let uuid = undefined
   let state = undefined
@@ -347,7 +346,7 @@ const restoreStateWithUUID = async (meta, route, $axios, sparcApi) => {
     }
   }
   //Session Storage only available from process
-  if (state?.annotationId && meta.client) {
+  if (state?.annotationId && clientOnly) {
     const annotationData = await getAnnotationState($axios, sparcApi, state.annotationId)
     if (annotationData) {
       sessionStorage.setItem('anonymous-annotation', JSON.stringify(annotationData))
@@ -463,9 +462,10 @@ export default {
     }
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
     const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+    const clientOnly = process.client
 
     if (route.query.id) {
-      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(import.meta, route, $axios, options.sparcApi)
+      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(clientOnly, route, $axios, options.sparcApi)
     } else {
       //Now check if it should open a specific view based on query
       [
@@ -485,6 +485,7 @@ export default {
       startingMap,
       organ_name,
       currentEntry,
+      clientOnly,
       successMessage,
       failMessage,
       facets,
@@ -571,7 +572,7 @@ export default {
           }
         })
       }
-      getAnnotationId(import.meta, this.options.sparcApi, withAnnotation).then((annotationId) => {
+      getAnnotationId(this.clientOnly, this.options.sparcApi, withAnnotation).then((annotationId) => {
         if (annotationId) {
           state.annotationId = annotationId
         }
