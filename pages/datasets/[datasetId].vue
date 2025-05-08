@@ -55,7 +55,7 @@
           </el-col>
           <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
             <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate" :numCitations="numCitations" :numDownloads="numDownloads" />
+              :latestVersionDate="latestVersionDate" :numCitations="citingPublications?.length" :numDownloads="numDownloads" />
             <client-only>
               <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
                 @tab-changed="tabChanged" routeName="datasetDetailsTab">
@@ -68,8 +68,12 @@
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <dataset-references v-if="hasCitations" class="body1" v-show="activeTabId === 'references'"
-                  :primary-publications="primaryPublications" :associated-publications="associatedPublications" />
+                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'references'">
+                  <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
+                  <br />
+                  <hr />
+                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
+                </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
               </content-tab-card>
@@ -103,6 +107,7 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
+import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
@@ -131,6 +136,15 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
     }
   })
   return datasetDetails
+}
+
+const getCitationsInfo = async (config, datasetId, axios) => {
+  try {
+    const { data } = await axios.get(`${config.public.portal_api}/dataset_citations/${datasetId}`)
+    return propOr([], 'citations', data)
+  } catch (e) {
+    return []
+  }
 }
 
 const getDatasetVersions = async (config, datasetId, axios) => {
@@ -217,6 +231,7 @@ export default {
     DatasetActionBox,
     SimilarDatasetsInfoBox,
     DatasetHeader,
+    DatasetMetrics,
     DatasetDescriptionInfo,
     DatasetAboutInfo,
     CitationDetails,
@@ -249,7 +264,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
+      let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -257,6 +272,7 @@ export default {
           $axios,
           $pennsieveApiClient
         ),
+        getCitationsInfo(config, datasetId, $axios),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
         getOrganizationIds(algoliaIndex),
@@ -315,6 +331,7 @@ export default {
         tabs: tabsData,
         versions,
         datasetTypeName,
+        citationsInfo,
         downloadsSummary,
         showTombstone,
         algoliaIndex,
@@ -503,13 +520,17 @@ export default {
       })
       return valObj.length > 0 ? valObj : null
     },
-    hasCitations: function () {
-      return (this.primaryPublications || this.associatedPublications) !== null
+    citingPublications: function () {
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites')
+      return pubs?.length > 0 ? pubs : null
     },
-    numCitations: function () {
-      let numPrimary = this.primaryPublications ? this.primaryPublications.length : 0;
-      let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
-      return numPrimary + numAssociated;
+    protocolSuffixes: function () {
+      return this.associatedPublications?.map(item =>
+        item.doi.startsWith("10.17504/") ? item.doi.replace("10.17504/", "") : null
+      )
+    },
+    hasCitations: function () {
+      return (this.primaryPublications || this.associatedPublications|| this.citingPublications) != null
     },
     hasSourceCode: function () {
       return propOr(null, 'release', this.datasetInfo) !== null
@@ -575,7 +596,7 @@ export default {
         if (newValue && !this.hasError) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
+            this.tabs.splice(5, 0, { label: 'Metrics', id: 'references' })
           }
         }
       },
@@ -752,5 +773,11 @@ export default {
   background-color: $background;
   width: 100%;
   overflow-x: hidden;
+}
+
+hr {
+  border-bottom: none;
+  border-left: none;
+  border-top: 1px solid $lineColor1;
 }
 </style>

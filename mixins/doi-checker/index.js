@@ -15,6 +15,11 @@ export default {
         return !this.invalidDois.includes(publication.doi)
       }).length > 0
     },
+    showCitingPublications() {
+      return this.citingPublications?.filter(publication => {
+        return !this.invalidDois.includes(publication.doi)
+      }).length > 0
+    },
     showPreprints() {
       return this.preprints?.filter(publication => {
         return !this.invalidDois.includes(publication.doi)
