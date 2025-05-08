@@ -256,13 +256,12 @@ const processEntry = async (route) => {
 }
 
 
-const getAnnotationId = (api, withAnnotation) => {
+const getAnnotationId = (process, api, withAnnotation) => {
   return new Promise((resolve, reject) => {
     let anonymousAnnotations = undefined
     //Session Storage only available from process
     if (process.client)
       JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
-    console.log(withAnnotation, anonymousAnnotations)
     if (withAnnotation && anonymousAnnotations) {
       let maxRetry = 3
       const annotationUrl = api + '/annotation/getshareid'
