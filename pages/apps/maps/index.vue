@@ -260,7 +260,7 @@ const getAnnotationId = (clientOnly, api, withAnnotation) => {
   return new Promise((resolve, reject) => {
     let anonymousAnnotations = undefined
     //Session Storage only available from process
-    if (clientOnly) JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
+    if (clientOnly) anonymousAnnotations = JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
     if (withAnnotation && anonymousAnnotations) {
       let maxRetry = 3
       const annotationUrl = api + '/annotation/getshareid'
