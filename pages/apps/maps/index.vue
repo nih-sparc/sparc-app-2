@@ -256,11 +256,11 @@ const processEntry = async (route) => {
 }
 
 
-const getAnnotationId = (process, api, withAnnotation) => {
+const getAnnotationId = (meta, api, withAnnotation) => {
   return new Promise((resolve, reject) => {
     let anonymousAnnotations = undefined
     //Session Storage only available from process
-    if (process.client)
+    if (meta.client)
       JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
     if (withAnnotation && anonymousAnnotations) {
       let maxRetry = 3
@@ -317,7 +317,7 @@ const getAnnotationState = async ($axios, api, annotationId) => {
   return state
 }
 
-const restoreStateWithUUID = async (process, route, $axios, sparcApi) => {
+const restoreStateWithUUID = async (meta, route, $axios, sparcApi) => {
   //Restore settings from a saved state
   let uuid = undefined
   let state = undefined
@@ -347,7 +347,7 @@ const restoreStateWithUUID = async (process, route, $axios, sparcApi) => {
     }
   }
   //Session Storage only available from process
-  if (state?.annotationId && process.client) {
+  if (state?.annotationId && meta.client) {
     const annotationData = await getAnnotationState($axios, sparcApi, state.annotationId)
     if (annotationData) {
       sessionStorage.setItem('anonymous-annotation', JSON.stringify(annotationData))
@@ -465,7 +465,7 @@ export default {
     const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
 
     if (route.query.id) {
-      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(process, route, $axios, options.sparcApi)
+      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(import.meta, route, $axios, options.sparcApi)
     } else {
       //Now check if it should open a specific view based on query
       [
@@ -571,7 +571,7 @@ export default {
           }
         })
       }
-      getAnnotationId(process, this.options.sparcApi, withAnnotation).then((annotationId) => {
+      getAnnotationId(import.meta, this.options.sparcApi, withAnnotation).then((annotationId) => {
         if (annotationId) {
           state.annotationId = annotationId
         }
