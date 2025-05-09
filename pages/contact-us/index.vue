@@ -77,7 +77,7 @@
             Thank you for your submission!
           </p>
           <p v-if="submissionLocation && submissionLocation != ''">
-            Your newly created submission can be found <a :href="submissionLocation" target="_blank">here</a>, please navigate to the link and upload any screenshots or images that you may want to include in the submission.
+            Your newly created submission can be found <a :href="submissionLocation" target="_blank">here</a>.
           </p>
           <a href="#" @click="resetForms">Create another submission</a>
         </div>

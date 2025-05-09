@@ -40,6 +40,26 @@
       />
     </el-form-item>
 
+    <el-form-item class="file-upload" prop="fileAttachment" label="File Upload">
+      <div class="body4 mb-8"><i>To help others understand your issue an image can really help.</i></div>
+      <el-upload
+        ref="fileUploader"
+        action="#"
+        :limit="limit"
+        :auto-upload="false"
+        :on-change="onUploadChange"
+        :on-remove="onRemove"
+        :before-remove="beforeRemove" 
+      >
+        <template #trigger>
+          <el-button class="secondary">Select file</el-button>
+        </template>
+        <template #tip>
+          <span class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
+        </template>
+      </el-upload>
+    </el-form-item>
+
     <el-form-item
       prop="browser"
       label="What browser were you using? *"
@@ -86,16 +106,18 @@
 
 <script>
 import NewsletterMixin from '../NewsletterMixin'
+import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import ParseInputMixin from '@/mixins/parse-input/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
+import { propOr } from 'ramda'
 
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
+  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
     UserContactFormItem
@@ -231,12 +253,12 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
+      const fileName = propOr('', 'name', this.file)
       const body = `
 <h3>Description</h3>${this.formattedDetailedDescription}\n\n
 <h3>Problematic page URL</h3>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}\n\n
 <h3>Steps to reproduce</h3>${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}\n\n
 <h3>Browser</h3>${this.form.browser ? this.form.browser : 'N/A'}\n\n
-<h3>Screenshots</h3>If applicable, add any screenshots or images here to help explain your problem.\n\n
 <h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
 <h3>Do you want to be notified when this issue is resolved?</h3>${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}\n\n
 <h2>Contact Info</h2>
@@ -248,17 +270,53 @@ export default {
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
+      if (this.isValidEmail(this.form.user.email)) {
+        formData.append("email", this.form.user.email)
+      }
+      if (fileName != '') {
+        const extension = fileName.substring(fileName.lastIndexOf('.')); 
+        formData.append("attachment", this.file, `attachment${extension}`)
+      }
+
       // Save form to sessionStorage
       saveForm(this.form)
 
       try {
         const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
-        const url = data?.url
         if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-        } else {
-          this.$emit('submit', this.form.user.firstName, url)
         }
+        const url = data?.url
+        const status = data?.status
+        const message = data?.message
+        switch (status) {
+          case 'success':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 'warning':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 'error':
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to create a bug report. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName, url)
       } catch (e) {
         ElMessage({
           showClose: true,
