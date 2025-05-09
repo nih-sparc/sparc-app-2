@@ -255,7 +255,68 @@ const processEntry = async (route) => {
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, []]
 }
 
-const restoreStateWithUUID = async (route, $axios, sparcApi) => {
+
+const getAnnotationId = (clientOnly, api, withAnnotation) => {
+  return new Promise((resolve, reject) => {
+    let anonymousAnnotations = undefined
+    //Session Storage only available from process
+    if (clientOnly) anonymousAnnotations = JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
+    if (withAnnotation && anonymousAnnotations) {
+      let maxRetry = 3
+      const annotationUrl = api + '/annotation/getshareid'
+      const getId = (attempt) => {
+        fetch(annotationUrl, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ state: anonymousAnnotations }),
+        }).then((response) => {
+          if (response.ok) {
+            return response.json()
+          }
+          throw new Error('Unsuccessful attempt to get annotation id')
+        })
+        .then((data) => {
+          resolve(data.uuid)
+        })
+        .catch(() => {
+          if (maxRetry > attempt) {
+            getId(attempt + 1)
+          } else {
+            reject(undefined)
+          }
+        })
+      }
+      getId(1)
+    } else {
+      resolve(undefined)
+    }
+  });
+}
+
+const getAnnotationState = async ($axios, api, annotationId) => {
+  let state = undefined
+  let maxRetry = 3
+  const getState = async (annotationId) => {
+    await $axios.post(`${api}/annotation/getstate`, {
+      uuid: annotationId,
+    })
+    .then((response) => {
+      if (response && response.data && response.data.state) {
+        state = response.data.state
+      }
+    })
+  }
+  if (annotationId) {
+    for (let attempt = 0; attempt < maxRetry && !state; attempt++) {
+      await getState(annotationId)
+    }
+  }
+  return state
+}
+
+const restoreStateWithUUID = async (clientOnly, route, $axios, sparcApi) => {
   //Restore settings from a saved state
   let uuid = undefined
   let state = undefined
@@ -284,8 +345,20 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
       await getState(uuid)
     }
   }
-  if (successMessage) {
-    failMessage = undefined
+  //Session Storage only available from process
+  if (state?.annotationId && clientOnly) {
+    const annotationData = await getAnnotationState($axios, sparcApi, state.annotationId)
+    if (annotationData) {
+      sessionStorage.setItem('anonymous-annotation', JSON.stringify(annotationData))
+    } else {
+      failMessage =
+        `Sorry! We can not retrieve anonymous annotations. It may have exceeded 30 days since the annotations
+        have been stored.`
+    }
+  } else {
+    if (successMessage) {
+      failMessage = undefined
+    }
   }
   return [uuid, state, successMessage, failMessage]
 }
@@ -389,9 +462,10 @@ export default {
     }
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
     const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+    const clientOnly = process.client
 
     if (route.query.id) {
-      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(route, $axios, options.sparcApi)
+      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(clientOnly, route, $axios, options.sparcApi)
     } else {
       //Now check if it should open a specific view based on query
       [
@@ -411,6 +485,7 @@ export default {
       startingMap,
       organ_name,
       currentEntry,
+      clientOnly,
       successMessage,
       failMessage,
       facets,
@@ -463,7 +538,7 @@ export default {
   },
   fetchOnServer: false,
   methods: {
-    updateUUID: function () {
+    updateUUID: function (withAnnotation) {
       let url = this.options.sparcApi + `map/getshareid`
       let state = this._instance.getState()
       let maxRetry = 3
@@ -497,7 +572,15 @@ export default {
           }
         })
       }
-      getShareLink(1)
+      getAnnotationId(this.clientOnly, this.options.sparcApi, withAnnotation).then((annotationId) => {
+        if (annotationId) {
+          state.annotationId = annotationId
+        }
+        getShareLink(1)
+      })
+      .catch(() =>{
+        failMessage("We are unable to create a permalink at this moment, please try again later.")
+      })
     },
     facetsUpdated: function () {
       if (this.facets.length > 0 && this._instance) this._instance.openSearch(this.facets, "")
@@ -541,6 +624,7 @@ export default {
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .maps {
+
   background-color: #f5f7fa;
 
   .portalmapcontainer {

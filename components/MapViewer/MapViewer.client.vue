@@ -8,7 +8,7 @@
       :options="options"
       :share-link="shareLink"
       :useHelpModeDialog="true"
-      @updateShareLinkRequested="$emit('updateShareLinkRequested')"
+      @updateShareLinkRequested="$emit('updateShareLinkRequested', $event)"
       @isReady="$emit('isReady')"
       @mapLoaded="$emit('mapLoaded', $event)"
       @trackEvent="onTrackEvent"
@@ -77,6 +77,10 @@
   height: 100%;
   border: solid 1px #dcdfe6;
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.06);
+
+  .el-button.share-options {
+    font-size:11px!important;
+  }
 
   .map-icon {
     color: #8300bf;
