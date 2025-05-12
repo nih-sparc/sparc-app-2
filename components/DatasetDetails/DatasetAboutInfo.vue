@@ -28,8 +28,8 @@
       <span v-if="(associatedProjects == null || associatedProjects.length < 1) && (externalProjectAwardIds == null || externalProjectAwardIds.length < 1)">None specified</span>
       <template v-else>
         <span v-for="(project, index) in associatedProjects" :key="index">
-          <nuxt-link :to="getProjectLink(project)">
-          {{ getAwardNumber(project) }}
+          <nuxt-link v-for="(award, index) in getAwardNumbers(project)" :key="award.title" :to="getProjectLink(project)">
+            {{ award.title }}<span v-if="index < getAwardNumbers(project).length - 1">, </span>
           </nuxt-link>
           <span v-if="index < associatedProjects.length - 1 || externalProjectAwardIds.length > 0">, </span>
         </span>
@@ -133,10 +133,8 @@ export default {
      * Construct the sparc award number
      * @returns {String}
      */
-    getAwardNumber: function(associatedProject) {
-      const fields = propOr(null, 'fields', associatedProject)
-      const awardNumber = propOr(null, 'awardId', fields)
-      return awardNumber !== null ? `NIH ${awardNumber}` : 'N/A'
+    getAwardNumbers: function (associatedProject) {
+      return  pathOr([], ['fields', 'awards'], associatedProject).map(award => award.fields)
     },
     /**
      * Get the funding program name

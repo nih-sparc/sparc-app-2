@@ -41,15 +41,18 @@
             </td>
             <td v-html="highlightMatches(scope.row.fields.program.join(', '), $route.query.search)" />
           </tr>
-          <tr v-if="scope.row.fields.awardId">
+          <tr v-if="scope.row.fields.awards?.length > 0">
             <td class="property-name-column">
-              Award
+              Award(s)
             </td>
             <td>
-              <a :href="getNihReporterUrl(scope)" target="_blank">
-                {{ scope.row.fields.awardId }}
-                <svgo-icon-open class="open-icon" v-if="!isInternalLink(getNihReporterUrl(scope))" />
-              </a>
+              <template v-for="(award, index) in scope.row.fields.awards" :key="award.fields.title">
+                <a :href="award.fields.url" target="_blank">
+                  {{ award.fields.title }}
+                  <svgo-icon-open class="open-icon" v-if="!isInternalLink(award.fields.url)" />
+                </a>
+                <span v-if="index < scope.row.fields.awards.length - 1">, </span>
+              </template>
             </td>
           </tr>
         </table>

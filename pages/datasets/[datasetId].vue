@@ -702,7 +702,8 @@ export default {
           content_type: this.$config.public.ctf_project_id,
         })
         const associatedProjects = projects.items?.filter((project) => {
-          return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project))
+          const awards = pathOr([], ['fields', 'awards'], project)
+          return awards.some(award => sparcAwardNumbers.includes(award.fields.title))
         })
         return associatedProjects || []
       } catch (error) {
