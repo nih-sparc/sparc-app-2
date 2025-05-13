@@ -188,8 +188,8 @@ export default {
       return item !== undefined ? 
         (item.types[0].name === 'computational model' ? 'simulation'
           : item.types[0].name === 'device' ? 'device'
-          : 'dataset') :
-        ''
+          : undefined) :
+        undefined
     }
   }
 }

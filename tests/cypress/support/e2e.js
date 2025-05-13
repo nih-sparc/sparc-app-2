@@ -29,3 +29,13 @@ if (Cypress.config('isInteractive')) {
 }
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+import { addCompareSnapshotCommand } from 'cypress-visual-regression/dist/command';
+
+addCompareSnapshotCommand({
+    capture: 'fullPage', // cypress screenshot option
+    errorThreshold: 0.5, // plugin threshold option
+    pixelmatchOptions: {
+        threshold: 0 // pixelmatch threshold option
+    }
+})

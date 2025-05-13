@@ -72,6 +72,10 @@ useHead({
       content: 'SPARC Portal'
     },
     {
+      name: "google-site-verification",
+      content: `${config.public.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID}`
+    },
+    {
       hid: 'og:image',
       property: 'og:image',
       content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
@@ -112,6 +116,7 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
     const { items } = await $contentfulClient.getEntries({
       content_type: config.public.ctf_consortia_content_type_id,
       order: 'fields.displayOrder',
+      'fields.displayOnHomepage': true,
     })
     return items
   } catch (err) {
@@ -137,14 +142,14 @@ const { data: featuredDataCategories, error: featuredDataCategoriesError } = use
 })
 
 const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
-  const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
-  return response.data?.datasets
+  const response = await $axios.get(`${config.public.discover_api_host}/datasets/32`)
+  return [response.data]
 });
 
 const institutionId = computed(() => 
   pathOr(
     undefined,
-    ['featuredProject', 'fields', 'institution', 'sys', 'id'],
+    ['featuredProject', 'fields', 'institutions', 0, 'sys', 'id'],
     homepageData?.value?.fields
   )
 );

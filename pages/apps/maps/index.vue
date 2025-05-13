@@ -10,16 +10,40 @@
   <div class="maps">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <page-hero class="py-24">
-      <h1>Maps</h1>
-      <p>
-        SPARC is creating detailed PNS maps based on SPARC data and information
-        available from the literature. The maps you see here are not yet
-        comprehensive and are largely derived from regions of the nervous system
-        where SPARC data has been published on this site, supplemented in some
-        regions by published knowledge of rat anatomy. New connectivity and
-        species specificity in anatomy and connectivity will be added as the
-        SPARC program progresses.
-      </p>
+      <div class="page-hero-content">
+        <div>
+          <h1>Maps</h1>
+          <p>
+            SPARC is creating detailed PNS maps based on SPARC data and information
+            available from the literature. The maps you see here are not yet
+            comprehensive and are largely derived from regions of the nervous system
+            where SPARC data has been published on this site, supplemented in some
+            regions by published knowledge of rat anatomy. New connectivity and
+            species specificity in anatomy and connectivity will be added as the
+            SPARC program progresses.
+          </p>
+        </div>
+        <div class="portal-features">
+          <div class="feature-container" v-for="item in appEntries">
+            <img class="logo" :src="item.logoUrl" />
+            <el-popover width="fit-content" trigger="click">
+              <template #reference>
+                <el-button class="secondary">Open {{ item.buttonText }}</el-button>
+              </template>
+              <template #default>
+                <div class="popover-content" style="display: flex; flex-direction: column; gap: 0.5rem">
+                  <el-button 
+                    v-for="entry in mapEntries[item.buttonText]" 
+                    @click="setCurrentEntry(entry, item.buttonText)"
+                  >
+                    {{ entry }}
+                  </el-button>
+                </div>
+              </template>
+            </el-popover>
+          </div>
+        </div>
+      </div>
     </page-hero>
     <div ref="mappage" class="page-wrap portalmapcontainer">
       <MapViewer class="mapviewer" ref="mapviewer" :state="state" :starting-map="startingMap" :options="options"
@@ -29,12 +53,12 @@
 </template>
 
 <script>
-
 import flatmaps from '@/services/flatmaps'
 import scicrunch from '@/services/scicrunch'
 
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 
+import { pathOr } from 'ramda'
 import { extractS3BucketName } from '@/utils/common'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 import { getAlgoliaFacets, facetPropPathMapping } from '@/utils/algolia'
@@ -231,7 +255,68 @@ const processEntry = async (route) => {
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, []]
 }
 
-const restoreStateWithUUID = async (route, $axios, sparcApi) => {
+
+const getAnnotationId = (clientOnly, api, withAnnotation) => {
+  return new Promise((resolve, reject) => {
+    let anonymousAnnotations = undefined
+    //Session Storage only available from process
+    if (clientOnly) anonymousAnnotations = JSON.parse(sessionStorage.getItem('anonymous-annotation')) || undefined
+    if (withAnnotation && anonymousAnnotations) {
+      let maxRetry = 3
+      const annotationUrl = api + '/annotation/getshareid'
+      const getId = (attempt) => {
+        fetch(annotationUrl, {
+          method: 'POST',
+          headers: {
+            'Content-type': 'application/json',
+          },
+          body: JSON.stringify({ state: anonymousAnnotations }),
+        }).then((response) => {
+          if (response.ok) {
+            return response.json()
+          }
+          throw new Error('Unsuccessful attempt to get annotation id')
+        })
+        .then((data) => {
+          resolve(data.uuid)
+        })
+        .catch(() => {
+          if (maxRetry > attempt) {
+            getId(attempt + 1)
+          } else {
+            reject(undefined)
+          }
+        })
+      }
+      getId(1)
+    } else {
+      resolve(undefined)
+    }
+  });
+}
+
+const getAnnotationState = async ($axios, api, annotationId) => {
+  let state = undefined
+  let maxRetry = 3
+  const getState = async (annotationId) => {
+    await $axios.post(`${api}/annotation/getstate`, {
+      uuid: annotationId,
+    })
+    .then((response) => {
+      if (response && response.data && response.data.state) {
+        state = response.data.state
+      }
+    })
+  }
+  if (annotationId) {
+    for (let attempt = 0; attempt < maxRetry && !state; attempt++) {
+      await getState(annotationId)
+    }
+  }
+  return state
+}
+
+const restoreStateWithUUID = async (clientOnly, route, $axios, sparcApi) => {
   //Restore settings from a saved state
   let uuid = undefined
   let state = undefined
@@ -260,8 +345,20 @@ const restoreStateWithUUID = async (route, $axios, sparcApi) => {
       await getState(uuid)
     }
   }
-  if (successMessage) {
-    failMessage = undefined
+  //Session Storage only available from process
+  if (state?.annotationId && clientOnly) {
+    const annotationData = await getAnnotationState($axios, sparcApi, state.annotationId)
+    if (annotationData) {
+      sessionStorage.setItem('anonymous-annotation', JSON.stringify(annotationData))
+    } else {
+      failMessage =
+        `Sorry! We can not retrieve anonymous annotations. It may have exceeded 30 days since the annotations
+        have been stored.`
+    }
+  } else {
+    if (successMessage) {
+      failMessage = undefined
+    }
   }
   return [uuid, state, successMessage, failMessage]
 }
@@ -318,11 +415,25 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   return [startingMap, organ_name, currentEntry, successMessage, failMessage, facets]
 }
 
+const constructMapEntries = (apps) => {
+  if (!apps) return []
+  return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
+    const words = pathOr('', ['fields', 'logo', 'fields', 'title'], app).split(" ");
+    const buttonText = words.map((word) => {
+      return word[0].toUpperCase() + word.substring(1);
+    }).join(" ");
+    return {
+      buttonText,
+      logoUrl: pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], app),
+    }
+  })
+}
+
 export default {
   name: 'MapsPage',
   async setup() {
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient, $contentfulClient } = useNuxtApp()
     const router = useRouter()
     const route = useRoute()
     let startingMap = "AC"
@@ -350,9 +461,11 @@ export default {
       options.sparcApi = options.sparcApi + '/'
     }
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+    const clientOnly = process.client
 
     if (route.query.id) {
-      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(route, $axios, options.sparcApi)
+      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(clientOnly, route, $axios, options.sparcApi)
     } else {
       //Now check if it should open a specific view based on query
       [
@@ -372,12 +485,14 @@ export default {
       startingMap,
       organ_name,
       currentEntry,
+      clientOnly,
       successMessage,
       failMessage,
       facets,
       uuid,
       state,
-      viewingMode
+      viewingMode,
+      appEntries: constructMapEntries(appPage.fields?.apps)
     }
   },
   data() {
@@ -398,7 +513,12 @@ export default {
           label: 'SPARC Apps',
         },
       ],
-      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`
+      shareLink: `${process.env.ROOT_URL}${this.$route.fullPath}`,
+      mapEntries: {
+        'AC Map': ['Human Female', 'Human Male', 'Rat', 'Mouse', 'Pig', 'Cat'],
+        '3D Whole Body': ['Human', 'Rat'],
+        'FC Map': ['Functional Connectivity'],
+      }
     }
   },
   mounted: function () {
@@ -418,7 +538,7 @@ export default {
   },
   fetchOnServer: false,
   methods: {
-    updateUUID: function () {
+    updateUUID: function (withAnnotation) {
       let url = this.options.sparcApi + `map/getshareid`
       let state = this._instance.getState()
       let maxRetry = 3
@@ -452,7 +572,15 @@ export default {
           }
         })
       }
-      getShareLink(1)
+      getAnnotationId(this.clientOnly, this.options.sparcApi, withAnnotation).then((annotationId) => {
+        if (annotationId) {
+          state.annotationId = annotationId
+        }
+        getShareLink(1)
+      })
+      .catch(() =>{
+        failMessage("We are unable to create a permalink at this moment, please try again later.")
+      })
     },
     facetsUpdated: function () {
       if (this.facets.length > 0 && this._instance) this._instance.openSearch(this.facets, "")
@@ -460,6 +588,19 @@ export default {
     currentEntryUpdated: function () {
       if (this._instance && this.currentEntry) {
         this._instance.setCurrentEntry(this.currentEntry)
+      }
+    },
+    setCurrentEntry: function (entry, type) {
+      let mapEntry = {}      
+      if (type === 'AC Map') {
+        mapEntry = {type: 'MultiFlatmap', resource: entry}
+      } else if (type === '3D Whole Body') {
+        mapEntry = {type: 'Scaffold', isBodyScaffold: true, label: entry}
+      } else if (type === 'FC Map') {
+        mapEntry = {type: 'Flatmap', resource: entry.replace(' ', ''), label: 'Functional'}
+      }
+      if (this._instance) {
+        this._instance.setCurrentEntry(mapEntry)
       }
     },
     changeViewingMode: function (map) {
@@ -483,6 +624,7 @@ export default {
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
 .maps {
+
   background-color: #f5f7fa;
 
   .portalmapcontainer {
@@ -511,6 +653,36 @@ export default {
       padding-top: 0;
     }
   }
+}
+
+.page-hero-content {
+  display: flex;
+  align-items: center;
+
+  @media screen and (max-width: 64rem) {
+    display: block;
+  }
+}
+
+.portal-features {
+  display: flex;
+  width: 33%;
+}
+
+.feature-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+
+  .logo {
+    height: 6rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.el-button+.el-button {
+  margin-left: 0px;
 }
 </style>
 

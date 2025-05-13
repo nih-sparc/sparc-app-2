@@ -1,4 +1,5 @@
 import { defineConfig } from "cypress";
+import { configureVisualRegression } from 'cypress-visual-regression';
 import dynamicConfig from './tests/cypress/support/dynamicConfig.js'
 
 export default defineConfig({
@@ -19,9 +20,15 @@ export default defineConfig({
     testIsolation: true,
     // pageLoadTimeout: 1024*1024*1024,
     setupNodeEvents(on, config) {
+      configureVisualRegression(on)
       return dynamicConfig(config)
     },
     env: {
+      visualRegressionType: 'regression',
+      visualRegressionBaseDirectory: 'tests/cypress/screenshots/mapsviewer.cy.js/base',
+      visualRegressionDiffDirectory: 'tests/cypress/screenshots/diff',
+      visualRegressionGenerateDiff: 'always',
+      visualRegressionFailSilently: true,
       PORTAL_API: process.env.PORTAL_API_HOST ? process.env.PORTAL_API_HOST : 'https://sparc-api.herokuapp.com',
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
@@ -33,7 +40,7 @@ export default defineConfig({
       TAXON_MODELS: process.env.TAXON_MODELS ? process.env.TAXON_MODELS : 'Rat, Pig',
       THREE_SYNC_VIEW: process.env.THREE_SYNC_VIEW ? process.env.THREE_SYNC_VIEW : 'Human Male',
       SEARCH_IN_MAP: process.env.SEARCH_IN_MAP ? process.env.SEARCH_IN_MAP : 'Heart',
-      SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '150, 155',
+      SCAFFOLD_DATASET_IDS: process.env.SCAFFOLD_DATASET_IDS ? process.env.SCAFFOLD_DATASET_IDS : '100, 103',
     }
   },
   fixturesFolder: "tests/cypress/fixtures",

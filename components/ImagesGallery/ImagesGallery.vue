@@ -1,37 +1,26 @@
 <template>
   <div class="full-size">
-      <div v-if="loading" class="loading-gallery" v-loading="loading" />
-      <div v-else-if="hasError">
-        There was an error loading the gallery items
+    <div v-if="loading" class="loading-gallery" v-loading="loading" />
+    <div v-else-if="hasError">There was an error loading the gallery items</div>
+    <div v-else-if="galleryItems.length > 0" :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
+      <div v-if="hasDescription" class="description-info">
+        <p>
+          <strong>Data collection:</strong>
+          {{ description }}
+        </p>
+        <hr />
       </div>
-      <div v-else-if="galleryItems.length > 0" :class="['gallery-container', { 'one-item': galleryItems.length === 1 }]">
-        <div v-if="hasDescription" class="description-info">
-          <p>
-            <strong>Data collection:</strong>
-            {{ description }}
-          </p>
-          <hr />
-        </div>
-        <div class="filter-container mb-16">
-          <span>
-            Filter gallery: 
-          </span>
-          <multi-select
-            class="filter-dropdown"
-            :options="galleryFilterOptions"
-            @selection-changed="galleryFilterChanged"
-          />
-        </div>
-        <gallery
-          class="file-viewer-gallery"
-          galleryItemType="fileViewer"
-          :items="galleryItems"
-          :cardWidth="13.8"
+      <div class="filter-container mb-16">
+        <span> Filter gallery: </span>
+        <multi-select
+          class="filter-dropdown"
+          :options="galleryFilterOptions"
+          @selection-changed="galleryFilterChanged"
         />
       </div>
-      <div v-else>
-        This dataset does not contain gallery items
-      </div>
+      <gallery class="file-viewer-gallery" galleryItemType="fileViewer" :items="galleryItems" :cardWidth="13.8" />
+    </div>
+    <div v-else>This dataset does not contain gallery items</div>
   </div>
 </template>
 
@@ -60,22 +49,10 @@ import { baseName, extractSection, extractS3BucketName } from '@/utils/common'
 const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFacetsData) => {
   let scicrunchData = {}
   let scicrunch_response = []
-  let biolucida_response = []
   try {
     await scicrunch.getDatasetInfoFromDOI(datasetDoi).then(response => {
       scicrunch_response = response
     })
-    // Inner try-catch for biolucida request errors
-    try {
-      await biolucida.searchDataset(datasetId).then(response => {
-        biolucida_response = response
-      })
-    } catch (error) {
-      console.error(
-        'Hit error in the biolucida request. ( pages/_datasetId.vue ). Error: ',
-        error
-      )
-    }
 
     if (scicrunch_response.data.result.length > 0) {
       scicrunchData = scicrunch_response.data.result[0]
@@ -83,18 +60,14 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         id: Number(datasetId),
         version: datasetVersion
       }
-      if (biolucida_response.status === 'success') {
-        scicrunchData['dataset_images'] = pathOr([], ['dataset_images'], biolucida_response)
-      }
       // Check for flatmap data
       if (scicrunchData.organs) {
         let flatmapData = []
         let species = undefined
         // Get species data from algolia if it exists
-        if (datasetFacetsData){
-          let speciesArray = datasetFacetsData.filter(item=>item.label==="Species")
-          if (speciesArray && speciesArray.length > 0)
-            species = speciesArray[0].children[0].label.toLowerCase()
+        if (datasetFacetsData) {
+          let speciesArray = datasetFacetsData.filter(item => item.label === 'Species')
+          if (speciesArray && speciesArray.length > 0) species = speciesArray[0].children[0].label.toLowerCase()
         }
 
         // check if there is a flatmap for the given species, use human if there is not
@@ -103,7 +76,8 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         // Check if flatmap has the anatomy for this species. This is done by asking the flatmap knowledge base
         // if a flatmap of (species) has (anatomy)
         let foundAnatomy = []
-        if (scicrunchData.organs[0]) { // Check if dataset has organ annotation
+        if (scicrunchData.organs[0]) {
+          // Check if dataset has organ annotation
           // Send a requst to flatmap knowledgebase
           const anatomy = scicrunchData.organs.map(organ => organ.curie)
           const data = await flatmaps.anatomyQuery(taxo, anatomy)
@@ -128,7 +102,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
             let organData = {
               ...speciesData,
               uberonid: organ.curie,
-              organ: organ.name,
+              organ: organ.name
             }
             flatmapData.push(organData)
           }
@@ -142,10 +116,7 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
       }
     }
   } catch (e) {
-    console.error(
-      'Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ',
-      e
-    )
+    console.error('Hit error in the scicrunch processing. ( pages/_datasetId.vue ). Error: ', e)
     return {
       scicrunchData: {},
       hasError: true
@@ -230,9 +201,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useMainStore, 
-      ['datasetInfo', 'datasetFacetsData']
-    ),
+    ...mapState(useMainStore, ['datasetInfo', 'datasetFacetsData']),
     datasetId() {
       return propOr('', 'id', this.datasetInfo)
     },
@@ -244,16 +213,11 @@ export default {
     },
     imageCount() {
       return (
-        this.datasetImages.length +
-        this.datasetScaffolds.length +
-        this.datasetPlots.length +
-        this.datasetVideos.length
+        this.datasetImages.length + this.datasetScaffolds.length + this.datasetPlots.length + this.datasetVideos.length
       )
     },
     numberOfImagesVisible() {
-      const imagesVisibleCount =
-        (this.$el.parentElement.clientWidth - 2 * this.controlWidth) /
-        this.slideNaturalWidth
+      const imagesVisibleCount = (this.$el.parentElement.clientWidth - 2 * this.controlWidth) / this.slideNaturalWidth
       return Math.floor(imagesVisibleCount)
     },
     thumbnails() {
@@ -272,8 +236,7 @@ export default {
           })
         })
         return items
-      }
-      else {
+      } else {
         return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
       }
     },
@@ -304,29 +267,31 @@ export default {
     this.setDatasetInfo(newDatasetInfo)
 
     // Get all timeseries files (those with an '.edf' extension)
-    const timeseriesData = this.$config.public.SHOW_TIMESERIES_VIEWER == 'true'
-    ? await this.$axios.get(`${this.$config.public.discover_api_host}/search/files?fileType=edf&datasetId=${this.datasetId}`)
-        .then(({ data }) => {
-          let timeseriesData = []
-          data.files.forEach(file => {
-            const filePath = file.uri.substring(file.uri.indexOf('files'))
-            const linkUrl =
-                this.$config.public.ROOT_URL +
-                `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
+    const timeseriesData =
+      this.$config.public.SHOW_TIMESERIES_VIEWER == 'true'
+        ? await this.$axios
+            .get(`${this.$config.public.discover_api_host}/search/files?fileType=edf&datasetId=${this.datasetId}`)
+            .then(({ data }) => {
+              let timeseriesData = []
+              data.files.forEach(file => {
+                const filePath = file.uri.substring(file.uri.indexOf('files'))
+                const linkUrl =
+                  this.$config.public.ROOT_URL +
+                  `/datasets/timeseriesviewer?&dataset_id=${file.datasetId}&dataset_version=${file.datasetVersion}&file_path=${filePath}`
 
-            timeseriesData.push({
-              title: file.name,
-              type: 'Timeseries',
-              thumbnail: undefined,
-              link: linkUrl
+                timeseriesData.push({
+                  title: file.name,
+                  type: 'Timeseries',
+                  thumbnail: undefined,
+                  link: linkUrl
+                })
+              })
+              return timeseriesData
             })
-          })
-          return timeseriesData
-        })
-        .catch(() => {
-          return []
-        }) 
-    : []
+            .catch(() => {
+              return []
+            })
+        : []
     this.timeseriesData = timeseriesData
 
     this.loading = false
@@ -334,7 +299,7 @@ export default {
   watch: {
     markdown: {
       immediate: true,
-      handler: function(text) {
+      handler: function (text) {
         const html = this.parseMarkdown(text)
         this.description = extractSection(/data collect[^:]+:/i, html)
       }
@@ -342,14 +307,14 @@ export default {
     timeseriesData: {
       deep: true,
       immediate: true,
-      handler: function(data) {
+      handler: function (data) {
         this.timeseriesItems = data
       }
     },
     datasetScicrunch: {
       deep: true,
       immediate: true,
-      handler: function(scicrunchData) {
+      handler: function (scicrunchData) {
         let items = []
         let bItems = []
         const baseRoute = this.$router.options.base || '/'
@@ -363,39 +328,38 @@ export default {
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
           items.push(
-            ...Array.from(
-              scicrunchData['abi-scaffold-metadata-file'],
-              scaffold => {
-                const file_path = scaffold.dataset.path
-                const id = scaffold.identifier
-                const thumbnail = this.getThumbnailPathForScaffold(
-                  scaffold,
-                  scicrunchData["abi-scaffold-view-file"],
-                  scicrunchData["abi-thumbnail"],
-                  index
-                )
-                this.retrieveThumbnailFromInfo(items, {
-                    id,
-                    fetchAttempts: 0,
-                    datasetId,
-                    mimetype: thumbnail.mimetype.name,
-                    file_path: thumbnail.dataset.path,
-                    s3Bucket: s3Bucket
-                  },
-                  this.defaultScaffoldImg
-                )
-                let filePath = encodeURIComponent(`files/${file_path}`)
-                const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
-                index += 1
-                return {
+            ...Array.from(scicrunchData['abi-scaffold-metadata-file'], scaffold => {
+              const file_path = scaffold.dataset.path
+              const id = scaffold.identifier
+              const thumbnail = this.getThumbnailPathForScaffold(
+                scaffold,
+                scicrunchData['abi-scaffold-view-file'],
+                scicrunchData['abi-thumbnail'],
+                index
+              )
+              this.retrieveThumbnailFromInfo(
+                items,
+                {
                   id,
-                  title: baseName(file_path),
-                  type: 'Scaffold',
-                  thumbnail: this.defaultScaffoldImg,
-                  link: linkUrl
-                }
+                  fetchAttempts: 0,
+                  datasetId,
+                  mimetype: thumbnail.mimetype.name,
+                  file_path: thumbnail.dataset.path,
+                  s3Bucket: s3Bucket
+                },
+                this.defaultScaffoldImg
+              )
+              let filePath = encodeURIComponent(`files/${file_path}`)
+              const linkUrl = `${baseRoute}maps?type=scaffold&dataset_id=${datasetId}&dataset_version=${datasetVersion}&file_path=${filePath}`
+              index += 1
+              return {
+                id,
+                title: baseName(file_path),
+                type: 'Scaffold',
+                thumbnail: this.defaultScaffoldImg,
+                link: linkUrl
               }
-            )
+            })
           )
         }
 
@@ -410,9 +374,13 @@ export default {
           scicrunchData.video.forEach(async videoFile => {
             let thumbnail = this.defaultVideoImg
             if (thumbnailPaths[videoFile.dataset.path]) {
-              const url = new URL(`${this.$config.public.portal_api}/s3-resource/${datasetId}/files/${thumbnailPaths[videoFile.dataset.path]}`)
+              const url = new URL(
+                `${this.$config.public.portal_api}/s3-resource/${datasetId}/files/${
+                  thumbnailPaths[videoFile.dataset.path]
+                }`
+              )
               url.searchParams.append('encodeBase64', true)
-              const img = await fetch(url).then(resp => resp.ok ? resp.text() : null)
+              const img = await fetch(url).then(resp => (resp.ok ? resp.text() : null))
               if (img) {
                 thumbnail = 'data:image/png;base64,' + img
               }
@@ -492,20 +460,21 @@ export default {
             ...Array.from(scicrunchData['abi-plot'], plot => {
               const id = plot.identifier
               const file_path = plot.dataset.path
-              const thumbnail = this.getThumbnailPathForPlot(
-                plot,
-                scicrunchData["abi-thumbnail"]
-              )
-              this.retrieveThumbnailFromInfo(items, {
-                  id,
-                  fetchAttempts: 0,
-                  datasetId,
-                  mimetype: thumbnail.mimetype.name,
-                  file_path: thumbnail.dataset.path,
-                  s3Bucket: s3Bucket
-                },
-                this.defaultPlotImg
-              )
+              const thumbnail = this.getThumbnailPathForPlot(plot, scicrunchData['abi-thumbnail'])
+              if (thumbnail.mimetype.name !== '' && thumbnail.dataset.path !== '') {
+                this.retrieveThumbnailFromInfo(
+                  items,
+                  {
+                    id,
+                    fetchAttempts: 0,
+                    datasetId,
+                    mimetype: thumbnail.mimetype.name,
+                    file_path: thumbnail.dataset.path,
+                    s3Bucket: s3Bucket
+                  },
+                  this.defaultPlotImg
+                )
+              }
               const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
               return {
                 id,
@@ -536,50 +505,41 @@ export default {
         }
         this.scicrunchItems = items
 
-        if ('dataset_images' in scicrunchData && ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData)) {
+        if ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData) {
           const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
           // Images need to exist in both Scicrunch and Biolucida
-          biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach((bObject) => {
-            const biolucidaId = pathOr("", ['biolucida','identifier'], bObject)
+          biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach(bObject => {
+            const biolucidaId = pathOr('', ['biolucida', 'identifier'], bObject)
             if (biolucidaId) {
-              const dataset_image = scicrunchData['dataset_images'].findLast((image) => {
-                return image.image_id == biolucidaId
-              })
-              if (dataset_image) {
-                let filePath = ""
-                filePath = "files/" + pathOr("", ['dataset','path'], bObject)
-                // If we can naviagte directly to the file path then do it, otherwise we have to redirect from the datasets/biolucida page
-                const viewEncoding = dataset_image.share_link.replace(
-                  this.$config.public.BL_SHARE_LINK_PREFIX,
-                  ''
-                )
-                let linkUrl = filePath != "" ?
-                  baseRoute +
-                  `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}` :
-                  baseRoute +
-                  'datasets/biolucidaviewer/' +
-                  dataset_image.image_id +
-                  '?view=' +
-                  viewEncoding +
-                  '&dataset_version=' +
-                  datasetVersion +
-                  '&dataset_id=' +
-                  datasetId +
-                  '&item_id=' +
-                  dataset_image.sourcepkg_id
+              const sourcepkg_id = pathOr('', ['identifier'], bObject)
+              if (sourcepkg_id) {
+                let filePath = ''
+                filePath = 'files/' + pathOr('', ['dataset', 'path'], bObject)
+                let linkUrl =
+                  filePath != ''
+                    ? baseRoute + `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}`
+                    : baseRoute +
+                      'datasets/biolucidaviewer/' +
+                      biolucidaId +
+                      '&dataset_version=' +
+                      datasetVersion +
+                      '&dataset_id=' +
+                      datasetId +
+                      '&item_id=' +
+                      sourcepkg_id
                 bItems.push({
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   title: null,
                   type: 'Image',
                   thumbnail: null,
                   link: linkUrl
                 })
                 this.getThumbnailFromBiolucida(bItems, {
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   fetchAttempts: 0
                 })
                 this.getImageInfoFromBiolucida(bItems, {
-                  id: dataset_image.image_id,
+                  id: biolucidaId,
                   fetchAttempts: 0
                 })
               }
@@ -591,9 +551,9 @@ export default {
         const galleryItems = this.scicrunchItems.concat(this.biolucidaItems)
         const filterLabels = [...new Set(galleryItems.map(item => item.type))]
         const labelCounts = galleryItems.reduce((counts, item) => {
-          counts[item.type] = (counts[item.type] || 0) + 1;
-          return counts;
-        }, {});
+          counts[item.type] = (counts[item.type] || 0) + 1
+          return counts
+        }, {})
         this.galleryFilterOptions = filterLabels.map((type, index) => ({
           value: index,
           label: `${type} (${labelCounts[type]})`
@@ -677,32 +637,26 @@ export default {
       }
     },
     retrieveThumbnailFromInfo(items, info, defaultImg) {
-      discover
-        .fetch(info.datasetId, info.file_path, true, info.s3Bucket)
-        .then(
-          response => {
-            let item = items.find(x => x.id === info.id)
-            this.scaleThumbnailImage(item, {
-              mimetype: info.mimetype,
-              data: response.data
-            })
-          },
-          reason => {
-            if (
-              reason.message.includes('timeout') &&
-              reason.message.includes('exceeded') &&
-              info.fetchAttempts < 3
-            ) {
-              info.fetchAttempts += 1
-              return this.retrieveThumbnailFromInfo(items, info)
-            } else {
-              let item = ref(items.find(x => x.id === info.id))
-              item.value['thumbnail'] = defaultImg
-            }
-
-            return Promise.reject('Maximum iterations reached.')
+      discover.fetch(info.datasetId, info.file_path, true, info.s3Bucket).then(
+        response => {
+          let item = items.find(x => x.id === info.id)
+          this.scaleThumbnailImage(item, {
+            mimetype: info.mimetype,
+            data: response.data
+          })
+        },
+        reason => {
+          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && info.fetchAttempts < 3) {
+            info.fetchAttempts += 1
+            return this.retrieveThumbnailFromInfo(items, info)
+          } else {
+            let item = ref(items.find(x => x.id === info.id))
+            item.value['thumbnail'] = defaultImg
           }
-        )
+
+          return Promise.reject('Maximum iterations reached.')
+        }
+      )
     },
     goNext() {
       if (this.currentIndex < this.imageCount - 1) {
@@ -720,11 +674,7 @@ export default {
           return response.data
         },
         reason => {
-          if (
-            reason.message.includes('timeout') &&
-            reason.message.includes('exceeded') &&
-            data.fetchAttempts < 3
-          ) {
+          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && data.fetchAttempts < 3) {
             data.fetchAttempts += 1
             return this.getFilePath(items, data)
           } else {
@@ -774,7 +724,7 @@ export default {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
         const this_ = this
-        img.onload = function() {
+        img.onload = function () {
           ctx.drawImage(img, 0, 0)
 
           const MAX_WIDTH = 180
@@ -815,11 +765,7 @@ export default {
           }
         },
         reason => {
-          if (
-            reason.message.includes('timeout') &&
-            reason.message.includes('exceeded') &&
-            info.fetchAttempts < 3
-          ) {
+          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && info.fetchAttempts < 3) {
             info.fetchAttempts += 1
             this.getThumbnailFromBiolucida(items, info)
           } else {
@@ -843,11 +789,7 @@ export default {
           }
         },
         reason => {
-          if (
-            reason.message.includes('timeout') &&
-            reason.message.includes('exceeded') &&
-            info.fetchAttempts < 3
-          ) {
+          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && info.fetchAttempts < 3) {
             info.fetchAttempts += 1
             this.getImageInfoFromBiolucida(items, info)
           } else {

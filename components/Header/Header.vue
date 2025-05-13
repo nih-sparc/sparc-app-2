@@ -77,8 +77,8 @@
                 </li>
               </ul>
               <div class="mobile-navigation__links--social">
-                <a href="https://twitter.com/sparc_science" target="_blank">
-                  <svgo-icon-twitter class="social-media-icon pr-16" />
+                <a href="https://bsky.app/profile/sparc.science" target="_blank">
+                  <svgo-icon-bluesky class="social-media-icon pr-16"/>
                 </a>
                 <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
                   <svgo-icon-youtube class="social-media-icon" />
@@ -87,6 +87,9 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="announcement">This repository is under review for potential modification in compliance with Administration directives.
+        <a href="https://docs.sparc.science/docs/notice-regarding-repository-review-in-response-to-executive-order-14168" target="_blank"><svgo-icon-help class="help-icon"/></a>
       </div>
     </div>
     <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
@@ -156,8 +159,11 @@ export default {
       }
       return path.substring(0, endIndex)
     },
-    currentUrl: function() {
-      return encodeURIComponent(this.$route.fullPath)
+    currentUrl: function () {
+      const config = useRuntimeConfig()
+      const url = new URL(this.$route.fullPath, config.public.ROOT_URL)
+      url.searchParams.delete('source_url') // Remove existing source_url in order to prevent indexing recursion
+      return encodeURIComponent(url.pathname + url.search)
     },
   },
 
@@ -571,5 +577,17 @@ export default {
 :deep(.user-submenu) {
   padding-left: .5rem !important;
   padding-right: .5rem !important;
+}
+.announcement {
+  background-color: #f9f2fc;
+  text-align: center;
+  border-top: 1px solid $purple;
+  border-bottom: 1px solid $purple;
+  padding: .5rem;
+}
+.help-icon {
+  color: $purple;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>

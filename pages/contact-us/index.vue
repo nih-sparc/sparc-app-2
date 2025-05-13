@@ -6,6 +6,8 @@
     <Meta name="description" hid="description" :content="breadcrumbTitle" />
     <Meta name="og:description" hid="og:description" :content="breadcrumbTitle" />
     <Meta name="twitter:description" :content="breadcrumbTitle" />
+    <link rel="canonical" href="https://sparc.science/contact-us" />
+    <Meta name="robots" content="noindex, nofollow" />
   </Head>
   <div class="contact-us-page pb-16">
     <breadcrumb :breadcrumb="breadcrumb" :title="breadcrumbTitle" />
@@ -74,6 +76,9 @@
           <p>
             Thank you for your submission!
           </p>
+          <p v-if="submissionLocation && submissionLocation != ''">
+            Your newly created submission can be found <a :href="submissionLocation" target="_blank">here</a>.
+          </p>
           <a href="#" @click="resetForms">Create another submission</a>
         </div>
       </div>
@@ -90,7 +95,7 @@ import ResearchForm from '@/components/ContactUsForms/ResearchForm/ResearchForm.
 import ToolsAndResourcesForm from '@/components/ContactUsForms/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
 import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
 import CommunitySpotlightForm from '@/components/ContactUsForms/CommunitySpotlightForm/CommunitySpotlightForm.vue'
-import { defaultTo, pathOr, propOr } from 'ramda'
+import { defaultTo } from 'ramda'
 import MarkedMixin from '@/mixins/marked'
 
 let formTypes = [
@@ -208,7 +213,8 @@ export default {
         },
       ],
       isSubmitted: false,
-      firstName: ''
+      firstName: '',
+      submissionLocation: ''
     }
   },
 
@@ -268,9 +274,11 @@ export default {
     resetForms: function() {
       this.isSubmitted = false
       this.firstName = ''
+      this.submissionLocation = ''
     },
-    formSubmitted(firstName) {
+    formSubmitted(firstName, submissionLocation) {
       this.firstName = firstName
+      this.submissionLocation = submissionLocation
       this.isSubmitted = true
     }
   }

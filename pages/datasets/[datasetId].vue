@@ -22,7 +22,7 @@
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
     <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
-    <Meta name="robots" content="noindex, nofollow" />
+    <Link rel="canonical" :href="canonicalLink" />
   </Head>
   <div class="dataset-details pb-16">
 
@@ -38,6 +38,15 @@
       <div v-else-if="showTombstone">
         <tombstone :dataset-details="datasetInfo" />
       </div>
+      <div v-else-if="!isDatasetIndexed" class="container">
+        <div class="heading2 subpage">
+          <b>{{datasetName}}</b>
+          <hr class="my-16"/>
+          <div class="heading3">
+            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }} and is currently being indexed into the SPARC Portal. Please check back periodically for updates.
+          </div>
+        </div>
+      </div>
       <div class="details-container" v-else>
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
@@ -46,7 +55,7 @@
           </el-col>
           <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
             <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
-              :latestVersionDate="latestVersionDate" :numCitations="numCitations" :numDownloads="numDownloads" />
+              :latestVersionDate="latestVersionDate" :numCitations="citingPublications?.length" :numDownloads="numDownloads" />
             <client-only>
               <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
                 @tab-changed="tabChanged" routeName="datasetDetailsTab">
@@ -54,13 +63,17 @@
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" />
+                  :associated-projects="associatedProjects" :award-ids="sparcAwardNumbers"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <dataset-references v-if="hasCitations" class="body1" v-show="activeTabId === 'references'"
-                  :primary-publications="primaryPublications" :associated-publications="associatedPublications" />
+                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'references'">
+                  <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
+                  <br />
+                  <hr />
+                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
+                </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
               </content-tab-card>
@@ -94,6 +107,7 @@ import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
+import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
@@ -122,6 +136,15 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
     }
   })
   return datasetDetails
+}
+
+const getCitationsInfo = async (config, datasetId, axios) => {
+  try {
+    const { data } = await axios.get(`${config.public.portal_api}/dataset_citations/${datasetId}`)
+    return propOr([], 'citations', data)
+  } catch (e) {
+    return []
+  }
 }
 
 const getDatasetVersions = async (config, datasetId, axios) => {
@@ -208,6 +231,7 @@ export default {
     DatasetActionBox,
     SimilarDatasetsInfoBox,
     DatasetHeader,
+    DatasetMetrics,
     DatasetDescriptionInfo,
     DatasetAboutInfo,
     CitationDetails,
@@ -234,12 +258,13 @@ export default {
     const datasetFacetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
       return data
     })
-
+    // If the algolia index returns nothing than the dataset has not been indexed and we should not display the details page
+    const isDatasetIndexed = !isEmpty(datasetFacetsData)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
+      let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -247,6 +272,7 @@ export default {
           $axios,
           $pennsieveApiClient
         ),
+        getCitationsInfo(config, datasetId, $axios),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
         getOrganizationIds(algoliaIndex),
@@ -290,6 +316,7 @@ export default {
       })
 
       const creators = contributors?.concat(org)
+      const canonicalLink = `${config.public.ROOT_URL}/datasets/${datasetId}`
       const doi = propOr('', 'doi', datasetDetails)
       const doiLink = doi ? `https://doi.org/${doi}` : ''
       let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
@@ -304,12 +331,15 @@ export default {
         tabs: tabsData,
         versions,
         datasetTypeName,
+        citationsInfo,
         downloadsSummary,
         showTombstone,
         algoliaIndex,
         hasError: false,
         originallyPublishedDate,
-        creators
+        creators,
+        canonicalLink,
+        isDatasetIndexed
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
@@ -446,7 +476,8 @@ export default {
       return pathOr('', ['params', 'datasetId'], this.$route)
     },
     hasFiles: function () {
-      return this.fileCount >= 1
+      // do not show the files tab for code repos
+      return this.fileCount >= 1 && !this.hasSourceCode
     },
     fileCount: function () {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -489,13 +520,17 @@ export default {
       })
       return valObj.length > 0 ? valObj : null
     },
-    hasCitations: function () {
-      return (this.primaryPublications || this.associatedPublications) !== null
+    citingPublications: function () {
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites')
+      return pubs?.length > 0 ? pubs : null
     },
-    numCitations: function () {
-      let numPrimary = this.primaryPublications ? this.primaryPublications.length : 0;
-      let numAssociated = this.associatedPublications ? this.associatedPublications.length : 0;
-      return numPrimary + numAssociated;
+    protocolSuffixes: function () {
+      return this.associatedPublications?.map(item =>
+        item.doi.startsWith("10.17504/") ? item.doi.replace("10.17504/", "") : null
+      )
+    },
+    hasCitations: function () {
+      return (this.primaryPublications || this.associatedPublications|| this.citingPublications) != null
     },
     hasSourceCode: function () {
       return propOr(null, 'release', this.datasetInfo) !== null
@@ -561,7 +596,7 @@ export default {
         if (newValue && !this.hasError) {
           const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'References', id: 'references' })
+            this.tabs.splice(5, 0, { label: 'Metrics', id: 'references' })
           }
         }
       },
@@ -667,7 +702,8 @@ export default {
           content_type: this.$config.public.ctf_project_id,
         })
         const associatedProjects = projects.items?.filter((project) => {
-          return sparcAwardNumbers.includes(pathOr('', ['fields', 'awardId'], project))
+          const awards = pathOr([], ['fields', 'awards'], project)
+          return awards.some(award => sparcAwardNumbers.includes(award.fields.title))
         })
         return associatedProjects || []
       } catch (error) {
@@ -738,5 +774,11 @@ export default {
   background-color: $background;
   width: 100%;
   overflow-x: hidden;
+}
+
+hr {
+  border-bottom: none;
+  border-left: none;
+  border-top: 1px solid $lineColor1;
 }
 </style>

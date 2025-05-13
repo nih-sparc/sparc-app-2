@@ -49,6 +49,12 @@ const licenseData = [
     link: 'https://creativecommons.org/licenses/by-sa/4.0/'
   },
   {
+    label: 'Apache License 2.0',
+    value: 'Apache License 2.0',
+    abbr: 'Apache 2.0',
+    link: 'https://opensource.org/licenses/Apache-2.0'
+  },
+  {
     label: 'Apache License 2.0 (Apache-2.0)',
     value: 'Apache 2.0',
     abbr: 'Apache 2.0',

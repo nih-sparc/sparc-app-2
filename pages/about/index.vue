@@ -26,11 +26,11 @@
         </nuxt-link>
       </div>
       <div class="row mt-32">
-        <paper class="row-item" :text="parseMarkdown(whatWeOffer)" :button-text="' What We Offer '"
+        <paper class="row-item" :text="parseMarkdown(whatWeOffer)" :button-text="whatWeOfferButtonText"
           :button-link="aboutLink(whatWeOfferPageId)" />
-        <paper class="row-item" :text="parseMarkdown(teamLeadership)" :button-text="' Who We Are '"
+        <paper class="row-item" :text="parseMarkdown(teamLeadership)" :button-text="teamLeadershipButtonText"
           :button-link="aboutLink(teamAndLeadershipPageId)" />
-        <paper class="row-item" :text="parseMarkdown(getInvolved)" :button-text="' Help Us Grow '"
+        <paper class="row-item" :text="parseMarkdown(getInvolved)" :button-text="getInvolvedButtonText"
           :button-link="aboutLink(getInvolvedPageId)" />
       </div>
 
@@ -96,6 +96,7 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
     const { items } = await $contentfulClient.getEntries({
       content_type: config.public.ctf_consortia_content_type_id,
       order: 'fields.displayOrder',
+      'fields.displayOnAboutPage': true
     })
     return items
   } catch (err) {
@@ -197,6 +198,12 @@ const teamLeadership = computed(() => pageData.value?.teamLeadership || '')
 const getInvolved = computed(() => pageData.value?.getInvolved || '')
 
 const historyOfSparc = computed(() => pageData.value?.historyOfSparc || '')
+
+const whatWeOfferButtonText = computed(() => pageData.value?.whatWeOfferButtonText || 'What We Offer')
+
+const teamLeadershipButtonText = computed(() => pageData.value?.teamLeadershipButtonText || 'Who We Are')
+
+const getInvolvedButtonText = computed(() => pageData.value?.getInvolvedButtonText || 'Help Us Grow')
 
 const aboutLink = (aboutDetailsId) => {
   const name = 'about-aboutDetailsId'

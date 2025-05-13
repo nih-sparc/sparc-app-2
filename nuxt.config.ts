@@ -28,7 +28,7 @@ export default defineNuxtConfig({
         { hid: 'og:image:secure_url', property: 'og:image:secure_url',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
-        { hid: 'robots', name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1, crawl-delay:3600' },
+        { hid: 'robots', name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
         { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
         { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@sparc_science' },
@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   vite: {
     define: {
       'window.global': {}
-    }
+    },
     /*css: {
       preprocessorOptions: {
         scss: {
@@ -105,6 +105,11 @@ export default defineNuxtConfig({
           path: '/tools-and-resources/resources',
           file: resolve('./components/Resources/ResourcePage.vue')
         },
+        {
+          name:'communication',
+          path:'/communication-preferences',
+          file: resolve('./components/NewsletterForm/NewsletterForm.vue')
+        }
       )
     }
   },
@@ -129,7 +134,7 @@ export default defineNuxtConfig({
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
       ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
-      ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
+      ctf_get_involved_page_id: '1UUoE2ICWvdsQo0npvJcpq',
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
@@ -155,6 +160,8 @@ export default defineNuxtConfig({
       AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
       AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
       AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+      GITHUB_ORG: process.env.GITHUB_ORG || 'nih-sparc',
+      GITHUB_REPO: process.env.GITHUB_REPO || 'sparc-app-2',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
@@ -163,7 +170,7 @@ export default defineNuxtConfig({
       SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
-      crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.crosscite.org',
+      crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.doi.org',
       max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
       osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
       MBF_SPARC_API: process.env.MBF_SPARC_API || 'https://mbfsparcapi.com',
@@ -180,6 +187,9 @@ export default defineNuxtConfig({
       INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
       SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
       SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || 'false',
+      PROTOCOLS_IO_HOST: process.env.PROTOCOLS_IO_HOST || 'https://www.protocols.io',
+      PROTOCOLS_IO_TOKEN: process.env.PROTOCOLS_IO_TOKEN || '',
+      GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
@@ -202,7 +212,7 @@ export default defineNuxtConfig({
   */
   css: ['sparc-design-system-components-2/dist/style.css', '@/assets/_base.scss'],
   sitemap: {
-    cacheMaxAgeSeconds: 86400,
+    cacheMaxAgeSeconds: 14400,
     sources: process.env.DEPLOY_ENV === 'production' ?
     [
       '/api/__sitemap__/urls'
@@ -224,20 +234,34 @@ export default defineNuxtConfig({
   },
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
-    // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
+    // disallowing certain pages that are either redirects, authenticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
-      '/datasets/*?*',
+      '/datasets/file',
+      '/datasets/*/version/',
+      '/file',
       '/welcome', 
       '/user', 
       '/contact-us', 
+      '/contact-us/*?*',
       '/help', 
       '/signup', 
       '/maps',
       '/news-and-events/submit',
-      '/news-and-events/community-spotlight/submit'
+      '/news-and-events/community-spotlight/submit',
+      '/*?*path=',
+      '/*?*source_url=',
+      '/*source_url=',
+      '/communication-preferences'
     ] : ['/'],
     blockNonSeoBots: true,
-    crawlDelay: 300
+    sitemap: `${process.env.ROOT_URL}/sitemap.xml`
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag: string) => [
+        'bsky-embed'
+      ].includes(tag)
+    }
   }
 })

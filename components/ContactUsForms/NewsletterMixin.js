@@ -2,8 +2,7 @@ export default {
   data() {
     return {
       hasError: false,
-      isSubmitting: false,
-      memberInfo: {}
+      isSubmitting: false
     }
   },
 
@@ -15,60 +14,10 @@ export default {
       this.isSubmitting = true
 
       this.$axios
-        .post(`${this.$config.public.portal_api}/mailchimp_subscribe`, {
+        .post(`${this.$config.public.portal_api}/subscribe_to_newsletter`, {
           email_address: email,
           first_name: firstName,
           last_name: lastName
-        })
-        .then(response => {
-          const { title } = response.data
-          if (response.data.status > 200 && title !== 'Member Exists') {
-            this.hasError = true
-          } else {
-            this.memberInfo = response.data
-            this.$emit('submit', firstName)
-          }
-        })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
-    },
-
-    unsubscribeFromNewsletter(email) {
-      this.isSubmitting = true
-
-      this.$axios
-        .post(`${this.$config.public.portal_api}/mailchimp_unsubscribe`, {
-          email_address: email,
-        })
-        .then(response => {
-          if (response.data.status > 200) {
-            this.hasError = true
-          } else {
-            this.memberInfo = response.data
-          }
-        })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
-    },
-
-    getMemberInfo(email) {
-      this.isSubmitting = true
-      this.$axios
-        .get(`${this.$config.public.portal_api}/mailchimp_member_info/${email}`)
-        .then(response => {
-          if (response.data.status > 200) {
-            this.hasError = true
-          } else {
-            this.memberInfo = response.data
-          }
         })
         .catch(() => {
           this.hasError = true
