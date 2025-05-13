@@ -88,6 +88,9 @@
           </div>
         </div>
       </div>
+      <div class="announcement">This repository is under review for potential modification in compliance with Administration directives.
+        <a href="https://docs.sparc.science/docs/notice-regarding-repository-review-in-response-to-executive-order-14168" target="_blank"><svgo-icon-help class="help-icon"/></a>
+      </div>
     </div>
     <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
   </div>
@@ -574,5 +577,17 @@ export default {
 :deep(.user-submenu) {
   padding-left: .5rem !important;
   padding-right: .5rem !important;
+}
+.announcement {
+  background-color: #f9f2fc;
+  text-align: center;
+  border-top: 1px solid $purple;
+  border-bottom: 1px solid $purple;
+  padding: .5rem;
+}
+.help-icon {
+  color: $purple;
+  height: 1.5rem;
+  width: 1.5rem;
 }
 </style>
