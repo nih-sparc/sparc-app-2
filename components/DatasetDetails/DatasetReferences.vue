@@ -11,7 +11,7 @@
     </div>
     <div v-if="showAssociatedPublications">
       <div class="heading2 mb-8">
-        Associated Publications for this Dataset
+        Associated Protocols for this Dataset
       </div>
       <div v-for="(item, index) in associatedPublicationsDisplay" :key="index">
         <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" />
