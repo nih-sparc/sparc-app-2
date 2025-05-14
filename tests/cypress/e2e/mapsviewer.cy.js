@@ -94,35 +94,35 @@ mapTypes.forEach((map) => {
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
+        cy.get('.tabs-container > .tab').as('Tabs')
+        cy.get('@Tabs').should(($title) => {
           expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
         })
-        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+        cy.get('.active-tab > .tab-title').as('ActiveTab')
         cy.get('@ActiveTab').should(($tab) => {
-          expect($tab, 'Active tab should be Connectivity after searching').to.have.text('Connectivity')
+          expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
-        cy.get('.active-tab > .el-button').as('closeTabButton')
-        cy.get('@closeTabButton').click()
-        cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
         // Switch to Annotation viewing mode
         cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
         cy.get('@settingIcon').click()
         cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
         cy.get('@settingIcon').click()
         cy.waitForMapLoading()
+        cy.get('.toolbar-icons').should(($toolbar) => {
+          expect($toolbar, 'Annotation toolbar should be displayed').to.exist
+        })
         // Search keyword in displayed viewers
         cy.get('@searchInput').clear()
         cy.get('@searchInput').type('neuron type aacar 11')
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
-          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+        cy.get('@Tabs').should(($title) => {
+          expect($title, 'The sidebar should have 3 tabs').to.have.length(3)
         })
         cy.get('@ActiveTab').should(($tab) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
-        cy.get('@closeTabButton').click()
         // Switch back to default viewing mode
         cy.get('@settingIcon').click()
         cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
@@ -131,7 +131,7 @@ mapTypes.forEach((map) => {
 
       taxonModels.forEach((model, index) => {
 
-        it(`Provenance card for ${model}`, function () {
+        it(`Connectivity explorer for ${model}`, function () {
           cy.print({
             title: 'loaded model',
             message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
@@ -168,120 +168,111 @@ mapTypes.forEach((map) => {
           cy.get('@settingIcon').click()
           cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true })
           cy.get('@settingIcon').click()
-          // Open a provenance card
+          // Open connectivity explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
-          // Check for the sidebar tabs
-          cy.get('.title-text-table > .title-text').should(($title) => {
-            expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
-          })
-          cy.get(':nth-child(2) > .title-text-table > .title-text').as('Connectivity')
-          cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
-          cy.get('@ActiveTab').should(($tab) => {
-            expect($tab, 'Active tab should be Connectivity after clicking on a neuron').to.have.text('Connectivity')
-          })
-          // Check for the provenance content
-          cy.get('.connectivity-info-title').within(($content) => {
-            cy.get('.block > .title').then(($title) => {
-              expect($title, 'The provenance card should have the neuron name').to.exist
-              cy.print({
-                title: 'neuron',
-                message: `Clicked on the ${$title.text()}`,
-                type: 'info'
-              })
-              // Check for copy button
-              cy.get('.el-button.copy-clipboard-button:visible').click()
-              cy.window().then(win => {
-                win.navigator.clipboard.readText().then(text => {
-                  expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
-                })
-              })
-            })
-            cy.get('.block > .subtitle').should(($description) => {
-              expect($description, 'The provenance card should have the neuron description').to.exist
-            })
-            cy.get('.el-button').should(($button) => {
-              expect($button, 'The provenance card should have the button to open publications in PubMed').to.exist
-            })
-            // Check for PubMed button click
-            if ($content.text().includes('Open publications in PubMed')) {
-              cy.window().then((window) => {
-                cy.stub(window, 'open').as('Open')
-              })
-              cy.get('#open-pubmed-button').click()
-              cy.get('@Open').should('have.been.calledOnceWithExactly', Cypress.sinon.match(/^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov(?:\/.*)/), '_blank')
-              cy.get('@Open').should('be.calledWith', Cypress.sinon.match.string).then((stub) => {
-                const url = stub.args[0][0]
-                const termUrl = decodeURIComponent(url.slice(url.indexOf('?term=')))
-                const invalidTermFound = ['pubmed', 'doi.org'].some(term => termUrl.includes(term))
-                expect(!invalidTermFound, 'Should not contain pubmed or doi.org').to.be.true
-              })
+          cy.get('.filters > .dataset-shown > .dataset-results-feedback:visible').then(($result) => {
+            if (!$result.text().match(/^1 Results \| Showing/i)) {
+              cy.get('.connectivity-card-container > .connectivity-card > .card').first().click()
             }
-          })
-          cy.get('.population-display > .buttons-row').as('populationDisplay')
-          // List view
-          cy.get('@populationDisplay').contains('List view').click()
-          // Check for the provenance button click
-          cy.get('.sidebar-container > .main > .content-container').then(($content) => {
-            cy.wrap($content).get('.attribute-title-container').should(($title) => {
-              expect($title, 'The provenance sections should have titles').to.exist
-              expect($title.length, 'The provenance should have multiple sections').to.be.greaterThan(0)
-            })
-            // Check for button click
-            const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
-            buttonTexts.forEach((text) => {
-              if ($content.text().includes(text)) {
-                cy.contains(new RegExp(text, 'i')).click({ force: true })
-                cy.get('@ActiveTab').should(($tab) => {
-                  expect($tab, 'Active tab should be Search after clicking on the button').to.contain('Search')
+            // Check for the provenance content
+            cy.get('.connectivity-info-title').within(($content) => {
+              cy.get('.block > .title').then(($title) => {
+                expect($title, 'The provenance card should have the neuron name').to.exist
+                cy.print({
+                  title: 'neuron',
+                  message: `Clicked on the ${$title.text()}`,
+                  type: 'info'
                 })
-                cy.get('@Connectivity').click({ force: true })
-                cy.get('@ActiveTab').should(($tab) => {
-                  expect($tab, 'Active tab should be Connectivity after clicking on the Connectivity tab').to.contain('Connectivity')
+                // Check for copy button
+                cy.get('.el-button.copy-clipboard-button:visible').click()
+                cy.window().then(win => {
+                  win.navigator.clipboard.readText().then(text => {
+                    expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
+                  })
+                })
+              })
+              cy.get('.block > .subtitle').should(($description) => {
+                expect($description, 'The provenance card should have the neuron description').to.exist
+              })
+              cy.get('.el-button').should(($button) => {
+                expect($button, 'The provenance card should have the button to open publications in PubMed').to.exist
+              })
+              // Check for PubMed button click
+              if ($content.text().includes('Open publications in PubMed')) {
+                cy.window().then((window) => {
+                  cy.stub(window, 'open').as('Open')
+                })
+                cy.get('#open-pubmed-button').click()
+                cy.get('@Open').should('have.been.calledOnceWithExactly', Cypress.sinon.match(/^https:\/\/pubmed\.ncbi\.nlm\.nih\.gov(?:\/.*)/), '_blank')
+                cy.get('@Open').should('be.calledWith', Cypress.sinon.match.string).then((stub) => {
+                  const url = stub.args[0][0]
+                  const termUrl = decodeURIComponent(url.slice(url.indexOf('?term=')))
+                  const invalidTermFound = ['pubmed', 'doi.org'].some(term => termUrl.includes(term))
+                  expect(!invalidTermFound, 'Should not contain pubmed or doi.org').to.be.true
                 })
               }
             })
-          })
-          // Graph view
-          cy.get('@populationDisplay').contains('Graph view').click()
-          cy.waitForConnectivityGraphLoading()
-          cy.get('.connectivity-graph > .graph-canvas').then(($graph) => {
-            expect($graph, 'The connectivity graph should exist').to.exist
-          })
-          cy.get('.connectivity-graph > .control-panel-tools').then(($panelTools) => {
-            expect($panelTools, 'The control panel tools should exist').to.exist
-          })
-          cy.get('.tools > .control-button:visible').then(($tools) => {
-            expect($tools, 'The control panel tools should have 2').to.have.length(2)
-          })
-          cy.get('.tools > :nth-child(2).control-button:visible').click()
-          cy.get('.connectivity-graph > .control-panel-nodes').then(($panelNodes) => {
-            expect($panelNodes, 'The control panel nodes should exist').to.exist
-            cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
-              expect($keys, 'The control panel nodes should have at least one key').to.have.length.greaterThan(0)
+            cy.get('.population-display > .buttons-row').as('populationDisplay')
+            // List view
+            cy.get('@populationDisplay').contains('List view').click()
+            // Check for the provenance button click
+            cy.get('.step-item > .main').then(($content) => {
+              cy.wrap($content).get('.attribute-title-container').should(($title) => {
+                expect($title, 'The provenance sections should have titles').to.exist
+                expect($title.length, 'The provenance should have multiple sections').to.be.greaterThan(0)
+              })
+              // Check for button click
+              cy.get('.active-tab > .tab-title').as('ActiveTab')
+              cy.get(':nth-child(2) > .tab-title').as('ConnectivityExplorer')
+              const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
+              buttonTexts.forEach((text) => {
+                if ($content.text().includes(text)) {
+                  cy.contains(new RegExp(text, 'i')).click({ force: true })
+                  cy.get('@ActiveTab').should(($tab) => {
+                    expect($tab, 'Active tab should be Dataset Explorer after clicking on the button').to.contain('Dataset Explorer')
+                  })
+                  cy.get('@ConnectivityExplorer').click({ force: true })
+                }
+              })
             })
-          })
-          // Check for references
-          cy.get('.sidebar-container > .main > .content-container').then(($content) => {
-            if ($content.text().includes('References')) {
-              cy.get('.resource-container > .attribute-title-container').then(($title) => {
-                expect($title, 'Reference section should exist').to.exist
+            // Graph view
+            cy.get('@populationDisplay').contains('Graph view').click()
+            cy.waitForConnectivityGraphLoading()
+            cy.get('.connectivity-graph > .graph-canvas').then(($graph) => {
+              expect($graph, 'The connectivity graph should exist').to.exist
+            })
+            cy.get('.connectivity-graph > .control-panel-tools').then(($panelTools) => {
+              expect($panelTools, 'The control panel tools should exist').to.exist
+            })
+            cy.get('.tools > .control-button:visible').then(($tools) => {
+              expect($tools, 'The control panel tools should have 2').to.have.length(2)
+            })
+            cy.get('.tools > :nth-child(2).control-button:visible').click()
+            cy.get('.connectivity-graph > .control-panel-nodes').then(($panelNodes) => {
+              expect($panelNodes, 'The control panel nodes should exist').to.exist
+              cy.wrap($panelNodes).get('.node-key > .key-box-container > .key-box').then(($keys) => {
+                expect($keys, 'The control panel nodes should have at least one key').to.have.length.greaterThan(0)
               })
-              cy.get('.citation-tabs > .el-button').each(($citation) => {
-                cy.wrap($citation).click()
-                cy.waitForSidebarReferenceLoading()
-                cy.get('.citation-list > li').then(($content) => {
-                  expect($content, 'Citation content should exist').to.exist
+            })
+            // Check for references
+            cy.get('.step-item > .main').then(($content) => {
+              if ($content.text().includes('References')) {
+                cy.get('.resource-container > .attribute-title-container').then(($title) => {
+                  expect($title, 'Reference section should exist').to.exist
                 })
-              })
-            }
+                cy.get('.citation-tabs > .el-button').each(($citation) => {
+                  cy.wrap($citation).click()
+                  cy.waitForSidebarReferenceLoading()
+                  cy.get('.citation-list > li').then(($content) => {
+                    expect($content, 'Citation content should exist').to.exist
+                  })
+                })
+              }
+            })
+            cy.get('.el-card__body > .content:visible').scrollTo('top')
+            cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
           })
-          // Close the provenance card
-          cy.get('.active-tab > .el-button').as('closeTabButton').click()
-          cy.get('.sidebar-container > .tab-container').should(($tab) => {
-            expect($tab, 'The tab container should not exist').to.not.exist
-          })
-          cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
         })
       })
 
@@ -349,7 +340,7 @@ mapTypes.forEach((map) => {
         // Search keyword in displayed viewers
         cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
         cy.get('@searchInput').clear()
-        cy.get('@searchInput').type(searchInMap)
+        cy.get('@searchInput').type(`"${searchInMap}"`)
         cy.get('.search-container > .map-icon > use').click()
         // Check for keyword(highlighted part) in displayed viewers
         cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
@@ -383,7 +374,7 @@ mapTypes.forEach((map) => {
             })
           }
           // Search dataset
-          cy.get('.header > .el-button > span:visible').as('sidebarSearchButton').click()
+          cy.get('.sidebar-content-container > .el-card__header > .header > .el-button--primary').as('sidebarSearchButton').click()
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
             cy.get('.dataset-results-feedback:visible', { timeout: 30000 }).then(($result) => {
@@ -468,29 +459,6 @@ mapTypes.forEach((map) => {
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
-      })
-
-      it('In-display search', function () {
-        // Switch to Annotation viewing mode
-        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
-        cy.get('@settingIcon').click()
-        // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
-        cy.get('@searchInput').clear()
-        cy.get('@searchInput').type('heart')
-        cy.get('.search-container > .map-icon > use').click()
-        cy.wait(5000)
-        // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
-          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
-        })
-        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
-        cy.get('@ActiveTab').should(($tab) => {
-          expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
-        })
-        cy.get('.active-tab > .el-button').as('closeTabButton').click()
       })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
