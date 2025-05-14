@@ -299,7 +299,7 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
     cy.wait(5000)
     cy.get('body').then(($body) => {
       // Keep clicking until the sidebar is opened
-      if ($body.find('.sidebar-container > .tab-container').length === 0) {
+      if ($body.find('.tabs-container:visible').length === 0) {
         coorX -= pixel
         clickOnNeuron()
       }
