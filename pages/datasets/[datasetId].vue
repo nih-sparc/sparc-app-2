@@ -682,21 +682,22 @@ export default {
     },
     getDatasetRecords: async function () {
       try {
-        this.algoliaIndex
-          .getObject(this.datasetId, {
-            attributesToRetrieve: 'supportingAwards',
-          })
-          .then(({ supportingAwards }) => {
-            supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
-            supportingAwards.forEach(award => {
-              this.sparcAwardNumbers.push(`${award.identifier}`)
-            })
-          }).finally(async () => {
-            if (this.sparcAwardNumbers.length > 0) {
-              let projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
-              this.associatedProjects = projects.length > 0 ? projects : null
-            }
-          })
+        const { supportingAwards } = await this.algoliaIndex.getObject(this.datasetId, {
+          attributesToRetrieve: 'supportingAwards',
+        })
+
+        const filteredAwards = (supportingAwards || []).filter(
+          award => propOr(null, 'identifier', award) != null
+        )
+
+        this.sparcAwardNumbers = filteredAwards.map(
+          award => `${award.identifier}`
+        )
+
+        if (this.sparcAwardNumbers.length > 0) {
+          const projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
+          this.associatedProjects = projects.length > 0 ? projects : null
+        }
       } catch (e) {
         console.error(e)
       }
