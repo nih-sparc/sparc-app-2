@@ -107,10 +107,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.7.3-beta.3":
-  version "2.7.3-beta.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.3-beta.3.tgz#7e73a3180afc9f477198edde4d2e08bc1f933345"
-  integrity sha512-I0pg/ej45fGUIcbIVnbia7gSrQq1ZEur29X9TctxIl1pT06OMhjzd/Gl9bXgmQOXfYiZfOdWrX82Rx9xVyIE/Q==
+"@abi-software/map-side-bar@^2.7.3-beta.5":
+  version "2.7.3-beta.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.3-beta.5.tgz#22d56d739eb56cfb430615ca85d09b76d060c55b"
+  integrity sha512-1uNeKsFo1nDSSKX7Gxm5w4FdT8icG0UxbqsVNGZlXIhmgthXtBK50Sowo6HIyUl9LrmGQRchLXttV2pd4nKQrA==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
     "@abi-software/map-utilities" "^1.5.0-beta.2"
@@ -138,13 +138,13 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.9.0-beta.2":
-  version "1.9.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.0-beta.2.tgz#841bfc3f58cbd1f41ae9f67b7a768b41efe08e6e"
-  integrity sha512-2UYWBCHoWFY75l3bZxNvYMPkdLa9GdC6uATyjY1pv0qe/RWUhjCna2KI5qiVCB+1QRhmQSveuwk/rDvj73qlag==
+"@abi-software/mapintegratedvuer@1.9.0-beta.3":
+  version "1.9.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.0-beta.3.tgz#959adb9470a7281d99936eef871e0dda68f5b083"
+  integrity sha512-DYfHzwRL3cZ3EvHDJhbtClurLZz7vRP4A7N+Ssesa+7XDsvRWuhJU5B8ODkN4ikWDp8lFeEdt8zn+M4XR3+k2Q==
   dependencies:
     "@abi-software/flatmapvuer" "^1.9.0-beta.2"
-    "@abi-software/map-side-bar" "^2.7.3-beta.3"
+    "@abi-software/map-side-bar" "^2.7.3-beta.5"
     "@abi-software/map-utilities" "^1.5.0-beta.2"
     "@abi-software/plotvuer" "^1.0.3"
     "@abi-software/scaffoldvuer" "^1.9.0-beta.1"
