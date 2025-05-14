@@ -94,35 +94,35 @@ mapTypes.forEach((map) => {
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
+        cy.get('.tabs-container > .tab').as('Tabs')
+        cy.get('@Tabs').should(($title) => {
           expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
         })
-        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
+        cy.get('.active-tab > .tab-title').as('ActiveTab')
         cy.get('@ActiveTab').should(($tab) => {
-          expect($tab, 'Active tab should be Connectivity after searching').to.have.text('Connectivity')
+          expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
-        cy.get('.active-tab > .el-button').as('closeTabButton')
-        cy.get('@closeTabButton').click()
-        cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
         // Switch to Annotation viewing mode
         cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
         cy.get('@settingIcon').click()
         cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
         cy.get('@settingIcon').click()
         cy.waitForMapLoading()
+        cy.get('.toolbar-icons').should(($toolbar) => {
+          expect($toolbar, 'Annotation toolbar should be displayed').to.exist
+        })
         // Search keyword in displayed viewers
         cy.get('@searchInput').clear()
         cy.get('@searchInput').type('neuron type aacar 11')
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
-          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
+        cy.get('@Tabs').should(($title) => {
+          expect($title, 'The sidebar should have 3 tabs').to.have.length(3)
         })
         cy.get('@ActiveTab').should(($tab) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
-        cy.get('@closeTabButton').click()
         // Switch back to default viewing mode
         cy.get('@settingIcon').click()
         cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
@@ -468,29 +468,6 @@ mapTypes.forEach((map) => {
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
-      })
-
-      it('In-display search', function () {
-        // Switch to Annotation viewing mode
-        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
-        cy.get('@settingIcon').click()
-        // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
-        cy.get('@searchInput').clear()
-        cy.get('@searchInput').type('heart')
-        cy.get('.search-container > .map-icon > use').click()
-        cy.wait(5000)
-        // Check for the sidebar tabs
-        cy.get('.title-text-table > .title-text').should(($title) => {
-          expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
-        })
-        cy.get('.active-tab > .title-text-table > .title-text').as('ActiveTab')
-        cy.get('@ActiveTab').should(($tab) => {
-          expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
-        })
-        cy.get('.active-tab > .el-button').as('closeTabButton').click()
       })
     } else if (map === 'fc') {
       it('Map is loaded', function () {
