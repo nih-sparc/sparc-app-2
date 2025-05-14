@@ -68,7 +68,7 @@
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'references'">
+                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'metrics'">
                   <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
                   <br />
                   <hr />
@@ -247,7 +247,12 @@ export default {
   mixins: [DateUtils, FormatStorage],
 
   async setup() {
+    const router = useRouter()
     const route = useRoute()
+    // re-direct legacy links
+    if (route.query.datasetDetailsTab === 'references') {
+      router.replace({ query: {'datasetDetailsTab': 'metrics'}})
+    }
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
@@ -594,9 +599,9 @@ export default {
     hasCitations: {
       handler: function (newValue) {
         if (newValue && !this.hasError) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'metrics') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Metrics', id: 'references' })
+            this.tabs.splice(5, 0, { label: 'Metrics', id: 'metrics' })
           }
         }
       },
@@ -677,21 +682,22 @@ export default {
     },
     getDatasetRecords: async function () {
       try {
-        this.algoliaIndex
-          .getObject(this.datasetId, {
-            attributesToRetrieve: 'supportingAwards',
-          })
-          .then(({ supportingAwards }) => {
-            supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
-            supportingAwards.forEach(award => {
-              this.sparcAwardNumbers.push(`${award.identifier}`)
-            })
-          }).finally(async () => {
-            if (this.sparcAwardNumbers.length > 0) {
-              let projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
-              this.associatedProjects = projects.length > 0 ? projects : null
-            }
-          })
+        const { supportingAwards } = await this.algoliaIndex.getObject(this.datasetId, {
+          attributesToRetrieve: 'supportingAwards',
+        })
+
+        const filteredAwards = (supportingAwards || []).filter(
+          award => propOr(null, 'identifier', award) != null
+        )
+
+        this.sparcAwardNumbers = filteredAwards.map(
+          award => `${award.identifier}`
+        )
+
+        if (this.sparcAwardNumbers.length > 0) {
+          const projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
+          this.associatedProjects = projects.length > 0 ? projects : null
+        }
       } catch (e) {
         console.error(e)
       }
