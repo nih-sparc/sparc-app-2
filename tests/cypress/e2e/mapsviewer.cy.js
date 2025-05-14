@@ -340,7 +340,7 @@ mapTypes.forEach((map) => {
         // Search keyword in displayed viewers
         cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
         cy.get('@searchInput').clear()
-        cy.get('@searchInput').type(searchInMap)
+        cy.get('@searchInput').type(`"${searchInMap}"`)
         cy.get('.search-container > .map-icon > use').click()
         // Check for keyword(highlighted part) in displayed viewers
         cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
@@ -374,7 +374,7 @@ mapTypes.forEach((map) => {
             })
           }
           // Search dataset
-          cy.get('.header > .el-button > span:visible').as('sidebarSearchButton').click()
+          cy.get('.sidebar-content-container > .el-card__header > .header > .el-button--primary').as('sidebarSearchButton').click()
           cy.wait(5000)
           cy.wait('@query', { timeout: 20000 }).then((intercept) => {
             cy.get('.dataset-results-feedback:visible', { timeout: 30000 }).then(($result) => {
