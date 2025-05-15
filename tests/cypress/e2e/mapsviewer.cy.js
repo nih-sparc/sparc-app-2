@@ -76,7 +76,10 @@ mapTypes.forEach((map) => {
             // Take a screenshot of no path flatmap
             cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
             cy.get('.pathway-location > .drawer-button:visible').click()
-            cy.get('@Canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+            // CLI
+            cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+            // UI
+            cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
             // Compare previous screenshot with alter paths displayed flatmap
             cy.get('.pathway-location > .drawer-button:visible').click()
             cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
