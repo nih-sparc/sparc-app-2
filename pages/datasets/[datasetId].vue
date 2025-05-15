@@ -526,7 +526,7 @@ export default {
       return valObj.length > 0 ? valObj : null
     },
     citingPublications: function () {
-      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites')
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate)
       return pubs?.length > 0 ? pubs : null
     },
     protocolSuffixes: function () {
