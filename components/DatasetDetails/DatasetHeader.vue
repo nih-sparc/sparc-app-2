@@ -69,8 +69,8 @@
               </span>
             </div>
             <div class="metics-container">
-              <span class="label4 mr-32">Citations: {{numCitations}}</span>
-              <span class="label4">Downloads: {{numDownloads}}</span>
+              <span class="label4 mr-32">Citations: <span @click="onMetricClicked" class="link">{{numCitations}}</span></span>
+              <span class="label4">Downloads: <span @click="onMetricClicked" class="link">{{numDownloads}}</span></span>
             </div>
           </div>
         </el-col>
@@ -212,9 +212,9 @@ export default {
     scrollToDatasetDetailsTabArea: function() {
       this.getDatasetDetailsTabArea().scrollIntoView()
     },
-    numCitationsClicked: function() {
+    onMetricClicked: function () {
       this.$router.replace({
-        query: { ...this.$route.query, datasetDetailsTab: 'references' }
+        query: { ...this.$route.query, datasetDetailsTab: 'metrics' }
       }).finally(() => {
         this.scrollToDatasetDetailsTabArea()
       })
@@ -271,5 +271,9 @@ export default {
   h1 {
     margin: 0 0 1rem;
   }
+}
+.link {
+  color: $purple;
+  cursor: pointer;
 }
 </style>

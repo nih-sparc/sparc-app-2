@@ -43,7 +43,7 @@
           <b>{{datasetName}}</b>
           <hr class="my-16"/>
           <div class="heading3">
-            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }} and is currently being indexed into the SPARC Portal. Please check back periodically for updates.
+            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }}, and is currently undergoing indexing in the SPARC Portal. As a result, some metadata may be incomplete, and the dataset may not yet appear in browse results. Full availability is expected once the indexing process is complete, which may take up to one week. We recommend checking back periodically for updates.
           </div>
         </div>
       </div>
@@ -526,7 +526,7 @@ export default {
       return valObj.length > 0 ? valObj : null
     },
     citingPublications: function () {
-      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites')
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate)
       return pubs?.length > 0 ? pubs : null
     },
     protocolSuffixes: function () {
