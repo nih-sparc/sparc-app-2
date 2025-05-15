@@ -52,10 +52,10 @@ const DYNAMICENVS = {
         'number': 2
     },
     'THREE_SYNC_VIEW': { 'value': 'Human Female, Human Male', 'number': 1 }, // fixed, no need to change
-    // 'SEARCH_IN_MAP': {
-    //     'value': 'Heart, Liver, Spleen, Lung, Kidney, Brainstem, Stomach, Colon, Body proper',
-    //     'number': 1 // fixed, no need to change
-    // },
+    'SEARCH_IN_MAP': {
+        'value': 'Heart, Liver, Spleen, Lung, Kidney, Brainstem, Stomach, Colon, Body proper',
+        'number': 1 // fixed, no need to change
+    },
     'SCAFFOLD_DATASET_IDS': {
         'value': '136, 307, 292, 328, 155, 102, 227, 147, 186, 167, 112, 156, 174, 173, 217, 219, 100, 154, 105, 146, 223, 218, 166, 101, 103, 232, 259, 182, 134, 104, 172, 170, 144',
         'number': 2
