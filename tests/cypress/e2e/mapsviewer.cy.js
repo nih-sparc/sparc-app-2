@@ -49,32 +49,42 @@ mapTypes.forEach((map) => {
       } else if (map === 'fc') {
         cy.waitForFlatmapLoading()
       }
+      // Close sidebar
+      cy.get('body').then(($body) => {
+        if ($body.find('.close-tab > .el-icon').length !== 0) {
+          cy.get('.tabs-container > :nth-child(1)').as('datasetExplorer').click()
+          cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
+        }
+      })
     })
 
     if (map === 'ac') {
       it('Open new map and alter filtering', function () {
-        cy.get('.portal-features > :nth-child(1) .el-button').as('ViewACMap')
-        cy.get('@ViewACMap').click()
+        cy.get('.portal-features > :nth-child(1) .el-button').as('viewACMap')
+        cy.get('@viewACMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
-        cy.get('@ViewACMap').click()
+        cy.get('@viewACMap').click()
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
         cy.waitForMapLoading()
         // Check if alert exist in Human Female
-        cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('Canvas')
+        cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('canvas')
         cy.get('.checkall-display-text:visible', { timeout: 30000 }).then(($label) => {
           if ($label.text().includes('Alert')) {
             expect($label, 'Alter filter should exist').to.contain('Alert')
             // Take a screenshot of no path flatmap
             cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
             cy.get('.pathway-location > .drawer-button:visible').click()
-            cy.get('@Canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+            // CLI
+            cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+            // UI
+            cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
             // Compare previous screenshot with alter paths displayed flatmap
             cy.get('.pathway-location > .drawer-button:visible').click()
             cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
             cy.get('.pathway-location > .drawer-button:visible').click()
-            cy.get('@Canvas').compareSnapshot('mapalert').then(comparisonResults => {
+            cy.get('@canvas').compareSnapshot('mapalert').then(comparisonResults => {
               expect(comparisonResults.percentage).to.greaterThan(0)
             })
           }
@@ -94,12 +104,12 @@ mapTypes.forEach((map) => {
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('.tabs-container > .tab').as('Tabs')
-        cy.get('@Tabs').should(($title) => {
+        cy.get('.tabs-container > .tab').as('tabs')
+        cy.get('@tabs').should(($title) => {
           expect($title, 'The sidebar should have 2 tabs').to.have.length(2)
         })
-        cy.get('.active-tab > .tab-title').as('ActiveTab')
-        cy.get('@ActiveTab').should(($tab) => {
+        cy.get('.active-tab > .tab-title').as('activeTab')
+        cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
         // Switch to Annotation viewing mode
@@ -117,10 +127,10 @@ mapTypes.forEach((map) => {
         cy.get('@mapSearchIcon').click()
         cy.wait(5000)
         // Check for the sidebar tabs
-        cy.get('@Tabs').should(($title) => {
+        cy.get('@tabs').should(($title) => {
           expect($title, 'The sidebar should have 3 tabs').to.have.length(3)
         })
-        cy.get('@ActiveTab').should(($tab) => {
+        cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
         // Switch back to default viewing mode
@@ -223,13 +233,13 @@ mapTypes.forEach((map) => {
                 expect($title.length, 'The provenance should have multiple sections').to.be.greaterThan(0)
               })
               // Check for button click
-              cy.get('.active-tab > .tab-title').as('ActiveTab')
+              cy.get('.active-tab > .tab-title').as('activeTab')
               cy.get(':nth-child(2) > .tab-title').as('ConnectivityExplorer')
               const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
               buttonTexts.forEach((text) => {
                 if ($content.text().includes(text)) {
                   cy.contains(new RegExp(text, 'i')).click({ force: true })
-                  cy.get('@ActiveTab').should(($tab) => {
+                  cy.get('@activeTab').should(($tab) => {
                     expect($tab, 'Active tab should be Dataset Explorer after clicking on the button').to.contain('Dataset Explorer')
                   })
                   cy.get('@ConnectivityExplorer').click({ force: true })
@@ -271,7 +281,6 @@ mapTypes.forEach((map) => {
               }
             })
             cy.get('.el-card__body > .content:visible').scrollTo('top')
-            cy.get('.close-tab > .el-icon').as('closeSidebarIcon').click()
           })
         })
       })
@@ -352,7 +361,7 @@ mapTypes.forEach((map) => {
 
         it(`Context card for scaffold dataset ${datasetId}`, function () {
           // Open the sidebar
-          cy.get('.open-tab > .el-icon').as('openSidebarIcon').click()
+          cy.get('.open-tab > .el-icon').as('sidebarOpenTab').click()
           // Enter dataset id
           cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
           cy.get('@searchBox').clear()
@@ -447,8 +456,8 @@ mapTypes.forEach((map) => {
       })
 
       it('Open new map', function () {
-        cy.get('.portal-features > :nth-child(2) .el-button').as('View3DBody')
-        cy.get('@View3DBody').click()
+        cy.get('.portal-features > :nth-child(2) .el-button').as('view3DBody')
+        cy.get('@view3DBody').click()
         cy.get('.popover-content > .el-button:visible').first().click()
         cy.waitForScaffoldLoading()
         cy.waitForMapTreeControlLoading()
@@ -474,8 +483,8 @@ mapTypes.forEach((map) => {
       })
 
       it('Open new map', function () {
-        cy.get('.portal-features > :nth-child(3) .el-button').as('ViewFCMap')
-        cy.get('@ViewFCMap').click()
+        cy.get('.portal-features > :nth-child(3) .el-button').as('viewFCMap')
+        cy.get('@viewFCMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
         cy.waitForFlatmapLoading()
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
