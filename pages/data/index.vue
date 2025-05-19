@@ -275,7 +275,8 @@ export default {
         },
       ],
       titleColumnWidth: 300,
-      windowWidth: ''
+      windowWidth: '',
+      isComponentActive: true,
     }
   },
 
@@ -343,6 +344,7 @@ export default {
 
     '$route.query.search': {
       handler: function () {
+        if (!this.isComponentActive) return
         this.searchQuery = this.$route.query.search
         this.fetchResults()
       },
@@ -351,6 +353,7 @@ export default {
 
     '$route.query.datasetSort': {
       handler: function () {
+        if (!this.isComponentActive) return
         this.fetchResults()
       },
       immediate: true
@@ -366,6 +369,13 @@ export default {
 
   beforeMount: function () {
     this.windowWidth = window.innerWidth
+  },
+  beforeRouteLeave: function (to, from, next) {
+    this.isComponentActive = false
+    next()
+  },
+  activated: function () {
+    this.isComponentActive = true
   },
   mounted: function () {
     if (!this.$route.query.type) {
