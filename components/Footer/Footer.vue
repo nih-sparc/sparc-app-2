@@ -31,12 +31,14 @@
                 <svgo-icon-youtube class="social-media-icon"/>
               </a>
             </div>
-            <div class="footer__info--re3data">
-              <a href="https://doi.org/10.17616/R31NJN2V" target="_blank">
-                <img src="/100013719.svg" alt="re3data badge"/>
-              </a>
-            </div>
-            <a href="https://aws.amazon.com/what-is-cloud-computing"><img src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
+            <span>
+              <span class="footer__info--re3data mr-32">
+                <a href="https://doi.org/10.17616/R31NJN2V" target="_blank">
+                  <img class="mb-32" src="/100013719.svg" alt="re3data badge"/>
+                </a>
+              </span>
+              <a href="https://aws.amazon.com/what-is-cloud-computing"><img class="mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
+            </span>
           </div>
         </el-col>
         <el-col :sm="{ span: 22, offset: 1 }" :md="{ span: 8, offset: 4 }">
