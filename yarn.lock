@@ -77,13 +77,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.9.0-beta.2":
-  version "1.9.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.0-beta.2.tgz#d71b29d06c97c4285c3a6066096b643c54b238d4"
-  integrity sha512-o1OIXlmPdtiBfg90BrdOEuxnBFUWjhFXGdorFVcVpvbkmSI2IQejAMtBKMg0lPDU526iClwkYZLtrv7hARDnUw==
+"@abi-software/flatmapvuer@^1.9.0-beta.3":
+  version "1.9.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.0-beta.3.tgz#b7dee0832339e712199bb4c3924ddb534195f4e9"
+  integrity sha512-f6v3E9pXQiZzub69RSx6SB2Ns2v0sTD3Bxdr6DouVbgY3PSvEPv5mGSjuIFk/U9Y8neoqDsE+Gth7MfYQWCu7A==
   dependencies:
     "@abi-software/flatmap-viewer" "4.2.0"
-    "@abi-software/map-utilities" "^1.5.0-beta.2"
+    "@abi-software/map-utilities" "^1.5.0-beta.3"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -107,13 +107,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.7.3-beta.5":
-  version "2.7.3-beta.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.3-beta.5.tgz#22d56d739eb56cfb430615ca85d09b76d060c55b"
-  integrity sha512-1uNeKsFo1nDSSKX7Gxm5w4FdT8icG0UxbqsVNGZlXIhmgthXtBK50Sowo6HIyUl9LrmGQRchLXttV2pd4nKQrA==
+"@abi-software/map-side-bar@^2.7.3-beta.6":
+  version "2.7.3-beta.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.7.3-beta.6.tgz#28c6f64d490c9a58b4d5457146d1fe964e7dac1a"
+  integrity sha512-BGO8tSSEXoZHzKgrBK7p2eVl0MF6dgUzrE5JPBG5tEO/ACICpd8Q6e4KN1Sn7ZWwO5jgPvQuC0wpKqQ0tWvTBA==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "^1.5.0-beta.2"
+    "@abi-software/map-utilities" "^1.5.0-beta.3"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -125,10 +125,10 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@^1.5.0-beta.1", "@abi-software/map-utilities@^1.5.0-beta.2":
-  version "1.5.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.5.0-beta.2.tgz#cc377b2328fec736a1ab91201e08829fd1dc1d10"
-  integrity sha512-zXbtTcWRMOcUB/KLAX6JqMqf85fjs0kVpFFqZpIevOuhVxHhGS6sN/4yIEcbo6dxtHYk9hV9AAsgfK5cCvVmEQ==
+"@abi-software/map-utilities@^1.5.0-beta.3":
+  version "1.5.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.5.0-beta.3.tgz#4f00df32ec58c58e0ed69e092a364ab30682db37"
+  integrity sha512-VsPG/mFwWI69BRU5Esvya9GK/6dUNgZBs337b0SQJTTw3yMjPm/xnhhWzlFIC2QRGr0IZzCwoYpsCOEjy4k9Mw==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -138,16 +138,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.9.0-beta.3":
-  version "1.9.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.0-beta.3.tgz#959adb9470a7281d99936eef871e0dda68f5b083"
-  integrity sha512-DYfHzwRL3cZ3EvHDJhbtClurLZz7vRP4A7N+Ssesa+7XDsvRWuhJU5B8ODkN4ikWDp8lFeEdt8zn+M4XR3+k2Q==
+"@abi-software/mapintegratedvuer@1.9.0-beta.4":
+  version "1.9.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.0-beta.4.tgz#c8117a71c468eb93ac8a573b56119238c577a92e"
+  integrity sha512-332HgoyfYCeChWo0tCtTJqThUKMmFP982cxa1t0trkx0DX5nrALqUQ6EcC7mkl4Yy+n+eA2BmOpSb9PuxX2cWA==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.9.0-beta.2"
-    "@abi-software/map-side-bar" "^2.7.3-beta.5"
-    "@abi-software/map-utilities" "^1.5.0-beta.2"
+    "@abi-software/flatmapvuer" "^1.9.0-beta.3"
+    "@abi-software/map-side-bar" "^2.7.3-beta.6"
+    "@abi-software/map-utilities" "^1.5.0-beta.3"
     "@abi-software/plotvuer" "^1.0.3"
-    "@abi-software/scaffoldvuer" "^1.9.0-beta.1"
+    "@abi-software/scaffoldvuer" "^1.9.0-beta.3"
     "@abi-software/simulationvuer" "1.0.1"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
@@ -196,12 +196,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.9.0-beta.1":
-  version "1.9.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.9.0-beta.1.tgz#79e63d63ec85ada24beab57de9f738f3defb29c9"
-  integrity sha512-6llNbCUV+hC0rBmx9CEYebA2cRNKw35SKOT6gq4aaT61tEg7rU1AwftkCedF7J11FWZoWxP/lz/hqCwofHFYtg==
+"@abi-software/scaffoldvuer@^1.9.0-beta.3":
+  version "1.9.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.9.0-beta.3.tgz#edd0a948641c3c77a35fc071b9a981cd8a2f67f1"
+  integrity sha512-pXKQuwYYVGMhCQLiQLC57SLSuw1za/Lm5WMYFob/ho/MOypN1lfmZVmMuwXRl9vEufQ0RQnWjdFyOO6USBf6BQ==
   dependencies:
-    "@abi-software/map-utilities" "^1.5.0-beta.1"
+    "@abi-software/map-utilities" "^1.5.0-beta.3"
     "@abi-software/sparc-annotation" "^0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -214,7 +214,7 @@
     vue "^3.4.21"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.13.0"
+    zincjs "^1.13.1"
 
 "@abi-software/simulationvuer@1.0.1":
   version "1.0.1"
@@ -19244,10 +19244,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.13.0.tgz#ce53f3928e38182b9a3184ec8fd5ea5060a86349"
-  integrity sha512-kGQ7qRl+iTfHYBViGSjcEkMgTn7kOEUoLGS/LhZd6RC/2Qx3plmLf/fzSsHOtO4JtUtNEO1R1hBi9hwf1enHGQ==
+zincjs@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.13.1.tgz#2b7578a893552300876813f107f380fc721002a3"
+  integrity sha512-MSshb6mqVPw/RyUWcKddhxxxEkUOLZW8ai8UtLGHU7Ngl2wHJTCeH/XYcvwsLS0nTyrzuV7MZVUV9OJPZzxUVw==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
