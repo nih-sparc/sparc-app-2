@@ -1,5 +1,5 @@
 <template>
-  <div :class="[disableScrolling ? 'layout' : '']">
+  <div v-if="!isBot" :class="[disableScrolling ? 'layout' : '']">
     <sparc-header />
     <slot />
     <sparc-footer />
@@ -24,8 +24,23 @@ export default {
     SparcFooter
   },
   data() {
+    const userAgent = process.client ? navigator.userAgent : ''
+    const botPatterns = [
+        /semrush/i, /msnbot/i, /yandex/i, /applebot/i, /wowrack/i, /lifeera/i,
+        /petalbot/i, /nettle/i, /xforce-security/i, /neevabot/i, /seekport crawler/i,
+        /exabot/i, /gigabot/i, /iccrawler/i, /snappy/i, /mb2345browser/i, /qqbrowser/i,
+        /liebaofast/i, /micromessenger/i, /kinza/i, /theworld/i, /youdaobot/i,
+        /qwantify/i, /bleriot/i, /wikiapiary/i, /megaindex/i, /mojeekbot/i,
+        /blexbot/i, /coccocbot/i, /seokicks/i, /seznambot/i, /yandeximages/i,
+        /tweetmemebot/i, /yeti/i, /ahrefsbot/i, /bytespider/i, /mj12bot/i,
+        /turnitinbot/i, /ccbot/i, /linguee bot/i, /dotbot/i, /openlinkprofiler/i,
+        /ltx71/i, /rogerbot/i, /baiduspider/i, /facebot/i, /pinterestbot/i, /slackbot/i,
+        /embedly/i, /whatsapp/i, /telegrambot/i, /headlesschrome/i, /puppeteer/i, /phantomjs/i,
+        /screaming frog seo spider/i, /adsbot-google/i, /sogou/i
+      ]
     return {
-      store: useMainStore()
+      store: useMainStore(),
+      isBot: userAgent == '' || botPatterns.some(pattern => pattern.test(userAgent))
     }
   },
   computed: {
@@ -35,7 +50,9 @@ export default {
     }
   },
   mounted() {
-    this.showPortalNotification()
+    if (!this.isBot) {
+      this.showPortalNotification()
+    }
   },
   methods: {
     showPortalNotification() {
