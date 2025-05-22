@@ -37,7 +37,7 @@
                   <img class="mb-32" src="/100013719.svg" alt="re3data badge"/>
                 </a>
               </span>
-              <a href="https://aws.amazon.com/what-is-cloud-computing"><img class="mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
+              <a href="https://registry.opendata.aws/sparc/"><img class="mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
             </span>
           </div>
         </el-col>
