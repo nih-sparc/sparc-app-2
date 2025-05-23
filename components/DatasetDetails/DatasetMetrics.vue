@@ -12,6 +12,16 @@
       </div>
       <div v-if="protocolSuffixes?.length > 0">
         Protocols: 
+        <sparc-tooltip
+          placement="left-center"
+        >
+        <template #item>
+          <svgo-icon-help class="help-icon"/>
+        </template>
+          <template #data>
+            Protocol metrics come from <a href="https://protocols.io" target="_blank">Protocols.io</a>
+          </template>
+        </sparc-tooltip>
       </div>
       <div v-for="(suffix, index) in protocolSuffixes" :key="index">
         <div class="ml-32">
@@ -109,4 +119,9 @@ const getProtocolPublicForks = (protocolSuffix) => {
 
 <style lang="scss" scoped>
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+.help-icon {
+  color: $purple;
+  height: 1.5rem;
+  width: 1.5rem;
+}
 </style>
