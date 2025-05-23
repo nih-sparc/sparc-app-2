@@ -80,6 +80,7 @@
 
   .el-button.share-options {
     font-size:11px!important;
+    padding: 5px 11px !important
   }
 
   .map-icon {
