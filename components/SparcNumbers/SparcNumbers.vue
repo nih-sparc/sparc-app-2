@@ -20,7 +20,7 @@
       Explore some of our key metrics:
     </div>
     <div class="data-wrap pt-16">
-      <nuxt-link v-for="item in metricsData" :key="item.label" class="consortia-item"
+      <nuxt-link v-for="item in metricsData.filter(data => data.metric && data.metric > 0)" :key="item.label" class="consortia-item"
         :to="`${item.link}`">
         <div class="heading1 metric">{{ item.metric }}</div>
         <p class="mb-0 mt-8">
@@ -81,6 +81,15 @@ export default {
         console.error('Error retrieving download count.', err)
         return
     }
+    const protocolViewsUrl = `${config.public.portal_api}/total_protocol_views`
+    let totalProtocolViews = 0
+    try {
+      const { data } = await $axios.get(protocolViewsUrl)
+      totalProtocolViews = data.total_views
+    } catch (err) {
+        console.error('Error retrieving total protocol views.', err)
+        return
+    }
     return {
       metricsData: [{
           label: 'Total dataset downloads',
@@ -90,6 +99,11 @@ export default {
         {
           label: 'Total dataset contributors',
           metric: totalContributors,
+          link: '/about/metrics'
+        },
+        {
+          label: 'Total protocol views',
+          metric: totalProtocolViews,
           link: '/about/metrics'
         }]
     }
