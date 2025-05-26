@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
-    "postinstall": "nuxt prepare",
+    "postinstall": "patch-package; nuxt prepare",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
@@ -22,6 +22,8 @@
     "nuxt": "^3.8.2",
     "nuxt-simple-robots": "^4.0.0-rc.19",
     "nuxt-svgo": "^3.5.6",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "sass": "^1.66.1"
   },
   "dependencies": {
