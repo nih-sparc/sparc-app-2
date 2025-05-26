@@ -142,6 +142,13 @@ mapTypes.forEach((map) => {
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
+          // Remove model from the loadedModels on retry
+          // to prevent loading issue
+          Cypress.on('test:after:run', (result) => {
+            if (result.currentRetry < result.retries && result.state === 'failed') {
+              loadedModels.delete(model);
+            }
+          })
           cy.print({
             title: 'loaded model',
             message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
