@@ -78,10 +78,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.0.tgz#581acd29c551ac0505129fcd09c0816c940579cc"
-  integrity sha512-hNwhv+4xQCBMk2NpQGJrmG/TgVOoBL8wnAesZAlWZUb7lqNwcraYl1T0ZpH1UnSs5gXkDlRx9NpHqJTBdYvOgA==
+"@abi-software/flatmapvuer@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.1.tgz#cba123566359463b174b6b10d43fe27680225724"
+  integrity sha512-k9zYAKmr/a2464QBtzO47g9ANjTnxvkrCU+M/wZTZOS4CrcCQOE6Ican9hN8uF06p6W2fB5dr9SMDS49UysjkQ==
   dependencies:
     "@abi-software/flatmap-viewer" "4.2.3"
     "@abi-software/map-utilities" "^1.5.0"
@@ -108,10 +108,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.8.0":
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.8.0.tgz#13c030a139d5b3a3e5a458d77064cdff54de17bc"
-  integrity sha512-cGJpzCqzCUYQBlKen53FlsGY0aMbDdXiD9zvQb+eAKfoOGmTeW+qe+c2/7p3q1WTN+G2relX4auzmUXtS6RBww==
+"@abi-software/map-side-bar@^2.8.1":
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.8.1.tgz#fd54acf53d0d8a4cf0f4324808240fe40dcbea17"
+  integrity sha512-T+uVGbW2AI925UjzZNeRh0aGDmt9AIOhcFUTcPLV95w2HGVXfe07xEvUR/GxO0snqlz1NqKQsQxAcQ3u3vLmjQ==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
     "@abi-software/map-utilities" "^1.5.0"
@@ -139,13 +139,13 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.0.tgz#a3ba9468a95481ca02b5f3e9b8bdbe777d0732e2"
-  integrity sha512-DNMLSK1qqfwxfi2ZID6SSmOsoUIMYEWMPArfMbMG5XBVtc4KHF2gdu3HV9YzI9jBu4H+rOBkQ6Srw79UG2J+iw==
+"@abi-software/mapintegratedvuer@1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.1.tgz#21770f9f3713fbd3267935116d33e0a968bc0c14"
+  integrity sha512-7zd50PkKm7f6zQD9dBB7zl9YkzZqWOLviX7uF0kGr8e0wFB/Q4j6MXqMqYU7wElTkMETgD0yiT7//Qb3s/i2NA==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.9.0"
-    "@abi-software/map-side-bar" "^2.8.0"
+    "@abi-software/flatmapvuer" "^1.9.1"
+    "@abi-software/map-side-bar" "^2.8.1"
     "@abi-software/map-utilities" "^1.5.0"
     "@abi-software/plotvuer" "1.0.4"
     "@abi-software/scaffoldvuer" "^1.9.0"
@@ -17515,7 +17515,16 @@ string-split-by@^1.0.0:
   dependencies:
     parenthesis "^3.1.5"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17585,7 +17594,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -19233,8 +19249,7 @@ world-calendars@^1.0.3:
   dependencies:
     object-assign "^4.1.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
-  name wrap-ansi-cjs
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19247,6 +19262,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
