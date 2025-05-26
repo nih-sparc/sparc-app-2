@@ -65,11 +65,11 @@ export default {
             return parseInt(metrics['number_of_sparc_users_overall']['N'])
           })
           .catch(() => {
-            return undefined
+            return -1
           })
       })
     const downloadsUrl = `${config.public.discover_api_host}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`
-    let totalDownloads = 0
+    let totalDownloads = -1
     try {
       const response = await $axios.get(downloadsUrl)
       response.data.forEach(item => {
@@ -79,16 +79,22 @@ export default {
       })
     } catch (err) {
         console.error('Error retrieving download count.', err)
-        return
     }
     const protocolViewsUrl = `${config.public.portal_api}/total_protocol_views`
-    let totalProtocolViews = 0
+    let totalProtocolViews = -1
     try {
       const { data } = await $axios.get(protocolViewsUrl)
       totalProtocolViews = data.total_views
     } catch (err) {
         console.error('Error retrieving total protocol views.', err)
-        return
+    }
+    const totalCitationsUrl = `${config.public.portal_api}/total_dataset_citations`
+    let totalCitations = -1
+    try {
+      const { data } = await $axios.get(totalCitationsUrl)
+      totalCitations = data.total_citations
+    } catch (err) {
+      console.error('Error retrieving total citations.', err)
     }
     return {
       metricsData: [{
@@ -99,6 +105,11 @@ export default {
         {
           label: 'Total dataset contributors',
           metric: totalContributors,
+          link: '/about/metrics'
+        },
+        {
+          label: 'Total dataset citations',
+          metric: totalCitations,
           link: '/about/metrics'
         },
         {
