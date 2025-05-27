@@ -203,6 +203,7 @@ mapTypes.forEach((map) => {
                 })
                 // Check for copy button
                 cy.get('.el-button.copy-clipboard-button:visible').click()
+                cy.wait(5000)
                 cy.window().then(win => {
                   win.navigator.clipboard.readText().then(text => {
                     expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
