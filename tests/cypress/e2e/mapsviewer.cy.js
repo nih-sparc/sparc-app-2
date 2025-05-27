@@ -142,6 +142,13 @@ mapTypes.forEach((map) => {
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
+          // Remove model from the loadedModels on retry
+          // to prevent loading issue
+          Cypress.on('test:after:run', (result) => {
+            if (result.currentRetry < result.retries && result.state === 'failed') {
+              loadedModels.delete(model);
+            }
+          })
           cy.print({
             title: 'loaded model',
             message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
@@ -196,6 +203,7 @@ mapTypes.forEach((map) => {
                 })
                 // Check for copy button
                 cy.get('.el-button.copy-clipboard-button:visible').click()
+                cy.wait(5000)
                 cy.window().then(win => {
                   win.navigator.clipboard.readText().then(text => {
                     expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
