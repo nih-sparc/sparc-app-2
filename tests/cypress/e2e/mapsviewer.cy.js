@@ -196,9 +196,10 @@ mapTypes.forEach((map) => {
             cy.get('.connectivity-info-title').within(($content) => {
               cy.get('.block > .title').then(($title) => {
                 expect($title, 'The provenance card should have the neuron name').to.exist
+                const neuronName = $title.text().trim()
                 cy.print({
                   title: 'neuron',
-                  message: `Clicked on the ${$title.text()}`,
+                  message: `Clicked on the ${neuronName}`,
                   type: 'info'
                 })
                 // Check for copy button
@@ -206,7 +207,7 @@ mapTypes.forEach((map) => {
                 cy.wait(5000)
                 cy.window().then(win => {
                   win.navigator.clipboard.readText().then(text => {
-                    expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
+                    expect(text, 'The content should be copied to clipboard').to.contain(neuronName)
                   })
                 })
               })
