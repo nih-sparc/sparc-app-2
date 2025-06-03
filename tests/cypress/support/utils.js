@@ -70,7 +70,7 @@ const nameCombination = (name, minSize = 2) => {
 
   function combine(prefix, remaining) {
     if (prefix.length >= minSize) {
-      result.push(prefix.join(" "));
+      result.push(prefix.join(".*"));
     }
     for (let i = 0; i < remaining.length; i++) {
       combine([...prefix, remaining[i]], remaining.slice(0, i).concat(remaining.slice(i + 1)));

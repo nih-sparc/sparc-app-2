@@ -137,9 +137,9 @@ datasetIds.forEach((datasetId) => {
                       cy.wrap($link).invoke('attr', 'href').then((href) => {
                         cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
                           const title = $title.text().trim().replaceAll(' ', '.*')
-                          const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
-                          const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
-                          const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
+                          const contributors = $contributor.text().replace(/Contributors:/i, '').split(',')
+                          const names = contributors.map(name => nameCombination(name).join('|')).join('|')
+                          const regex = new RegExp('\(' + title + '|' + names + '\)', 'gi')
                           const match = resp.body.match(regex) || []
                           expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
                           expect(match, 'Protocol link should make sense').to.have.length.greaterThan(0)
@@ -224,10 +224,10 @@ datasetIds.forEach((datasetId) => {
                   cy.waitForBrowserLoading()
                   cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
                   cy.get('@PI').then(($pi) => {
-                    const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ')
+                    const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
                     const names = nameCombination(author).join('|')
                     const regex = new RegExp('\(' + names + '\)', 'i')
-                    const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ').replace(/[ ]+/g, ' ').trim()
+                    const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
                     expect(pi, 'PI should be the contact author').to.match(regex)
                     cy.backToDetailPage(datasetId)
                   })
@@ -239,10 +239,10 @@ datasetIds.forEach((datasetId) => {
         cy.get('@contact', { timeout: 60000 }).then(($content) => {
           cy.get('.about-section-container a').then(($email) => {
             cy.get('.dataset-owners').should(($contributors) => {
-              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ')
+              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
               const names = nameCombination(author).join('|')
               const regex = new RegExp('\(' + names + '\)', 'i')
-              const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ').replace(/[ ]+/g, ' ').trim()
+              const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
               expect(contributors, 'Contact author should be in contributor list').to.match(regex)
             })
             expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)
