@@ -142,7 +142,7 @@ datasetIds.forEach((datasetId) => {
                           const regex = new RegExp('\(' + title + '|' + names + '\)', 'gi')
                           const match = resp.body.match(regex) || []
                           expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
-                          expect(match, 'Protocol link should make sense').to.have.length.greaterThan(0)
+                          expect(match, `Protocol link - ${href} should make sense`).to.have.length.greaterThan(0)
                         })
                       })
                     })
