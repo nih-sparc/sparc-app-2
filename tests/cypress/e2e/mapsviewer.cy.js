@@ -188,6 +188,7 @@ mapTypes.forEach((map) => {
           // Open connectivity explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
+          cy.wait(5000) // Wait for the sidebar to open
           cy.get('.filters > .dataset-shown > .dataset-results-feedback:visible').then(($result) => {
             if (!$result.text().match(/^1 Results \| Showing/i)) {
               cy.get('.connectivity-card-container > .connectivity-card > .card').first().click()
