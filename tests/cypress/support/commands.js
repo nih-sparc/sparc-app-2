@@ -295,14 +295,16 @@ Cypress.Commands.add('clickOnNeuron', (coordinate, pixel) => {
   let coorY = coordinate.y
   cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > [style="height: 100%; width: 100%;"] > .maplibregl-touch-drag-pan > .maplibregl-canvas').as('canvas')
   const clickOnNeuron = () => {
-    cy.get('@canvas').click(coorX, coorY)
-    cy.wait(5000)
-    cy.get('body').then(($body) => {
-      // Keep clicking until the sidebar is opened
-      if ($body.find('.tabs-container:visible').length === 0) {
-        coorX -= pixel
-        clickOnNeuron()
-      }
+    cy.get('@canvas').click(coorX, coorY).then(() => {
+      // Wait for the content ready if there is
+      cy.wait(5000)
+      cy.get('.box-card').then(($body) => {
+        // Keep clicking until the sidebar is opened
+        if ($body.find('.close-tab').length === 0) {
+          coorX -= pixel
+          clickOnNeuron()
+        }
+      })
     })
   }
   clickOnNeuron()
