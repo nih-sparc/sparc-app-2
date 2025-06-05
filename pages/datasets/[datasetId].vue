@@ -63,7 +63,7 @@
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" :award-ids="sparcAwardNumbers"/>
+                  :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
@@ -382,7 +382,7 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       datasetRecords: [],
-      sparcAwardNumbers: [],
+      sparcAwards: [],
       showCopySuccess: false,
       subtitles: [],
     }
@@ -689,13 +689,14 @@ export default {
         const filteredAwards = (supportingAwards || []).filter(
           award => propOr(null, 'identifier', award) != null
         )
+        this.sparcAwards = filteredAwards
 
-        this.sparcAwardNumbers = filteredAwards.map(
+        const sparcAwardNumbers = filteredAwards.map(
           award => `${award.identifier}`
         )
 
-        if (this.sparcAwardNumbers.length > 0) {
-          const projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
+        if (sparcAwardNumbers.length > 0) {
+          const projects = await this.getAssociatedProjects(sparcAwardNumbers)
           this.associatedProjects = projects.length > 0 ? projects : null
         }
       } catch (e) {
