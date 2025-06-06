@@ -43,7 +43,7 @@
           <b>{{datasetName}}</b>
           <hr class="my-16"/>
           <div class="heading3">
-            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }} and is currently being indexed into the SPARC Portal. Please check back periodically for updates.
+            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }}, and is currently undergoing indexing in the SPARC Portal. As a result, some metadata may be incomplete, and the dataset may not yet appear in browse results. Full availability is expected once the indexing process is complete, which may take up to one week. We recommend checking back periodically for updates.
           </div>
         </div>
       </div>
@@ -63,12 +63,12 @@
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" :award-ids="sparcAwardNumbers"/>
+                  :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'references'">
+                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'metrics'">
                   <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
                   <br />
                   <hr />
@@ -247,7 +247,12 @@ export default {
   mixins: [DateUtils, FormatStorage],
 
   async setup() {
+    const router = useRouter()
     const route = useRoute()
+    // re-direct legacy links
+    if (route.query.datasetDetailsTab === 'references') {
+      router.replace({ query: {'datasetDetailsTab': 'metrics'}})
+    }
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
@@ -377,7 +382,7 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       datasetRecords: [],
-      sparcAwardNumbers: [],
+      sparcAwards: [],
       showCopySuccess: false,
       subtitles: [],
     }
@@ -521,7 +526,7 @@ export default {
       return valObj.length > 0 ? valObj : null
     },
     citingPublications: function () {
-      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites')
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate)
       return pubs?.length > 0 ? pubs : null
     },
     protocolSuffixes: function () {
@@ -594,9 +599,9 @@ export default {
     hasCitations: {
       handler: function (newValue) {
         if (newValue && !this.hasError) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'references') !== undefined
+          const hasCitationsTab = this.tabs.find(tab => tab.id === 'metrics') !== undefined
           if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Metrics', id: 'references' })
+            this.tabs.splice(5, 0, { label: 'Metrics', id: 'metrics' })
           }
         }
       },
@@ -677,21 +682,23 @@ export default {
     },
     getDatasetRecords: async function () {
       try {
-        this.algoliaIndex
-          .getObject(this.datasetId, {
-            attributesToRetrieve: 'supportingAwards',
-          })
-          .then(({ supportingAwards }) => {
-            supportingAwards = supportingAwards.filter(award => propOr(null, 'identifier', award) != null)
-            supportingAwards.forEach(award => {
-              this.sparcAwardNumbers.push(`${award.identifier}`)
-            })
-          }).finally(async () => {
-            if (this.sparcAwardNumbers.length > 0) {
-              let projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
-              this.associatedProjects = projects.length > 0 ? projects : null
-            }
-          })
+        const { supportingAwards } = await this.algoliaIndex.getObject(this.datasetId, {
+          attributesToRetrieve: 'supportingAwards',
+        })
+
+        const filteredAwards = (supportingAwards || []).filter(
+          award => propOr(null, 'identifier', award) != null
+        )
+        this.sparcAwards = filteredAwards
+
+        const sparcAwardNumbers = filteredAwards.map(
+          award => `${award.identifier}`
+        )
+
+        if (sparcAwardNumbers.length > 0) {
+          const projects = await this.getAssociatedProjects(sparcAwardNumbers)
+          this.associatedProjects = projects.length > 0 ? projects : null
+        }
       } catch (e) {
         console.error(e)
       }

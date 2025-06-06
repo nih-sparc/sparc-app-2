@@ -76,9 +76,6 @@
           <p>
             Thank you for your submission!
           </p>
-          <p v-if="submissionLocation && submissionLocation != ''">
-            Your newly created submission can be found <a :href="submissionLocation" target="_blank">here</a>.
-          </p>
           <a href="#" @click="resetForms">Create another submission</a>
         </div>
       </div>
@@ -214,7 +211,6 @@ export default {
       ],
       isSubmitted: false,
       firstName: '',
-      submissionLocation: ''
     }
   },
 
@@ -274,11 +270,9 @@ export default {
     resetForms: function() {
       this.isSubmitted = false
       this.firstName = ''
-      this.submissionLocation = ''
     },
-    formSubmitted(firstName, submissionLocation) {
+    formSubmitted(firstName) {
       this.firstName = firstName
-      this.submissionLocation = submissionLocation
       this.isSubmitted = true
     }
   }

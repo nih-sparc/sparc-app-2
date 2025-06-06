@@ -25,17 +25,20 @@
       <span class="label4">
         Award(s): 
       </span>
-      <span v-if="(associatedProjects == null || associatedProjects.length < 1) && (externalProjectAwardIds == null || externalProjectAwardIds.length < 1)">None specified</span>
+      <span v-if="(associatedProjects == null || associatedProjects.length < 1) && (externalProjectAwards == null || externalProjectAwards.length < 1)">None specified</span>
       <template v-else>
         <span v-for="(project, index) in associatedProjects" :key="index">
-          <nuxt-link v-for="(award, index) in getAwardNumbers(project)" :key="award.title" :to="getProjectLink(project)">
-            {{ award.title }}<span v-if="index < getAwardNumbers(project).length - 1">, </span>
-          </nuxt-link>
-          <span v-if="index < associatedProjects.length - 1 || externalProjectAwardIds.length > 0">, </span>
+          <span v-for="(award, index) in getAwards(project)" :key="award.title">
+            {{award.agency?.name}}
+            <nuxt-link :to="getProjectLink(project)">
+               {{ award.identifier }}<span v-if="index < getAwards(project).length - 1">, </span>
+            </nuxt-link>
+          </span>
+          <span v-if="index < associatedProjects.length - 1 || externalProjectAwards.length > 0">, </span>
         </span>
-        <span v-for="(awardId, index) in externalProjectAwardIds" :key="index">
-          {{  awardId }}
-          <span v-if="index < externalProjectAwardIds.length - 1">, </span>
+        <span v-for="(award, index) in externalProjectAwards" :key="index">
+          {{  getAwardAgency(award) }} {{ getAwardId(award) }}
+          <span v-if="index < externalProjectAwards.length - 1">, </span>
         </span>
       </template>
     </div>
@@ -111,7 +114,7 @@ export default {
       type: Array,
       default: () => []
     },
-    awardIds: {
+    awards: {
       type: Array,
       default: () => []
     }
@@ -133,8 +136,15 @@ export default {
      * Construct the sparc award number
      * @returns {String}
      */
-    getAwardNumbers: function (associatedProject) {
-      return  pathOr([], ['fields', 'awards'], associatedProject).map(award => award.fields)
+    getAwards: function (associatedProject) {
+      const awardNumbers = pathOr([], ['fields', 'awards'], associatedProject).map(award => award.fields.title)
+      return this.awards.filter(award => awardNumbers.includes(award.identifier))
+    },
+    getAwardAgency: function(award) {
+      return pathOr('', ['agency', 'name'], award)
+    },
+    getAwardId: function(award) {
+      return propOr('', 'identifier', award)
     },
     /**
      * Get the funding program name
@@ -233,12 +243,13 @@ export default {
       let revision = this.datasetInfo.revision ? this.datasetInfo.revision : '0'
       return `Version ${this.datasetInfo.version} Revision ${revision}`
     },
-    externalProjectAwardIds() {
+    externalProjectAwards() {
       if (this.associatedProjects == null || this.associatedProjects.length < 0) {
-        return this.awardIds
+        return this.awards
       }
-      return this.awardIds.filter(id => {
-        return !this.associatedProjects.some(project => pathOr(null, ['fields', 'awardId'], project) == id)
+      return this.awards.filter(award => {
+        const awardId = propOr('', 'identifier', award)
+        return !this.associatedProjects.some(project => pathOr(null, ['fields', 'awardId'], project) == awardId)
       })
     }
   },

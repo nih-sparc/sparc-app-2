@@ -27,39 +27,41 @@ datasetIds.forEach((datasetId) => {
       cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
         const response = intercept.response.body.result[0]
         // Check if gallery cards loaded
-        if (
-          ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
-          ('video' in response && response['video'].length) ||
-          ('organs' in response && response['organs'].length) ||
-          ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
-          ('abi-plot' in response && response['abi-plot'].length) ||
-          ('common-images' in response && response['common-images'].length) ||
-          ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-          ('biolucida-3d' in response && response['biolucida-3d'].length)
-        ) {
-          if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
-            existGalleryItems.push('Scaffold')
-          }
-          if ('video' in response && response['video'].length) {
-            existGalleryItems.push('Video')
-          }
-          if ('organs' in response && response['organs'].length) {
-            existGalleryItems.push('Flatmap')
-          }
-          if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
-            existGalleryItems.push('Segmentation')
-          }
-          if ('abi-plot' in response && response['abi-plot'].length) {
-            existGalleryItems.push('Plot')
-          }
+        if (response) {          
           if (
+            ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
+            ('video' in response && response['video'].length) ||
+            ('organs' in response && response['organs'].length) ||
+            ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
+            ('abi-plot' in response && response['abi-plot'].length) ||
             ('common-images' in response && response['common-images'].length) ||
             ('biolucida-2d' in response && response['biolucida-2d'].length) ||
             ('biolucida-3d' in response && response['biolucida-3d'].length)
           ) {
-            existGalleryItems.push('Image')
+            if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
+              existGalleryItems.push('Scaffold')
+            }
+            if ('video' in response && response['video'].length) {
+              existGalleryItems.push('Video')
+            }
+            if ('organs' in response && response['organs'].length) {
+              existGalleryItems.push('Flatmap')
+            }
+            if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
+              existGalleryItems.push('Segmentation')
+            }
+            if ('abi-plot' in response && response['abi-plot'].length) {
+              existGalleryItems.push('Plot')
+            }
+            if (
+              ('common-images' in response && response['common-images'].length) ||
+              ('biolucida-2d' in response && response['biolucida-2d'].length) ||
+              ('biolucida-3d' in response && response['biolucida-3d'].length)
+            ) {
+              existGalleryItems.push('Image')
+            }
+            cy.checkGalleyCardState()
           }
-          cy.checkGalleyCardState()
         } else {
           cy.get('.content > .full-size').should(($message) => {
             expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
