@@ -1,13 +1,6 @@
-import {installDashboard} from 'sparc-dashboard-beta'
+import { install } from 'sparc-dashboard-beta/dist/index.js'
+import 'sparc-dashboard-beta/dist/style.css'
+
 export default defineNuxtPlugin((nuxtApp) => {
-    const componentMap = [
-        'FlatmapViewer',
-        'ImageSelector',
-        'BiolucidaViewer',
-        'QDBGraph',
-        'TextWidget',
-        'CountWidget',
-        'ScaffoldViewer'
-    ]
-    installDashboard(nuxtApp.vueApp, componentMap, nuxtApp.$pinia)
+    install(nuxtApp.vueApp, nuxtApp.$pinia)
 })
