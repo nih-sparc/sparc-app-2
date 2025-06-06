@@ -11,7 +11,7 @@
     </div>
     <div v-if="showAssociatedPublications">
       <div class="heading2 mb-8">
-        Associated Publications for this Dataset
+        Associated Protocols for this Dataset
       </div>
       <div v-for="(item, index) in associatedPublicationsDisplay" :key="index">
         <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" />
@@ -22,8 +22,20 @@
       <div class="heading2 mb-8">
         Publications That Cite This Dataset
       </div>
-      <div v-for="(item, index) in citingPublicationsDisplay" :key="index">
-        <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.curie" />
+      <div v-for="(item, index) in this.citingPublicationsWithHtml" 
+          :key="index"
+          :class="[
+            'citation-container',
+            'py-16',
+            'pl-16',
+            'pr-24',
+            index !== citingPublicationsWithHtml.length - 1 ? 'mb-16' : ''
+          ]"
+      >
+        <button class="copy-button" @click="handleCitationCopy(item.citation)">
+          <img src="../../static/images/copyIcon.png" />
+        </button>
+        <div v-html="item.citationHtml" />
       </div>
       <hr v-if="preprints" />
     </div>
@@ -69,8 +81,7 @@ export default {
   data() {
     return {
       primaryPublicationsDisplay: [],
-      associatedPublicationsDisplay: [],
-      citingPublicationsDisplay: []
+      associatedPublicationsDisplay: []
     }
   },
   methods: {
@@ -97,10 +108,15 @@ export default {
       this.addPublicationsForDisplay(this.associatedPublications,
         this.associatedPublicationsDisplay)
     },
-    updateCitingPublicationsDisplay: function() {
-      this.citingPublicationsDisplay.length = 0
-      this.addPublicationsForDisplay(this.citingPublications,
-        this.citingPublicationsDisplay)
+    handleCitationCopy: function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        successMessage(
+          `Successfully copied citation.`
+        )
+      }),
+        () => {
+          failMessage('Failed to copy citation.')
+        }
     },
   },
   watch: {
@@ -115,13 +131,7 @@ export default {
         this.updateAssociatedPublicationsDisplay()
       },
       immediate: false
-    },
-    citingPublications: {
-      handler: function () {
-        this.updateCitingPublicationsDisplay()
-      },
-      immediate: false
-    },
+    }
   },
   computed: {
     preprints: function() {
@@ -135,6 +145,12 @@ export default {
         }
       })
       return isEmpty(preprintPublications) ? undefined : preprintPublications
+    },
+    citingPublicationsWithHtml: function () {
+      return this.citingPublications.map(publication => {
+        const updatedCitation = publication.citation.replace(/https:\/\/[^\s]+/g, url => `<a href="${url}" target="_blank">${url}</a>`)
+        return { ...publication, citationHtml: updatedCitation }
+      })
     }
   },
   mounted: function() {
@@ -146,18 +162,33 @@ export default {
     setTimeout(() => {
       this.updateAssociatedPublicationsDisplay()
     }, 1000)
-    setTimeout(() => {
-      this.updateCitingPublicationsDisplay()
-    }, 1500)
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
 .dataset-references {
   hr {
     margin-top: 1rem;
     border-top: none;
   }
+}
+.citation-container {
+  background-color: $background;
+    position: relative;
+    .copy-button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: .25rem;
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
 }
 </style>

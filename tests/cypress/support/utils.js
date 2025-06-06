@@ -64,7 +64,24 @@ const randomInteger = (min, max) => {
 
 }
 
-export { retryableBefore, stringToArray, randomInteger }
+const nameCombination = (name, minSize = 2) => {
+  const words = name.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ').split(/\s+/);
+  const result = [];
+
+  function combine(prefix, remaining) {
+    if (prefix.length >= minSize) {
+      result.push(prefix.join(".*"));
+    }
+    for (let i = 0; i < remaining.length; i++) {
+      combine([...prefix, remaining[i]], remaining.slice(0, i).concat(remaining.slice(i + 1)));
+    }
+  }
+
+  combine([], words);
+  return result;
+}
+
+export { retryableBefore, stringToArray, randomInteger, nameCombination }
 
 const shuffle = (array) => {
 

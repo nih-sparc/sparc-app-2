@@ -1,4 +1,4 @@
-import { retryableBefore, stringToArray } from '../../support/utils.js'
+import { retryableBefore, stringToArray, nameCombination } from '../../support/utils.js'
 
 /**
  * List of dataset ids
@@ -137,12 +137,12 @@ datasetIds.forEach((datasetId) => {
                       cy.wrap($link).invoke('attr', 'href').then((href) => {
                         cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
                           const title = $title.text().trim().replaceAll(' ', '.*')
-                          const contributor = $contributor.text().replace(/Contributors:/i, '').split(',').map(name => name.trim().replace(' ', '.*'))
-                          const contributorReversed = contributor.map(name => name.split(' ').reverse().join('.*'))
-                          const regex = new RegExp('\(' + title + '|' + contributor.join('|') + '|' + contributorReversed.join('|') + '\)', 'gi')
+                          const contributors = $contributor.text().replace(/Contributors:/i, '').split(',')
+                          const names = contributors.map(name => nameCombination(name).join('|')).join('|')
+                          const regex = new RegExp('\(' + title + '|' + names + '\)', 'gi')
                           const match = resp.body.match(regex) || []
                           expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
-                          expect(match, 'Protocol link should make sense').to.have.length.greaterThan(0)
+                          expect(match, `Protocol link - ${href} should make sense`).to.have.length.greaterThan(0)
                         })
                       })
                     })
@@ -210,36 +210,39 @@ datasetIds.forEach((datasetId) => {
       it('Contact Author', function () {
         cy.get('.dataset-about-info .label4').contains(/Contact Author/i).parent().as('contact')
         // Check for author and email href
-        cy.get('@contact').then(($content) => {
-          cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-            cy.get('.similar-datasets-container > .px-8').then(($similar) => {
-              if ($similar.text().includes('Type:')) {
-                cy.wrap($similar).contains(/TYPE/i).siblings('.facet-button-container').click()
-                cy.get('.el-input__inner').clear()
-                cy.get('.el-input__inner').type(datasetId)
-                cy.get('.search-text').click()
-                cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-                cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-                cy.waitForBrowserLoading()
-                cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
-                cy.get('@PI').then(($pi) => {
-                  const author = $content.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-                  const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
-                  expect(author, 'PI should be the contact author').to.contain(pi)
-                  cy.backToDetailPage(datasetId)
-                })
-              }
+        cy.get('@contact', { timeout: 60000 }).then(($content) => {
+          cy.get('.about-section-container a').then(($email) => {
+            cy.get('.el-col-sm-16 > .heading2').then(($title) => {
+              cy.get('.similar-datasets-container > .px-8').then(($similar) => {
+                if ($similar.text().includes('Type:')) {
+                  cy.wrap($similar).contains(/TYPE/i).siblings('.facet-button-container').click()
+                  cy.get('.el-input__inner').clear()
+                  cy.get('.el-input__inner').type(datasetId)
+                  cy.get('.search-text').click()
+                  cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
+                  cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
+                  cy.waitForBrowserLoading()
+                  cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
+                  cy.get('@PI').then(($pi) => {
+                    const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
+                    const names = nameCombination(author).join('|')
+                    const regex = new RegExp('\(' + names + '\)', 'i')
+                    const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
+                    expect(pi, 'PI should be the contact author').to.match(regex)
+                    cy.backToDetailPage(datasetId)
+                  })
+                }
+              })
             })
           })
         })
         cy.get('@contact', { timeout: 60000 }).then(($content) => {
           cy.get('.about-section-container a').then(($email) => {
             cy.get('.dataset-owners').should(($contributors) => {
-              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '').replace(/[ ]+/g, ' ').trim()
-              const name = author.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-              const nameReversed = name.split(' ').reverse().join(' ')
-              const regex = new RegExp('\(' + name + '|' + nameReversed + '\)', 'i')
-              const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
+              const names = nameCombination(author).join('|')
+              const regex = new RegExp('\(' + names + '\)', 'i')
+              const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
               expect(contributors, 'Contact author should be in contributor list').to.match(regex)
             })
             expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)

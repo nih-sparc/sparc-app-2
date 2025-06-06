@@ -198,10 +198,8 @@ export default {
         if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
         }
-        const url = data?.url
         const status = data?.status
         const message = data?.message
-        console.log("STATUS = ", status)
         switch (status) {
           case 'success':
             ElMessage({
@@ -229,7 +227,7 @@ export default {
             })
             break
         }
-        this.$emit('submit', this.form.user.firstName, url)
+        this.$emit('submit', this.form.user.firstName)
       } catch (e) {
         ElMessage({
           showClose: true,
