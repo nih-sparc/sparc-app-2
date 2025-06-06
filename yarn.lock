@@ -31,13 +31,45 @@
     minisearch "^2.2.1"
     polylabel "^2.0.1"
 
-"@abi-software/flatmapvuer@1.7.4":
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.7.4.tgz#fbe376eeadba91d7178d0e53ce61e67abdf34c57"
-  integrity sha512-UIUrfJFD7U5mI6iGmPkj4NI2mLRC3MT3d56vIX3CUoLwMDjzbIZolSO6RXUXczDv+ZbaByHFFsHmO94lLvhrKg==
+"@abi-software/flatmap-viewer@4.2.3":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-4.2.3.tgz#d86d4703710507d1f8cb6253ced356d1dc817a07"
+  integrity sha512-3/RAKPLwXqtRGdfKWTiOiaLrW6KhUuL8g0rAFwNakh5Y5QNGSr4Yl+18kCTTX0lAsFYAehc7PgfjUkQp/TJL2A==
   dependencies:
-    "@abi-software/flatmap-viewer" "3.2.13"
-    "@abi-software/map-utilities" "^1.3.2"
+    "@deck.gl/core" "^9.0.17"
+    "@deck.gl/geo-layers" "^9.0.18"
+    "@deck.gl/layers" "^9.0.17"
+    "@deck.gl/mapbox" "^9.0.17"
+    "@luma.gl/engine" "^9.1.0"
+    "@mapbox/mapbox-gl-draw" "=1.4.3"
+    "@turf/along" "^7.1.0"
+    "@turf/area" "^6.5.0"
+    "@turf/bbox" "^6.5.0"
+    "@turf/clean-coords" "^7.2.0"
+    "@turf/helpers" "^6.5.0"
+    "@turf/length" "^7.0.0"
+    "@turf/nearest-point-on-line" "^7.0.0"
+    "@turf/projection" "^6.5.0"
+    bezier-js "^6.1.0"
+    colord "^2.9.3"
+    core-js "^3.37.0"
+    graphology "^0.25.4"
+    graphology-operators "^1.6.0"
+    graphology-shortest-path "^2.1.0"
+    html-es6cape "^2.0.2"
+    maplibre-gl "^5.5.0"
+    mathjax-full "^3.2.2"
+    minisearch "^2.2.1"
+    polylabel "^2.0.1"
+    uuid "^11.1.0"
+
+"@abi-software/flatmapvuer@1.9.2":
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.2.tgz#314e07a940da5f35f50e25ca3a809cbeecfc168b"
+  integrity sha512-XuYATeRgh+vt5lxhP1ccbFuhxD+wX97l/jViWTZ1KvWgLiSI8ZyxsTJIvyAKnJweVqWD2qfX6rPRKPmpGskpcA==
+  dependencies:
+    "@abi-software/flatmap-viewer" "4.2.3"
+    "@abi-software/map-utilities" "^1.5.0"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -47,6 +79,9 @@
     pinia "^2.1.7"
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
+  optionalDependencies:
+    "@esbuild/linux-x64" "0.25.3"
+    "@rollup/rollup-linux-x64-gnu" "4.23.0"
 
 "@abi-software/flatmapvuer@^1.9.0-beta.0":
   version "1.9.0-beta.0"
@@ -96,18 +131,6 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@^1.3.2", "@abi-software/map-utilities@^1.4.0":
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.4.2.tgz#5989b260e42cb0915c00dad05be595b3b42a52fa"
-  integrity sha512-RbumWrn9+WkRS1cSQBKcywkNPJUs8xEwmtf9LbkkJeyeNrULKDuRinpnww+8bX2zGB/5jzP1BfzEYcZEesLSrQ==
-  dependencies:
-    "@abi-software/svg-sprite" "^1.0.1"
-    "@element-plus/icons-vue" "^2.3.1"
-    cytoscape "^3.30.2"
-    element-plus "2.8.4"
-    mitt "^3.0.1"
-    vue "^3.4.21"
-
 "@abi-software/map-utilities@^1.4.3-beta.3":
   version "1.4.3-isan.1"
   resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.4.3-isan.1.tgz#ea2b02ec8650280ce5dec0c082ec54429385376e"
@@ -116,6 +139,19 @@
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     cytoscape "^3.30.2"
+    element-plus "2.8.4"
+    mitt "^3.0.1"
+    vue "^3.4.21"
+
+"@abi-software/map-utilities@^1.5.0", "@abi-software/map-utilities@^1.5.0-beta.1":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.5.0.tgz#1a1678c5e28403994c4c7b5633c76176de29a3eb"
+  integrity sha512-NQkY+yQlcmlG4QpKQxx9stfeTiXUQ6p8KdNc5k/nLxJRD0C4uj0dKCYAdNdqyPHivroS02OYSrOdRXwGz74HIw==
+  dependencies:
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    cytoscape "^3.30.2"
+    cytoscape-dagre "^2.5.0"
     element-plus "2.8.4"
     mitt "^3.0.1"
     vue "^3.4.21"
@@ -191,12 +227,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.8.0.tgz#b74d1c8023baa8f2bf2e52033150729c546ccd9a"
-  integrity sha512-DHvz3V4UQaxtoHI9N1MmINGyUacLeyHyYJQy7qDDXHqX9TnsiibBXkPRmNr/iG6TKmtvirdD2NXKAhJnmOTNWA==
+"@abi-software/scaffoldvuer@1.9.0-beta.1":
+  version "1.9.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.9.0-beta.1.tgz#79e63d63ec85ada24beab57de9f738f3defb29c9"
+  integrity sha512-6llNbCUV+hC0rBmx9CEYebA2cRNKw35SKOT6gq4aaT61tEg7rU1AwftkCedF7J11FWZoWxP/lz/hqCwofHFYtg==
   dependencies:
-    "@abi-software/map-utilities" "^1.4.0"
+    "@abi-software/map-utilities" "^1.5.0-beta.1"
     "@abi-software/sparc-annotation" "^0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -209,7 +245,7 @@
     vue "^3.4.21"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.12.4"
+    zincjs "^1.13.0"
 
 "@abi-software/scaffoldvuer@^1.9.0-beta.0":
   version "1.9.0-beta.0"
@@ -4520,6 +4556,16 @@
     "@probe.gl/stats" "^4.0.2"
     "@types/offscreencanvas" "^2019.6.4"
 
+"@luma.gl/engine@^9.1.0":
+  version "9.1.9"
+  resolved "https://registry.yarnpkg.com/@luma.gl/engine/-/engine-9.1.9.tgz#83d77a3131e075ca7efd335c91a28210e6b4c099"
+  integrity sha512-n1GLK1sUMFkWxdb+aZYn6ZBFltFEMi7X+6ZPxn2pBsNT6oeF4AyvH5AyqhOpvHvUnCLDt3Zsf1UIfx3MI//YSw==
+  dependencies:
+    "@math.gl/core" "^4.1.0"
+    "@math.gl/types" "^4.1.0"
+    "@probe.gl/log" "^4.0.8"
+    "@probe.gl/stats" "^4.0.8"
+
 "@luma.gl/engine@~9.0.27":
   version "9.0.28"
   resolved "https://registry.yarnpkg.com/@luma.gl/engine/-/engine-9.0.28.tgz#500975d9eff62de07f9448953ce4fb184d472f63"
@@ -4556,6 +4602,11 @@
     "@luma.gl/constants" "9.0.28"
     "@probe.gl/env" "^4.0.2"
 
+"@mapbox/extent@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/extent/-/extent-0.4.0.tgz#3e591f32e1f0c3981c864239f7b0ac06e610f8a9"
+  integrity sha512-MSoKw3qPceGuupn04sdaJrFeLKvcSETVLZCGS8JA9x6zXQL3FWiKaIXYIZEDXd5jpXpWlRxinCZIN49yRy0C9A==
+
 "@mapbox/geojson-area@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-area/-/geojson-area-0.2.2.tgz#18d7814aa36bf23fbbcc379f8e26a22927debf10"
@@ -4563,7 +4614,25 @@
   dependencies:
     wgs84 "0.0.0"
 
-"@mapbox/geojson-normalize@^0.0.1":
+"@mapbox/geojson-coords@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojson-coords/-/geojson-coords-0.0.2.tgz#f73d5744c832de0f05c48899f16a4288cefb2606"
+  integrity sha512-YuVzpseee/P1T5BWyeVVPppyfmuXYHFwZHmybkqaMfu4BWlOf2cmMGKj2Rr92MwfSTOCSUA0PAsVGRG8akY0rg==
+  dependencies:
+    "@mapbox/geojson-normalize" "0.0.1"
+    geojson-flatten "^1.0.4"
+
+"@mapbox/geojson-extent@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@mapbox/geojson-extent/-/geojson-extent-1.0.1.tgz#bd99a6b66ba98e63a29511c9cd1bbd1df4c1e203"
+  integrity sha512-hh8LEO3djT4fqfr8sSC6wKt+p0TMiu+KOLMBUiFOyj+zGq7+IXwQGl0ppCVDkyzCewyd9LoGe9zAvDxXrLfhLw==
+  dependencies:
+    "@mapbox/extent" "0.4.0"
+    "@mapbox/geojson-coords" "0.0.2"
+    rw "~0.1.4"
+    traverse "~0.6.6"
+
+"@mapbox/geojson-normalize@0.0.1", "@mapbox/geojson-normalize@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@mapbox/geojson-normalize/-/geojson-normalize-0.0.1.tgz#1da1e6b3a7add3ad29909b30f438f60581b7cd80"
   integrity sha512-82V7YHcle8lhgIGqEWwtXYN5cy0QM/OHq3ypGhQTbvHR57DF0vMHMjjVSQKFfVXBe/yWCBZTyOuzvK7DFFnx5Q==
@@ -4585,6 +4654,19 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@mapbox/jsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
   integrity sha512-rY0o9A5ECsTQRVhv7tL/OyDpGAoUB4tTvLiW1DSzQGq4bvTPhNw1VpSNjDJc5GFZ2XuyOtSWSVN05qOtcD71qQ==
+
+"@mapbox/mapbox-gl-draw@=1.4.3":
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-draw/-/mapbox-gl-draw-1.4.3.tgz#3f95362fdeabcffcb46f3392f24bf5914e7be817"
+  integrity sha512-03qIJgyGmm0IoTZbV/cfODru9jRGogi4LcQ3maxIJDKccq1gY3ofgt2UYPkeU143ElxitZahEythNQv1NpsLhg==
+  dependencies:
+    "@mapbox/geojson-area" "^0.2.2"
+    "@mapbox/geojson-extent" "^1.0.1"
+    "@mapbox/geojson-normalize" "^0.0.1"
+    "@mapbox/point-geometry" "^0.1.0"
+    hat "0.0.3"
+    lodash.isequal "^4.5.0"
+    xtend "^4.0.2"
 
 "@mapbox/mapbox-gl-draw@^1.4.3":
   version "1.5.0"
@@ -4668,6 +4750,19 @@
   version "23.0.0"
   resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-style-spec/-/maplibre-gl-style-spec-23.0.0.tgz#c582823f3f4fe52a83dee83d3af2f12fee331a7e"
   integrity sha512-Q3L4TTs/cAuebQolBrDvfoLj3f/9C+wo2qiup9paye+e77IXoAAoZnR+2M/qEiZWAPfPZWuARLx81a5PN5LTUw==
+  dependencies:
+    "@mapbox/jsonlint-lines-primitives" "~2.0.2"
+    "@mapbox/unitbezier" "^0.0.1"
+    json-stringify-pretty-compact "^4.0.0"
+    minimist "^1.2.8"
+    quickselect "^3.0.0"
+    rw "^1.3.3"
+    tinyqueue "^3.0.0"
+
+"@maplibre/maplibre-gl-style-spec@^23.3.0":
+  version "23.3.0"
+  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-style-spec/-/maplibre-gl-style-spec-23.3.0.tgz#b69ab48cb3abead4e49213396c8f83492638b97c"
+  integrity sha512-IGJtuBbaGzOUgODdBRg66p8stnwj9iDXkgbYKoYcNiiQmaez5WVRfXm4b03MCDwmZyX93csbfHFWEJJYHnn5oA==
   dependencies:
     "@mapbox/jsonlint-lines-primitives" "~2.0.2"
     "@mapbox/unitbezier" "^0.0.1"
@@ -5580,6 +5675,11 @@
   resolved "https://registry.yarnpkg.com/@probe.gl/env/-/env-4.0.9.tgz#cd0ed5214ed68021f3facc82cd885faebad21642"
   integrity sha512-AOmVMD0/j78mX+k4+qX7ZhE0sY9H+EaJgIO6trik0BwV6VcrwxTGCGFAeuRsIGhETDnye06tkLXccYatYxAYwQ==
 
+"@probe.gl/env@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/env/-/env-4.1.0.tgz#c2af9030a8711f2d98590850aa47a5f58feef211"
+  integrity sha512-5ac2Jm2K72VCs4eSMsM7ykVRrV47w32xOGMvcgqn8vQdEMF9PRXyBGYEV9YbqRKWNKpNKmQJVi4AHM/fkCxs9w==
+
 "@probe.gl/log@^4.0.2", "@probe.gl/log@^4.0.4", "@probe.gl/log@^4.0.9":
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/@probe.gl/log/-/log-4.0.9.tgz#5971bb12558c470634f7e30b490252965af22c2a"
@@ -5587,10 +5687,22 @@
   dependencies:
     "@probe.gl/env" "4.0.9"
 
+"@probe.gl/log@^4.0.8":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/log/-/log-4.1.0.tgz#b5501f96e3aa7f04c75a9800431314d46911cb98"
+  integrity sha512-r4gRReNY6f+OZEMgfWEXrAE2qJEt8rX0HsDJQXUBMoc+5H47bdB7f/5HBHAmapK8UydwPKL9wCDoS22rJ0yq7Q==
+  dependencies:
+    "@probe.gl/env" "4.1.0"
+
 "@probe.gl/stats@^4.0.0", "@probe.gl/stats@^4.0.2", "@probe.gl/stats@^4.0.9":
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/@probe.gl/stats/-/stats-4.0.9.tgz#3a175c1a0207d54bf911bd01f4f5414b9f3e6f2a"
   integrity sha512-Q9Xt/sJUQaMsbjRKjOscv2t7wXIymTrOEJ4a3da4FTCn7bkKvcdxdyFAQySCrtPxE+YZ5I5lXpWPgv9BwmpE1g==
+
+"@probe.gl/stats@^4.0.8":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@probe.gl/stats/-/stats-4.1.0.tgz#181b774b31f7f3c91f9750e41ccd72f6c8c4ad93"
+  integrity sha512-EI413MkWKBDVNIfLdqbeNSJTs7ToBz/KVGkwi3D+dQrSIkRI2IYbWGAU3xX+D6+CI4ls8ehxMhNpUVMaZggDvQ==
 
 "@rollup/plugin-alias@^5.1.0":
   version "5.1.0"
@@ -6210,6 +6322,16 @@
     "@turf/helpers" "^6.5.0"
     "@turf/meta" "^6.5.0"
 
+"@turf/clean-coords@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@turf/clean-coords/-/clean-coords-7.2.0.tgz#39f85be033bc33601da2e95948e6c184af34610f"
+  integrity sha512-+5+J1+D7wW7O/RDXn46IfCHuX1gIV1pIAQNSA7lcDbr3HQITZj334C4mOGZLEcGbsiXtlHWZiBtm785Vg8i+QQ==
+  dependencies:
+    "@turf/helpers" "^7.2.0"
+    "@turf/invariant" "^7.2.0"
+    "@types/geojson" "^7946.0.10"
+    tslib "^2.8.1"
+
 "@turf/clone@^5.1.5":
   version "5.1.5"
   resolved "https://registry.yarnpkg.com/@turf/clone/-/clone-5.1.5.tgz#253e8d35477181976e33adfab50a0f02a7f0e367"
@@ -6490,6 +6612,11 @@
   version "7946.0.15"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.15.tgz#f9d55fd5a0aa2de9dc80b1b04e437538b7298868"
   integrity sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==
+
+"@types/geojson@^7946.0.16":
+  version "7946.0.16"
+  resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.16.tgz#8ebe53d69efada7044454e3305c19017d97ced2a"
+  integrity sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==
 
 "@types/hammerjs@^2.0.41":
   version "2.0.46"
@@ -11587,6 +11714,11 @@ gensync@^1.0.0-beta.2:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
+geojson-flatten@^1.0.4:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/geojson-flatten/-/geojson-flatten-1.1.1.tgz#601aae07ba6406281ebca683573dcda69eba04c7"
+  integrity sha512-k/6BCd0qAt7vdqdM1LkLfAy72EsLDy0laNwX0x2h49vfYCiQkRc4PSra8DNEdJ10EKRpwEvDXMb0dBknTJuWpQ==
+
 geojson-vt@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-3.2.1.tgz#f8adb614d2c1d3f6ee7c4265cad4bbf3ad60c8b7"
@@ -12304,6 +12436,11 @@ hasown@^2.0.0, hasown@^2.0.2:
   integrity sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
   dependencies:
     function-bind "^1.1.2"
+
+hat@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/hat/-/hat-0.0.3.tgz#bb014a9e64b3788aed8005917413d4ff3d502d8a"
+  integrity sha512-zpImx2GoKXy42fVDSEad2BPKuSQdLcqsCYa48K3zHSzM/ugWuYjLDr8IXxpVuL7uCLHw56eaiLxCRthhOzf5ug==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"
@@ -13631,6 +13768,11 @@ lodash.isarguments@^3.1.0:
   resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
   integrity sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
+
 lodash.isplainobject@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
@@ -13849,6 +13991,38 @@ maplibre-gl@>=4.7.1:
     "@mapbox/whoots-js" "^3.1.0"
     "@maplibre/maplibre-gl-style-spec" "^23.0.0"
     "@types/geojson" "^7946.0.15"
+    "@types/geojson-vt" "3.2.5"
+    "@types/mapbox__point-geometry" "^0.1.4"
+    "@types/mapbox__vector-tile" "^1.3.4"
+    "@types/pbf" "^3.0.5"
+    "@types/supercluster" "^7.1.3"
+    earcut "^3.0.1"
+    geojson-vt "^4.0.2"
+    gl-matrix "^3.4.3"
+    global-prefix "^4.0.0"
+    kdbush "^4.0.2"
+    murmurhash-js "^1.0.0"
+    pbf "^3.3.0"
+    potpack "^2.0.0"
+    quickselect "^3.0.0"
+    supercluster "^8.0.1"
+    tinyqueue "^3.0.0"
+    vt-pbf "^3.1.3"
+
+maplibre-gl@^5.5.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/maplibre-gl/-/maplibre-gl-5.6.0.tgz#bb62bad5669ecd33b27cd84d8d2338f93553d919"
+  integrity sha512-7TuHMozUC4rlIp08bSsxCixFn18P24otrlZU/7UGCO5RufFTJadFzauTrvBHr9FB67MbJ6nvFXEftGd0bUl4Iw==
+  dependencies:
+    "@mapbox/geojson-rewind" "^0.5.2"
+    "@mapbox/jsonlint-lines-primitives" "^2.0.2"
+    "@mapbox/point-geometry" "^0.1.0"
+    "@mapbox/tiny-sdf" "^2.0.6"
+    "@mapbox/unitbezier" "^0.0.1"
+    "@mapbox/vector-tile" "^1.3.1"
+    "@mapbox/whoots-js" "^3.1.0"
+    "@maplibre/maplibre-gl-style-spec" "^23.3.0"
+    "@types/geojson" "^7946.0.16"
     "@types/geojson-vt" "3.2.5"
     "@types/mapbox__point-geometry" "^0.1.4"
     "@types/mapbox__vector-tile" "^1.3.4"
@@ -16723,6 +16897,11 @@ rw@1, rw@^1.3.3:
   resolved "https://registry.yarnpkg.com/rw/-/rw-1.3.3.tgz#3f862dfa91ab766b14885ef4d01124bfda074fb4"
   integrity sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==
 
+rw@~0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/rw/-/rw-0.1.4.tgz#4903cbd80248ae0ede685bf58fd236a7a9b29a3e"
+  integrity sha512-vSj3D96kMcjNyqPcp65wBRIDImGSrUuMxngNNxvw8MQaO+aQ6llzRPH7XcJy5zrpb3wU++045+Uz/IDIM684iw==
+
 rxjs@^7.5.1:
   version "7.8.1"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
@@ -17238,13 +17417,13 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashboard-beta@0.4.18:
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.4.18.tgz#89b4155820e21781c2c8a4633e471b0eda6834e9"
-  integrity sha512-XwuH+7WFoC7x0NlW5tKrDVzEyI4FfBBVNP//fkMOG1xtBm+Sal26YIYFLow15ibI3sA2BysG0xVu/J/s0D/dkA==
+sparc-dashboard-beta@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/sparc-dashboard-beta/-/sparc-dashboard-beta-0.5.1.tgz#5bcde6ddb591ea289c2548b904ced2b217d8cc7a"
+  integrity sha512-aG9l3+pYVpaZjTl9tYBD4OCnxpg64RRJpZIfFKWbdad0b7FLnmmFtIPXVSxosAIcd3OLVeRF615Oo0Vgxd7deQ==
   dependencies:
-    "@abi-software/flatmapvuer" "1.7.4"
-    "@abi-software/scaffoldvuer" "^1.8.0"
+    "@abi-software/flatmapvuer" "1.9.2"
+    "@abi-software/scaffoldvuer" "1.9.0-beta.1"
     "@element-plus/icons-vue" "^2.3.1"
     "@tsconfig/node21" "^21.0.1"
     axios "^1.6.7"
@@ -17987,6 +18166,15 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+traverse@~0.6.6:
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.11.tgz#e8daa071b101ae66767fffa6f177aa6f7110068e"
+  integrity sha512-vxXDZg8/+p3gblxB6BhhG5yWVn1kGRlaL8O78UDXc3wRnPizB5g83dcvWV1jpDMIPnjZjOFuxlMmE82XJ4407w==
+  dependencies:
+    gopd "^1.2.0"
+    typedarray.prototype.slice "^1.0.5"
+    which-typed-array "^1.1.18"
+
 truncate-utf8-bytes@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/truncate-utf8-bytes/-/truncate-utf8-bytes-1.0.2.tgz#405923909592d56f78a5818434b0b78489ca5f2b"
@@ -18172,6 +18360,20 @@ typedarray-pool@^1.1.0:
   dependencies:
     bit-twiddle "^1.0.0"
     dup "^1.0.0"
+
+typedarray.prototype.slice@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/typedarray.prototype.slice/-/typedarray.prototype.slice-1.0.5.tgz#a40f896968573b33cbb466a61622d3ee615a0728"
+  integrity sha512-q7QNVDGTdl702bVFiI5eY4l/HkgCM6at9KhcFbgUAzezHFbOVy4+0O/lCjsABEQwbZPravVfBIiBVGo89yzHFg==
+  dependencies:
+    call-bind "^1.0.8"
+    define-properties "^1.2.1"
+    es-abstract "^1.23.9"
+    es-errors "^1.3.0"
+    get-proto "^1.0.1"
+    math-intrinsics "^1.1.0"
+    typed-array-buffer "^1.0.3"
+    typed-array-byte-offset "^1.0.4"
 
 typedarray@^0.0.6:
   version "0.0.6"
@@ -18679,6 +18881,11 @@ uuid@3.4.0, uuid@^3.0.0, uuid@^3.2.1:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
+uuid@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
+  integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
+
 uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
@@ -19170,6 +19377,7 @@ world-calendars@^1.0.3:
     object-assign "^4.1.0"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19345,20 +19553,6 @@ zhead@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
-
-zincjs@^1.12.4:
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.12.4.tgz#78bbe853c7d54d325e425063ef2fae7f78775050"
-  integrity sha512-YkhSOIsW7BhfvElAz7qOdRNlr3SNU2n+A43eYb1ep5pM9Ube/L6famaC3SjNGLd+081yEJrpK0IfC0WhVdoHJQ==
-  dependencies:
-    css-element-queries "^1.2.2"
-    lodash "^4.17.19"
-    promise-polyfill "^8.1.3"
-    three "^0.130.1"
-    three-spritetext "1.6.2"
-    url-loader "^4.1.1"
-    url-polyfill "^1.1.7"
-    webworkify-webpack "^2.1.5"
 
 zincjs@^1.13.0:
   version "1.13.0"
