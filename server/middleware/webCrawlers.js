@@ -2,6 +2,13 @@ export default defineEventHandler((event) => {
   const req = event?.node?.req
   const res = event?.node?.res
   const userAgent = req?.headers['user-agent']?.toLowerCase() || ''
+  const url = req?.url || ''
+
+  // Skip blocking for sitemap API
+  if (url.startsWith('/api/__sitemap__/urls') || url.startsWith('/__sitemap__/')) {
+    return // allow sitemap requests through
+  }
+  
   const botPatterns = [
     /semrush/i, /msnbot/i, /yandex/i, /applebot/i, /wowrack/i, /lifeera/i,
     /petalbot/i, /nettle/i, /xforce-security/i, /neevabot/i, /seekport crawler/i,
