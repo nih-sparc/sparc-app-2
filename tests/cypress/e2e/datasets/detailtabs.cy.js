@@ -222,7 +222,7 @@ datasetIds.forEach((datasetId) => {
                   cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
                   cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
                   cy.waitForBrowserLoading()
-                  cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Principal Investigator/i).siblings().as('PI')
+                  cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Contact Author/i).siblings().as('PI')
                   cy.get('@PI').then(($pi) => {
                     const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
                     const names = nameCombination(author).join('|')
