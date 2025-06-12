@@ -141,6 +141,15 @@ mapTypes.forEach((map) => {
         cy.get('@changeViewingMode').trigger('mouseenter')
         cy.get('@viewingModes').contains('Exploration').click()
         cy.get('@changeViewingMode').trigger('mouseleave')
+
+        // Search keyword in displayed viewers
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type(`"${searchInMap}"`)
+        cy.get('.search-container > .map-icon > use').click()
+        // Check for keyword(highlighted part) in displayed viewers
+        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
+          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
+        })
       })
 
       taxonModels.forEach((model, index) => {
@@ -394,6 +403,18 @@ mapTypes.forEach((map) => {
           cy.get('.region-tree-node > .lastChildInItem').then((region) => {
             expect(region, 'Tree control helper region should exist').to.contain('_helper')
           })
+        })
+      })
+
+      it('In-display search', function () {
+        // Search keyword in displayed viewers
+        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type(`"${searchInMap}"`)
+        cy.get('.search-container > .map-icon > use').click()
+        // Check for keyword(highlighted part) in displayed viewers
+        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
+          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
         })
       })
 
