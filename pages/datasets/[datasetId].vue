@@ -68,10 +68,12 @@
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'metrics'">
-                  <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
-                  <br />
-                  <hr />
+                <div class="body1" v-show="activeTabId === 'metrics'">
+                  <div v-if="hasCitations">
+                    <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
+                    <br />
+                    <hr />
+                  </div>
                   <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
                 </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
@@ -220,6 +222,10 @@ const tabs = [
     label: 'Gallery',
     id: 'images'
   },
+  {
+    label: 'Metrics',
+    id: 'metrics'
+  }
 ]
 
 export default {
@@ -591,17 +597,6 @@ export default {
           const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
           if (!hasFilesTab) {
             this.tabs.splice(3, 0, { label: 'Files', id: 'files' })
-          }
-        }
-      },
-      immediate: true
-    },
-    hasCitations: {
-      handler: function (newValue) {
-        if (newValue && !this.hasError) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'metrics') !== undefined
-          if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Metrics', id: 'metrics' })
           }
         }
       },
