@@ -118,10 +118,9 @@ mapTypes.forEach((map) => {
           expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
         // Switch to Annotation viewing mode
-        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
-        cy.get('@settingIcon').click()
+        cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode').trigger('mouseenter')
+        cy.get('.el-dropdown-menu__item > span').as('viewingModes').contains('Annotation').click()
+        cy.get('@changeViewingMode').trigger('mouseleave')
         cy.waitForMapLoading()
         cy.get('.toolbar-icons').should(($toolbar) => {
           expect($toolbar, 'Annotation toolbar should be displayed').to.exist
@@ -139,9 +138,9 @@ mapTypes.forEach((map) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
         // Switch back to default viewing mode
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
-        cy.get('@settingIcon').click()
+        cy.get('@changeViewingMode').trigger('mouseenter')
+        cy.get('@viewingModes').contains('Exploration').click()
+        cy.get('@changeViewingMode').trigger('mouseleave')
       })
 
       taxonModels.forEach((model, index) => {
