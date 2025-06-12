@@ -52,7 +52,7 @@ mapTypes.forEach((map) => {
       // Close sidebar
       cy.get('body').then(($body) => {
         if ($body.find('.close-tab > .el-icon').length !== 0) {
-          cy.get('.tabs-container > :nth-child(1)').as('datasetExplorer').click()
+          cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
           cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
         }
       })
@@ -67,23 +67,28 @@ mapTypes.forEach((map) => {
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
+        cy.waitForPageLoading()
         cy.waitForMapLoading()
-        // Check if alert exist in Human Female
+        // Take a screenshot of original flatmap
         cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('canvas')
-        cy.get('.checkall-display-text:visible', { timeout: 30000 }).then(($label) => {
+        // CLI
+        cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+        // UI
+        cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+        cy.get('.open-tab > .el-icon').as('sidebarOpenTab').click()
+        cy.get('.tabs-container > :nth-child(2) > .tab-title').as('connectivityExplorer').click()
+        cy.get('.search-filters > .el-cascader > .el-input > .el-input__wrapper:visible').as('connectivityFilter').click()
+        // Check if alert exist in Human Female
+        cy.get('.el-cascader-panel > :nth-child(1) > .el-cascader-menu__wrap > .el-scrollbar__view:visible', { timeout: 30000 }).then(($label) => {
           if ($label.text().includes('Alert')) {
             expect($label, 'Alter filter should exist').to.contain('Alert')
-            // Take a screenshot of no path flatmap
-            cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
-            cy.get('.pathway-location > .drawer-button:visible').click()
-            // CLI
-            cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
-            // UI
-            cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
-            // Compare previous screenshot with alter paths displayed flatmap
-            cy.get('.pathway-location > .drawer-button:visible').click()
-            cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
-            cy.get('.pathway-location > .drawer-button:visible').click()
+            // Compare previous screenshot with alter paths highlighted
+            cy.get('.el-cascader-node__label').contains('Alert').click()
+            cy.get('.el-cascader-node__label').contains('With alerts').click()
+            cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
+            cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
+            // wait for highlighting alert connectivity
+            cy.wait(5000)
             cy.get('@canvas').compareSnapshot('mapalert').then(comparisonResults => {
               expect(comparisonResults.percentage).to.greaterThan(0)
             })
@@ -244,7 +249,7 @@ mapTypes.forEach((map) => {
               })
               // Check for button click
               cy.get('.active-tab > .tab-title').as('activeTab')
-              cy.get(':nth-child(2) > .tab-title').as('ConnectivityExplorer')
+              cy.get('.tabs-container > :nth-child(2) > .tab-title').as('connectivityExplorer')
               const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
               buttonTexts.forEach((text) => {
                 if ($content.text().includes(text)) {
@@ -252,7 +257,7 @@ mapTypes.forEach((map) => {
                   cy.get('@activeTab').should(($tab) => {
                     expect($tab, 'Active tab should be Dataset Explorer after clicking on the button').to.contain('Dataset Explorer')
                   })
-                  cy.get('@ConnectivityExplorer').click({ force: true })
+                  cy.get('@connectivityExplorer').click({ force: true })
                 }
               })
             })
