@@ -56,6 +56,12 @@ mapTypes.forEach((map) => {
           cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
         }
       })
+      // Switch back to default viewing mode
+      cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode')
+      cy.get('.el-dropdown-menu__item > span').as('viewingModes')
+      cy.get('@changeViewingMode').trigger('mouseenter')
+      cy.get('@viewingModes').contains('Exploration').click()
+      cy.get('@changeViewingMode').trigger('mouseleave')
     })
 
     if (map === 'ac') {
@@ -117,6 +123,14 @@ mapTypes.forEach((map) => {
         cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
+        // Search keyword in displayed viewers
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type(`"${searchInMap}"`)
+        cy.get('.search-container > .map-icon > use').click()
+        // Check for keyword(highlighted part) in displayed viewers
+        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
+          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
+        })
         // Switch to Annotation viewing mode
         cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode').trigger('mouseenter')
         cy.get('.el-dropdown-menu__item > span').as('viewingModes').contains('Annotation').click()
@@ -136,19 +150,6 @@ mapTypes.forEach((map) => {
         })
         cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
-        })
-        // Switch back to default viewing mode
-        cy.get('@changeViewingMode').trigger('mouseenter')
-        cy.get('@viewingModes').contains('Exploration').click()
-        cy.get('@changeViewingMode').trigger('mouseleave')
-
-        // Search keyword in displayed viewers
-        cy.get('@searchInput').clear()
-        cy.get('@searchInput').type(`"${searchInMap}"`)
-        cy.get('.search-container > .map-icon > use').click()
-        // Check for keyword(highlighted part) in displayed viewers
-        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
-          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
         })
       })
 
