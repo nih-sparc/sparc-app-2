@@ -14,12 +14,6 @@ const defaultModel = 'Human Male'
 const taxonModels = stringToArray(Cypress.env('TAXON_MODELS'), ',')
 let loadedModels = new Set()
 
-/**
- * Name of species for the 3D sync map
- * 'Human Female', 'Human Male', 'Rat'
- */
-const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
-
 const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
 const scaffoldDatasetIds = stringToArray(Cypress.env('SCAFFOLD_DATASET_IDS'), ',')

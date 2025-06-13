@@ -19,7 +19,6 @@ on:
 env:
   PAGE_LIMIT: "randompick"
   TAXON_MODELS: "randompick"
-  THREE_SYNC_VIEW: "randompick"
   SEARCH_IN_MAP: "randompick"
   SCAFFOLD_DATASET_IDS: "randompick"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
