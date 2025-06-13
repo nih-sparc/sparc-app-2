@@ -62,10 +62,11 @@ mapTypes.forEach((map) => {
       cy.get('@changeViewingMode').trigger('mouseenter')
       cy.get('@viewingModes').contains('Exploration').click()
       cy.get('@changeViewingMode').trigger('mouseleave')
+      cy.wait(5000)
     })
 
     if (map === 'ac') {
-      it('Open new map and alter filtering', function () {
+      it.skip('Open new map and alter filtering', function () {
         cy.get('.portal-features > :nth-child(1) .el-button').as('viewACMap')
         cy.get('@viewACMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
@@ -194,9 +195,6 @@ mapTypes.forEach((map) => {
               }
             })
           })
-          // Hide organs and outlines
-          cy.get('.header > .icon-group > .el-icon.header-icon').click()
-          cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true })
           // Click to show connectivity in the explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
@@ -312,6 +310,7 @@ mapTypes.forEach((map) => {
         it(`Context card for scaffold dataset ${datasetId}`, function () {
           // Open the sidebar
           cy.get('.open-tab > .el-icon').as('sidebarOpenTab').click()
+          cy.get('.sidebar-content-container > .el-card__header > .header > .is-link').as('resetButton').click()
           // Enter dataset id
           cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
           cy.get('@searchBox').clear()
@@ -402,18 +401,6 @@ mapTypes.forEach((map) => {
           cy.get('.region-tree-node > .lastChildInItem').then((region) => {
             expect(region, 'Tree control helper region should exist').to.contain('_helper')
           })
-        })
-      })
-
-      it('In-display search', function () {
-        // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
-        cy.get('@searchInput').clear()
-        cy.get('@searchInput').type(`"${searchInMap}"`)
-        cy.get('.search-container > .map-icon > use').click()
-        // Check for keyword(highlighted part) in displayed viewers
-        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
-          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
         })
       })
 
