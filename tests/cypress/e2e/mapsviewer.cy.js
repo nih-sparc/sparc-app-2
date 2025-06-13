@@ -194,11 +194,9 @@ mapTypes.forEach((map) => {
             })
           })
           // Hide organs and outlines
-          cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-          cy.get('@settingIcon').click()
+          cy.get('.header > .icon-group > .el-icon.header-icon').click()
           cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true })
-          cy.get('@settingIcon').click()
-          // Open connectivity explorer
+          // Click to show connectivity in the explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
           cy.wait(5000) // Wait for the sidebar to open
