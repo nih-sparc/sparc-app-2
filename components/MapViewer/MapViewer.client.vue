@@ -5,6 +5,7 @@
       ref="map"
       :state="state"
       :starting-map="startingMap"
+      :showOpenMapButton="false"
       :options="options"
       :share-link="shareLink"
       :useHelpModeDialog="true"

@@ -51,7 +51,6 @@ const DYNAMICENVS = {
         'value': 'Human Female, Human Male, Rat, Mouse, Pig, Cat', // fixed, no need to change
         'number': 2
     },
-    'THREE_SYNC_VIEW': { 'value': 'Human Female, Human Male', 'number': 1 }, // fixed, no need to change
     'SEARCH_IN_MAP': {
         'value': 'Heart, Liver, Spleen, Lung, Kidney, Brainstem, Stomach, Colon, Body proper',
         'number': 1 // fixed, no need to change
