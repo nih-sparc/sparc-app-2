@@ -163,6 +163,7 @@ datasetIds.forEach((datasetId) => {
                           })
                         })
                       }
+                      cy.wait(5000) // Wait for above actions to complete
                       cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
                         expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
                       })
