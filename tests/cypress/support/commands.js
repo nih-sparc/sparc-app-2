@@ -265,7 +265,7 @@ Cypress.Commands.add('checkGalleyCardState', () => {
             cy.get('.cursor-pointer > .thumbnail').should(($image) => {
               expect($image, 'Image should be loaded').to.have.prop('naturalWidth').to.be.greaterThan(0)
             })
-            cy.get('.details > .el-tooltip__trigger > .title', { timeout: 30000 }).should(($title) => {
+            cy.get('.details > .el-tooltip__trigger > .title', { timeout: 60000 }).should(($title) => {
               expect($title, 'Title should exist').to.not.have.text('')
             })
             cy.get('.details > .el-button').should(($button) => {

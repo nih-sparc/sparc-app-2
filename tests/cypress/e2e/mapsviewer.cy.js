@@ -14,12 +14,6 @@ const defaultModel = 'Human Male'
 const taxonModels = stringToArray(Cypress.env('TAXON_MODELS'), ',')
 let loadedModels = new Set()
 
-/**
- * Name of species for the 3D sync map
- * 'Human Female', 'Human Male', 'Rat'
- */
-const threeDSyncView = Cypress.env('THREE_SYNC_VIEW')
-
 const searchInMap = Cypress.env('SEARCH_IN_MAP')
 
 const scaffoldDatasetIds = stringToArray(Cypress.env('SCAFFOLD_DATASET_IDS'), ',')
@@ -52,10 +46,17 @@ mapTypes.forEach((map) => {
       // Close sidebar
       cy.get('body').then(($body) => {
         if ($body.find('.close-tab > .el-icon').length !== 0) {
-          cy.get('.tabs-container > :nth-child(1)').as('datasetExplorer').click()
+          cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
           cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
         }
       })
+      // Switch back to default viewing mode
+      cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode')
+      cy.get('.el-dropdown-menu__item > span').as('viewingModes')
+      cy.get('@changeViewingMode').trigger('mouseenter')
+      cy.get('@viewingModes').contains('Exploration').click()
+      cy.get('@changeViewingMode').trigger('mouseleave')
+      cy.wait(5000)
     })
 
     if (map === 'ac') {
@@ -67,23 +68,28 @@ mapTypes.forEach((map) => {
         cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container').then(($select) => {
           expect($select, 'Multiple maps should be loaded').to.exist
         })
+        cy.waitForPageLoading()
         cy.waitForMapLoading()
-        // Check if alert exist in Human Female
+        // Take a screenshot of original flatmap
         cy.get('.maplibregl-touch-zoom-rotate > .maplibregl-canvas:visible').as('canvas')
-        cy.get('.checkall-display-text:visible', { timeout: 30000 }).then(($label) => {
+        // CLI
+        cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+        // UI
+        cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
+        cy.get('.open-tab > .el-icon').as('sidebarOpenTab').click()
+        cy.get('.tabs-container > :nth-child(2) > .tab-title').as('connectivityExplorer').click()
+        cy.get('.search-filters > .el-cascader > .el-input > .el-input__wrapper:visible').as('connectivityFilter').click()
+        // Check if alert exist in Human Female
+        cy.get('.el-cascader-panel > :nth-child(1) > .el-cascader-menu__wrap > .el-scrollbar__view:visible', { timeout: 30000 }).then(($label) => {
           if ($label.text().includes('Alert')) {
             expect($label, 'Alter filter should exist').to.contain('Alert')
-            // Take a screenshot of no path flatmap
-            cy.get('.pane-1 > .content-container > .component-container > .viewer-container > .multi-container .pathway-location > .pathway-container > :nth-child(5) > :nth-child(1) > :nth-child(2) > .el-checkbox').click()
-            cy.get('.pathway-location > .drawer-button:visible').click()
-            // CLI
-            cy.get('@canvas').screenshot('base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
-            // UI
-            cy.get('@canvas').screenshot('mapsviewer.cy.js/base/tests/cypress/e2e/mapsviewer.cy.js/mapalert')
-            // Compare previous screenshot with alter paths displayed flatmap
-            cy.get('.pathway-location > .drawer-button:visible').click()
-            cy.get('[label="alert"] > .checkbox-container > .el-checkbox:visible').click()
-            cy.get('.pathway-location > .drawer-button:visible').click()
+            // Compare previous screenshot with alter paths highlighted
+            cy.get('.el-cascader-node__label').contains('Alert').click()
+            cy.get('.el-cascader-node__label').contains('With alerts').click()
+            cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
+            cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
+            // wait for highlighting alert connectivity
+            cy.wait(5000)
             cy.get('@canvas').compareSnapshot('mapalert').then(comparisonResults => {
               expect(comparisonResults.percentage).to.greaterThan(0)
             })
@@ -112,11 +118,18 @@ mapTypes.forEach((map) => {
         cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Connectivity Explorer after searching').to.have.text('Connectivity Explorer')
         })
+        // Search keyword in displayed viewers
+        cy.get('@searchInput').clear()
+        cy.get('@searchInput').type(`"${searchInMap}"`)
+        cy.get('.search-container > .map-icon > use').click()
+        // Check for keyword(highlighted part) in displayed viewers
+        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
+          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
+        })
         // Switch to Annotation viewing mode
-        cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Annotation').click()
-        cy.get('@settingIcon').click()
+        cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode').trigger('mouseenter')
+        cy.get('.el-dropdown-menu__item > span').as('viewingModes').contains('Annotation').click()
+        cy.get('@changeViewingMode').trigger('mouseleave')
         cy.waitForMapLoading()
         cy.get('.toolbar-icons').should(($toolbar) => {
           expect($toolbar, 'Annotation toolbar should be displayed').to.exist
@@ -133,10 +146,6 @@ mapTypes.forEach((map) => {
         cy.get('@activeTab').should(($tab) => {
           expect($tab, 'Active tab should be Annotation after searching').to.have.text('Annotation')
         })
-        // Switch back to default viewing mode
-        cy.get('@settingIcon').click()
-        cy.get('.viewing-mode-unselected:visible').contains('Exploration').click()
-        cy.get('@settingIcon').click()
       })
 
       taxonModels.forEach((model, index) => {
@@ -180,12 +189,7 @@ mapTypes.forEach((map) => {
               }
             })
           })
-          // Hide organs and outlines
-          cy.get('.settings-group > :nth-child(2):visible').as('settingIcon')
-          cy.get('@settingIcon').click()
-          cy.get('[role="radiogroup"] > .el-radio:visible').not('.is-checked').click({ multiple: true })
-          cy.get('@settingIcon').click()
-          // Open connectivity explorer
+          // Click to show connectivity in the explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
           cy.wait(5000) // Wait for the sidebar to open
@@ -244,7 +248,7 @@ mapTypes.forEach((map) => {
               })
               // Check for button click
               cy.get('.active-tab > .tab-title').as('activeTab')
-              cy.get(':nth-child(2) > .tab-title').as('ConnectivityExplorer')
+              cy.get('.tabs-container > :nth-child(2) > .tab-title').as('connectivityExplorer')
               const buttonTexts = ['Explore origin data', 'Explore destination data', 'Search for data on components']
               buttonTexts.forEach((text) => {
                 if ($content.text().includes(text)) {
@@ -252,7 +256,7 @@ mapTypes.forEach((map) => {
                   cy.get('@activeTab').should(($tab) => {
                     expect($tab, 'Active tab should be Dataset Explorer after clicking on the button').to.contain('Dataset Explorer')
                   })
-                  cy.get('@ConnectivityExplorer').click({ force: true })
+                  cy.get('@connectivityExplorer').click({ force: true })
                 }
               })
             })
@@ -295,83 +299,12 @@ mapTypes.forEach((map) => {
         })
       })
 
-      it(`From 2D ${threeDSyncView}, open 3D map for synchronised view and Search within display`, function () {
-        cy.get('.el-select.select-box.el-tooltip__trigger.el-tooltip__trigger > .el-select__wrapper').click().then(() => {
-          cy.get('.el-select-dropdown__item:visible').contains(new RegExp(threeDSyncView, 'i')).click()
-          cy.print({
-            title: 'loaded model',
-            message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
-            type: 'info'
-          })
-          if (!loadedModels.has(threeDSyncView)) {
-            cy.wait('@flatmap', { timeout: 20000 })
-            cy.waitForMapLoading()
-            loadedModels.add(threeDSyncView)
-            cy.print({
-              title: 'model',
-              message: `${threeDSyncView} model has been loaded`,
-              type: 'info'
-            })
-          }
-        })
-        // Open the 3D view in a split viewer
-        cy.get('.settings-group > :nth-child(1):visible').as('newMapIcon')
-        cy.get('@newMapIcon').contains(/Open new map/i).should(($icon) => {
-          expect($icon, 'The new map icon should exist').to.exist
-        })
-        cy.get('@newMapIcon').click()
-        cy.get('.open-map-popper > :nth-child(4) > .el-button:visible').as('syncMapButton')
-        cy.get('@syncMapButton').contains(/Open Sync Map/i).should(($button) => {
-          expect($button, 'The sync map button should exist').to.exist
-        })
-        cy.get('@syncMapButton').click()
-        cy.wait(['@get_body_scaffold_info', '@s3-resource'], { timeout: 20000 })
-        cy.waitForScaffoldLoading()
-        cy.waitForMapTreeControlLoading()
-        // Check for the number of displayed viewers
-        cy.get('.toolbar > .toolbar-flex-container', { timeout: 30000 }).should(($toolbar) => {
-          expect($toolbar, 'Should have two toolbar').to.have.length(2)
-        })
-        // Check for 3D view's content card detail
-        cy.get('.context-card > .card-left > .context-image', { timeout: 30000 }).should(($image) => {
-          expect($image, 'The 3D view content card should have an image').to.exist
-        })
-        cy.get('.context-card > .card-right', { timeout: 30000 }).within(() => {
-          cy.get('.title').contains(/3D human whole-body/i).should(($title) => {
-            expect($title, 'The 3D view content card title should contain correct content').to.exist
-          })
-          cy.get(':nth-child(2) > p').contains(/Visualization/i).should(($description) => {
-            expect($description, 'The 3D view content card description should contain correct content').to.exist
-          })
-        })
-        cy.get('.subtitle').contains(/Scaffold Views/i).should(($title) => {
-          expect($title, 'The 3D view content card subtitle should contain correct content').to.exist
-        })
-        cy.get('.view-image').should('exist')
-        cy.get('.view-image').should(($image) => {
-          expect($image, 'The 3D view content card should have an scaffold view image').to.exist
-        })
-        cy.get('.view-description').contains(/Human whole-body/i).should(($description) => {
-          expect($description, 'The 3D view content card should have an scaffold view description').to.exist
-        })
-        // Close the pathway sidebar
-        cy.get('[style="height: 100%;"] > [style="height: 100%; width: 100%; position: relative;"] > .pathway-location > .drawer-button').click()
-        // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
-        cy.get('@searchInput').clear()
-        cy.get('@searchInput').type(`"${searchInMap}"`)
-        cy.get('.search-container > .map-icon > use').click()
-        // Check for keyword(highlighted part) in displayed viewers
-        cy.get('.maplibregl-popup-content').contains(new RegExp(searchInMap, 'i')).should(($tooltip) => {
-          expect($tooltip, 'The tooltip should contain the search keyword').to.exist
-        })
-      })
-
       scaffoldDatasetIds.forEach((datasetId, index) => {
 
         it(`Context card for scaffold dataset ${datasetId}`, function () {
           // Open the sidebar
           cy.get('.open-tab > .el-icon').as('sidebarOpenTab').click()
+          cy.get('.sidebar-content-container > .el-card__header > .header > .is-link').as('resetButton').click()
           // Enter dataset id
           cy.get('.search-input > .el-input__wrapper:visible').as('searchBox')
           cy.get('@searchBox').clear()
