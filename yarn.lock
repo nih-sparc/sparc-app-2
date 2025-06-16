@@ -30,10 +30,10 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmap-viewer@4.2.3":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-4.2.3.tgz#d86d4703710507d1f8cb6253ced356d1dc817a07"
-  integrity sha512-3/RAKPLwXqtRGdfKWTiOiaLrW6KhUuL8g0rAFwNakh5Y5QNGSr4Yl+18kCTTX0lAsFYAehc7PgfjUkQp/TJL2A==
+"@abi-software/flatmap-viewer@4.2.4":
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmap-viewer/-/flatmap-viewer-4.2.4.tgz#824b4edf71e7d1f6cbaf2d9459911f33dc590db2"
+  integrity sha512-3cZZfXcBJjpL95I/iB7kyl7LgSqXT0w4jEyOpwbU8dZz2vtNbBq/luXYGaduImGgndFzIB5/m0eRcdGQD1S6Og==
   dependencies:
     "@deck.gl/core" "^9.0.17"
     "@deck.gl/geo-layers" "^9.0.18"
@@ -78,13 +78,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.9.3-beta.6":
-  version "1.9.3-beta.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.3-beta.6.tgz#3c65274bae967b64c64d3781931a45fb71e4da47"
-  integrity sha512-maMlKOEEDp8RpWV8/zsK0EwN2SR2Wnmb6drj2i8PxuYjefIFiSxozVEWpVLpyYH6QQ7kAIuXgTgempnCBjcQOA==
+"@abi-software/flatmapvuer@^1.9.3-beta.7":
+  version "1.9.3-beta.7"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.9.3-beta.7.tgz#3322c97021901c0752d56ba9bca2eacfe7063ee4"
+  integrity sha512-sBDnq6jPU7lKVCmdgt14iTbaJ0grBjWWktv6rHWkXJvn+RaTJb4JlPj4C445k52PcLv5cTxsBOsh6fTSswN2AQ==
   dependencies:
-    "@abi-software/flatmap-viewer" "4.2.3"
-    "@abi-software/map-utilities" "^1.5.0"
+    "@abi-software/flatmap-viewer" "4.2.4"
+    "@abi-software/map-utilities" "^1.6.0-beta.0"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -108,13 +108,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.8.3-beta.5":
-  version "2.8.3-beta.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.8.3-beta.5.tgz#c8a7a705c5001962e84971de795f3561645e5910"
-  integrity sha512-8ijrFaeCI4sFp0FqCoOg30zAAyrNXU8FVp5qWoW0eOE9PlroFZPLVxocKiOWK55iY52Ioop36Atr64Rb6oOR2Q==
+"@abi-software/map-side-bar@^2.8.3-beta.6":
+  version "2.8.3-beta.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.8.3-beta.6.tgz#bc7d7ebb29bcbd3b5b72f5364d96da5c5cd506f5"
+  integrity sha512-WloleSqzKcYQnc9HfVpXlKnWzgbz/aVFZRye7sFwrbZ5WMV9xWyByaHmtap5GsPCz7iMfQqlpXyvay28o2CEjg==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "^1.5.0"
+    "@abi-software/map-utilities" "^1.6.0-beta.0"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -139,14 +139,27 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.9.3-beta.0":
-  version "1.9.3-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.3-beta.0.tgz#306f76a0655671629ba0cdf516d7afd6b60aa688"
-  integrity sha512-pqXiZJ3itoP0J8ejkdJndbZw9rChsVM8dFIVS5TwGuhlG8/N020cspHU+wjEUqevOJMfv9Ni/d/jvA8OrY5pdw==
+"@abi-software/map-utilities@^1.6.0-beta.0":
+  version "1.6.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.6.0-beta.0.tgz#5529780a199616b89e07be13ba97c267838901f1"
+  integrity sha512-TllRNj+Avc1v2m7OyD7U/3PFPUGA+PGTrAgrBIII/pxhepCHS+gCHaXtfoza/YlBuIS5m02C0Tz7QN3dMU0YWw==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.9.3-beta.6"
-    "@abi-software/map-side-bar" "^2.8.3-beta.5"
-    "@abi-software/map-utilities" "^1.5.0"
+    "@abi-software/svg-sprite" "^1.0.1"
+    "@element-plus/icons-vue" "^2.3.1"
+    cytoscape "^3.30.2"
+    cytoscape-dagre "^2.5.0"
+    element-plus "2.8.4"
+    mitt "^3.0.1"
+    vue "^3.4.21"
+
+"@abi-software/mapintegratedvuer@1.9.3-beta.1":
+  version "1.9.3-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.9.3-beta.1.tgz#0e5140e984de16d774985f8a84f39c2d8c38c1b5"
+  integrity sha512-MLN0iSvq6WMKm9mDCXMzv7oqI3Kup47M96djZfV5wzVVYX4LLvuG93CYKoQvzlYz8hPaH7HaKr9f9Q53RvmM8A==
+  dependencies:
+    "@abi-software/flatmapvuer" "^1.9.3-beta.7"
+    "@abi-software/map-side-bar" "^2.8.3-beta.6"
+    "@abi-software/map-utilities" "^1.6.0-beta.0"
     "@abi-software/plotvuer" "1.0.4"
     "@abi-software/scaffoldvuer" "^1.9.1-beta.3"
     "@abi-software/simulationvuer" "^2.0.11-beta.0"
