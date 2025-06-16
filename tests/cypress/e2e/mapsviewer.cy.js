@@ -142,6 +142,13 @@ mapTypes.forEach((map) => {
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
+          // Remove model from the loadedModels on retry
+          // to prevent loading issue
+          Cypress.on('test:after:run', (result) => {
+            if (result.currentRetry < result.retries && result.state === 'failed') {
+              loadedModels.delete(model);
+            }
+          })
           cy.print({
             title: 'loaded model',
             message: `Current loaded model - ${Array.from(loadedModels).join(',')}`,
@@ -181,6 +188,7 @@ mapTypes.forEach((map) => {
           // Open connectivity explorer
           // Not able to click on a specific neuron. Click on different coordinates instead.
           cy.clickOnNeuron(coordinate, pixelChange)
+          cy.wait(5000) // Wait for the sidebar to open
           cy.get('.filters > .dataset-shown > .dataset-results-feedback:visible').then(($result) => {
             if (!$result.text().match(/^1 Results \| Showing/i)) {
               cy.get('.connectivity-card-container > .connectivity-card > .card').first().click()
@@ -189,16 +197,18 @@ mapTypes.forEach((map) => {
             cy.get('.connectivity-info-title').within(($content) => {
               cy.get('.block > .title').then(($title) => {
                 expect($title, 'The provenance card should have the neuron name').to.exist
+                const neuronName = $title.text().trim()
                 cy.print({
                   title: 'neuron',
-                  message: `Clicked on the ${$title.text()}`,
+                  message: `Clicked on the ${neuronName}`,
                   type: 'info'
                 })
                 // Check for copy button
                 cy.get('.el-button.copy-clipboard-button:visible').click()
+                cy.wait(5000)
                 cy.window().then(win => {
                   win.navigator.clipboard.readText().then(text => {
-                    expect(text, 'The content should be copied to clipboard').to.contain($title.text().trim())
+                    expect(text, 'The content should be copied to clipboard').to.contain(neuronName)
                   })
                 })
               })

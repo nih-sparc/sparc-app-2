@@ -14,7 +14,8 @@
       <div class="row mt-32">
         <paper class="row-item" :text="parseMarkdown(whoWeAre)" :button-text="whoWeAreButtonText"
           :button-link="whoWeAreButtonLink" />
-        <paper class="row-item" :text="parseMarkdown(ourResearch)" :button-text="ourResearchButtonText"
+        <paper class="row-item" :text="parseMarkdown(ourResearch)"
+          :button-text="displayOurResearchButton ? ourResearchButtonText : ''"
           :button-link="ourResearchButtonLink" />
         <paper v-if="forInvestigators" class="row-item" :text="parseMarkdown(forInvestigators)"
           :button-text="forInvestigatorsButtonLabel" :button-link-external="forInvestigatorsButtonLink" />
@@ -117,6 +118,8 @@ const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonL
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
 const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchButtonText'], consortiaItem.value))
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
+//Temporarily disable RE-JOIN dataset button until RE-JOIN datasets are available
+const displayOurResearchButton = computed(() => !ourResearchButtonLink.value.includes('selectedFacetIds=RE-JOIN'))
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
 const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
 const forInvestigators = computed(() => pathOr('', ['fields', 'forInvestigators'], consortiaItem.value))

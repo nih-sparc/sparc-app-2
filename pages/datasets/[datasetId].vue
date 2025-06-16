@@ -63,15 +63,17 @@
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" :award-ids="sparcAwardNumbers"/>
+                  :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div v-if="hasCitations" class="body1" v-show="activeTabId === 'metrics'">
-                  <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
-                  <br />
-                  <hr />
+                <div class="body1" v-show="activeTabId === 'metrics'">
+                  <div v-if="hasCitations">
+                    <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
+                    <br />
+                    <hr />
+                  </div>
                   <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
                 </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
@@ -220,6 +222,10 @@ const tabs = [
     label: 'Gallery',
     id: 'images'
   },
+  {
+    label: 'Metrics',
+    id: 'metrics'
+  }
 ]
 
 export default {
@@ -382,7 +388,7 @@ export default {
       isLoadingDataset: false,
       errorLoading: false,
       datasetRecords: [],
-      sparcAwardNumbers: [],
+      sparcAwards: [],
       showCopySuccess: false,
       subtitles: [],
     }
@@ -596,17 +602,6 @@ export default {
       },
       immediate: true
     },
-    hasCitations: {
-      handler: function (newValue) {
-        if (newValue && !this.hasError) {
-          const hasCitationsTab = this.tabs.find(tab => tab.id === 'metrics') !== undefined
-          if (!hasCitationsTab) {
-            this.tabs.splice(5, 0, { label: 'Metrics', id: 'metrics' })
-          }
-        }
-      },
-      immediate: true
-    },
     hasSourceCode: {
       handler: function (newValue) {
         if (newValue && !this.hasError) {
@@ -689,13 +684,14 @@ export default {
         const filteredAwards = (supportingAwards || []).filter(
           award => propOr(null, 'identifier', award) != null
         )
+        this.sparcAwards = filteredAwards
 
-        this.sparcAwardNumbers = filteredAwards.map(
+        const sparcAwardNumbers = filteredAwards.map(
           award => `${award.identifier}`
         )
 
-        if (this.sparcAwardNumbers.length > 0) {
-          const projects = await this.getAssociatedProjects(this.sparcAwardNumbers)
+        if (sparcAwardNumbers.length > 0) {
+          const projects = await this.getAssociatedProjects(sparcAwardNumbers)
           this.associatedProjects = projects.length > 0 ? projects : null
         }
       } catch (e) {
