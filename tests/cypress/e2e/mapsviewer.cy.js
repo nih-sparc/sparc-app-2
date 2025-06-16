@@ -60,7 +60,7 @@ mapTypes.forEach((map) => {
     })
 
     if (map === 'ac') {
-      it.skip('Open new map and alter filtering', function () {
+      it('Open new map and alter filtering', function () {
         cy.get('.portal-features > :nth-child(1) .el-button').as('viewACMap')
         cy.get('@viewACMap').click()
         cy.get('.popover-content > .el-button:visible').first().click()
