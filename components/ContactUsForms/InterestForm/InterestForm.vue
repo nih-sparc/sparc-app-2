@@ -169,7 +169,8 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const description = `
+      const body = `
+        <b>SPARC Service Inquiry Submission:</b><br><br>
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
         <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
@@ -180,28 +181,85 @@ export default {
       let formData = new FormData();
       formData.append("type", "interest")
       formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Service Request`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
+      formData.append("title", `SPARC Service Request: ${this.form.user.firstName} ${this.form.user.lastName}`)
+      formData.append("body", body)
+      formData.append("email", this.form.user.email)
+      formData.append("firstname", this.form.user.firstName)
+      formData.append("lastname", this.form.user.lastName)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          }
-          this.$emit('submit', this.form.user.firstName)
-        })
-        .catch(() => {
+      try {
+        const response = await this.$axios.post(`${config.public.portal_api}/submit_data_inquiry`, formData)
+        const data = response.data;
+        const status = response.status;
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+        let message = ''
+        switch (status) {
+          case 201:
+            message = `${data?.message}`
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 207:
+            message = `${data?.warning}${data?.details}`
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 400:
+            message = `${data?.error}`
+            ElMessage({
+              showClose: true,
+              message: `We encountered the following problem when attempting to submit your request: ${message}. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+          case 500:
+            message = `${data?.error}${data?.details}`
+            ElMessage({
+              showClose: true,
+              message: `We encountered the following problem when attempting to submit your request: ${message}. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+          default:
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to submit your request. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName)
+      } catch (e) {
+          ElMessage({
+            showClose: true,
+            message: `We encountered the following problem when attempting to submit your request: ${e} If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+            type: 'error',
+            duration: 0,
+            dangerouslyUseHTMLString: true
+          })
           this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+      }
+      this.isSubmitting = false
     }
   },
 
