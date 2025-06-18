@@ -63,6 +63,7 @@ import Gallery from '~/components/Gallery/Gallery.vue'
 import Consortias from '~/components/Consortias/Consortias.vue'
 import { getPreviousDate } from '@/utils/common'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
+import { pathOr } from 'ramda'
 
 const config = useRuntimeConfig()
 const currentDate = new Date()
@@ -147,6 +148,19 @@ const { data: totalDownloadsData, error: totalDownloadsError } = useAsyncData('t
   }
 })
 
+const { data: totalProtocolViewsData, error: totalProtocolViewsError } = useAsyncData('totalProtocolViewsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.portal_api}/total_protocol_views`
+    const response = await $axios.get(url)
+    console.log("RESP = ", response)
+    return pathOr(-1, ['data', 'total_views'], response)
+  } catch (err) {
+    console.error('Error retrieving protocol views count.', err)
+    return -1
+  }
+})
+
 const { data: highlights, error: highlightsError } = useAsyncData('highlightsData', async () => {
   try {
     const { $contentfulClient } = useNuxtApp()
@@ -164,7 +178,7 @@ const { data: highlights, error: highlightsError } = useAsyncData('highlightsDat
 })
 
 const metricsItems = computed(() => {
-  return [
+  let items = [
     {
       title: 'Total Downloads',
       data: totalDownloadsData.value?.toString(),
@@ -176,6 +190,14 @@ const metricsItems = computed(() => {
       subData: `(${metricsData.value?.newContributors} new in ${months[lastMonthsDate.month - 1]})`
     }
   ]
+  if (totalProtocolViewsData.value > -1) {
+    items.push({
+      title: 'Total Protocol Views',
+      data: totalProtocolViewsData.value?.toString(),
+      subData: null
+    })
+  }
+  return items
 })
 
 const breadcrumb = computed(() => [

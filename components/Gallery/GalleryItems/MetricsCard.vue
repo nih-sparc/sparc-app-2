@@ -8,7 +8,7 @@
     <div class="heading1 data">
       {{ data }}
     </div>
-    <div class="body1 mb-16">
+    <div v-if="showSubData" class="body1 mb-16">
       {{ subData }}
     </div>
   </el-card>
@@ -38,6 +38,10 @@ export default {
       type: String,
       default: '0'
     },
+    showSubData: {
+      type: Boolean,
+      default: true
+    }
   },
 }
 </script>

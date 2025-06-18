@@ -12,7 +12,7 @@
                 :thumbnail-url="item.fields.logo.fields.file.url" :button-link="`/resources/${item.sys.id}`"
                 :external-url="item.fields.url" @card-clicked="cardClicked" />
               <component v-else-if="galleryItemType === 'metrics'" :is="galleryItemComponent" :width="cardWidth"
-                :key="item.title" :title="item.title" :data="item.data" :subData="item.subData" />
+                :key="item.title" :title="item.title" :data="item.data" :subData="item.subData" :showSubData="showMetricsCardSubData"/>
               <component v-else-if="galleryItemType === 'highlights'" :is="galleryItemComponent" :width="cardWidth"
                 :item="item" />
               <component v-else-if="galleryItemType === 'datasets'" :is="galleryItemComponent" :width="cardWidth"
@@ -89,6 +89,10 @@ export default {
     galleryItemType: {
       type: String,
       default: 'fileViewer'
+    },
+    showMetricsCardSubData: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
