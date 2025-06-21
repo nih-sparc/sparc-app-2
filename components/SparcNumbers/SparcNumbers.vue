@@ -8,7 +8,7 @@
       Explore the data to find out what amazing research we have:
     </div>
     <div class="data-wrap py-16">
-      <nuxt-link v-for="item in exploreData" :key="item.sys.id" class="consortia-item"
+      <nuxt-link v-for="item in exploreData" :key="item.sys.id" class="sparc-number"
         :to="`${item.fields.link}`">
         <img :src="imageUrl(item)" :alt="`Icon for ${item.fields.label} category`" />
         <p class="mb-0 mt-8">
@@ -20,7 +20,7 @@
       Explore some of our key metrics:
     </div>
     <div class="data-wrap pt-16">
-      <nuxt-link v-for="item in metricsData.filter(data => data.metric && data.metric > 0)" :key="item.label" class="consortia-item"
+      <nuxt-link v-for="item in metricsData.filter(data => data.metric && data.metric > 0)" :key="item.label" class="sparc-number"
         :to="`${item.link}`">
         <div class="heading1 metric">{{ item.metric }}</div>
         <p class="mb-0 mt-8">
@@ -144,7 +144,7 @@ export default {
   width: 100%;
   display: flex;
 }
-.consortia-item {
+.sparc-number {
   color: #000;
   text-decoration: none;
 
