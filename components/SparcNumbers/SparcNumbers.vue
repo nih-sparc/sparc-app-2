@@ -98,22 +98,22 @@ export default {
     }
     return {
       metricsData: [{
-          label: 'Total dataset downloads',
+          label: 'Dataset downloads',
           metric: totalDownloads,
           link: '/about/metrics'
         },
         {
-          label: 'Total dataset contributors',
+          label: 'Dataset contributors',
           metric: totalContributors,
           link: '/about/metrics'
         },
         {
-          label: 'Total dataset citations',
+          label: 'Dataset citations',
           metric: totalCitations,
           link: '/about/metrics'
         },
         {
-          label: 'Total protocol views',
+          label: 'Protocol views',
           metric: totalProtocolViews,
           link: '/about/metrics'
         }]

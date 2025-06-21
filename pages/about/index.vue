@@ -36,7 +36,7 @@
 
       <div class="gallery-items-container p-24 mt-32">
         <div class="heading2 mb-16">Portal Metrics</div>
-        <gallery galleryItemType="metrics" :items="metricsItems" />
+        <gallery galleryItemType="metrics" :card-width=Number(16.3) :items="metricsItems" />
         <nuxt-link to="/about/metrics">
           <el-button class="secondary mt-16">
             View All Metrics
@@ -153,11 +153,22 @@ const { data: totalProtocolViewsData, error: totalProtocolViewsError } = useAsyn
     const { $axios } = useNuxtApp()
     const url = `${config.public.portal_api}/total_protocol_views`
     const response = await $axios.get(url)
-    console.log("RESP = ", response)
     return pathOr(-1, ['data', 'total_views'], response)
   } catch (err) {
     console.error('Error retrieving protocol views count.', err)
     return -1
+  }
+})
+
+const { data: totalCitationsData, error: totalCitationsError } = useAsyncData('totalCitationsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.portal_api}/total_dataset_citations`
+    const response = await $axios.get(url)
+    return pathOr(undefined, ['data', 'total_citations'], response)
+  } catch (err) {
+    console.error('Error retrieving citations count.', err)
+    return undefined
   }
 })
 
@@ -178,9 +189,9 @@ const { data: highlights, error: highlightsError } = useAsyncData('highlightsDat
 })
 
 const metricsItems = computed(() => {
-  let items = [
+  return [
     {
-      title: 'Total Downloads',
+      title: 'Dataset Downloads',
       data: totalDownloadsData.value?.toString(),
       subData: `(${metricsData.value?.downloadsLastMonth} in ${months[lastMonthsDate.month - 1]})`
     },
@@ -188,16 +199,18 @@ const metricsItems = computed(() => {
       title: 'Dataset Contributors',
       data: metricsData.value?.totalContributors?.toString(),
       subData: `(${metricsData.value?.newContributors} new in ${months[lastMonthsDate.month - 1]})`
-    }
-  ]
-  if (totalProtocolViewsData.value > -1) {
-    items.push({
-      title: 'Total Protocol Views',
+    },
+    {
+      title: 'Protocol Views',
       data: totalProtocolViewsData.value?.toString(),
       subData: null
-    })
-  }
-  return items
+    },
+    {
+      title: 'Dataset Citations',
+      data: totalCitationsData.value?.toString(),
+      subData: null
+    }
+  ]
 })
 
 const breadcrumb = computed(() => [

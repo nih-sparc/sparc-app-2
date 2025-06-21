@@ -1,5 +1,5 @@
 <template>
-  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
+  <el-card :style="{ maxWidth: width + 'rem', boxShadow: 'none' }" class="card">
     <div class="title-container">
       <div class="title heading2">
         {{ title }}
@@ -8,7 +8,7 @@
     <div class="heading1 data">
       {{ data }}
     </div>
-    <div v-if="showSubData" class="body1 mb-16">
+    <div v-if="showSubData" class="body1">
       {{ subData }}
     </div>
   </el-card>
@@ -52,10 +52,12 @@ export default {
   color: $purple;
 }
 .card {
+  border: 1px solid $lineColor2;
   background-color: transparent;
   position: relative;
   cursor: default;
   text-align: center;
+  min-height: 9rem;
 }
 .title-container {
   display: flex;
