@@ -87,7 +87,7 @@ const fetchTotalDatasetDownloads = async (axios, url) => {
   currentMonth = currentMonth.toString().padStart(2, '0')
   const currentYear = currentDate.getFullYear()
   const totalDownloadsUrl = `${url}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`
-  let totalDownloads = -1
+  let totalDownloads = 0
   try {
     const response = await axios.get(totalDownloadsUrl)
     response.data.forEach(item => {
