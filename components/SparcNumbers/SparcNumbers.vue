@@ -69,7 +69,7 @@ export default {
           })
       })
     const downloadsUrl = `${config.public.discover_api_host}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`
-    let totalDownloads = -1
+    let totalDownloads = 0
     try {
       const response = await $axios.get(downloadsUrl)
       response.data.forEach(item => {
@@ -81,7 +81,7 @@ export default {
         console.error('Error retrieving download count.', err)
     }
     const protocolViewsUrl = `${config.public.portal_api}/total_protocol_views`
-    let totalProtocolViews = -1
+    let totalProtocolViews = 0
     try {
       const { data } = await $axios.get(protocolViewsUrl)
       totalProtocolViews = data.total_views
@@ -89,7 +89,7 @@ export default {
         console.error('Error retrieving total protocol views.', err)
     }
     const totalCitationsUrl = `${config.public.portal_api}/total_dataset_citations`
-    let totalCitations = -1
+    let totalCitations = 0
     try {
       const { data } = await $axios.get(totalCitationsUrl)
       totalCitations = data.total_citations
