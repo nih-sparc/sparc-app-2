@@ -36,7 +36,7 @@
 
       <div class="gallery-items-container p-24 mt-32">
         <div class="heading2 mb-16">Portal Metrics</div>
-        <gallery galleryItemType="metrics" :items="metricsItems" />
+        <gallery galleryItemType="metrics" :card-width=Number(16.3) :items="metricsItems" />
         <nuxt-link to="/about/metrics">
           <el-button class="secondary mt-16">
             View All Metrics
@@ -63,6 +63,7 @@ import Gallery from '~/components/Gallery/Gallery.vue'
 import Consortias from '~/components/Consortias/Consortias.vue'
 import { getPreviousDate } from '@/utils/common'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
+import { pathOr } from 'ramda'
 
 const config = useRuntimeConfig()
 const currentDate = new Date()
@@ -147,6 +148,30 @@ const { data: totalDownloadsData, error: totalDownloadsError } = useAsyncData('t
   }
 })
 
+const { data: totalProtocolViewsData, error: totalProtocolViewsError } = useAsyncData('totalProtocolViewsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.portal_api}/total_protocol_views`
+    const response = await $axios.get(url)
+    return pathOr(-1, ['data', 'total_views'], response)
+  } catch (err) {
+    console.error('Error retrieving protocol views count.', err)
+    return -1
+  }
+})
+
+const { data: totalCitationsData, error: totalCitationsError } = useAsyncData('totalCitationsData', async () => {
+  try {
+    const { $axios } = useNuxtApp()
+    const url = `${config.public.portal_api}/total_dataset_citations`
+    const response = await $axios.get(url)
+    return pathOr(undefined, ['data', 'total_citations'], response)
+  } catch (err) {
+    console.error('Error retrieving citations count.', err)
+    return undefined
+  }
+})
+
 const { data: highlights, error: highlightsError } = useAsyncData('highlightsData', async () => {
   try {
     const { $contentfulClient } = useNuxtApp()
@@ -166,7 +191,7 @@ const { data: highlights, error: highlightsError } = useAsyncData('highlightsDat
 const metricsItems = computed(() => {
   return [
     {
-      title: 'Total Downloads',
+      title: 'Dataset Downloads',
       data: totalDownloadsData.value?.toString(),
       subData: `(${metricsData.value?.downloadsLastMonth} in ${months[lastMonthsDate.month - 1]})`
     },
@@ -174,6 +199,16 @@ const metricsItems = computed(() => {
       title: 'Dataset Contributors',
       data: metricsData.value?.totalContributors?.toString(),
       subData: `(${metricsData.value?.newContributors} new in ${months[lastMonthsDate.month - 1]})`
+    },
+    {
+      title: 'Protocol Views',
+      data: totalProtocolViewsData.value?.toString(),
+      subData: null
+    },
+    {
+      title: 'Dataset Citations',
+      data: totalCitationsData.value?.toString(),
+      subData: null
     }
   ]
 })

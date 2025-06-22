@@ -93,7 +93,7 @@ async function fetchProtocolsWithLimit(suffixes, $axios, config, concurrency = 5
       const data = await fetchWithRetry($axios, url)
       results[suffix] = data
     }
-  });
+  })
 
   await Promise.all(workers)
   return results
