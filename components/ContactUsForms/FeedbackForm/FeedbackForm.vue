@@ -172,13 +172,25 @@ export default {
       const config = useRuntimeConfig()
       this.isSubmitting = true
       const body = `
-<h3>What area of the SPARC Portal is this related to?</h3>${this.form.pageOrResource}\n\n
-<h3>Detailed description:</h3>${this.formattedDetailedDescription}\n\n
-<h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
-<h3>Would you like to receive updates about this submission:</h3>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
-<h2>Contact Info</h2>
-<h3>Name</h3>${this.form.user.firstName} ${this.form.user.lastName}\n\n
-<h3>Email</h3>${this.form.user.email}\n\n`
+### What area of the SPARC Portal is this related to?
+${this.form.pageOrResource}
+
+### Detailed description:
+${this.formattedDetailedDescription}
+
+### What type of user are you?
+${this.form.user.typeOfUser}
+
+### Would you like to receive updates about this submission:
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
 
       let formData = new FormData();
       formData.append("type", "feedback")

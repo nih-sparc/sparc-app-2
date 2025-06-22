@@ -255,15 +255,32 @@ export default {
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const body = `
-<h3>Description</h3>${this.formattedDetailedDescription}\n\n
-<h3>Problematic page URL</h3>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}\n\n
-<h3>Steps to reproduce</h3>${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}\n\n
-<h3>Browser</h3>${this.form.browser ? this.form.browser : 'N/A'}\n\n
-<h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
-<h3>Do you want to be notified when this issue is resolved?</h3>${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}\n\n
-<h2>Contact Info</h2>
-<h3>Name</h3>${this.form.user.firstName} ${this.form.user.lastName}\n\n
-<h3>Email</h3>${this.form.user.email}\n\n`
+### Description
+${this.formattedDetailedDescription}
+
+### Problematic page URL
+${this.form.pageUrl ? this.form.pageUrl : 'N/A'}
+
+### Steps to reproduce
+${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}
+
+### Browser
+${this.form.browser ? this.form.browser : 'N/A'}
+
+### What type of user are you?
+${this.form.user.typeOfUser}
+
+### Do you want to be notified when this issue is resolved?
+${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
+
       let formData = new FormData();
       formData.append("type", "bug")
       formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
