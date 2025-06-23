@@ -170,7 +170,6 @@ export default {
         tutorialsAvailable: '',
         linksToTutorials: [''],
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -361,7 +360,6 @@ export default {
         <b>Please provide any links to datasets or publications using this tool/resource</b><br>${this.linksToUsagesText}<br>
         <b>Do you have any tutorials/user guides available?</b><br>${this.form.tutorialsAvailable}<br><br>
         <b>Links to tutorials/user guides:</b><br>${this.linksToTutorialsText}<br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>First Name:</b><br>${this.form.user.firstName}<br><br>
         <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}

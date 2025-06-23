@@ -108,7 +108,6 @@
 import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import ParseInputMixin from '@/mixins/parse-input/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
@@ -117,7 +116,7 @@ import { propOr } from 'ramda'
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin, ParseInputMixin],
+  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
 
   components: {
     UserContactFormItem
@@ -137,7 +136,6 @@ export default {
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -145,22 +143,32 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
+          email: [
             {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
+                required: true,
+                message: 'Please enter your email',
+                type: 'email',
+                trigger: 'blur',
             }
           ],
-        },
-        email: [
+
+          firstName: [
             {
-              required: false,
-              message: 'Please enter your email',
-              type: 'email',
+              required: true,
+              message: 'Please enter your first name',
               trigger: 'blur',
             }
           ],
+
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
+
         browser: [
           {
             required: true,
@@ -255,24 +263,35 @@ export default {
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
       const body = `
-<h3>Description</h3>${this.formattedDetailedDescription}\n\n
-<h3>Problematic page URL</h3>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}\n\n
-<h3>Steps to reproduce</h3>${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}\n\n
-<h3>Browser</h3>${this.form.browser ? this.form.browser : 'N/A'}\n\n
-<h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
-<h3>Do you want to be notified when this issue is resolved?</h3>${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}\n\n
-<h2>Contact Info</h2>
-<h3>Name</h3>${this.form.user.firstName} ${this.form.user.lastName}\n\n
-<h3>Email</h3>${this.form.user.email}\n\n`
+### Description
+${this.formattedDetailedDescription}
+
+### Problematic page URL
+${this.form.pageUrl ? this.form.pageUrl : 'N/A'}
+
+### Steps to reproduce
+${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}
+
+### Browser
+${this.form.browser ? this.form.browser : 'N/A'}
+
+### Do you want to be notified when this issue is resolved?
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
+
       let formData = new FormData();
       formData.append("type", "bug")
-      formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
-      if (this.isValidEmail(this.form.user.email)) {
-        formData.append("email", this.form.user.email)
-      }
+      formData.append("email", this.form.user.email)
       if (fileName != '') {
         const extension = fileName.substring(fileName.lastIndexOf('.')); 
         formData.append("attachment", this.file, `attachment${extension}`)
@@ -283,7 +302,7 @@ export default {
 
       try {
         const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
-        if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
+        if (this.form.user.shouldSubscribe) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
         }
         const status = data?.status

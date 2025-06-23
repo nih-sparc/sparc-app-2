@@ -72,7 +72,6 @@
 <script>
 import NewsletterMixin from '../NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import ParseInputMixin from '@/mixins/parse-input/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
@@ -81,7 +80,7 @@ import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 export default {
   name: 'FeedbackForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin],
 
   components: {
     UserContactFormItem
@@ -95,7 +94,6 @@ export default {
         detailedDescription: '',
         shortDescription: '',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -107,13 +105,28 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
+          email: [
             {
               required: true,
-              message: 'Please select one',
-              trigger: 'change'
+              message: 'Please enter your email',
+              type: 'email',
+              trigger: 'blur',
             }
           ],
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
+              trigger: 'blur',
+            }
+          ],
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
         },
         shortDescription: [
           {
@@ -172,30 +185,37 @@ export default {
       const config = useRuntimeConfig()
       this.isSubmitting = true
       const body = `
-<h3>What area of the SPARC Portal is this related to?</h3>${this.form.pageOrResource}\n\n
-<h3>Detailed description:</h3>${this.formattedDetailedDescription}\n\n
-<h3>What type of user are you?</h3>${this.form.user.typeOfUser}\n\n
-<h3>Would you like to receive updates about this submission:</h3>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
-<h2>Contact Info</h2>
-<h3>Name</h3>${this.form.user.firstName} ${this.form.user.lastName}\n\n
-<h3>Email</h3>${this.form.user.email}\n\n`
+### What area of the SPARC Portal is this related to?
+${this.form.pageOrResource}
+
+### Detailed description:
+${this.formattedDetailedDescription}
+
+### Would you like to receive updates about this submission:
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
 
       let formData = new FormData();
       formData.append("type", "feedback")
-      formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
-      if (this.isValidEmail(this.form.user.email)) {
-        formData.append("email", this.form.user.email)
-      }
+      formData.append("email", this.form.user.email)
 
       // Save form to sessionStorage
       saveForm(this.form)
 
       try {
         const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
-        if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
+        if (this.form.user.shouldSubscribe) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
         }
         const status = data?.status
