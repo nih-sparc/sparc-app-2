@@ -1,22 +1,5 @@
 <template>
   <div v-if="modelValue">
-    <el-form-item
-      prop="user.typeOfUser"
-      label="What type of user are you? *"
-    >
-      <el-select
-        v-model="modelValue.typeOfUser"
-        placeholder="Select one"
-      >
-        <el-option
-          v-for="userType in userTypes"
-          :key="userType"
-          :label="userType"
-          :value="userType"
-        />
-      </el-select>
-    </el-form-item>
-
     <el-form-item prop="user.firstName" label="First Name">
       <el-input v-model="modelValue.firstName" placeholder="Enter your first name" />
     </el-form-item>
@@ -50,8 +33,6 @@
 </template>
 
 <script>
-import { mapState } from 'pinia'
-import { useMainStore } from '@/store/index'
 import ParseInputMixin from '@/mixins/parse-input/index'
 
 export default {
@@ -66,8 +47,5 @@ export default {
       type: Object
     }
   },
-  computed: {
-    ...mapState(useMainStore, ['userTypes']),
-  }
 }
 </script>

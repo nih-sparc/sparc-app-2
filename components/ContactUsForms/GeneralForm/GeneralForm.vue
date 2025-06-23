@@ -101,7 +101,6 @@ export default {
         pageOrResource: '',
         message: '',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -113,13 +112,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,

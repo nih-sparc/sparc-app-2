@@ -95,7 +95,6 @@ export default {
         detailedDescription: '',
         shortDescription: '',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -106,15 +105,6 @@ export default {
       },
       isSubmitting: false,
       formRules: {
-        user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
-        },
         shortDescription: [
           {
             required: true,
@@ -177,9 +167,6 @@ ${this.form.pageOrResource}
 
 ### Detailed description:
 ${this.formattedDetailedDescription}
-
-### What type of user are you?
-${this.form.user.typeOfUser}
 
 ### Would you like to receive updates about this submission:
 ${this.form.user.shouldFollowUp ? 'Yes' : 'No'}

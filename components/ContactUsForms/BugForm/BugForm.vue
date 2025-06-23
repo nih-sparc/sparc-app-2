@@ -144,15 +144,6 @@ export default {
       },
       isSubmitting: false,
       formRules: {
-        user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
-        },
         email: [
             {
               required: false,
@@ -266,9 +257,6 @@ ${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}
 
 ### Browser
 ${this.form.browser ? this.form.browser : 'N/A'}
-
-### What type of user are you?
-${this.form.user.typeOfUser}
 
 ### Do you want to be notified when this issue is resolved?
 ${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}
