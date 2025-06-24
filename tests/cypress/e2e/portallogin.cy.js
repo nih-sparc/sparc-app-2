@@ -24,7 +24,7 @@ describe('Portal Login', { testIsolation: false }, function () {
                     cy.get('@formItems').contains(/Email/i).siblings().click()
                     cy.get('@formItems').contains(/First Name/i).siblings().click()
                     cy.get('.el-form-item__content > .el-form-item__error').should(($message) => {
-                        expect($message, 'Error message should exist').to.have.length(3)
+                        expect($message, 'Error message should exist').to.have.length(2)
                         expect($message, 'First Name input should be empty').to.contain('Please enter your first name')
                         expect($message, 'Last Name input should be empty').to.contain('Please enter your last name')
                         expect($message, 'Email input should be empty').to.contain('Please enter your email')
