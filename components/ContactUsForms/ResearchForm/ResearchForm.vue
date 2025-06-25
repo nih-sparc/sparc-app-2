@@ -27,6 +27,68 @@
 
     <el-form-item
       class="mt-32"
+      prop="publishedManuscript"
+      label="Have you submitted the manuscript that interprets this data for consideration by a journal? *"
+    >
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="No"
+        display="No"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Pending"
+        display="Pending"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Published"
+        display="Published"
+      />
+    </el-form-item>
+
+    <el-form-item class="mt-32" label="The next questions help us understand the lab organization related to data contributions. Typically, there is someone who manages the dataset creation process, which may or may not be the Dataset Owner. The dataset owner is typically the Principal Investigator (PI) of the originating lab." />
+
+    <el-form-item
+      class="mt-32"
+      prop="isDatasetOwner"
+      label="Are you the dataset owner? *"
+    >
+      <sparc-radio
+        :value="form.isDatasetOwner"
+        @input="form.isDatasetOwner = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.isDatasetOwner"
+        @input="form.isDatasetOwner = $event.target.value"
+        label="No"
+        display="No"
+      />
+    </el-form-item>
+
+    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerName" label="Dataset owner name, if not self:">
+      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerName" placeholder="Enter their full name" />
+    </el-form-item>
+
+    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerEmail" label="Dataset owner email, if not self:">
+      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerEmail" placeholder="Enter their email address" type="email" />
+    </el-form-item>
+
+    <el-form-item class="mt-32" label="Tell us about the data. We can reduce the cost to curate and publish datasets from your lab based on the number you anticipate contributing." />
+
+    <el-form-item
+      class="mt-32"
       prop="datasetSize"
       label="What is the approximate total size of your dataset? *"
     >
@@ -51,54 +113,8 @@
     </el-form-item>
 
     <el-form-item
-      class="mt-32"
-      prop="publishedManuscript"
-      label="Have you submitted the manuscript that interprets this data for consideration by a journal? *"
-    >
-      <sparc-radio
-        :value="form.publishedManuscript"
-        @input="form.publishedManuscript = $event.target.value"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        :value="form.publishedManuscript"
-        @input="form.publishedManuscript = $event.target.value"
-        label="No"
-        display="No"
-      />
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
-      prop="isDatasetOwner"
-      label="Are you the dataset owner? (The dataset owner is typically the Principal Investigator of the originating lab) *"
-    >
-      <sparc-radio
-        :value="form.isDatasetOwner"
-        @input="form.isDatasetOwner = $event.target.value"
-        label="Yes"
-        display="Yes"
-      />
-      <sparc-radio
-        :value="form.isDatasetOwner"
-        @input="form.isDatasetOwner = $event.target.value"
-        label="No"
-        display="No"
-      />
-    </el-form-item>
-
-    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerName" label="Dataset owner name, if not self:">
-      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerName" placeholder="Enter their full name" />
-    </el-form-item>
-
-    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerEmail" label="Dataset owner email, if not self:">
-      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerEmail" placeholder="Enter their email address" type="email" />
-    </el-form-item>
-
-    <el-form-item
       prop="numDatasets"
-      label="Including the dataset you are inquiring about now, how many datasets are you interested in contributing? (We can reduce the cost to curate and publish datasets from your lab based on the number you anticipate contributing.) *"
+      label="Including the dataset you are inquiring about now, how many datasets are you interested in contributing? *"
     >
       <el-select
         v-model="form.numDatasets"
