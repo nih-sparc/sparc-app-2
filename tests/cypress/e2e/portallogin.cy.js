@@ -21,7 +21,7 @@ describe('Portal Login', { testIsolation: false }, function () {
                     cy.get('.el-form-item > .el-form-item__label').as('formItems')
                     cy.get('@formItems').contains(/First Name/i).siblings().click()
                     cy.get('@formItems').contains(/Last Name/i).siblings().click()
-                    cy.get('@formItems').contains(/Email/i).siblings().click()
+                    cy.get('@formItems').contains("Email").siblings().click()
                     cy.get('@formItems').contains(/First Name/i).siblings().click()
                     cy.get('.el-form-item__content > .el-form-item__error').should(($message) => {
                         expect($message, 'Error message should exist').to.have.length(3)

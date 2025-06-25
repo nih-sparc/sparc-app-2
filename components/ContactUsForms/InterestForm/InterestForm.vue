@@ -82,7 +82,6 @@ export default {
         serviceCategories: [],
         additionalInfo:'',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -94,13 +93,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -173,7 +165,6 @@ export default {
         <b>SPARC Service Inquiry Submission:</b><br><br>
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}<br><br>
         <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
@@ -193,8 +184,8 @@ export default {
 
       try {
         const response = await this.$axios.post(`${config.public.portal_api}/submit_data_inquiry`, formData)
-        const data = response.data;
-        const status = response.status;
+        const data = response.data
+        const status = response.status
         if (this.form.user.shouldSubscribe) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
         }

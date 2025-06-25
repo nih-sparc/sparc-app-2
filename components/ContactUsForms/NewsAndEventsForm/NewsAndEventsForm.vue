@@ -138,7 +138,6 @@ export default {
         endDate: '',
         supportingLinks: [''],
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,

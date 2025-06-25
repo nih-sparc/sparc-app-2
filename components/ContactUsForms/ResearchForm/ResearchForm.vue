@@ -8,92 +8,28 @@
   >
     <el-form-item
       prop="shortDescription"
-      label="Provide a short description of your research *"
+      label="Draft title of dataset *"
     >
       <el-input
         v-model="form.shortDescription"
-        placeholder="(Example: I am studying the effects of <approach> on <anatomical structure>)"
+        placeholder="A brief description of the data you'd like to contribute. For example, your draft manuscript title would be fine here."
       />
     </el-form-item>
 
-    <el-form-item prop="detailedDescription" label="Provide a detailed description of your research *">
+    <el-form-item prop="detailedDescription" label="Please provide a short description of the research *">
       <el-input
         v-model="form.detailedDescription"
         type="textarea"
         :rows="3"
-        placeholder="Please provide specifics about your research. Our curation team will then contact you."
-      />
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
-      prop="individualFileSize"
-      label="The approximate size of the largest individual file? *"
-    >
-      <sparc-radio
-        :value="form.individualFileSize"
-        @input="form.individualFileSize = $event.target.value"
-        label="<220GB"
-        display="< 220 GB"
-      />
-      <sparc-radio
-        :value="form.individualFileSize"
-        @input="form.individualFileSize = $event.target.value"
-        label="≥220GB"
-        display="≥ 220 GB"
-      />
-    </el-form-item>
-
-    <el-form-item
-      class="mt-32"
-      prop="datasetSize"
-      label="The approximate total size of the dataset? *"
-    >
-      <sparc-radio
-        :value="form.datasetSize"
-        @input="form.datasetSize = $event.target.value"
-        label="<5GB"
-        display="< 5 GB"
-        :disabled="isOversized"
-      />
-      <sparc-radio
-        :value="form.datasetSize"
-        @input="form.datasetSize = $event.target.value"
-        label="5-50GB"
-        display="5 - 50GB"
-        :disabled="isOversized"
-      />
-      <sparc-radio
-        :value="form.datasetSize"
-        @input="form.datasetSize = $event.target.value"
-        label="50-500GB"
-        display="50 - 500GB"
-      />
-      <sparc-radio
-        :value="form.datasetSize"
-        @input="form.datasetSize = $event.target.value"
-        label="500GB-TB"
-        display="500GB - TB"
-      />
-      <sparc-radio
-        :value="form.datasetSize"
-        @input="form.datasetSize = $event.target.value"
-        label=">TB"
-        display="> TB"
+        placeholder="A few sentences that describe the experiment and the data acquired and analyzed. For example, a portion of your draft manuscript abstract would be fine to provide here."
       />
     </el-form-item>
 
     <el-form-item
       class="mt-32"
       prop="publishedManuscript"
-      label="Has data been published in a manuscript? *"
+      label="Have you submitted the manuscript that interprets this data for consideration by a journal? *"
     >
-      <sparc-radio
-        :value="form.publishedManuscript"
-        @input="form.publishedManuscript = $event.target.value"
-        label="Yes"
-        display="Yes"
-      />
       <sparc-radio
         :value="form.publishedManuscript"
         @input="form.publishedManuscript = $event.target.value"
@@ -103,17 +39,100 @@
       <sparc-radio
         :value="form.publishedManuscript"
         @input="form.publishedManuscript = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
         label="Pending"
         display="Pending"
+      />
+      <sparc-radio
+        :value="form.publishedManuscript"
+        @input="form.publishedManuscript = $event.target.value"
+        label="Published"
+        display="Published"
+      />
+    </el-form-item>
+
+    <el-form-item class="mt-32" label="The next questions help us understand the lab organization related to data contributions. Typically, there is someone who manages the dataset creation process, which may or may not be the Dataset Owner. The dataset owner is typically the Principal Investigator (PI) of the originating lab." />
+
+    <el-form-item
+      class="mt-32"
+      prop="isDatasetOwner"
+      label="Are you the dataset owner? *"
+    >
+      <sparc-radio
+        :value="form.isDatasetOwner"
+        @input="form.isDatasetOwner = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.isDatasetOwner"
+        @input="form.isDatasetOwner = $event.target.value"
+        label="No"
+        display="No"
+      />
+    </el-form-item>
+
+    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerName" label="Dataset owner name, if not self:">
+      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerName" placeholder="Enter their full name" />
+    </el-form-item>
+
+    <el-form-item :disabled="form.isDatasetOwner == 'Yes'" prop="datasetOwnerEmail" label="Dataset owner email, if not self:">
+      <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerEmail" placeholder="Enter their email address" type="email" />
+    </el-form-item>
+
+    <el-form-item class="mt-32" label="Tell us about the data. We can reduce the cost to curate and publish datasets from your lab based on the number you anticipate contributing." />
+
+    <el-form-item
+      class="mt-32"
+      prop="datasetSize"
+      label="What is the approximate total size of your dataset? *"
+    >
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="<100GB"
+        display="< 100 GB"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="<1TB"
+        display="< 1 TB"
+      />
+      <sparc-radio
+        :value="form.datasetSize"
+        @input="form.datasetSize = $event.target.value"
+        label="≥1TB"
+        display="≥ 1 TB"
       />
     </el-form-item>
 
     <el-form-item
-      class="mt-0 vertical-content"
-      prop="manuscriptDoi"
-      :disabled="form.publishedManuscript !== 'Yes'"
+      prop="numDatasets"
+      label="Including the dataset you are inquiring about now, how many datasets are you interested in contributing? *"
     >
-      <url-input :disabled="form.publishedManuscript !== 'Yes'" v-model="form.manuscriptDoi" placeholder="Enter DOI URL"/>
+      <el-select
+        v-model="form.numDatasets"
+        placeholder="Select one"
+      >
+        <el-option
+          label="1"
+          value="1"
+        />
+        <el-option
+          label="<5"
+          value="<5"
+        />
+        <el-option
+          label="6+"
+          value="6+"
+        />
+      </el-select>
     </el-form-item>
 
     <hr/>
@@ -148,23 +167,22 @@ import { useMainStore } from '@/store/index'
 import NewsletterMixin from '@/components/ContactUsForms/NewsletterMixin'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '@/components/ContactUsForms/UserContactFormItem.vue'
+import ParseInputMixin from '@/mixins/parse-input/index'
 import { saveForm, loadForm, populateFormWithUserData } from '~/utils/utils'
-import UrlInput from '@/components/Url/UrlInput.vue'
 
 export default {
   name: 'FeedbackForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
-    UserContactFormItem,
-    UrlInput
+    UserContactFormItem
   },
 
   data() {
-    const validateDoi = (rule, value, callback) => {
-      if (this.form.publishedManuscript === 'Yes' && value === '') {
-        callback(new Error('Please enter a DOI URL'))
+    const validateEmail = (rule, value, callback) => {
+      if (this.form.isDatasetOwner !== 'Yes' && this.form.datasetOwnerEmail?.length > 0 && !this.isValidEmail(this.form.datasetOwnerEmail)) {
+        callback(new Error('Please enter a valid e-mail address'))
       }
       callback()
     }
@@ -172,13 +190,14 @@ export default {
       form: {
         captchaToken: '',
         detailedDescription: '',
-        individualFileSize: '',
         datasetSize: '',
         shortDescription: '',
         publishedManuscript: '',
-        manuscriptDoi: '',
+        isDatasetOwner: '',
+        datasetOwnerName: '',
+        datasetOwnerEmail: '',
+        numDatasets: '',
         user: {
-          typeOfUser: null,
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -190,13 +209,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -237,14 +249,6 @@ export default {
           }
         ],
 
-        individualFileSize: [
-          {
-            required: true,
-            message: 'Please select one option',
-            trigger: 'change'
-          }
-        ],
-
         datasetSize: [
           {
             required: true,
@@ -261,10 +265,26 @@ export default {
           }
         ],
 
-        manuscriptDoi: [
+        isDatasetOwner: [
+          {
+            required: true,
+            message: 'Please select one option',
+            trigger: 'change'
+          }
+        ],
+
+        datasetOwnerEmail: [
           {
             trigger: 'change',
-            validator: validateDoi
+            validator: validateEmail
+          }
+        ],
+
+        numDatasets: [
+          {
+            required: true,
+            message: 'Please select one',
+            trigger: 'change'
           }
         ],
 
@@ -293,12 +313,6 @@ export default {
     populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
   },
 
-  computed: {
-    isOversized: function() {
-      return this.form.individualFileSize === '≥220GB'
-    },
-  },
-
   methods: {
     /**
      * Send form to endpoint
@@ -306,18 +320,21 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
+      const isAnbcFormSubmission = this.$route.query.ref ? this.$route.query.ref.toLowerCase() == 'anbc' : false
       const body = `
         <b>Submit Data/Models Submission:</b><br><br>
-        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
-        <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
-        <b>Has a published manuscript:</b><br>${this.form.publishedManuscript === 'Yes' ? this.form.manuscriptDoi : this.form.publishedManuscript}<br><br>
-        <b>The approximate largest individual file size:</b><br>${this.form.individualFileSize}<br><br>
-        <b>The approximate dataset total size:</b><br>${this.form.datasetSize}<br><br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
-        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
-        <b>Email:</b><br>${this.form.user.email}
+        <b>Draft title of dataset:</b><br>${this.form.shortDescription}<br><br>
+        <b>Please provide a short description of the research:</b><br>${this.form.detailedDescription}<br><br>
+        <b>What is the approximate total size of your dataset?</b><br>${this.form.datasetSize}<br><br>
+        <b>Have you submitted the manuscript that interprets this data for consideration by a journal?</b><br>${this.form.publishedManuscript}<br><br>
+        <b>Are you the dataset owner?</b><br>${this.form.isDatasetOwner}<br><br>
+        <b>Dataset owner name:</b><br>${this.form.isDatasetOwner == 'Yes' ? 'N/A' : this.form.datasetOwnerName}<br><br>
+        <b>Dataset owner email:</b><br>${this.form.isDatasetOwner == 'Yes' ? 'N/A' : this.form.datasetOwnerEmail}<br><br>
+        <b>Including the dataset you are inquiring about now, how many datasets are you interested in contributing??</b><br>${this.form.numDatasets}<br><br>
+        <b>Your name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
+        <b>Your email:</b><br>${this.form.user.email}
       `
-      let formData = new FormData();
+      let formData = new FormData()
       formData.append("type", "research")
       formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `SPARC Research Submission: ${this.form.user.firstName} ${this.form.user.lastName}`)
@@ -325,6 +342,7 @@ export default {
       formData.append("email", this.form.user.email)
       formData.append("firstname", this.form.user.firstName)
       formData.append("lastname", this.form.user.lastName)
+      formData.append("isAnbcForm", isAnbcFormSubmission)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
@@ -410,11 +428,6 @@ export default {
     },
     profileEmail() {
       this.form.user.email = this.profileEmail
-    },
-    isOversized(value) {
-      if (value && (this.form.datasetSize === '<5GB' || this.form.datasetSize === '5-50GB')) {
-        this.form.datasetSize = ''
-      }
     }
   }
 }
