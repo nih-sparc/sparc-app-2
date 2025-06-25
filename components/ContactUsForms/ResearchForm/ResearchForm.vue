@@ -304,6 +304,7 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
+      const isAnbcFormSubmission = this.$route.query.ref ? this.$route.query.ref.toLowerCase() == 'anbc' : false
       const body = `
         <b>Submit Data/Models Submission:</b><br><br>
         <b>Draft title of dataset:</b><br>${this.form.shortDescription}<br><br>
@@ -317,7 +318,7 @@ export default {
         <b>Your name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Your email:</b><br>${this.form.user.email}
       `
-      let formData = new FormData();
+      let formData = new FormData()
       formData.append("type", "research")
       formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `SPARC Research Submission: ${this.form.user.firstName} ${this.form.user.lastName}`)
@@ -325,6 +326,7 @@ export default {
       formData.append("email", this.form.user.email)
       formData.append("firstname", this.form.user.firstName)
       formData.append("lastname", this.form.user.lastName)
+      formData.append("isAnbcForm", isAnbcFormSubmission)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
@@ -410,11 +412,6 @@ export default {
     },
     profileEmail() {
       this.form.user.email = this.profileEmail
-    },
-    isOversized(value) {
-      if (value && (this.form.datasetSize === '<5GB' || this.form.datasetSize === '5-50GB')) {
-        this.form.datasetSize = ''
-      }
     }
   }
 }
