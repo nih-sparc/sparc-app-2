@@ -101,7 +101,7 @@ export default {
 
 .row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   @media screen and (max-width: 767px) {
     flex-direction: column;
   }
