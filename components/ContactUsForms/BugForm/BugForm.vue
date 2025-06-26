@@ -108,7 +108,6 @@
 import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
-import ParseInputMixin from '@/mixins/parse-input/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
@@ -117,7 +116,7 @@ import { propOr } from 'ramda'
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin, ParseInputMixin],
+  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
 
   components: {
     UserContactFormItem
@@ -137,21 +136,39 @@ export default {
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
       },
       isSubmitting: false,
       formRules: {
-        email: [
+        user: {
+          email: [
             {
-              required: false,
-              message: 'Please enter your email',
-              type: 'email',
+                required: true,
+                message: 'Please enter your email',
+                type: 'email',
+                trigger: 'blur',
+            }
+          ],
+
+          firstName: [
+            {
+              required: true,
+              message: 'Please enter your first name',
               trigger: 'blur',
             }
           ],
+
+          lastName: [
+            {
+              required: true,
+              message: 'Please enter your last name',
+              trigger: 'blur',
+            }
+          ]
+        },
+
         browser: [
           {
             required: true,
@@ -271,13 +288,10 @@ ${this.form.user.email}`
 
       let formData = new FormData();
       formData.append("type", "bug")
-      formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
-      if (this.isValidEmail(this.form.user.email)) {
-        formData.append("email", this.form.user.email)
-      }
+      formData.append("email", this.form.user.email)
       if (fileName != '') {
         const extension = fileName.substring(fileName.lastIndexOf('.')); 
         formData.append("attachment", this.file, `attachment${extension}`)
@@ -288,7 +302,7 @@ ${this.form.user.email}`
 
       try {
         const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
-        if (this.form.user.shouldSubscribe && this.isValidEmail(this.form.user.email)) {
+        if (this.form.user.shouldSubscribe) {
           this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
         }
         const status = data?.status

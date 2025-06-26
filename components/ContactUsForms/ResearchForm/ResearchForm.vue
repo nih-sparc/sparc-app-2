@@ -56,7 +56,17 @@
       />
     </el-form-item>
 
-    <el-form-item class="mt-32" label="The next questions help us understand the lab organization related to data contributions. Typically, there is someone who manages the dataset creation process, which may or may not be the Dataset Owner. The dataset owner is typically the Principal Investigator (PI) of the originating lab." />
+    <el-form-item
+      class="mt-0 vertical-content"
+      prop="manuscriptDoi"
+      :disabled="form.publishedManuscript == 'No' || form.publishedManuscript == ''"
+    >
+      <url-input :disabled="form.publishedManuscript == 'No' || form.publishedManuscript == ''" v-model="form.manuscriptDoi" placeholder="Enter DOI URL"/>
+    </el-form-item>
+
+    <div class="heading3 mt-32">
+      The next questions help us understand the lab organization related to data contributions. Typically, there is someone who manages the dataset creation process, which may or may not be the Dataset Owner. The dataset owner is typically the Principal Investigator (PI) of the originating lab.
+    </div>
 
     <el-form-item
       class="mt-32"
@@ -85,7 +95,9 @@
       <el-input :disabled="form.isDatasetOwner == 'Yes'" v-model="form.datasetOwnerEmail" placeholder="Enter their email address" type="email" />
     </el-form-item>
 
-    <el-form-item class="mt-32" label="Tell us about the data. We can reduce the cost to curate and publish datasets from your lab based on the number you anticipate contributing." />
+    <div class="heading3 mt-32">
+      Tell us about the data. We can reduce the cost to curate and publish datasets from your lab based on the number you anticipate contributing.
+    </div>
 
     <el-form-item
       class="mt-32"
@@ -169,6 +181,7 @@ import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '@/components/ContactUsForms/UserContactFormItem.vue'
 import ParseInputMixin from '@/mixins/parse-input/index'
 import { saveForm, loadForm, populateFormWithUserData } from '~/utils/utils'
+import UrlInput from '@/components/Url/UrlInput.vue'
 
 export default {
   name: 'FeedbackForm',
@@ -176,7 +189,8 @@ export default {
   mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
-    UserContactFormItem
+    UserContactFormItem,
+    UrlInput
   },
 
   data() {
@@ -197,6 +211,7 @@ export default {
         datasetOwnerName: '',
         datasetOwnerEmail: '',
         numDatasets: '',
+        manuscriptDoi: '',
         user: {
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
@@ -325,12 +340,13 @@ export default {
         <b>Submit Data/Models Submission:</b><br><br>
         <b>Draft title of dataset:</b><br>${this.form.shortDescription}<br><br>
         <b>Please provide a short description of the research:</b><br>${this.form.detailedDescription}<br><br>
-        <b>What is the approximate total size of your dataset?</b><br>${this.form.datasetSize}<br><br>
+        <b>What is the approximate total size of your dataset?</b><br>${this.escapeHTML(this.form.datasetSize)}<br><br>
         <b>Have you submitted the manuscript that interprets this data for consideration by a journal?</b><br>${this.form.publishedManuscript}<br><br>
+        <b>Doi url:</b><br>${this.form.manuscriptDoi == '' ? 'N/A' : this.form.manuscriptDoi}<br><br>
         <b>Are you the dataset owner?</b><br>${this.form.isDatasetOwner}<br><br>
         <b>Dataset owner name:</b><br>${this.form.isDatasetOwner == 'Yes' ? 'N/A' : this.form.datasetOwnerName}<br><br>
         <b>Dataset owner email:</b><br>${this.form.isDatasetOwner == 'Yes' ? 'N/A' : this.form.datasetOwnerEmail}<br><br>
-        <b>Including the dataset you are inquiring about now, how many datasets are you interested in contributing??</b><br>${this.form.numDatasets}<br><br>
+        <b>Including the dataset you are inquiring about now, how many datasets are you interested in contributing??</b><br>${this.escapeHTML(this.form.numDatasets)}<br><br>
         <b>Your name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Your email:</b><br>${this.form.user.email}
       `
@@ -416,6 +432,14 @@ export default {
           this.hasError = true
       }
       this.isSubmitting = false
+    },
+    escapeHTML(str) {
+      if (typeof str !== 'string') return str
+      return str
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/≥/g, "&ge;")
+        .replace(/≤/g, "&le;")
     }
   },
 

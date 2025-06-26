@@ -85,7 +85,6 @@ export default {
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -171,7 +170,6 @@ export default {
       `
       let formData = new FormData();
       formData.append("type", "interest")
-      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `SPARC Service Request: ${this.form.user.firstName} ${this.form.user.lastName}`)
       formData.append("body", body)
       formData.append("email", this.form.user.email)

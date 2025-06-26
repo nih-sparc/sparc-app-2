@@ -104,7 +104,6 @@ export default {
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -225,7 +224,6 @@ export default {
             name: fullName,
             email: this.form.user.email,
             message: message,
-            sendCopy: this.form.user.sendCopy,
             subject: 'SPARC Question or Inquiry Submission'
         })
         const data = response.data
