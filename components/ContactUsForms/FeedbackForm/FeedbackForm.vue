@@ -105,13 +105,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -211,7 +204,7 @@ ${this.form.user.email}`
 
       let formData = new FormData();
       formData.append("type", "feedback")
-      formData.append("sendCopy", this.form.user.sendCopy && this.isValidEmail(this.form.user.email))
+      formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `${this.form.shortDescription}`)
       formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)

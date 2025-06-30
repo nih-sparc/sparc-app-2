@@ -276,7 +276,7 @@ ${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}
 ${this.form.browser ? this.form.browser : 'N/A'}
 
 ### Do you want to be notified when this issue is resolved?
-${(this.form.user.shouldFollowUp && this.isValidEmail(this.form.user.email)) ? 'Yes' : 'No'}
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
 
 ## Contact Info
 
