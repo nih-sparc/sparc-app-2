@@ -433,14 +433,6 @@ export default {
       }
       this.isSubmitting = false
     },
-    escapeHTML(str) {
-      if (typeof str !== 'string') return str
-      return str
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/≥/g, "&ge;")
-        .replace(/≤/g, "&le;")
-    }
   },
 
   watch: {
