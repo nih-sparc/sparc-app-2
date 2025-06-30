@@ -50,7 +50,7 @@
 
     <el-form-item
       prop="numDatasets"
-      label="How many datasets or models will you want to share via SPARC? *"
+      label="How many datasets or models do you expect to generate and share via SPARC during the grant period? *"
     >
       <el-select
         v-model="form.numDatasets"
@@ -233,7 +233,7 @@ export default {
         <b>Are you preparing a grant submission and would like to specify SPARC as your data repository?</b><br>${this.form.isPreparingGrant}<br><br>
         <b>Proposal submission date:</b><br>${this.escapeHTML(this.form.submissionDate == '' ? 'N/A' : new Date(this.form.submissionDate).toDateString())}<br><br>
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
-        <b>How many datasets or models will you want to share via SPARC?</b><br>${this.escapeHTML(this.form.numDatasets)}<br><br>
+        <b>How many datasets or models do you expect to generate and share via SPARC during the grant period?</b><br>${this.escapeHTML(this.form.numDatasets)}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}<br><br>
