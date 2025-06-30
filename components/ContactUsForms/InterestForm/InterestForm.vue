@@ -7,6 +7,33 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
+      class="mt-32"
+      prop="isPreparingGrant"
+      label="Are you preparing a grant submission and would like to specify SPARC as your data repository? *"
+    >
+      <sparc-radio
+        :value="form.isPreparingGrant"
+        @input="form.isPreparingGrant = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.isPreparingGrant"
+        @input="form.isPreparingGrant = $event.target.value"
+        label="No"
+        display="No"
+      />
+    </el-form-item>
+
+    <el-form-item prop="submissionDate" label="Proposal submission date">
+      <el-date-picker
+        v-model="form.submissionDate"
+        type="date"
+        placeholder="Enter the date of the proposal submission"
+      />
+    </el-form-item>
+
+    <el-form-item
       class="service-categories vertical-content mt-32"
       prop="serviceCategories"
       label="What service(s) are you interested in? *"
@@ -21,12 +48,35 @@
       />
     </el-form-item>
 
+    <el-form-item
+      prop="numDatasets"
+      label="How many datasets or models will you want to share via SPARC? *"
+    >
+      <el-select
+        v-model="form.numDatasets"
+        placeholder="Select one"
+      >
+        <el-option
+          label="1"
+          value="1"
+        />
+        <el-option
+          label="<5"
+          value="<5"
+        />
+        <el-option
+          label="6+"
+          value="6+"
+        />
+      </el-select>
+    </el-form-item>
+
     <el-form-item prop="additionalInfo" label="Additional Information">
       <el-input
         v-model="form.additionalInfo"
         type="textarea"
         :rows="3"
-        placeholder="Please provide any additional information regarding your service request"
+        placeholder="Please provide any additional information regarding your request"
       />
     </el-form-item>
 
@@ -65,11 +115,12 @@ import { isEmpty } from 'ramda'
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
+import ParseInputMixin from '@/mixins/parse-input'
 
 export default {
   name: 'InterestForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
     UserContactFormItem
@@ -79,7 +130,10 @@ export default {
     return {
       form: {
         captchaToken: '',
+        isPreparingGrant: '',
+        submissionDate: '',
         serviceCategories: [],
+        numDatasets: '',
         additionalInfo:'',
         user: {
           firstName: useMainStore().firstName,
@@ -115,10 +169,24 @@ export default {
             }
           ]
         },
+        isPreparingGrant: [
+          {
+            required: true,
+            message: 'Please select one',
+            trigger: 'change'
+          }
+        ],
         serviceCategories: [
           {
             required: true,
             message: 'Please select at least one',
+            trigger: 'change'
+          }
+        ],
+        numDatasets: [
+          {
+            required: true,
+            message: 'Please select one',
             trigger: 'change'
           }
         ],
@@ -162,7 +230,10 @@ export default {
       this.isSubmitting = true
       const body = `
         <b>SPARC Service Inquiry Submission:</b><br><br>
+        <b>Are you preparing a grant submission and would like to specify SPARC as your data repository?</b><br>${this.form.isPreparingGrant}<br><br>
+        <b>Proposal submission date:</b><br>${this.escapeHTML(this.form.submissionDate == '' ? 'N/A' : new Date(this.form.submissionDate).toDateString())}<br><br>
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
+        <b>How many datasets or models will you want to share via SPARC?</b><br>${this.escapeHTML(this.form.numDatasets)}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}<br><br>
@@ -282,6 +353,9 @@ hr {
 .recaptcha {
   display: flex;
   justify-content: left;
+}
+label.el-radio {
+  padding-top: 0;
 }
 :deep(.vertical-content) {
   .el-form-item__content {
