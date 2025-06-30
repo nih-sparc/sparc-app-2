@@ -246,6 +246,7 @@ export default {
       formData.append("email", this.form.user.email)
       formData.append("firstname", this.form.user.firstName)
       formData.append("lastname", this.form.user.lastName)
+      formData.append("isServiceForm", true)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
