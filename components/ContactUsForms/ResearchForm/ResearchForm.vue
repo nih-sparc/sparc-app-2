@@ -335,7 +335,7 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const isAnbcFormSubmission = this.$route.query.ref ? this.$route.query.ref.toLowerCase() == 'anbc' : false
+      const isAnbcFormSubmission = this.$route.fullPath ? this.$route.fullPath.toLowerCase().includes('ref=anbc') : false
       const body = `
         <b>Submit Data/Models Submission:</b><br><br>
         <b>Draft title of dataset:</b><br>${this.form.shortDescription}<br><br>
