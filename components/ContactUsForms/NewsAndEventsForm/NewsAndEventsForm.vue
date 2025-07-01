@@ -239,21 +239,21 @@ export default {
       const config = useRuntimeConfig()
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
-      const description = `
-        <b>Contact Information</b><br><br>
-        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
-        <b>E-mail:</b><br>${this.form.user.email}<br><br>
-        <b>News or Event Details:</b><br><br>
-        <b>Title:</b><br>${this.form.title}<br><br>
-        <b>Summary:</b><br>${this.form.summary}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Supporting Information links:</b><br>${this.supportingLinksText}<br>
-        <b>Event Specific Details:</b><br><br>
-        <b>Location:</b><br>${this.locationText}<br><br>
-        <b>Start Date:</b><br>${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}<br><br>
-        <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
-      `
+      const description = `Contact Information
+First Name: ${this.form.user.firstName}
+Last Name: ${this.form.user.lastName}
+E-mail: ${this.form.user.email}
+
+News or Event Details:
+Title: ${this.form.title}
+Summary: ${this.form.summary}
+${fileName != '' ? `File Attachment: ${fileName}` : ''}
+Supporting Information links: ${this.supportingLinksText}
+
+Event Specific Details
+Location: ${this.locationText}
+Start Date: ${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}
+End Date: ${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}`
       let formData = new FormData();
       // we assume it is a news item if there is no start date
       if (this.form.startDate == '') {
