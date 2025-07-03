@@ -216,12 +216,13 @@ export default {
       return this.form?.locationCategories.includes('Virtual')
     },
     supportingLinksText: function() {
+      const header = 'Supporting Information links:\n'
       let message = ''
       this.form.supportingLinks.forEach(link => {
         if (!isEmpty(link))
-          message += `${link}<br>`
+          message += link + '\n'
       })
-      return isEmpty(message) ? 'N/A<br>' : message
+      return header + (isEmpty(message) ? 'N/A\n' : message)
     },
     locationText: function() {
       return this.isVirtual ? 'Virtual' : this.form.location == '' ? 'N/A' : this.form.location
@@ -247,9 +248,7 @@ E-mail: ${this.form.user.email}
 News or Event Details:
 Title: ${this.form.title}
 Summary: ${this.form.summary}
-${fileName != '' ? `File Attachment: ${fileName}` : ''}
-Supporting Information links: ${this.supportingLinksText}
-
+${this.supportingLinksText}
 Event Specific Details
 Location: ${this.locationText}
 Start Date: ${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}
