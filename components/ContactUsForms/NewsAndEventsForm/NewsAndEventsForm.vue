@@ -239,7 +239,6 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const fileName = propOr('', 'name', this.file)
       const description = `Contact Information
 First Name: ${this.form.user.firstName}
 Last Name: ${this.form.user.lastName}
