@@ -76,11 +76,12 @@ import UserContactFormItem from '../UserContactFormItem.vue'
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
+import ParseInputMixin from '@/mixins/parse-input/index'
 
 export default {
   name: 'FeedbackForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
     UserContactFormItem
