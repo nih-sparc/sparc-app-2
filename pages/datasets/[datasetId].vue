@@ -47,6 +47,15 @@
           </div>
         </div>
       </div>
+      <div v-else-if="isOlderVersionIndexed" class="container">
+        <div class="heading2 subpage">
+          <b>{{datasetName}}</b>
+          <hr class="my-16"/>
+          <div class="heading3">
+            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }}, and is currently undergoing indexing in the SPARC Portal. As a result, some metadata may not be up to date. Full availability is expected once the indexing process is complete, which may take up to one week. We recommend checking back periodically for updates. An older version of this dataset can be viewed <a :href="`/datasets/${datasetInfo.id}/version/${algoliaDatasetVersion}`">here.</a>
+          </div>
+        </div>
+      </div>
       <div class="details-container" v-else>
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
@@ -193,15 +202,12 @@ const getOrganizationIds = async (algoliaIndex) => {
   }
 }
 
-// get contributors from Algolia and replace the list retrieved from Pennsieve because the Pennsieve list is based off
-// the user's Pennsieve account names instead of the dataset_description.xlsx file which is the point of truth. Refer to
-// the following tickets: https://www.wrike.com/open.htm?id=1257276600 and https://www.wrike.com/open.htm?id=1215925574
-const getContributorsFromAlgolia = async (algoliaIndex, id) => {
+const getAlgoliaMetadata = async (algoliaIndex, id) => {
   try {
     const response = await algoliaIndex.getObject(id)
-    return response?.contributors
+    return response
   } catch (error) {
-    return []
+    return null
   }
 }
 
@@ -275,7 +281,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaContributors] = await Promise.all([
+      let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaDatasetMetadata] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -287,8 +293,12 @@ export default {
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
         getOrganizationIds(algoliaIndex),
-        getContributorsFromAlgolia(algoliaIndex, datasetId)
+        getAlgoliaMetadata(algoliaIndex, datasetId)
       ])
+      // get contributors from Algolia and replace the list retrieved from Pennsieve because the Pennsieve list is based off
+      // the user's Pennsieve account names instead of the dataset_description.xlsx file which is the point of truth. Refer to
+      // the following tickets: https://www.wrike.com/open.htm?id=1257276600 and https://www.wrike.com/open.htm?id=1215925574
+      const algoliaContributors = algoliaDatasetMetadata?.contributors || []
       const filteredAlgoliaContributors = algoliaContributors.filter(contributor =>
         contributor.first || contributor.last
       )
@@ -301,6 +311,9 @@ export default {
       })
       datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
       datasetDetails.contributors = datasetDetailsContributors
+      const algoliaDatasetVersion = algoliaDatasetMetadata?.pennsieve?.version?.identifier
+      const pennsieveDatasetVersion = datasetDetails?.version
+      const isOlderVersionIndexed = pennsieveDatasetVersion > algoliaDatasetVersion
       const latestVersion = compose(propOr(1, 'version'), head)(versions)
       store.setDatasetInfo({ ...datasetDetails, 'latestVersion': latestVersion })
       store.setDatasetFacetsData(datasetFacetsData)
@@ -350,7 +363,9 @@ export default {
         originallyPublishedDate,
         creators,
         canonicalLink,
-        isDatasetIndexed
+        isDatasetIndexed,
+        isOlderVersionIndexed,
+        algoliaDatasetVersion
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
