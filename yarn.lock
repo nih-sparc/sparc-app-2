@@ -46,10 +46,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/flatmapvuer@^1.10.1":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.10.1.tgz#74bc4fd02f7578ed690e955f2ecbd8f8b7f89464"
-  integrity sha512-NEnBXK4iWN0KpviUhVYhtqSaYPRh/icXR6KTuXRVVSJyjfdDIZ0P9SvijoZbjZbpeYeVq3ElZObDOiMUyimrSA==
+"@abi-software/flatmapvuer@^1.10.2":
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.10.2.tgz#f460be9491a1d46c37643370c5138feca094496b"
+  integrity sha512-uEZmc6zqW5ytH7F5PfnSHzusakQrLuJ8C08wKm2o5yVDIfHHheK+4KxZT2hHT/eMq2vqUKXPyQuaiUaH5ijdDQ==
   dependencies:
     "@abi-software/map-utilities" "^1.6.0"
     "@abi-software/sparc-annotation" "0.3.2"
@@ -106,12 +106,12 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.10.2.tgz#4cb75a030be14c40a0329e5bb7f8a865d222a48b"
-  integrity sha512-lksDD0/vaBIZ9xqJ0JWHmvRphwJZGuiLisfLNKv0HlJiaIRo6IUBtwjCWNB2aUIud+2CzUuiijxLS9yBcjB47g==
+"@abi-software/mapintegratedvuer@1.10.3":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.10.3.tgz#9f3835bf14ebe2e682fc69cf11ea06ff587848db"
+  integrity sha512-BdGAO5o79pZegOc4NVRws/X5XzshXLQfx4lvSifKbkW/cdnpl231qvMu1JDUWUJS/7Yqbdn7fRKboQzWDFtNdA==
   dependencies:
-    "@abi-software/flatmapvuer" "^1.10.1"
+    "@abi-software/flatmapvuer" "^1.10.2"
     "@abi-software/map-side-bar" "^2.9.1"
     "@abi-software/map-utilities" "^1.6.0"
     "@abi-software/plotvuer" "1.0.4"
