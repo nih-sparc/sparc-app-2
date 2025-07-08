@@ -112,12 +112,11 @@ import UserContactFormItem from '../UserContactFormItem.vue'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
 import { propOr } from 'ramda'
-import ParseInputMixin from '@/mixins/parse-input/index'
 
 export default {
   name: 'BugForm',
 
-  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin, ParseInputMixin],
+  mixins: [NewsletterMixin, FileUploadMixin, RecaptchaMixin],
 
   components: {
     UserContactFormItem
