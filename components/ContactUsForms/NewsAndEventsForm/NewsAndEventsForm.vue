@@ -265,6 +265,7 @@ End Date: ${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDate
       formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)

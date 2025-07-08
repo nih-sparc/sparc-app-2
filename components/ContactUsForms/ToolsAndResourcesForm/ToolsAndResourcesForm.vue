@@ -392,6 +392,7 @@ Email: ${this.form.user.email}`
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage

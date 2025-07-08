@@ -216,6 +216,7 @@ ${this.supportingLinksText}`
       formData.append("title", `SPARC Story Submission: ${this.form.title}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
