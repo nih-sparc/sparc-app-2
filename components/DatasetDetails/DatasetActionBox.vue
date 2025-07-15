@@ -40,7 +40,7 @@
         </el-button>
       </template>
       <template v-else-if="datasetTypeName === 'computational model'">
-        <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
+        <el-button v-if="canViewSimulation" @click="actionButtonClicked('images')">
           View Simulation
         </el-button>
         <a

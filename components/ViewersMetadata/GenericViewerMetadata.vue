@@ -58,7 +58,7 @@ import FileDetails from '@/mixins/file-details'
 import { propOr } from 'ramda'
 
 export default {
-  name: "VideoViewerMetadata",
+  name: "GenericViewerMetadata",
   props: {
     file: {
       type: Object,

@@ -185,7 +185,19 @@
     vue3-component-svg-sprite "^0.0.1"
     zincjs "^1.14.0"
 
-"@abi-software/simulationvuer@2.0.12", "@abi-software/simulationvuer@^2.0.12":
+"@abi-software/simulationvuer@2.0.13":
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.13.tgz#537c27714003797d6aa20840f323e27a6b7513e6"
+  integrity sha512-aIaki8g6QrHj4I14VlTY+QBYKtrm168w/eyWompF/+4KjwbtDh0NjOVkMEiPX6YC59qTu0sGQmzFFSwRjmhpDQ==
+  dependencies:
+    "@abi-software/plotvuer" "1.0.4"
+    element-plus "2.8.4"
+    jsonschema "^1.4.0"
+    mathjs "^13.0.2"
+    unplugin-vue-components "^0.26.0"
+    vue "^3.4.21"
+
+"@abi-software/simulationvuer@^2.0.12":
   version "2.0.12"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.12.tgz#c0a37ea12a4279810cd9c756d3d68c34b43946c0"
   integrity sha512-7M2rxnAo78zfbLYoJhaREvaQ4S5maBrIgFBH5eO44cozAzNNJqdr5HlkDHBf9cJ2rR/w9ckZav2U3NycVqf3Ng==
