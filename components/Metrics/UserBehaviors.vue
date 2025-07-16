@@ -155,6 +155,11 @@ export default {
       pageChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 20
+          }
+        },
         scales: {
           x: {
             barPercentage: 1.0,
