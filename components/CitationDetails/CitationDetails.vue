@@ -46,7 +46,7 @@
     </div>
     <div v-for="citationType in citationTypes" :key="citationType.type">
       <div class="label4 mb-8">{{citationType.label}}</div>
-      <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!hasCitationError" v-loading="citationLoading">
+      <div class="info-citation mb-16 py-16 pl-16 pr-24" v-if="!citationType.hasCitationError" v-loading="citationLoading">
         <button class="copy-button" @click="handleCitationCopy(citationType)">
           <img src="../../static/images/copyIcon.png" />
         </button>
@@ -99,27 +99,30 @@ export default {
     return {
       citationLoading: false,
       crosscite_host: this.$config.public.crosscite_api_host,
-      hasCitationError: false,
       citationTypes: [
         {
           type: 'apa',
           label: 'APA',
-          citationText: ''
+          citationText: '',
+          hasCitationError: false
         },
         {
-          type: 'chicago-note-bibliography',
+          type: 'chicago-author-date',
           label: 'Chicago',
-          citationText: ''
+          citationText: '',
+          hasCitationError: false
         },
         {
           type: 'ieee',
           label: 'IEEE',
-          citationText: ''
+          citationText: '',
+          hasCitationError: false
         },
         {
           type: 'bibtex',
           label: 'Bibtex',
-          citationText: ''
+          citationText: '',
+          hasCitationError: false
         }
       ]
     }
@@ -148,7 +151,6 @@ export default {
      */
     getCitationText: function() {
       this.citationLoading = true
-      this.hasCitationError = false
       // find all citation types at https://github.com/citation-style-language/style
       this.citationTypes.forEach(citationType => {
         const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
@@ -164,7 +166,7 @@ export default {
           })
           .catch(() => {
             failMessage(ErrorMessages.methods.crosscite())
-            this.hasCitationError = true
+            citationType.hasCitationError = true
           })
           .finally(() => {
             this.citationLoading = false
