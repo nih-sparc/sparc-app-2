@@ -68,14 +68,14 @@ const metricsComponents = {
 }
 
 const metricsTypes = [
-    {
-    label: 'User Behaviors',
-    type: 'userBehaviors',
-    dataSource: ''
-  },
   {
     label: 'Scientific Contribution',
     type: 'scientificContribution',
+    dataSource: ''
+  },
+  {
+    label: 'User Behaviors',
+    type: 'userBehaviors',
     dataSource: ''
   }
 ]
