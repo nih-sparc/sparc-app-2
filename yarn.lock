@@ -75,10 +75,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.9.1":
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.9.1.tgz#e66e02e90cf53034e11bed8c889cd693b8053e71"
-  integrity sha512-8gBHX8sl5juP+aI0LWJKhKoiWuKp0XJl1hebcyzIuF+K9CVZaMExj4hnHYKj4UoOHeM/41dTJdey9/vknUUpZg==
+"@abi-software/map-side-bar@^2.10.0-beta.0":
+  version "2.10.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.10.0-beta.0.tgz#456dfd9170d3e559cfca27a090196e4acf35ecbe"
+  integrity sha512-3FdqmA9Mlbl//7lbFJZPjqJvPiU4/wz/FF3ORAWA56IrqqHHgd8gL1wdtc2wJWF+60YvVkGHukqhNw1FrWn4KQ==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
     "@abi-software/map-utilities" "^1.6.0"
@@ -106,17 +106,17 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.10.3":
-  version "1.10.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.10.3.tgz#9f3835bf14ebe2e682fc69cf11ea06ff587848db"
-  integrity sha512-BdGAO5o79pZegOc4NVRws/X5XzshXLQfx4lvSifKbkW/cdnpl231qvMu1JDUWUJS/7Yqbdn7fRKboQzWDFtNdA==
+"@abi-software/mapintegratedvuer@1.11.1-beta.0":
+  version "1.11.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.11.1-beta.0.tgz#3d4df6f302a6d0f3d6207ba3412347950a1f5cb8"
+  integrity sha512-nfqC8rclExIggO5dPWmfvfxzuRLZfJL096HHAoesnU610viMEIKNYIVpS5JuGZCHCKnAlecgFmPUgPzHVT6ugA==
   dependencies:
     "@abi-software/flatmapvuer" "^1.10.2"
-    "@abi-software/map-side-bar" "^2.9.1"
+    "@abi-software/map-side-bar" "^2.10.0-beta.0"
     "@abi-software/map-utilities" "^1.6.0"
     "@abi-software/plotvuer" "1.0.4"
     "@abi-software/scaffoldvuer" "^1.10.0"
-    "@abi-software/simulationvuer" "^2.0.12"
+    "@abi-software/simulationvuer" "^2.0.13"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -185,22 +185,10 @@
     vue3-component-svg-sprite "^0.0.1"
     zincjs "^1.14.0"
 
-"@abi-software/simulationvuer@2.0.13":
+"@abi-software/simulationvuer@2.0.13", "@abi-software/simulationvuer@^2.0.13":
   version "2.0.13"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.13.tgz#537c27714003797d6aa20840f323e27a6b7513e6"
   integrity sha512-aIaki8g6QrHj4I14VlTY+QBYKtrm168w/eyWompF/+4KjwbtDh0NjOVkMEiPX6YC59qTu0sGQmzFFSwRjmhpDQ==
-  dependencies:
-    "@abi-software/plotvuer" "1.0.4"
-    element-plus "2.8.4"
-    jsonschema "^1.4.0"
-    mathjs "^13.0.2"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.21"
-
-"@abi-software/simulationvuer@^2.0.12":
-  version "2.0.12"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.12.tgz#c0a37ea12a4279810cd9c756d3d68c34b43946c0"
-  integrity sha512-7M2rxnAo78zfbLYoJhaREvaQ4S5maBrIgFBH5eO44cozAzNNJqdr5HlkDHBf9cJ2rR/w9ckZav2U3NycVqf3Ng==
   dependencies:
     "@abi-software/plotvuer" "1.0.4"
     element-plus "2.8.4"
