@@ -117,6 +117,11 @@ export default {
       dataChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 20
+          }
+        },
         scales: {
           x: {
             grid: {
@@ -166,6 +171,11 @@ export default {
       anatomicalStructuresChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 20
+          }
+        },
         scales: {
           x: {
             grid: {
