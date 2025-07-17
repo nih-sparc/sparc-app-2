@@ -9,7 +9,7 @@
         </p>
       </video>
     </div>
-    <video-viewer-metadata
+    <generic-viewer-metadata
       :datasetInfo="datasetInfo"
       :file="file"
     />
@@ -18,7 +18,7 @@
 
 <script>
 import Plyr from 'plyr'
-import VideoViewerMetadata from "@/components/ViewersMetadata/VideoViewerMetadata.vue"
+import GenericViewerMetadata from "@/components/ViewersMetadata/GenericViewerMetadata.vue"
 import FileDetails from '@/mixins/file-details'
 import { failMessage } from '@/utils/notification-messages'
 import { propOr } from 'ramda'
@@ -27,7 +27,7 @@ export default {
   name: 'VideoViewer',
 
   components: {
-    VideoViewerMetadata,
+    GenericViewerMetadata,
   },
 
   mixins: [FileDetails],

@@ -7,7 +7,7 @@
       </sparc-pill>
     </div>
     <div class="button-container">
-      <template v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
+      <template v-if="canViewScaffold">
         <template v-if="hasFiles">
           <el-button
             class="dataset-button"
@@ -22,7 +22,7 @@
             Get Scaffold
           </el-button>
         </template>
-        <el-button class="secondary" @click="actionButtonClicked('cite')">
+        <el-button v-if="datasetTypeName === 'scaffold'" class="secondary" @click="actionButtonClicked('cite')">
           Cite Scaffold
         </el-button>
       </template>
@@ -40,7 +40,7 @@
         </el-button>
       </template>
       <template v-else-if="datasetTypeName === 'computational model'">
-        <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
+        <el-button v-if="canViewSimulation" @click="actionButtonClicked('images')">
           View Simulation
         </el-button>
         <a
@@ -122,6 +122,12 @@ export default {
      */
     datasetImage: function() {
       return propOr('', 'banner', this.datasetInfo)
+    },
+    /**
+     * Returns whether a scaffold can be viewed
+     */
+    canViewScaffold: function() {
+      return this.datasetInfo.sciCrunch ? this.datasetInfo.sciCrunch['abi-scaffold-metadata-file'] : false
     },
     /**
      * Returns whether a simulation can be viewed

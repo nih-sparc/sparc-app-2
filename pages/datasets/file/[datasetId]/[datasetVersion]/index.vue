@@ -17,6 +17,8 @@
             :datasetInfo="datasetInfo" :file="file" />
           <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
             :data="segmentationData" :datasetInfo="datasetInfo" :file="file" />
+          <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
+            :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" />
           <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
             :datasetInfo="datasetInfo" :file="file" />
           <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
@@ -168,6 +170,8 @@ export default {
     }
     const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error' && biolucidaData.biolucida_image_id
     
+    const hasSimulationViewer = scicrunchData['abi-simulation-omex-file'] ? true : false
+
     let plotInfo = {}
     const matchedplotInfo = scicrunchData['abi-plot']?.filter(function(el) {
       return el.identifier == expectedScicrunchIdentifier
@@ -210,6 +214,7 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
       hasSegmentationViewer ? 'segmentationViewer' : 
+      hasSimulationViewer ? 'simulationViewer' :
       hasPlotViewer ? 'plotViewer' :
       hasVideoViewer ? 'videoViewer' : ''
 
@@ -253,8 +258,9 @@ export default {
       file,
       hasBiolucidaViewer,
       hasPlotViewer,
-      hasVideoViewer,
       hasSegmentationViewer,
+      hasSimulationViewer,
+      hasVideoViewer,
       sourcePackageId,
       signedUrl,
       packageType,
@@ -267,6 +273,7 @@ export default {
   data: () => {
     const config = useRuntimeConfig()
     return {
+      apiLocation: config.public.portal_api,
       biolucidaData: {
         biolucida_image_id: '',
         share_link: '',
@@ -285,6 +292,10 @@ export default {
           name: 'Segmentation Viewer',
           link: 'segmentation-viewer-overview'
         },
+        simulationViewer: {
+          name: 'Simulation Viewer',
+          link: 'simulation-viewer-overview'
+        },
         plotViewer: {
           name: 'Plot Viewer',
           link: 'plot-viewer'
@@ -295,7 +306,8 @@ export default {
 
   computed: {
     hasViewer: function() {
-      return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasPlotViewer || this.hasVideoViewer
+      return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasSimulationViewer ||
+        this.hasPlotViewer || this.hasVideoViewer
     },
     datasetId: function() {
       return this.$route.params.datasetId
@@ -369,6 +381,19 @@ export default {
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'plotViewer')
+        }
+      },
+      immediate: true
+    },
+    hasSimulationViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Simulation Viewer',
+            id: 'simulationViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'simulationViewer')
         }
       },
       immediate: true
