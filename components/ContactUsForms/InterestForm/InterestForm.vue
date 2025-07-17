@@ -7,7 +7,6 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
-      class="mt-32"
       prop="isPreparingGrant"
       label="Are you preparing a grant submission and would like to specify SPARC as your data repository? *"
     >
@@ -96,14 +95,12 @@
 
     <hr/>
 
-    <el-form-item>
-      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
-        Submit
-      </el-button>
-      <p v-if="hasError" class="error">
-        An error has occurred, please try again.
-      </p>
-    </el-form-item>
+    <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
+      Submit
+    </el-button>
+    <p v-if="hasError" class="error">
+      An error has occurred, please try again.
+    </p>
   </el-form>
 </template>
 
