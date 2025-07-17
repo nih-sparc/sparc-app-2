@@ -31,14 +31,17 @@
                 <svgo-icon-youtube class="social-media-icon"/>
               </a>
             </div>
-            <span>
-              <span class="footer__info--re3data mr-32">
-                <a href="https://doi.org/10.17616/R31NJN2V" target="_blank">
-                  <img class="mb-32" src="/100013719.svg" alt="re3data badge"/>
+            <div class="row">
+                <a class="mr-32" href="https://doi.org/10.17616/R31NJN2V" target="_blank">
+                  <img class="footer-logo mb-32" src="/100013719.svg" alt="re3data badge"/>
                 </a>
-              </span>
-              <a href="https://registry.opendata.aws/sparc/"><img class="mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
-            </span>
+                <a href="https://registry.opendata.aws/sparc/">
+                  <img class="footer-logo mr-32 mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing">
+                </a>
+                <a href="https://www.autonomicneuroscience.com/">
+                  <img class="footer-logo mb-32" :src="anbcLogo" />
+                </a>
+            </div>
           </div>
         </el-col>
         <el-col :sm="{ span: 22, offset: 1 }" :md="{ span: 8, offset: 4 }">
@@ -110,6 +113,11 @@ export default {
     FooterLink,
     SparcLogo
   },
+  data() {
+    return {
+      anbcLogo: new URL('~/assets/anbc-logo.svg', import.meta.url).href
+    }
+  },
   computed: {
     ...mapState(useMainStore, ['footerData'])
   }
@@ -118,6 +126,15 @@ export default {
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
+.footer-logo {
+  width: 185px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
 .footer {
   display: flex;
@@ -138,9 +155,6 @@ export default {
   }
 
   &__info {
-    &--logo {
-      height: 4rem;
-    }
 
     &--blurb {
       p {
@@ -204,8 +218,7 @@ export default {
 
 .footer__info--logo {
   img {
-    height: 4rem;
-    width: 8rem;
+    max-width: 175px;
   }
 }
 </style>
