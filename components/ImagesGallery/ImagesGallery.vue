@@ -135,30 +135,6 @@ export default {
   },
   mixins: [FormatString, MarkedMixin],
   props: {
-    datasetImages: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    datasetScaffolds: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    datasetPlots: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    datasetVideos: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
     markdown: {
       type: String,
       default: ''
@@ -180,6 +156,7 @@ export default {
       slideNaturalWidth: 180,
       defaultImg: new URL('~/assets/logo-sparc-wave-primary.svg', import.meta.url).href,
       defaultScaffoldImg: new URL('~/assets/scaffold-light.png', import.meta.url).href,
+      defaultSimulationImg: new URL('~/assets/data-icon.png', import.meta.url).href,
       defaultPlotImg: new URL('~/assets/data-icon.png', import.meta.url).href,
       defaultVideoImg: new URL('~/assets/video-default.png', import.meta.url).href,
       flatmapImg: {
@@ -204,21 +181,6 @@ export default {
     ...mapState(useMainStore, ['datasetInfo', 'datasetFacetsData']),
     datasetId() {
       return propOr('', 'id', this.datasetInfo)
-    },
-    isPrevPossible() {
-      return this.currentIndex > 0
-    },
-    isNextPossible() {
-      return this.currentIndex < this.imageCount - 1
-    },
-    imageCount() {
-      return (
-        this.datasetImages.length + this.datasetScaffolds.length + this.datasetPlots.length + this.datasetVideos.length
-      )
-    },
-    numberOfImagesVisible() {
-      const imagesVisibleCount = (this.$el.parentElement.clientWidth - 2 * this.controlWidth) / this.slideNaturalWidth
-      return Math.floor(imagesVisibleCount)
     },
     thumbnails() {
       return this.datasetThumbnailData
@@ -325,6 +287,7 @@ export default {
           datasetId = scicrunchData.discover_dataset.id
           datasetVersion = scicrunchData.discover_dataset.version
         }
+
         if ('abi-scaffold-metadata-file' in scicrunchData) {
           let index = 0
           items.push(
@@ -363,6 +326,49 @@ export default {
           )
         }
 
+        const simulations = scicrunchData['abi-simulation-omex-file'] ?
+          scicrunchData['abi-simulation-omex-file'] : scicrunchData['abi-simulation-file'];
+        if (simulations) {
+          if (scicrunchData['abi-simulation-omex-file']) {
+            items.push(
+              ...Array.from(simulations, simulation => {
+                const id = simulation.identifier
+                const file_path = simulation.dataset.path
+                const thumbnail = this.getThumbnailPathForPlot(simulation, scicrunchData['abi-thumbnail'])
+                if (thumbnail.mimetype.name !== '' && thumbnail.dataset.path !== '') {
+                  this.retrieveThumbnailFromInfo(
+                    items,
+                    {
+                      id,
+                      fetchAttempts: 0,
+                      datasetId,
+                      mimetype: thumbnail.mimetype.name,
+                      file_path: thumbnail.dataset.path,
+                      s3Bucket: s3Bucket
+                    },
+                    this.defaultSimulationImg
+                  )
+                }
+                const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
+                return {
+                  id,
+                  title: baseName(file_path),
+                  type: 'Simulation',
+                  thumbnail: this.defaulSimulationImg,
+                  link: linkUrl
+                }
+              })
+            )
+          } else {
+            items.push({
+              id: "Simulation",
+              title: 'Simulation',
+              type: 'Simulation',
+              thumbnail: this.defaultSimulationImg,
+              link: `${baseRoute}datasets/simulationviewer?id=${datasetId}`
+            })
+          }
+        }
         if ('video' in scicrunchData) {
           const thumbnailPaths = {}
           if (scicrunchData['abi-thumbnail']) {
@@ -657,16 +663,6 @@ export default {
           return Promise.reject('Maximum iterations reached.')
         }
       )
-    },
-    goNext() {
-      if (this.currentIndex < this.imageCount - 1) {
-        this.currentIndex += 1
-      }
-    },
-    goPrev() {
-      if (0 < this.currentIndex) {
-        this.currentIndex -= 1
-      }
     },
     getFilePath(items, data) {
       const what = discover.getDiscoverPath(data.uri).then(

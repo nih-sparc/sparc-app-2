@@ -5,7 +5,7 @@ import { retryableBefore, stringToArray, randomInteger } from '../../support/uti
  */
 const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
-const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Plot', 'Image']
+const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Simulation', 'Plot', 'Image']
 
 datasetIds.forEach((datasetId) => {
 
@@ -30,6 +30,7 @@ datasetIds.forEach((datasetId) => {
         if (response) {          
           if (
             ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
+            ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) ||
             ('video' in response && response['video'].length) ||
             ('organs' in response && response['organs'].length) ||
             ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
@@ -49,6 +50,9 @@ datasetIds.forEach((datasetId) => {
             }
             if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
               existGalleryItems.push('Segmentation')
+            }
+            if ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) {
+              existGalleryItems.push('Simulation')
             }
             if ('abi-plot' in response && response['abi-plot'].length) {
               existGalleryItems.push('Plot')
@@ -140,6 +144,11 @@ datasetIds.forEach((datasetId) => {
                       if (item === 'Segmentation') {
                         cy.get('.biolucida-viewer > p > a').then(($link) => {
                           expect($link, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
+                        })
+                      }
+                      if (item === 'Simulation') {
+                        cy.get('.plot-container > .user-select-none.svg-container').then(($simulation) => {
+                          expect($simulation, 'Simulation should be displayed').to.exist
                         })
                       }
                       if (item === 'Plot') {

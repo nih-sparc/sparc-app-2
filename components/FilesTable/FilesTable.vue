@@ -199,6 +199,13 @@
                   </template>
                 </sparc-tooltip>
               </div>
+              <div v-if="isSimulationViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Simulation Viewer">
+                  <template #item>
+                    <svgo-icon-view class="action-icon" />
+                  </template>
+                </sparc-tooltip>
+              </div>
               <div v-if="isVideoViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open Video Viewer">
                   <template #item>
@@ -715,31 +722,29 @@ export default {
         this.$router.push(scaffoldViewLink)
       }
     },
+    isSpecifiedTypeFile: function(path, type) {
+      if (path && this.datasetScicrunch && this.datasetScicrunch[type]) {
+        let plotObjects = this.datasetScicrunch[type]
+        path = path.replace('files/', '')
+        for (let i = 0; i < plotObjects.length; i++) {
+          if (plotObjects[i].dataset.path === path) return true
+        }
+      }
+      return false
+    },
     /**
      * Checks if file is a scaffold view port
      * @param {Object} scope
      */
     isScaffoldViewFile: function(path) {
-      if (path && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-view-file']) {
-        path = path.replace('files/', '')
-        for (let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === path) return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'abi-scaffold-view-file')
     },
     /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
     isScaffoldMetaFile: function(path) {
-      if (path && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-metadata-file']) {
-        path = path.replace('files/', '')
-        for (let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file']?.length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i]?.dataset?.path === path) return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'abi-scaffold-metadata-file')
     },
     isBiolucidaViewFile: function(path) {
       if (
@@ -764,34 +769,16 @@ export default {
       return false
     },
     isPlotViewFile: function(path) {
-      if (path && this.datasetScicrunch && this.datasetScicrunch['abi-plot']) {
-        let plotObjects = this.datasetScicrunch['abi-plot']
-        path = path.replace('files/', '')
-        for (let i = 0; i < plotObjects.length; i++) {
-          if (plotObjects[i].dataset.path === path) return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'abi-plot')
+    },
+    isSimulationViewFile: function(path) {
+      return this.isSpecifiedTypeFile(path, 'abi-simulation-omex-file')
     },
     isVideoViewFile: function(path) {
-      if (path && this.datasetScicrunch && this.datasetScicrunch['video']) {
-        let videoObjects = this.datasetScicrunch['video']
-        path = path.replace('files/', '')
-        for (let i = 0; i < videoObjects.length; i++) {
-          if (videoObjects[i].dataset.path == path) return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'video')
     },
     isSegmentationViewFile: function(path) {
-      if (path && this.datasetScicrunch && this.datasetScicrunch['mbf-segmentation']) {
-        let segmentationObjects = this.datasetScicrunch['mbf-segmentation']
-        path = path.replace('files/', '')
-        for (let i = 0; i < segmentationObjects.length; i++) {
-          if (segmentationObjects[i].dataset.path === path) return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'mbf-segmentation')
     },
     openViewerFile(scope) {
       const route = {
