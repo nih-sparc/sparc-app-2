@@ -13,7 +13,7 @@
   import { SimulationVuer } from '@abi-software/simulationvuer'
   import { extractS3BucketName } from "@/utils/common"
   import GenericViewerMetadata from "@/components/ViewersMetadata/GenericViewerMetadata.vue"
-  
+
   export default {
     name: 'SimulationViewer',
     components: {
@@ -63,7 +63,7 @@
       } else if (this.id) {
         this.resource = this.id
       }
-      console.log(this.resource)
+
       this.ready = true
     },
   }
