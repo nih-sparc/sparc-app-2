@@ -194,9 +194,9 @@ mapTypes.forEach((map) => {
           cy.clickOnNeuron(coordinate, pixelChange)
           cy.wait(5000) // Wait for the sidebar to open
           cy.get('.filters > .dataset-shown > .dataset-results-feedback:visible').then(($result) => {
-            if (!$result.text().match(/^1 Results \| Showing/i)) {
-              cy.get('.connectivity-card-container > .connectivity-card > .card').first().click()
-            }
+            // Open the first item
+            cy.get('.connectivity-card-container > .connectivity-card > .card-content').first().click()
+
             // Check for the provenance content
             cy.get('.connectivity-info-title').within(($content) => {
               cy.get('.block > .title').then(($title) => {
