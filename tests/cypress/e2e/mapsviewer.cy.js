@@ -52,7 +52,7 @@ mapTypes.forEach((map) => {
       })
       // Switch back to default viewing mode
       cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode')
-      cy.get('.el-dropdown-menu__item > span').as('viewingModes')
+      cy.get('.toolbar-dropdown-popper .el-dropdown-menu__item > h5').as('viewingModes')
       cy.get('@changeViewingMode').trigger('mouseenter')
       cy.get('@viewingModes').contains('Exploration').click()
       cy.get('@changeViewingMode').trigger('mouseleave')
@@ -128,7 +128,7 @@ mapTypes.forEach((map) => {
         })
         // Switch to Annotation viewing mode
         cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode').trigger('mouseenter')
-        cy.get('.el-dropdown-menu__item > span').as('viewingModes').contains('Annotation').click()
+        cy.get('.toolbar-dropdown-popper .el-dropdown-menu__item > h5').as('viewingModes').contains('Annotation').click()
         cy.get('@changeViewingMode').trigger('mouseleave')
         cy.waitForMapLoading()
         cy.get('.toolbar-icons').should(($toolbar) => {
