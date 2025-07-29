@@ -277,28 +277,31 @@ export default {
     resourceLinksText: function() {
       let message = ''
       this.form.resourceLinks.forEach(link => {
-        if (!isEmpty(link))
-          message += `${link}<br>`
+        if (!isEmpty(link)) {
+          message += link + '\n'
+        }
       })
-      return message
+      return isEmpty(message) ? 'N/A\n' : message
     },
     linksToUsagesText: function() {
       let message = ''
       this.form.linksToUsages.forEach(link => {
-        if (!isEmpty(link))
-          message += `${link}<br>`
+        if (!isEmpty(link)) {
+          message += link + '\n'
+        }
       })
-      return isEmpty(message) ? 'N/A<br>' : message
+      return isEmpty(message) ? 'N/A\n' : message
     },
     linksToTutorialsText: function() {
       let message = ''
       if (this.isTutorialAvailable) {
-        this.form.linksToTutorials.forEach(link => {
-          if (!isEmpty(link))
-            message += `${link}<br>`
+        this.form.resourceLinks.forEach(link => {
+          if (!isEmpty(link)) {
+            message += link + '\n'
+          }
         })
       }
-      return isEmpty(message) ? 'N/A<br>' : message
+      return isEmpty(message) ? 'N/A\n' : message
     },
     // ...mapGetters('user', ['firstName', 'lastName', 'profileEmail'])
   },
@@ -349,27 +352,47 @@ export default {
       const config = useRuntimeConfig()
       this.isSubmitting = true
 
-      const description = `
-        <b>What is the name of the tool/resource?</b><br>${this.form.resourceName}<br><br>
-        <b>What is the webpage link for this tool/resource?</b><br>${this.resourceLinksText}<br>
-        <b>Which category, or categories, would you place this tool/resource?</b><br>${this.form.resourceCategories}<br><br>
-        <b>If you answered 'Other', please describe the category for this tool/resource:</b><br>${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}<br><br>
-        <b>Is it free and/or open-source?</b><br>${this.form.isFree}<br><br>
-        <b>Does it have specific applications to the autonomic nervous system and the neural control of organs?</b><br>${this.form.hasSpecificApplications}<br><br>
-        <b>Are you the tool/resource creator?</b><br>${this.form.isCreator}<br><br>
-        <b>Please provide any links to datasets or publications using this tool/resource</b><br>${this.linksToUsagesText}<br>
-        <b>Do you have any tutorials/user guides available?</b><br>${this.form.tutorialsAvailable}<br><br>
-        <b>Links to tutorials/user guides:</b><br>${this.linksToTutorialsText}<br>
-        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
-        <b>Email:</b><br>${this.form.user.email}
-      `
+      const description = `What is the name of the tool/resource?
+${this.form.resourceName}
+
+What is the webpage link for this tool/resource?
+${this.resourceLinksText}
+
+Which category, or categories, would you place this tool/resource?
+${this.form.resourceCategories}
+
+If you answered 'Other', please describe the category for this tool/resource:
+${this.isOtherSelected ? this.form.otherCategoryDescription : 'N/A'}
+
+Is it free and/or open-source?
+${this.form.isFree}
+
+Does it have specific applications to the autonomic nervous system and the neural control of organs?
+${this.form.hasSpecificApplications}
+
+Are you the tool/resource creator?
+${this.form.isCreator}
+
+Please provide any links to datasets or publications using this tool/resource
+${this.linksToUsagesText}
+
+Do you have any tutorials/user guides available?
+${this.form.tutorialsAvailable}
+
+Links to tutorials/user guides:
+${this.linksToTutorialsText}
+
+First Name: ${this.form.user.firstName}
+Last Name: ${this.form.user.lastName}
+Email: ${this.form.user.email}`
+
       let formData = new FormData();
       formData.append("type", "toolsAndResources")
       formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("title", `T&R Submission: ${this.form.resourceName}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
