@@ -1,5 +1,8 @@
 <template>
   <div class="version-history-container">
+    <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
+      <input v-model="zipData" type="hidden" name="data" />
+    </form>
     <large-modal
       :visible="dialogVisible"
       @close-download-dialog="dialogVisible = false"
@@ -11,7 +14,7 @@
           <p>Published on: {{logPublishedAt}}</p>
           <el-button
             class="download-button"
-            @click="downloadChangeLogFile(changeLogFileInfo.version)"
+            @click="executeDownload(changeLogFileInfo.version)"
           >
             Download
           </el-button>
@@ -89,7 +92,7 @@
               </template>
             </sparc-tooltip>
           </div>
-          <div class="circle" @click="downloadChangeLogFile(version.version)">
+          <div class="circle" @click="executeDownload(version.version)">
             <sparc-tooltip
               placement="bottom-center"
               content="Download changelog file"
@@ -146,7 +149,8 @@ export default {
       markdown: '',
       dialogVisible: false,
       changeLogFileInfo: {},
-      changelogFiles: []
+      changelogFiles: [],
+      zipData: '',
     }
   },
   async created() {
@@ -204,6 +208,13 @@ export default {
       }
       return ''
     },
+    /**
+     * Compute URL for zipit service
+     * @returns {String}
+     */
+    zipitUrl: function() {
+      return this.$config.public.zipit_api_host
+    },
   },
   methods: {
     getDoiLink(doi) {
@@ -227,9 +238,26 @@ export default {
         this.changeLogFileInfo = versionInfo // Set the version metadata for the currently stored markdown
       })
     },
-    downloadChangeLogFile(version) {
-      this.requestDownloadFile(this.getChangelogFile(version))
-    }
+    executeDownload(version) {
+      const downloadInfo = this.getChangelogFile(version)
+      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
+      let params = downloadInfo.uri.replace('s3://', '')
+      let firstIndex = params.indexOf('/') + 1
+      params = params.substr(firstIndex)
+      const matches = params.match(datasetVersionRegexp)
+
+      const payload = {
+        paths: [matches.groups.filePath, 'manifest.json'],
+        datasetId: matches.groups.datasetId,
+        version: version,
+        archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${version}-data`
+      }
+
+      this.zipData = JSON.stringify(payload, undefined)
+      this.$nextTick(() => {
+        this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      })
+    },
   }
 }
 </script>
