@@ -12,6 +12,7 @@
     <generic-viewer-metadata
       :datasetInfo="datasetInfo"
       :file="file"
+      @download-file="$emit('download-file', $event)"
     />
   </div>
 </template>

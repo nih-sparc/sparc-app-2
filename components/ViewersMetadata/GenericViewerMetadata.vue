@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="pt-16">
-      <el-button @click="requestDownloadFile({...file, version: versionId})">
+      <el-button @click="executeDownload({...file, version: versionId})">
         Download file
       </el-button>
     </div>
@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import RequestDownloadFile from '@/mixins/request-download-file'
 import FileDetails from '@/mixins/file-details'
 
 import { propOr } from 'ramda'
@@ -69,7 +68,7 @@ export default {
       default: () => {}
     },
   },
-  mixins: [FileDetails, RequestDownloadFile],
+  mixins: [FileDetails],
 
   computed: {
     datasetTitle: function() {
@@ -85,6 +84,11 @@ export default {
       return this.file.fileType
     },
   },
+  methods: {
+    executeDownload(file) {
+      this.$emit("download-file", file)
+    }
+  }
 }
 </script>
 

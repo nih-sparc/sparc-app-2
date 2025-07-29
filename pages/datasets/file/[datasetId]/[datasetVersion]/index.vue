@@ -14,15 +14,15 @@
         </span>
         <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
           <biolucida-viewer v-if="hasBiolucidaViewer" v-show="activeTabId === 'imageViewer'" :data="biolucidaData"
-            :datasetInfo="datasetInfo" :file="file" />
+            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
-            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" />
+            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
-            :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" />
+            :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
-            :datasetInfo="datasetInfo" :file="file" />
+            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
-            :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" />
+            :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
         </content-tab-card>
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />

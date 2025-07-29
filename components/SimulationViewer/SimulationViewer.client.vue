@@ -6,6 +6,7 @@
     v-if="datasetInfo && file"
     :datasetInfo="datasetInfo"
     :file="file"
+    @download-file="$emit('download-file', $event)"
   />
 </template>
 

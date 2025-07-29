@@ -69,7 +69,7 @@
       </div>
     </div>
     <div v-if="filePath" class="pt-16">
-      <el-button @click="requestDownloadFile({...file, version: versionId})">
+      <el-button @click="executeDownload({...file, version: versionId})">
         Download file
       </el-button>
     </div>
@@ -78,7 +78,6 @@
 
 <script>
 import biolucida from '@/services/biolucida'
-import RequestDownloadFile from '@/mixins/request-download-file'
 import ImageScaling from '@/components/Images/ImageScaling.vue'
 import ImageChannels from '@/components/Images/ImageChannels.vue'
 import MarkedMixin from '@/mixins/marked'
@@ -115,7 +114,7 @@ export default {
       default: () => {}
     },
   },
-  mixins: [FileDetails, RequestDownloadFile],
+  mixins: [FileDetails],
   async setup(props) {
     try {
       const image_identifier = props.biolucidaData.biolucida_image_id
@@ -149,6 +148,11 @@ export default {
     versionId: function() {
       return propOr(undefined, 'version', this.datasetInfo)
     },
+  },
+  methods: {
+    executeDownload(file) {
+      this.$emit("download-file", file)
+    }
   }
 }
 </script>
