@@ -52,7 +52,7 @@ mapTypes.forEach((map) => {
       })
       // Switch back to default viewing mode
       cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode')
-      cy.get('.el-dropdown-menu__item > span').as('viewingModes')
+      cy.get('.toolbar-dropdown-popper .el-dropdown-menu__item > h5').as('viewingModes')
       cy.get('@changeViewingMode').trigger('mouseenter')
       cy.get('@viewingModes').contains('Exploration').click()
       cy.get('@changeViewingMode').trigger('mouseleave')
@@ -128,7 +128,7 @@ mapTypes.forEach((map) => {
         })
         // Switch to Annotation viewing mode
         cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode').trigger('mouseenter')
-        cy.get('.el-dropdown-menu__item > span').as('viewingModes').contains('Annotation').click()
+        cy.get('.toolbar-dropdown-popper .el-dropdown-menu__item > h5').as('viewingModes').contains('Annotation').click()
         cy.get('@changeViewingMode').trigger('mouseleave')
         cy.waitForMapLoading()
         cy.get('.toolbar-icons').should(($toolbar) => {
@@ -194,9 +194,9 @@ mapTypes.forEach((map) => {
           cy.clickOnNeuron(coordinate, pixelChange)
           cy.wait(5000) // Wait for the sidebar to open
           cy.get('.filters > .dataset-shown > .dataset-results-feedback:visible').then(($result) => {
-            if (!$result.text().match(/^1 Results \| Showing/i)) {
-              cy.get('.connectivity-card-container > .connectivity-card > .card').first().click()
-            }
+            // Open the first item
+            cy.get('.connectivity-card-container > .connectivity-card > .card-content').first().click()
+
             // Check for the provenance content
             cy.get('.connectivity-info-title').within(($content) => {
               cy.get('.block > .title').then(($title) => {
