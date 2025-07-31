@@ -436,10 +436,9 @@ export default {
       const matches = params.match(datasetVersionRegexp)
 
       const payload = {
-        paths: [matches.groups.filePath, "manifest.json"],
+        paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
         version: version,
-        archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${this.datasetInfo.version}-data`
       }
 
       this.zipData = JSON.stringify(payload, undefined)
