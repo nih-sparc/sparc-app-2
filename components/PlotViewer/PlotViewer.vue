@@ -25,6 +25,7 @@
         :plotType="plotType"
         :file="file"
         :datasetInfo="datasetInfo"
+        @download-file="$emit('download-file', $event)"
       />
     </div>
   </div>

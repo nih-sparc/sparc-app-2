@@ -18,6 +18,7 @@
         :segmentationData="data"
         :datasetInfo="datasetInfo"
         :file="file"
+        @download-file="$emit('download-file', $event)"
       />
     </template>
     <p v-else class="error">
