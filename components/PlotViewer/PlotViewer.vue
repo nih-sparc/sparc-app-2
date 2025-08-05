@@ -1,7 +1,7 @@
 <template>
   <div class="plot-viewer-page">
     <div class="container p-0">
-      <div class="plot-container">
+      <div class="plot-container" v-loading="isLoading">
         <div id="plotly_graph" ref="plotly_plot_ref" class="vue-plotly" />
         <client-only>
           <div class="plot-controls">
