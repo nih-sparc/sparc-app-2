@@ -75,7 +75,7 @@
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
-                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink"/>
+                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
@@ -563,6 +563,10 @@ export default {
     },
     sourceCodeLink: function () {
       return pathOr(null, ['release','repoUrl'], this.datasetInfo)
+    },
+    osparcLink: function () {
+      // using axios, get osparc file_viewers from /get_osparc_data API endpoint
+      return `${this.$config.public.osparc_host}view?file_type=IPYNB&viewer_key=simcore/services/dynamic/jupyter-math&viewer_version=2.0.9&download_link=https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata&file_size=1`
     },
     numDownloads: function () {
       let numDownloads = 0;
