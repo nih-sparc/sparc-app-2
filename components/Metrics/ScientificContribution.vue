@@ -119,7 +119,7 @@ export default {
         drawOnChartArea: false,
         layout: {
           padding: {
-            top: 20
+            top: 30
           }
         },
         scales: {
@@ -173,7 +173,7 @@ export default {
         drawOnChartArea: false,
         layout: {
           padding: {
-            top: 20
+            top: 30
           }
         },
         scales: {
