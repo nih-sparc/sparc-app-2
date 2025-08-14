@@ -75,8 +75,8 @@ const { data: appData } = await useAsyncData('apps-page-data', async () => {
   }
 })
 
-const fields = computed(() => appData.value.fields || {})
-const appEntries = computed(() => appData.value.appEntries || [])
+const fields = computed(() => appData.value?.fields || {})
+const appEntries = computed(() => appData.value?.appEntries || [])
 const title = computed(() => fields.value?.title || '')
 const description = computed(() => fields.value?.description || '')
 const appsSectionTitle = computed(() => fields.value?.appsSectionTitle || '')
