@@ -142,8 +142,13 @@ const { data: featuredDataCategories, error: featuredDataCategoriesError } = use
 })
 
 const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
-  const response = await $axios.get(`${config.public.discover_api_host}/datasets/32`)
-  return [response.data]
+  try {
+    const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
+    return response.data?.datasets
+  } catch {
+    const response = await $axios.get(`${config.public.discover_api_host}/datasets/32`)
+    return [response.data]
+  }
 });
 
 const institutionId = computed(() => 

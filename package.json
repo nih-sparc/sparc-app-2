@@ -27,10 +27,10 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.11.1-beta.3",
+    "@abi-software/mapintegratedvuer": "1.11.1-beta.4",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "2.0.13",
+    "@abi-software/simulationvuer": "2.0.14",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",

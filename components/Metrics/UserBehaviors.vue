@@ -157,7 +157,7 @@ export default {
         drawOnChartArea: false,
         layout: {
           padding: {
-            top: 20
+            top: 30
           }
         },
         scales: {
@@ -219,6 +219,11 @@ export default {
       usersChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           y: {
             grid: {
