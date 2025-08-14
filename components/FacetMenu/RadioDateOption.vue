@@ -1,6 +1,8 @@
 <template>
   <div>
-    <el-radio class="mb-4" :label="label" />
+    <el-radio class="mb-4" :value="label">
+      {{ label }}
+    </el-radio>
     <div class="flex ml-0 mr-24">
       <el-select
         v-model="month"

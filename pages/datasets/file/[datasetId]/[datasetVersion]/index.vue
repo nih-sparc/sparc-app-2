@@ -14,13 +14,15 @@
         </span>
         <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
           <biolucida-viewer v-if="hasBiolucidaViewer" v-show="activeTabId === 'imageViewer'" :data="biolucidaData"
-            :datasetInfo="datasetInfo" :file="file" />
+            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
-            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" />
-          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotData="plotData"
-            :datasetInfo="datasetInfo" :file="file" />
+            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
+          <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
+            :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
+          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
+            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
-            :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" />
+            :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
         </content-tab-card>
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />
@@ -42,7 +44,7 @@ import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
 import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
-import PlotViewer from '@/components/PlotViewer/PlotViewer'
+import PlotViewer from '@/components/PlotViewer/PlotViewer.vue'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 import FormatDate from '@/mixins/format-date'
@@ -166,14 +168,16 @@ export default {
       biolucidaData.share_link = `${config.public.BL_SHARE_LINK_PREFIX}${code}`
       biolucidaData.status = "Successful"
     }
-    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error'
+    const hasBiolucidaViewer = !isEmpty(biolucidaData) && biolucidaData.status !== 'error' && biolucidaData.biolucida_image_id
     
-    let plotData = {}
-    const matchedPlotData = scicrunchData['abi-plot']?.filter(function(el) {
+    const hasSimulationViewer = scicrunchData['abi-simulation-omex-file'] ? true : false
+
+    let plotInfo = {}
+    const matchedplotInfo = scicrunchData['abi-plot']?.filter(function(el) {
       return el.identifier == expectedScicrunchIdentifier
     })
-    plotData = matchedPlotData?.length > 0 ? matchedPlotData[0] : {}
-    const hasPlotViewer = !isEmpty(plotData)
+    plotInfo = matchedplotInfo?.length > 0 ? matchedplotInfo[0] : {}
+    const hasPlotViewer = !isEmpty(plotInfo)
 
     let videoData = {}
     const matchedVideoData = scicrunchData['video']?.filter(function(el) {
@@ -210,6 +214,7 @@ export default {
     let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
       hasSegmentationViewer ? 'segmentationViewer' : 
+      hasSimulationViewer ? 'simulationViewer' :
       hasPlotViewer ? 'plotViewer' :
       hasVideoViewer ? 'videoViewer' : ''
 
@@ -245,7 +250,7 @@ export default {
     return {
       biolucidaData,
       videoData,
-      plotData,
+      plotInfo,
       segmentationData: {
         share_link: `${config.public.NL_LINK_PREFIX}/dataviewer?datasetId=${route.params.datasetId}&version=${route.params.datasetVersion}&path=${filePath}`,
         status: ''
@@ -253,8 +258,9 @@ export default {
       file,
       hasBiolucidaViewer,
       hasPlotViewer,
-      hasVideoViewer,
       hasSegmentationViewer,
+      hasSimulationViewer,
+      hasVideoViewer,
       sourcePackageId,
       signedUrl,
       packageType,
@@ -267,6 +273,7 @@ export default {
   data: () => {
     const config = useRuntimeConfig()
     return {
+      apiLocation: config.public.portal_api,
       biolucidaData: {
         biolucida_image_id: '',
         share_link: '',
@@ -285,6 +292,10 @@ export default {
           name: 'Segmentation Viewer',
           link: 'segmentation-viewer-overview'
         },
+        simulationViewer: {
+          name: 'Simulation Viewer',
+          link: 'simulation-viewer-overview'
+        },
         plotViewer: {
           name: 'Plot Viewer',
           link: 'plot-viewer'
@@ -295,7 +306,8 @@ export default {
 
   computed: {
     hasViewer: function() {
-      return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasPlotViewer || this.hasVideoViewer
+      return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasSimulationViewer ||
+        this.hasPlotViewer || this.hasVideoViewer
     },
     datasetId: function() {
       return this.$route.params.datasetId
@@ -373,6 +385,19 @@ export default {
       },
       immediate: true
     },
+    hasSimulationViewer: {
+      handler: function(hasViewer) {
+        if (hasViewer) {
+          this.tabs.push({
+            label: 'Simulation Viewer',
+            id: 'simulationViewer'
+          })
+        } else {
+          this.tabs = this.tabs.filter(tab => tab.id !== 'simulationViewer')
+        }
+      },
+      immediate: true
+    },
     hasVideoViewer: {
       handler: function(hasViewer) {
         if (hasViewer) {
@@ -411,15 +436,29 @@ export default {
       const matches = params.match(datasetVersionRegexp)
 
       const payload = {
-        paths: [matches.groups.filePath, "manifest.json"],
+        paths: [matches.groups.filePath],
         datasetId: matches.groups.datasetId,
         version: version,
-        archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${this.datasetInfo.version}-data`
       }
 
       this.zipData = JSON.stringify(payload, undefined)
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      })
+      
+      this.$gtm.trackEvent({
+        event: 'interaction_event',
+        event_name: 'dataset_file_download',
+        files: propOr('', 'paths', payload),
+        file_name: '',
+        file_path: '',
+        file_type: '',
+        location: '',
+        category: '',
+        dataset_id: matches.groups.datasetId,
+        version_id: version,
+        doi: '',
+        citation_type: ''
       })
     },
     /**

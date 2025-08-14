@@ -132,7 +132,7 @@
                       <svgo-icon-help class="icon-help" />
                     </template>
                     <div>
-                      My published Datasets relates to all Datasets, Computational and Anatomical models where you have
+                      Published Datasets relates to all Datasets, Computational and Anatomical models where you have
                       been associated to the dataset using your ORCID number. Please note that there may be a delay in recently
                       published datasets being immediately available on the portal. 
                       If there are datasets that you feel should be linked to you please contact curation@sparc.science
@@ -352,7 +352,7 @@ export default {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
-          this.fetchPublishedDatasets(newValue)
+          await this.fetchPublishedDatasets(newValue)
           await this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
@@ -372,18 +372,27 @@ export default {
         })
         let items = []
         for (const hit of hits) {
-            const datasetName = pathOr('', ['item', 'name'], hit)
-            const datasetId = propOr('', 'objectID', hit)
-            const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
-            let numCitations = await this.getCitationsCount(pennsieveIdentifier)
-            const numDownloads = this.getDownloadsCount(datasetId);
-            items.push({
-                'name': datasetName,
-                'intId': datasetId,
-                'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
-                'numDownloads': numDownloads,
-                'numCitations': numCitations
-            })
+          const datasetName = pathOr('', ['item', 'name'], hit)
+          const datasetId = propOr('', 'objectID', hit)
+          const pennsieveIdentifier = pathOr('', ['item', 'identifier'], hit)
+          const externalPublications = await this.getExternalPublications(pennsieveIdentifier)
+          let numCitations = externalPublications?.length
+          const numDownloads = this.getDownloadsCount(datasetId)
+          const protocolSuffixes = externalPublications.filter(elem => {
+            return elem.relationshipType == 'IsReferencedBy' || elem.relationshipType == 'IsSupplementedBy'
+          })?.map(item =>
+            item.doi.startsWith("10.17504/") ? item.doi.replace("10.17504/", "") : null
+          )
+          const protocolsMap = await this.fetchProtocolsWithLimit(protocolSuffixes, 5)
+          
+          items.push({
+              'name': datasetName,
+              'intId': datasetId,
+              'banner': pathOr('', ['pennsieve', 'banner', 'uri'], hit),
+              'numDownloads': numDownloads,
+              'numCitations': numCitations,
+              'protocolsMap': protocolsMap
+          })
         }
         this.datasets = items
       } catch (error) {
@@ -441,15 +450,15 @@ export default {
           this.hasError = true
         })
     },
-    async getCitationsCount(id) {
+    async getExternalPublications(id) {
       const headers = { 'Authorization': `Bearer ${this.userToken}` }
       const url = `${this.$config.public.LOGIN_API_URL}/datasets/${id}/external-publications`
 
       try {
         const { data } = await this.$axios.get(url, { headers })
-        return data.length
+        return data
       } catch (error) {
-        return 0
+        return []
       }
     },
     async fetchOrganizations() {
@@ -494,6 +503,46 @@ export default {
         return false
       })
     },
+
+    async fetchWithRetry(url, retries = 3, delay = 500) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          const headers = {
+            headers: {
+              Authorization: `Bearer ${this.$config.public.PROTOCOLS_IO_TOKEN}`
+            }
+          }
+          const { data } = await this.$axios.get(url, headers)
+          return pathOr(null, ['payload', 'stats'], data)
+        } catch (err) {
+          if (attempt < retries) {
+            await new Promise((res) => setTimeout(res, delay))
+          } else {
+            console.error(`Failed after ${retries} retries: ${url}`)
+            return null
+          }
+        }
+      }
+    },
+
+    async fetchProtocolsWithLimit(suffixes, concurrency = 5) {
+      if (!suffixes) { return }
+      const results = {}
+      const queue = [...suffixes]
+
+      const workers = Array.from({ length: concurrency }, async () => {
+        while (queue.length > 0) {
+          const suffix = queue.shift()
+          const url = `${this.$config.public.PROTOCOLS_IO_HOST}/api/v4/protocols/${suffix}`
+          const data = await this.fetchWithRetry(url)
+          results[suffix] = data
+        }
+      })
+
+      await Promise.all(workers)
+      return results
+    },
+
     getDownloadsCount(id) {
       let numDownloads = 0
       this.downloadsSummary.filter(download => download.datasetId == id).forEach(item => {

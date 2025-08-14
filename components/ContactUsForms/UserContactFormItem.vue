@@ -1,22 +1,5 @@
 <template>
   <div v-if="modelValue">
-    <el-form-item
-      prop="user.typeOfUser"
-      label="What type of user are you? *"
-    >
-      <el-select
-        v-model="modelValue.typeOfUser"
-        placeholder="Select one"
-      >
-        <el-option
-          v-for="userType in userTypes"
-          :key="userType"
-          :label="userType"
-          :value="userType"
-        />
-      </el-select>
-    </el-form-item>
-
     <el-form-item prop="user.firstName" label="First Name *">
       <el-input v-model="modelValue.firstName" placeholder="Enter your first name" />
     </el-form-item>
@@ -35,12 +18,6 @@
       </el-checkbox>
     </el-form-item>
 
-    <el-form-item prop="user.sendCopy" :class="['mb-0', { 'mt-16': !showFollowUpOption }]">
-      <el-checkbox v-model="modelValue.sendCopy">
-        <span class="body1">Please send me a copy of this message</span>
-      </el-checkbox>
-    </el-form-item>
-
     <el-form-item prop="user.shouldSubscribe">
       <el-checkbox v-model="modelValue.shouldSubscribe">
         <span class="body1">Subscribe to the SPARC Newsletter</span>
@@ -50,8 +27,6 @@
 </template>
 
 <script>
-import { mapState } from 'pinia'
-import { useMainStore } from '@/store/index'
 
 export default {
   name: 'UserContactFormItem',
@@ -64,8 +39,5 @@ export default {
       type: Object
     }
   },
-  computed: {
-    ...mapState(useMainStore, ['userTypes'])
-  }
 }
 </script>

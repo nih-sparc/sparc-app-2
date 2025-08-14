@@ -24,8 +24,13 @@
       :src=iconUrl
     />
     <div class="numbers-container">
-      <div class="heading1">
-        {{ description }}
+      <div  class="heading1">
+        <span v-if="!automaticMetric">
+          {{ description }}
+        </span>
+        <span v-else>
+          {{ automaticDescription }}
+        </span>
       </div>
       <div class="body1">
         {{ title }}
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import { pathOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import marked from '@/mixins/marked/index'
 
 export default {
@@ -48,11 +53,43 @@ export default {
       type: Object,
       default: () => {}
     },
+    consortiaIds: {
+      type: Array,
+      default: []
+    },
     textColor: {
       type: String,
       default: ""
     }
   },
+
+  async setup(props) {
+    if (!props.metric?.automaticMetric) {
+      return
+    }
+    const config = useRuntimeConfig()
+    const { $algoliaClient } = useNuxtApp()
+    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const facetId = props.metric?.fields?.description
+    let orgsFilter = ''
+    if (props.consortiaIds) {
+      props.consortiaIds.forEach((orgId, index) => {
+        orgsFilter += `pennsieve.organization.identifier:${orgId}`
+        if (index < props.consortiaIds.length - 1) {
+          orgsFilter += ' OR '
+        }
+      })
+    }
+    const { facets } = await algoliaIndex.search('', {
+      hitsPerPage: 9999,
+      facets: `${facetId}`,
+      filters: orgsFilter
+    })
+    return {
+      automaticDescription: facets[facetId] ? Object.keys(facets[facetId]).length : 0
+    }
+  },
+
 
   computed: {
     description() {
@@ -72,6 +109,9 @@ export default {
       return {
         border: `1px solid #${this.textColor}`
       }
+    },
+    automaticMetric() {
+      return propOr(false, 'automaticMetric', this.metric)
     }
   },
 }
@@ -83,13 +123,13 @@ export default {
   text-align: left;
   display: flex;
   flex-direction: row;
-  width: 100%;
   height: fit-content;
 }
 .numbers-container {
   display: flex;
   flex-direction: column;
   margin: auto;
+  margin-left: .5rem;
 }
 .icon {
   margin: 0 auto;

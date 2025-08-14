@@ -94,7 +94,6 @@ export default {
         detailedDescription: '',
         shortDescription: '',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -106,13 +105,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -164,7 +156,11 @@ export default {
   computed: {
     ...mapState(useMainStore, {
       areasOfSparc: state => state.formOptions.areasOfSparc
-    })
+    }),
+    formattedDetailedDescription() {
+      // GitHub only treats double line breaks as a line break, so must do this to retain when the user presses enter key
+      return this.form.detailedDescription?.replace(/\n/g, '<br>\n')
+    },
   },
 
   mounted() {
@@ -188,41 +184,81 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const description = `
-        <b>What area of the SPARC Portal is this related to?</b><br>${this.form.pageOrResource}<br><br>
-        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
-        <b>Detailed description:</b><br>${this.form.detailedDescription}<br><br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
-        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
-        <b>Email:</b><br>${this.form.user.email}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
-      `
+      const body = `
+### What area of the SPARC Portal is this related to?
+${this.form.pageOrResource}
+
+### Detailed description:
+${this.formattedDetailedDescription}
+
+### Would you like to receive updates about this submission:
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
+
       let formData = new FormData();
       formData.append("type", "feedback")
       formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Feedback Submission: ${this.form.shortDescription}`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
+      formData.append("title", `${this.form.shortDescription}`)
+      formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
+      formData.append("email", this.form.user.email)
 
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.firstName)
-          }
+      try {
+        const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+        const status = data?.status
+        const message = data?.message
+        switch (status) {
+          case 'success':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 'warning':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 'error':
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to create a bug report. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName)
+      } catch (e) {
+        ElMessage({
+          showClose: true,
+          message: `There was a problem when attempting to submit feedback. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+          type: 'error',
+          duration: 0,
+          dangerouslyUseHTMLString: true
         })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+        this.hasError = true
+      }
+      this.isSubmitting = false
     }
   },
 

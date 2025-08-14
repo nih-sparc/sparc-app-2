@@ -78,11 +78,13 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   background-color: white;
+  width: 100%;
 
   @media screen and (max-width: 767px) {
     margin-top: 0;
   }
   .about-page-text {
+    width: 100%;
     @media screen and (max-width: 767px) {
       margin-left: 0;
     }
@@ -91,6 +93,7 @@ export default {
 .subpage-row {
   display: flex;
   flex-direction: row;
+  width: 100%;
 }
 .about-page-border {
   border: 1px solid #dcdfe6;

@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   vite: {
     define: {
       'window.global': {}
-    }
+    },
     /*css: {
       preprocessorOptions: {
         scss: {
@@ -134,7 +134,7 @@ export default defineNuxtConfig({
       ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
       ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
       ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
-      ctf_get_involved_page_id: 'jxEBoBw2zUctuDaX2eeX1',
+      ctf_get_involved_page_id: '1UUoE2ICWvdsQo0npvJcpq',
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
@@ -160,6 +160,8 @@ export default defineNuxtConfig({
       AWS_OAUTH_RESPONSE_TYPE: process.env.AWS_OAUTH_RESPONSE_TYPE || "token",
       AWS_OAUTH_REDIRECT_SIGN_IN_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_IN_URL || 'http://localhost:3000',
       AWS_OAUTH_REDIRECT_SIGN_OUT_URL: process.env.AWS_OAUTH_REDIRECT_SIGN_OUT_URL || 'http://localhost:3000',
+      GITHUB_ORG: process.env.GITHUB_ORG || 'nih-sparc',
+      GITHUB_REPO: process.env.GITHUB_REPO || 'sparc-app-2',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
@@ -185,6 +187,8 @@ export default defineNuxtConfig({
       INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
       SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
       SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || 'false',
+      PROTOCOLS_IO_HOST: process.env.PROTOCOLS_IO_HOST || 'https://www.protocols.io',
+      PROTOCOLS_IO_TOKEN: process.env.PROTOCOLS_IO_TOKEN || '',
       GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
@@ -230,7 +234,7 @@ export default defineNuxtConfig({
   },
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
-    // disallowing certain pages that are either redirects, authticated routes, or causing bots to recursively crawl
+    // disallowing certain pages that are either redirects, authenticated routes, or causing bots to recursively crawl
     disallow: process.env.DEPLOY_ENV === 'production' ? 
     [
       '/datasets/file',
@@ -252,5 +256,12 @@ export default defineNuxtConfig({
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
+  },
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag: string) => [
+        'bsky-embed'
+      ].includes(tag)
+    }
   }
 })

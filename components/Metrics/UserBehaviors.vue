@@ -1,5 +1,5 @@
 <template>
-  <div class="p-16">
+  <div class="user-behaviors-container p-16 mt-16">
     <div class="heading2 mb-0">
       Page Views
     </div>
@@ -15,18 +15,31 @@
       :chartData="usersChartData"
       :chartOptions="usersChartOptions"
     />
-    <hr class="my-16"/>
-    <div class="row">
-      <div class="col">
-        <div class="col-header heading2 mb-0">
-          Downloads last month: <span class="col-data">{{ totalDownloadsLastMonth }}</span> <span class="body1">({{ totalDownloadsLastQuarter }} last quarter)</span>
+    <hr class="mt-16 mb-32"/>
+    <div class="grid-container">
+      <div class="grid">
+        <div class="card">
+          <div class="heading2">Dataset Downloads</div>
+          <div class="heading1 data">{{ totalDownloads }}</div>
+          <div class="sub-label">({{ totalDownloadsLastMonth }} in {{ monthLastUpdated }})</div>
+        </div>
+        <div class="card">
+          <div class="heading2">Dataset Contributors</div>
+          <div class="heading1 data">{{ totalContributers }}</div>
+          <div class="sub-label">({{ newContributers }} new in {{  monthLastUpdated }})</div>
+        </div>
+        <div v-if="totalCitations" class="card">
+          <div class="heading2">Dataset Citations</div>
+          <div class="heading1 data">{{  totalCitations }}</div>
+        </div>
+        <div v-if="totalProtocolViews" class="card">
+          <div class="heading2">Protocol Views</div>
+          <div class="heading1 data">{{ totalProtocolViews }}</div>
         </div>
       </div>
-      <div class="col">
-        <div class="col-header heading2 mb-0">
-          Dataset Contributors: <span class="col-data">{{ totalContributers }}</span> <span class="body1">({{ newContributers }} new in the last month)</span>
-        </div>
-      </div>
+    </div>
+    <div class="body1 mt-32">
+      Last metrics update: {{ monthLastUpdated }} {{ yearLastUpdated }}
     </div>
   </div>
 </template>
@@ -46,6 +59,31 @@ export default {
       type: Object,
       default: () => {}
     },
+    dateLastUpdated: {
+      type: Date
+    }
+  },
+  async setup() {
+    const config = useRuntimeConfig()
+    const { $axios } = useNuxtApp()
+    let totalProtocolViews
+    let totalCitations
+    try {
+      const { data } = await $axios.get(`${config.public.portal_api}/total_protocol_views`)
+      totalProtocolViews = data['total_views']
+    } catch (err) {
+      console.error('Error retrieving total protocol views.', err)
+    }
+    try {
+      const { data } = await $axios.get(`${config.public.portal_api}/total_dataset_citations`)
+      totalCitations = data['total_citations']
+    } catch (err) {
+      console.error('Error retrieving total citations.', err)
+    }
+    return {
+      totalProtocolViews,
+      totalCitations
+    }
   },
   watch: {
     userBehaviors: {
@@ -117,6 +155,11 @@ export default {
       pageChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           x: {
             barPercentage: 1.0,
@@ -176,6 +219,11 @@ export default {
       usersChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           y: {
             grid: {
@@ -237,6 +285,9 @@ export default {
     userBehaviors() {
       return propOr({}, 'userBehaviors', this.metricsData)
     },
+    totalDownloads() {
+      return pathOr('', ['totalDownloadsData', 'total'], this.userBehaviors)
+    },
     totalDownloadsLastMonth() {
       return pathOr('', ['totalDownloadsData', 'lastMonth'], this.userBehaviors)
     },
@@ -248,13 +299,22 @@ export default {
     },
     newContributers() {
       return pathOr('', ['datasetContributorsData', 'newLastMonth'], this.userBehaviors)
-    }
+    },
+    monthLastUpdated() {
+      return this.dateLastUpdated ? this.dateLastUpdated.toLocaleString('default', { month: 'long' }) : undefined
+    },
+    yearLastUpdated() {
+      return this.dateLastUpdated ? this.dateLastUpdated.getFullYear() : undefined
+    },
   },
 }
 
 </script>
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+.user-behaviors-container {
+  background: white;
+}
 
 hr {
   border-top: none;
@@ -264,29 +324,28 @@ hr {
   border-color: $lineColor1;
 }
 
-.row {
+.grid-container {
   display: flex;
-  @media screen and (max-width: 767px) {
-    flex-direction: column;
-  }
+  justify-content: center;
 }
 
-.col {
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  row-gap: 2rem;
+  column-gap: 8rem;
+  max-width: 800px;
+}
+
+.card {
+  background: white;
+  padding: 1.25rem;
   text-align: center;
-  width: 50%;
-  @media screen and (max-width: 767px) {
-    width: 100%;
-  }
+  min-height: 6.5rem;
+  border: 1px solid $lineColor2;
 }
 
-.col-header {
-  text-align: left;
-}
-
-.col-data {
-  font-size: 2rem;
-  line-height: 2.75rem;
+.data {
   color: $purple;
-  font-weight: bold;
 }
 </style>

@@ -22,6 +22,9 @@
         <div>
           Citations: <b>{{ numCitations }}</b>
         </div>
+        <div v-if="protocolsMap != null">
+          Protocol(s) Views: <b>{{ totalProtocolsViews }}</b>
+        </div>
       </el-col>
     </el-row>
   </el-card>
@@ -29,7 +32,7 @@
 
 <script>
 
-import { propOr } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 
 export default {
   name: 'DatasetCard',
@@ -55,8 +58,29 @@ export default {
     },
     numCitations() {
       return propOr('', 'numCitations', this.item)
+    },
+    protocolsMap() {
+      return propOr(null, 'protocolsMap', this.item)
+    },
+    totalProtocolsViews() {
+      let total = 0
+      Object.keys(this.protocolsMap).forEach(suffix => {
+        total += Number(this.getProtocolViews(suffix))
+      })
+      return total
     }
-  }
+  },
+  methods: {
+    getProtocolViews(protocolSuffix) {
+      return pathOr(0, [protocolSuffix,'number_of_views'], this.protocolsMap)
+    },
+    getProtocolPrivateForks(protocolSuffix) {
+      return pathOr(0, [protocolSuffix,'number_of_forks', 'private'], this.protocolsMap)
+    },
+    getProtocolPublicForks(protocolSuffix) {
+      return pathOr(0, [protocolSuffix,'number_of_forks', 'public'], this.protocolsMap)
+    }
+  },
 }
 </script>
 

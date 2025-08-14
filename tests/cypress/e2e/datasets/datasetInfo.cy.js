@@ -117,7 +117,7 @@ datasetIds.forEach((datasetId) => {
           let facetLabels = []
           cy.wrap($facets).each(($facet) => {
             const facetType = $facet.parents('.parent-facet').siblings('.capitalize').text()
-            if (facetType !== 'Type:' && facetType !== 'Funding Program:') {
+            if (facetType !== 'Type:' && facetType !== 'Consortia:') {
               facetLabels.push($facet.text())
             } else {
               exclude += 1

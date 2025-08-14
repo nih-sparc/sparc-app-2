@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="pt-16">
-      <el-button @click="requestDownloadFile({...file, version: versionId})">
+      <el-button @click="executeDownload({...file, version: versionId})">
         Download file
       </el-button>
     </div>
@@ -88,7 +88,6 @@
 import discover from '@/services/discover'
 import general from '@/services/general'
 
-import RequestDownloadFile from '@/mixins/request-download-file'
 import ImageScaling from '@/components/Images/ImageScaling.vue'
 import ImageChannels from '@/components/Images/ImageChannels.vue'
 import MarkedMixin from '@/mixins/marked'
@@ -122,7 +121,7 @@ export default {
       default: () => {}
     },
   },
-  mixins: [MarkedMixin, FileDetails, RequestDownloadFile],
+  mixins: [MarkedMixin, FileDetails],
 
   async setup(props) {
     try {
@@ -183,6 +182,11 @@ export default {
     },
     organ() {
       return pathOr("", ['atlas','organ'], this.segmentation_info)
+    }
+  },
+  methods: {
+    executeDownload(file) {
+      this.$emit("download-file", file)
     }
   }
 }

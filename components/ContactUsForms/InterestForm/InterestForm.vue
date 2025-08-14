@@ -7,6 +7,32 @@
     :hide-required-asterisk="true"
   >
     <el-form-item
+      prop="isPreparingGrant"
+      label="Are you preparing a grant submission and would like to specify SPARC as your data repository? *"
+    >
+      <sparc-radio
+        :value="form.isPreparingGrant"
+        @input="form.isPreparingGrant = $event.target.value"
+        label="Yes"
+        display="Yes"
+      />
+      <sparc-radio
+        :value="form.isPreparingGrant"
+        @input="form.isPreparingGrant = $event.target.value"
+        label="No"
+        display="No"
+      />
+    </el-form-item>
+
+    <el-form-item prop="submissionDate" label="Proposal submission date">
+      <el-date-picker
+        v-model="form.submissionDate"
+        type="date"
+        placeholder="Enter the date of the proposal submission"
+      />
+    </el-form-item>
+
+    <el-form-item
       class="service-categories vertical-content mt-32"
       prop="serviceCategories"
       label="What service(s) are you interested in? *"
@@ -21,12 +47,35 @@
       />
     </el-form-item>
 
+    <el-form-item
+      prop="numDatasets"
+      label="How many datasets or models do you expect to generate and share via SPARC during the grant period? *"
+    >
+      <el-select
+        v-model="form.numDatasets"
+        placeholder="Select one"
+      >
+        <el-option
+          label="1"
+          value="1"
+        />
+        <el-option
+          label="<5"
+          value="<5"
+        />
+        <el-option
+          label="6+"
+          value="6+"
+        />
+      </el-select>
+    </el-form-item>
+
     <el-form-item prop="additionalInfo" label="Additional Information">
       <el-input
         v-model="form.additionalInfo"
         type="textarea"
         :rows="3"
-        placeholder="Please provide any additional information regarding your service request"
+        placeholder="Please provide any additional information regarding your request"
       />
     </el-form-item>
 
@@ -46,14 +95,12 @@
 
     <hr/>
 
-    <el-form-item>
-      <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
-        Submit
-      </el-button>
-      <p v-if="hasError" class="error">
-        An error has occurred, please try again.
-      </p>
-    </el-form-item>
+    <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
+      Submit
+    </el-button>
+    <p v-if="hasError" class="error">
+      An error has occurred, please try again.
+    </p>
   </el-form>
 </template>
 
@@ -65,11 +112,12 @@ import { isEmpty } from 'ramda'
 import { mapState } from 'pinia'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
+import ParseInputMixin from '@/mixins/parse-input'
 
 export default {
   name: 'InterestForm',
 
-  mixins: [NewsletterMixin, RecaptchaMixin],
+  mixins: [NewsletterMixin, RecaptchaMixin, ParseInputMixin],
 
   components: {
     UserContactFormItem
@@ -79,14 +127,15 @@ export default {
     return {
       form: {
         captchaToken: '',
+        isPreparingGrant: '',
+        submissionDate: '',
         serviceCategories: [],
+        numDatasets: '',
         additionalInfo:'',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -94,13 +143,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -124,10 +166,24 @@ export default {
             }
           ]
         },
+        isPreparingGrant: [
+          {
+            required: true,
+            message: 'Please select one',
+            trigger: 'change'
+          }
+        ],
         serviceCategories: [
           {
             required: true,
             message: 'Please select at least one',
+            trigger: 'change'
+          }
+        ],
+        numDatasets: [
+          {
+            required: true,
+            message: 'Please select one',
             trigger: 'change'
           }
         ],
@@ -169,40 +225,99 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const description = `
+      const body = `
+        <b>SPARC Service Inquiry Submission:</b><br><br>
+        <b>Are you preparing a grant submission and would like to specify SPARC as your data repository?</b><br>${this.form.isPreparingGrant}<br><br>
+        <b>Proposal submission date:</b><br>${this.escapeHTML(this.form.submissionDate == '' ? 'N/A' : new Date(this.form.submissionDate).toDateString())}<br><br>
         <b>What services(s) are you interested in?</b><br>${this.form.serviceCategories}<br><br>
+        <b>How many datasets or models do you expect to generate and share via SPARC during the grant period?</b><br>${this.escapeHTML(this.form.numDatasets)}<br><br>
         <b>Additional Information:</b><br>${isEmpty(this.form.additionalInfo) ? 'N/A' : this.form.additionalInfo}<br><br>
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}<br><br>
         <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
       `
       let formData = new FormData();
       formData.append("type", "interest")
-      formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Service Request`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
+      formData.append("title", `SPARC Service Request: ${this.form.user.firstName} ${this.form.user.lastName}`)
+      formData.append("body", body)
+      formData.append("email", this.form.user.email)
+      formData.append("firstname", this.form.user.firstName)
+      formData.append("lastname", this.form.user.lastName)
+      formData.append("isServiceForm", true)
       formData.append("captcha_token", this.form.captchaToken)
 
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
-          }
-        })
-        .catch(() => {
+      try {
+        const response = await this.$axios.post(`${config.public.portal_api}/submit_data_inquiry`, formData)
+        const data = response.data
+        const status = response.status
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+        let message = ''
+        switch (status) {
+          case 201:
+            message = `${data?.message}`
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 207:
+            message = `${data?.warning}${data?.details}`
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 400:
+            message = `${data?.error}`
+            ElMessage({
+              showClose: true,
+              message: `We encountered the following problem when attempting to submit your request: ${message}. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+          case 500:
+            message = `${data?.error}${data?.details}`
+            ElMessage({
+              showClose: true,
+              message: `We encountered the following problem when attempting to submit your request: ${message}. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+          default:
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to submit your request. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName)
+      } catch (e) {
+          ElMessage({
+            showClose: true,
+            message: `We encountered the following problem when attempting to submit your request: ${e} If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+            type: 'error',
+            duration: 0,
+            dangerouslyUseHTMLString: true
+          })
           this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+      }
+      this.isSubmitting = false
     }
   },
 
@@ -236,6 +351,9 @@ hr {
 .recaptcha {
   display: flex;
   justify-content: left;
+}
+label.el-radio {
+  padding-top: 0;
 }
 :deep(.vertical-content) {
   .el-form-item__content {

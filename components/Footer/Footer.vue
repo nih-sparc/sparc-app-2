@@ -15,8 +15,8 @@
               </p>
             </div>
             <div class="footer__info--social">
-              <a href="https://twitter.com/sparc_science" target="_blank">
-                <svgo-icon-twitter class="social-media-icon pr-16"/>
+              <a href="https://bsky.app/profile/sparc.science" target="_blank">
+                <svgo-icon-bluesky class="social-media-icon pr-16"/>
               </a>
               <a
                 href="https://www.linkedin.com/groups/12694019"
@@ -31,10 +31,16 @@
                 <svgo-icon-youtube class="social-media-icon"/>
               </a>
             </div>
-            <div class="footer__info--re3data">
-              <a href="https://doi.org/10.17616/R31NJN2V" target="_blank">
-                <img src="/100013719.svg" alt="re3data badge"/>
-              </a>
+            <div class="row">
+                <a class="mr-32" href="https://doi.org/10.17616/R31NJN2V" target="_blank">
+                  <img class="footer-logo mb-32" src="/100013719.svg" alt="re3data badge"/>
+                </a>
+                <a href="https://registry.opendata.aws/sparc/">
+                  <img class="footer-logo mr-32 mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing">
+                </a>
+                <a href="https://www.autonomicneuroscience.com/">
+                  <img class="footer-logo mb-32" :src="anbcLogo" />
+                </a>
             </div>
           </div>
         </el-col>
@@ -107,6 +113,11 @@ export default {
     FooterLink,
     SparcLogo
   },
+  data() {
+    return {
+      anbcLogo: new URL('~/assets/anbc-logo.svg', import.meta.url).href
+    }
+  },
   computed: {
     ...mapState(useMainStore, ['footerData'])
   }
@@ -116,10 +127,19 @@ export default {
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 
+.footer-logo {
+  width: 185px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .footer {
   display: flex;
   flex-direction: row;
-  padding: 3rem 1rem;
+  padding: 2rem 1rem;
   background-color: #F8FAFF;
 
   .social-media-icon {
@@ -127,14 +147,16 @@ export default {
     font-size: 2rem;
   }
 
+  .footer__info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+
   &__info {
-    &--logo {
-      height: 4rem;
-      margin-bottom: 1.5rem;
-    }
 
     &--blurb {
-      margin-bottom: 3rem;
       p {
         font-size: 1rem;
         font-weight: normal;
@@ -144,7 +166,6 @@ export default {
     }
 
     &--social {
-      margin-bottom: 3rem;
       .svg-icon {
         width: 2.2rem;
         margin-right: 1rem;
@@ -178,25 +199,18 @@ export default {
   }
 }
 
-@media screen and (max-width: 1023px) {
+@media screen and (max-width: 991px) {
   .footer {
     &__info {
+      gap: 1rem;
       &--logo {
-        height: 2rem;
+        height: fit-content;
       }
 
       &--blurb {
         font-size: 0.75rem;
         font-weight: normal;
         line-height: 1.25rem;
-
-        p {
-          margin-bottom: 1rem;
-        }
-      }
-
-      &--re3data {
-        margin-bottom: 1.5rem;
       }
     }
   }
@@ -204,8 +218,7 @@ export default {
 
 .footer__info--logo {
   img {
-    height: 4rem;
-    width: 8rem;
+    max-width: 175px;
   }
 }
 </style>

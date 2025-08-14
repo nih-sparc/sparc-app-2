@@ -138,7 +138,6 @@ export default {
         endDate: '',
         supportingLinks: [''],
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -217,12 +216,13 @@ export default {
       return this.form?.locationCategories.includes('Virtual')
     },
     supportingLinksText: function() {
+      const header = 'Supporting Information links:\n'
       let message = ''
       this.form.supportingLinks.forEach(link => {
         if (!isEmpty(link))
-          message += `${link}<br>`
+          message += link + '\n'
       })
-      return isEmpty(message) ? 'N/A<br>' : message
+      return header + (isEmpty(message) ? 'N/A\n' : message)
     },
     locationText: function() {
       return this.isVirtual ? 'Virtual' : this.form.location == '' ? 'N/A' : this.form.location
@@ -239,22 +239,19 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const fileName = propOr('', 'name', this.file)
-      const description = `
-        <b>Contact Information</b><br><br>
-        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
-        <b>E-mail:</b><br>${this.form.user.email}<br><br>
-        <b>News or Event Details:</b><br><br>
-        <b>Title:</b><br>${this.form.title}<br><br>
-        <b>Summary:</b><br>${this.form.summary}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Supporting Information links:</b><br>${this.supportingLinksText}<br>
-        <b>Event Specific Details:</b><br><br>
-        <b>Location:</b><br>${this.locationText}<br><br>
-        <b>Start Date:</b><br>${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}<br><br>
-        <b>End Date:</b><br>${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}
-      `
+      const description = `Contact Information
+First Name: ${this.form.user.firstName}
+Last Name: ${this.form.user.lastName}
+E-mail: ${this.form.user.email}
+
+News or Event Details:
+Title: ${this.form.title}
+Summary: ${this.form.summary}
+${this.supportingLinksText}
+Event Specific Details
+Location: ${this.locationText}
+Start Date: ${this.form.startDate == '' ? 'N/A' : new Date(this.form.startDate).toDateString()}
+End Date: ${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDateString()}`
       let formData = new FormData();
       // we assume it is a news item if there is no start date
       if (this.form.startDate == '') {
@@ -268,6 +265,7 @@ export default {
       formData.append("sendCopy", this.form.user.sendCopy)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
@@ -281,9 +279,8 @@ export default {
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
           }
+          this.$emit('submit', this.form.user.firstName)
         })
         .catch(() => {
           this.hasError = true

@@ -140,7 +140,7 @@ export default {
     },
     fundingCategory: function () {
       return {
-        label: 'Funding Program',
+        label: 'Consortia',
         id: FUNDING_CATEGORY_ID,
         data: this.fundingFacets
       }

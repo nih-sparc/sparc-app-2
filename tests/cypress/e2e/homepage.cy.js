@@ -68,14 +68,15 @@ describe('Homepage', { testIsolation: false }, function () {
         expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/about/consortia/')
       })
     })
-    // Check for contributor
-    cy.get('.container.p-24 > .body1 > b > .heading2').last().then(($el) => {
-      const numberOfContributor = parseInt($el.text())
-      expect(numberOfContributor, 'The number of contributors should be displayed').to.be.greaterThan(0)
-      cy.get('.container.p-24 > .data-wrap.pt-16 > .consortia-item').should(($item) => {
-        expect($item, 'Correct number of consortia items should be displayed').to.have.length(4)
-        expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/data?type=')
-      })
+    // Check for explore the data
+    cy.get('.container.p-24 .data-wrap.py-16').eq(1).find('.sparc-number').should(($item) => {
+      expect($item, 'Correct number of data explorations should be displayed').to.have.length(4)
+      expect($item, 'Data exploration item should have correct href').to.have.attr('href').to.contain('/data?type=')
+    })
+    // Check for key metrics
+    cy.get('.container.p-24 .data-wrap.pt-16').find('.sparc-number').should(($item) => {
+      expect($item, 'Correct number of key metrics should be displayed').to.have.length(4)
+      expect($item, 'Key metrics should have correct href').to.have.attr('href').to.contain('/about/metrics')
     })
   })
 

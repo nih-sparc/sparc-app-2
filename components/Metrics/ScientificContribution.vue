@@ -1,5 +1,5 @@
 <template>
-  <div class="p-16">
+  <div class="scientific-contribution-container p-16 mt-16">
     <div class="heading2 mb-0">
       Data
     </div>
@@ -45,6 +45,9 @@
         </div>
       </div>
     </div>
+    <div class="body1 mt-16">
+      Last metrics update: {{ monthLastUpdated }} {{ yearLastUpdated }}
+    </div>
   </div>
 </template>
 
@@ -62,6 +65,9 @@ export default {
       type: Object,
       default: () => {}
     },
+    dateLastUpdated: {
+      type: Date
+    }
   },
   watch: {
     scientificContribution: {
@@ -111,6 +117,11 @@ export default {
       dataChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           x: {
             grid: {
@@ -160,6 +171,11 @@ export default {
       anatomicalStructuresChartOptions: {
         responsive: true,
         drawOnChartArea: false,
+        layout: {
+          padding: {
+            top: 30
+          }
+        },
         scales: {
           x: {
             grid: {
@@ -225,13 +241,23 @@ export default {
     },
     totalProtocols() {
       return pathOr(undefined, ['protocols', 'total'], this.scientificContribution)
-    }
+    },
+    monthLastUpdated() {
+      return this.dateLastUpdated ? this.dateLastUpdated.toLocaleString('default', { month: 'long' }) : undefined
+    },
+    yearLastUpdated() {
+      return this.dateLastUpdated ? this.dateLastUpdated.getFullYear() : undefined
+    },
   },
 }
 
 </script>
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
+
+.scientific-contribution-container {
+  background: white;
+}
 
 hr {
   border-top: none;

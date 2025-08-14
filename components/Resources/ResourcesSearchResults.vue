@@ -40,7 +40,7 @@
         </a>
         <div class="mb-8">
           <span v-if="data.fields.developedBySparc" class="resource-category">
-            SPARC
+            SPARC Program
           </span>
           <span v-if="data.fields.codeathon" class="resource-category">
             Codeathon

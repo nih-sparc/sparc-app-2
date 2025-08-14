@@ -104,7 +104,6 @@ export default {
         summary: '',
         supportingLinks: [''],
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
@@ -180,12 +179,14 @@ export default {
 
   computed: {
     supportingLinksText: function() {
+      const header = 'Supporting Information links:\n'
       let message = ''
       this.form.supportingLinks.forEach(link => {
-        if (!isEmpty(link))
-          message += `${link}<br>`
+        if (!isEmpty(link)) {
+          message += link + '\n'
+        }
       })
-      return isEmpty(message) ? 'N/A<br>' : message
+      return header + (isEmpty(message) ? 'N/A\n' : message)
     }
   },
 
@@ -199,18 +200,15 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const fileName = propOr('', 'name', this.file)
-      const description = `
-        <b>Contact Information</b><br><br>
-        <b>First Name:</b><br>${this.form.user.firstName}<br><br>
-        <b>Last Name:</b><br>${this.form.user.lastName}<br><br>
-        <b>E-mail:</b><br>${this.form.user.email}<br><br>
-        <b>Story Details:</b><br><br>
-        <b>Title:</b><br>${this.form.title}<br><br>
-        <b>Summary:</b><br>${this.form.summary}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>Supporting Information links:</b><br>${this.supportingLinksText}<br>
-      `
+      const description = `Contact Information
+First Name: ${this.form.user.firstName}
+Last Name: ${this.form.user.lastName}
+E-mail: ${this.form.user.email}
+
+Story Details:
+Title: ${this.form.title}
+Summary: ${this.form.summary}
+${this.supportingLinksText}`
 
       let formData = new FormData()
       formData.append("type", "communitySpotlight")
@@ -218,6 +216,7 @@ export default {
       formData.append("title", `SPARC Story Submission: ${this.form.title}`)
       formData.append("description", description)
       formData.append("userEmail", this.form.user.email)
+      formData.append("firstName", this.form.user.firstName)
       formData.append("captcha_token", this.form.captchaToken)
       if (propOr('', 'name', this.file) != '') {
         formData.append("attachment", this.file, this.file.name)
@@ -231,9 +230,8 @@ export default {
         .then(() => {
           if (this.form.user.shouldSubscribe) {
             this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
           }
+          this.$emit('submit', this.form.user.firstName)
         })
         .catch(() => {
           this.hasError = true

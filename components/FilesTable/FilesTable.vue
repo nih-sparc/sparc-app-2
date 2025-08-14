@@ -11,12 +11,7 @@
           >
             {{ item }}
           </nuxt-link>
-          <span
-            v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1"
-            class="breadcrumb-separator"
-          >
-            /
-          </span>
+          <span v-if="breadcrumbs.length > 1 && idx !== breadcrumbs.length - 1" class="breadcrumb-separator"> / </span>
         </div>
       </div>
     </div>
@@ -24,9 +19,7 @@
     <div class="files-table-table">
       <div v-if="hasError" class="error-wrap">
         <p>Sorry, an error has occurred</p>
-        <el-button type="primary" @click="getFiles">
-          Try again
-        </el-button>
+        <el-button type="primary" @click="getFiles"> Try again </el-button>
       </div>
       <el-table
         v-else
@@ -36,17 +29,21 @@
         @filter-change="handleFilterChange"
       >
         <el-table-column type="selection" fixed width="45" />
-        <el-table-column fixed prop="name" label="Name" min-width="150" sortable :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)">
+        <el-table-column
+          fixed
+          prop="name"
+          label="Name"
+          min-width="150"
+          sortable
+          :sort-method="(a, b) => sortWithCaseInsensitive(a.name, b.name)"
+        >
           <template v-slot="scope">
             <div class="file-name-wrap">
               <template v-if="scope.row.type === 'Directory'">
                 <el-icon class="file-icon"><Folder /></el-icon>
                 <sparc-tooltip placement="left-center" :content="scope.row.name" is-repeating-item-content>
                   <template #item>
-                    <nuxt-link
-                      class="file-name truncated"
-                      :to="{ query: { ...$route.query, path: scope.row.path } }"
-                    >
+                    <nuxt-link class="file-name truncated" :to="{ query: { ...$route.query, path: scope.row.path } }">
                       {{ scope.row.name }}
                     </nuxt-link>
                   </template>
@@ -115,10 +112,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column 
-          prop="fileType" 
-          label="File type" 
-          width="280" 
+        <el-table-column
+          prop="fileType"
+          label="File type"
+          width="280"
           columnKey="fileType"
           sortable
           :filters="getFileTypeFilters(data)"
@@ -129,82 +126,49 @@
           <template #header="{ column }">
             <span class="custom-header">
               {{ column.label }}
-              <el-button v-if="isFilterApplied" class="custom-button"  @click="handleResetFilters('fileType')">
+              <el-button v-if="isFilterApplied" class="custom-button" @click="handleResetFilters('fileType')">
                 Reset filter
               </el-button>
             </span>
           </template>
           <template v-slot="scope">
-            <template v-if="scope.row.type === 'Directory'">
-              Folder
-            </template>
+            <template v-if="scope.row.type === 'Directory'"> Folder </template>
 
             <template v-else>
               {{ scope.row.fileType }}
             </template>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="size"
-          label="Size"
-          width="220"
-          :formatter="formatStorage"
-          sortable
-        />
+        <el-table-column prop="size" label="Size" width="220" :formatter="formatStorage" sortable />
         <el-table-column label="Action" width="200">
           <template v-slot="scope">
             <template v-if="scope.row.type === 'File'">
               <div v-if="!isFileTooLarge(scope.row)" class="circle" @click="executeDownload(scope.row)">
-                <form
-                  id="zipForm"
-                  ref="zipForm"
-                  method="POST"
-                  :action="zipitUrl"
-                >
+                <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
                   <input v-model="zipData" type="hidden" name="data" />
                 </form>
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Download file"
-                >
+                <sparc-tooltip placement="bottom-center" content="Download file">
                   <template #item>
                     <svgo-icon-download class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
               <div v-else class="circle disabled">
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Files over 5GB in size must be downloaded via AWS"
-                >
+                <sparc-tooltip placement="bottom-center" content="Files over 5GB in size must be downloaded via AWS">
                   <template #item>
                     <svgo-icon-download class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isFileOpenable(scope)"
-                class="circle"
-                @click="openFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="View file in web viewer"
-                >
+              <div v-if="isFileOpenable(scope)" class="circle" @click="openFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="View file in web viewer">
                   <template #item>
                     <svgo-icon-open class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isScaffoldMetaFile(scope.row.path)"
-                class="circle"
-                @click="openScaffold(scope.row.path)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open as 3d scaffold"
-                >
+              <div v-if="isScaffoldMetaFile(scope.row.path)" class="circle" @click="openScaffold(scope.row.path)">
+                <sparc-tooltip placement="bottom-center" content="Open as 3d scaffold">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
@@ -215,81 +179,52 @@
                 class="circle"
                 @click="openScaffoldView(scope.row.path, scope.row.name)"
               >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open as 3d scaffold"
-                >
+                <sparc-tooltip placement="bottom-center" content="Open as 3d scaffold">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isBiolucidaViewFile(scope.row.path)"
-                class="circle"
-                @click="openViewerFile(scope)"
-              >
-              <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open Biolucida Viewer"
-                >
+              <div v-if="isBiolucidaViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Biolucida Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isPlotViewFile(scope.row.path)"
-                class="circle"
-                @click="openViewerFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open Plot Viewer"
-                >
+              <div v-if="isPlotViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Plot Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isVideoViewFile(scope.row.path)"
-                class="circle"
-                @click="openViewerFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open Video Viewer"
-                >
+              <div v-if="isSimulationViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Simulation Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isSegmentationViewFile(scope.row.path)"
-                class="circle"
-                @click="openViewerFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open Segmentation Viewer"
-                >
+              <div v-if="isVideoViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Video Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                class="circle"
-                @click="setDialogSelectedFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                >
+              <div v-if="isSegmentationViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Segmentation Viewer">
+                  <template #item>
+                    <svgo-icon-view class="action-icon" />
+                  </template>
+                </sparc-tooltip>
+              </div>
+              <div class="circle" @click="setDialogSelectedFile(scope)">
+                <sparc-tooltip placement="bottom-center">
                   <template #data>
                     <div class="osparc-service-btn-tooltip">
-                      Open in o<sup>2</sup>S<sup>2</sup>PARC. Login is required, 
+                      Open in o<sup>2</sup>S<sup>2</sup>PARC. Login is required,
                       <a href="/resources/4LkLiH5s4FV0LVJd3htsvH#user-accounts" target="_blank">
                         <u>here</u>
                       </a>
@@ -301,38 +236,22 @@
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isTimeseriesViewFile(scope.row)"
-                class="circle"
-                @click="openViewerFile(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Open timeseries viewer"
-                >
+              <div v-if="isTimeseriesViewFile(scope.row)" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open timeseries viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div
-                v-if="isFileOpenable(scope)"
-                class="circle"
-                @click="copyS3Url(scope)"
-              >
-                <sparc-tooltip
-                  placement="bottom-center"
-                  content="Copy link"
-                >
+              <div v-if="isFileOpenable(scope)" class="circle" @click="copyS3Url(scope)">
+                <sparc-tooltip placement="bottom-center" content="Copy link">
                   <template #item>
                     <svgo-icon-permalink-nobg class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
             </template>
-            <template v-else>
-              -
-            </template>
+            <template v-else> - </template>
           </template>
         </el-table-column>
       </el-table>
@@ -389,18 +308,7 @@
 </template>
 
 <script>
-import {
-  compose,
-  isEmpty,
-  join,
-  reject,
-  slice,
-  split,
-  propOr,
-  last,
-  defaultTo,
-  pathOr
-} from 'ramda'
+import { compose, isEmpty, join, reject, slice, split, propOr, last, defaultTo, pathOr } from 'ramda'
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
@@ -410,13 +318,7 @@ import { useMainStore } from '../../store'
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
 
-const openableFileTypes = [
-  'pdf',
-  'text',
-  'jpeg',
-  'png',
-  'svg',
-]
+const openableFileTypes = ['pdf', 'text', 'jpeg', 'png', 'svg']
 
 export const contentTypes = {
   pdf: 'application/pdf',
@@ -480,9 +382,7 @@ export default {
      * @returns {String}
      */
     path: function() {
-      return this.$route.query.path
-        ? this.$route.query.path
-        : this.schemaRootPath
+      return this.$route.query.path ? this.$route.query.path : this.schemaRootPath
     },
 
     breadcrumbs: function() {
@@ -498,7 +398,9 @@ export default {
       const version = this.datasetVersion
       const url = `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
       let filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
-      if (this.userToken) { filesUrl += `&api_key=${this.userToken}`}
+      if (this.userToken) {
+        filesUrl += `&api_key=${this.userToken}`
+      }
       return filesUrl
     },
 
@@ -558,11 +460,8 @@ export default {
      * - Vector Drawings (svg)
      */
     isFileOpenable(scope) {
-        const fileType = scope.row.fileType
-        return (
-          this.isMicrosoftFileType(scope) ||
-          openableFileTypes.includes(fileType)
-        )
+      const fileType = scope.row.fileType
+      return this.isMicrosoftFileType(scope) || openableFileTypes.includes(fileType)
     },
 
     isFileTooLarge(file) {
@@ -611,9 +510,7 @@ export default {
       this.$axios
         .get(this.getFilesIdUrl)
         .then(({ data }) => {
-          const schemaVersion = this.convertSchemaVersionToInteger(
-            data.pennsieveSchemaVersion
-          )
+          const schemaVersion = this.convertSchemaVersionToInteger(data.pennsieveSchemaVersion)
           if (schemaVersion < 4.0) {
             this.schemaRootPath = 'packages'
           }
@@ -628,11 +525,7 @@ export default {
      * @param {Object} scope
      */
     isMicrosoftFileType: function(scope) {
-      return (
-        scope.row.fileType == 'MSWord' ||
-        scope.row.fileType == 'MSExcel' ||
-        scope.row.fileType == 'PowerPoint'
-      )
+      return scope.row.fileType == 'MSWord' || scope.row.fileType == 'MSExcel' || scope.row.fileType == 'PowerPoint'
     },
     /**
      * Get contents of directory
@@ -658,7 +551,7 @@ export default {
     /**
      * When the path query changes get files.
      */
-    pathQueryChanged: function () {
+    pathQueryChanged: function() {
       this.$refs.table.clearFilter()
       this.handleResetFilters('fileType')
       this.getFiles()
@@ -693,14 +586,9 @@ export default {
     },
 
     getViewFileUrl(scope) {
-      let uri = `${pathOr('', ['row', 'uri'], scope).replace("s3://", "")}`
-      let s3BucketName = uri.substring(0, uri.indexOf("/"))
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split(`s3://${s3BucketName}/`),
-        pathOr('', ['row', 'uri'])
-      )(scope)
+      let uri = `${pathOr('', ['row', 'uri'], scope).replace('s3://', '')}`
+      let s3BucketName = uri.substring(0, uri.indexOf('/'))
+      const filePath = compose(last, defaultTo([]), split(`s3://${s3BucketName}/`), pathOr('', ['row', 'uri']))(scope)
 
       const fileType = scope.row.fileType.toLowerCase()
       const contentType = contentTypes[fileType]
@@ -710,9 +598,7 @@ export default {
       return this.$axios.get(requestUrl).then(({ data }) => {
         const url = data
         const encodedUrl = encodeURIComponent(url)
-        return this.isMicrosoftFileType(scope)
-          ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}`
-          : url
+        return this.isMicrosoftFileType(scope) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}` : url
       })
     },
 
@@ -725,16 +611,16 @@ export default {
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'view_file_in_web_browser',
-        file_name: pathOr('', ['row','name'], scope),
-        file_path: pathOr('', ['row','path'], scope),
-        file_type: pathOr('', ['row','fileType'], scope),
-        location: "",
-        category: "",
+        file_name: pathOr('', ['row', 'name'], scope),
+        file_path: pathOr('', ['row', 'path'], scope),
+        file_type: pathOr('', ['row', 'fileType'], scope),
+        location: '',
+        category: '',
         dataset_id: this.datasetInfo.id,
         version_id: this.datasetVersion,
-        doi: "",
-        citation_type: "",
-        files: ""
+        doi: '',
+        citation_type: '',
+        files: ''
       })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
@@ -743,13 +629,13 @@ export default {
 
     executeDownload(downloadInfo) {
       const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
-      let params = downloadInfo.uri.replace("s3://", "")
-      let firstIndex = params.indexOf("/") + 1
+      let params = downloadInfo.uri.replace('s3://', '')
+      let firstIndex = params.indexOf('/') + 1
       params = params.substr(firstIndex)
       const matches = params.match(datasetVersionRegexp)
 
       const payload = {
-        paths: [matches.groups.filePath, "manifest.json"],
+        paths: [matches.groups.filePath, 'manifest.json'],
         datasetId: matches.groups.datasetId,
         version: this.datasetVersion,
         archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${this.datasetVersion}-data`
@@ -763,15 +649,15 @@ export default {
         event: 'interaction_event',
         event_name: 'dataset_file_download',
         files: propOr('', 'paths', payload),
-        file_name: "",
-        file_path: "",
-        file_type: "",
-        location: "",
-        category: "",
+        file_name: '',
+        file_path: '',
+        file_type: '',
+        location: '',
+        category: '',
         dataset_id: this.datasetInfo.id,
         version_id: this.datasetVersion,
-        doi: "",
-        citation_type: ""
+        doi: '',
+        citation_type: ''
       })
     },
 
@@ -785,7 +671,7 @@ export default {
       return {
         name: 'maps',
         params: {},
-        query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: path }
+        query: { type: 'scaffold', dataset_id: id, dataset_version: version, file_path: path }
       }
     },
 
@@ -796,13 +682,8 @@ export default {
     getScaffoldViewLink: function(filePath, name) {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      if (
-        filePath &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['abi-scaffold-view-file']
-      ) {
+      if (filePath && this.datasetScicrunch && this.datasetScicrunch['abi-scaffold-view-file']) {
         const shortened = filePath.replace('files/', '')
-        
 
         // Find the file with a matching name
         let viewMetadata = this.datasetScicrunch['abi-scaffold-view-file'].filter(
@@ -817,7 +698,7 @@ export default {
         return {
           name: 'maps',
           params: {},
-          query: { type: "scaffold", dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: name }
+          query: { type: 'scaffold', dataset_id: id, dataset_version: version, file_path: scaffoldPath, viewURL: name }
         }
       }
       return {}
@@ -841,43 +722,31 @@ export default {
         this.$router.push(scaffoldViewLink)
       }
     },
+    isSpecifiedTypeFile: function(path, type) {
+      if (path && this.datasetScicrunch && this.datasetScicrunch[type]) {
+        let plotObjects = this.datasetScicrunch[type]
+        path = path.replace('files/', '')
+        for (let i = 0; i < plotObjects.length; i++) {
+          if (plotObjects[i].dataset.path === path) return true
+        }
+      }
+      return false
+    },
     /**
      * Checks if file is a scaffold view port
      * @param {Object} scope
      */
     isScaffoldViewFile: function(path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['abi-scaffold-view-file']
-      ) {
-        path = path.replace('files/', '')
-        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-view-file'].length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-view-file'][i].dataset.path === path)
-            return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'abi-scaffold-view-file')
     },
     /**
      * Checks if file is openable by scaffold viewer
      * @param {Object} scope
      */
     isScaffoldMetaFile: function(path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['abi-scaffold-metadata-file']
-      ) {
-        path = path.replace('files/', '')
-        for ( let i = 0; i < this.datasetScicrunch['abi-scaffold-metadata-file']?.length; i++) {
-          if (this.datasetScicrunch['abi-scaffold-metadata-file'][i]?.dataset?.path === path)
-            return true
-        }
-      }
-      return false
+      return this.isSpecifiedTypeFile(path, 'abi-scaffold-metadata-file')
     },
-    isBiolucidaViewFile: function (path) {
+    isBiolucidaViewFile: function(path) {
       if (
         path &&
         this.datasetScicrunch &&
@@ -885,59 +754,31 @@ export default {
       ) {
         const biolucida2dObjects = this.datasetScicrunch['biolucida-2d']
         const biolucida3dObjects = this.datasetScicrunch['biolucida-3d']
-        const biolucidaObjects = biolucida2dObjects == undefined ? biolucida3dObjects : biolucida2dObjects.concat(biolucida3dObjects).filter((item) => item !== undefined)
+        const biolucidaObjects =
+          biolucida2dObjects == undefined
+            ? biolucida3dObjects
+            : biolucida2dObjects.concat(biolucida3dObjects).filter(item => item !== undefined)
         path = path.replace('files/', '')
         for (let i = 0; i < biolucidaObjects.length; i++) {
-          if (biolucidaObjects[i].dataset.path === path)
+          const biolucidaId = biolucidaObjects[i]?.biolucida?.identifier
+          if (biolucidaObjects[i].dataset.path === path && biolucidaId !== undefined) {
             return true
+          }
         }
       }
       return false
     },
-    isPlotViewFile: function (path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['abi-plot']
-      ) {
-        let plotObjects = this.datasetScicrunch['abi-plot']
-        path = path.replace('files/', '')
-        for (let i = 0; i < plotObjects.length; i++) {
-          if (plotObjects[i].dataset.path === path)
-            return true
-        }
-      }
-      return false
+    isPlotViewFile: function(path) {
+      return this.isSpecifiedTypeFile(path, 'abi-plot')
     },
-    isVideoViewFile: function (path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['video']
-      ) {
-        let videoObjects = this.datasetScicrunch['video']
-        path = path.replace('files/', '')
-        for (let i = 0; i < videoObjects.length; i++) {
-          if (videoObjects[i].dataset.path == path)
-            return true
-        }
-      }
-      return false
+    isSimulationViewFile: function(path) {
+      return this.isSpecifiedTypeFile(path, 'abi-simulation-omex-file')
     },
-    isSegmentationViewFile: function (path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        this.datasetScicrunch['mbf-segmentation']
-      ) {
-        let segmentationObjects = this.datasetScicrunch['mbf-segmentation']
-        path = path.replace('files/', '')
-        for (let i = 0; i < segmentationObjects.length; i++) {
-          if (segmentationObjects[i].dataset.path === path)
-            return true
-        }
-      }
-      return false
+    isVideoViewFile: function(path) {
+      return this.isSpecifiedTypeFile(path, 'video')
+    },
+    isSegmentationViewFile: function(path) {
+      return this.isSpecifiedTypeFile(path, 'mbf-segmentation')
     },
     openViewerFile(scope) {
       const route = {
@@ -992,21 +833,19 @@ export default {
       })
     },
     sortWithCaseInsensitive(name1, name2) {
-      var a = name1.toUpperCase(); 
-      var b = name2.toUpperCase(); 
-      if (a > b) 
-         return 1 
-      if (a < b) 
-         return -1 
-      return 0; 
+      var a = name1.toUpperCase()
+      var b = name2.toUpperCase()
+      if (a > b) return 1
+      if (a < b) return -1
+      return 0
     },
     s3Path(file) {
       const uri = file.uri
       return uri.substring(uri.indexOf('files/'))
     },
-    getFileTypeFilters: function (data) {
-      let fileTypeLabels = [...new Set(data.map(item => item.fileType ? item.fileType : item.type))]
-      return fileTypeLabels.map((label) => {
+    getFileTypeFilters: function(data) {
+      let fileTypeLabels = [...new Set(data.map(item => (item.fileType ? item.fileType : item.type)))]
+      return fileTypeLabels.map(label => {
         if (label == 'Directory') {
           return {
             text: 'Folder',
@@ -1020,11 +859,11 @@ export default {
         }
       })
     },
-    fileTypeFilterStatus: function (value, row, col) {
+    fileTypeFilterStatus: function(value, row, col) {
       return row.fileType ? row.fileType == value : row.type == value
     },
     handleFilterChange(filters) {
-      this.filtersApplied = filters?.fileType 
+      this.filtersApplied = filters?.fileType
     },
     handleResetFilters(columnKey) {
       this.$refs.table.clearFilter([columnKey])
@@ -1101,7 +940,7 @@ export default {
   vertical-align: top;
 }
 .disabled {
-  opacity: .6;
+  opacity: 0.6;
 }
 :deep(.el-table) {
   th {
@@ -1118,7 +957,8 @@ export default {
   }
 }
 .osparc-service-btn-tooltip {
-  sup, sub {
+  sup,
+  sub {
     vertical-align: baseline;
     position: relative;
     top: -0.4em;
@@ -1134,7 +974,7 @@ export default {
 .custom-button {
   position: absolute;
   left: 7rem;
-  top: .35rem;
+  top: 0.35rem;
   max-width: 5rem;
   width: -webkit-fill-available;
   height: 1rem;
@@ -1143,7 +983,7 @@ export default {
   background-color: $purple;
   color: white;
   border-radius: 10%;
-  margin-right: .25rem;
-  padding: .2rem .3rem .2rem .3rem;
+  margin-right: 0.25rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.3rem;
 }
 </style>

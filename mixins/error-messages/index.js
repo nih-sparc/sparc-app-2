@@ -18,7 +18,7 @@ export default {
         unavailable, please try again later.'
     },
     crosscite: function() {
-      return 'Sorry, we cannot retrieve the information on \
+      return 'Sorry, we cannot retrieve the information for some \
       citations at this moment, please try again later.'
     },
     scicrunch: function() {

@@ -5,7 +5,7 @@ import { retryableBefore, stringToArray, randomInteger } from '../../support/uti
  */
 const datasetIds = stringToArray(Cypress.env('DATASET_IDS'), ',')
 
-const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Plot', 'Image']
+const galleryItems = ['Scaffold', 'Video', 'Flatmap', 'Segmentation', 'Simulation', 'Plot', 'Image']
 
 datasetIds.forEach((datasetId) => {
 
@@ -27,39 +27,45 @@ datasetIds.forEach((datasetId) => {
       cy.wait('@dataset_info', { timeout: 20000 }).then((intercept) => {
         const response = intercept.response.body.result[0]
         // Check if gallery cards loaded
-        if (
-          ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
-          ('video' in response && response['video'].length) ||
-          ('organs' in response && response['organs'].length) ||
-          ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
-          ('abi-plot' in response && response['abi-plot'].length) ||
-          ('common-images' in response && response['common-images'].length) ||
-          ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-          ('biolucida-3d' in response && response['biolucida-3d'].length)
-        ) {
-          if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
-            existGalleryItems.push('Scaffold')
-          }
-          if ('video' in response && response['video'].length) {
-            existGalleryItems.push('Video')
-          }
-          if ('organs' in response && response['organs'].length) {
-            existGalleryItems.push('Flatmap')
-          }
-          if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
-            existGalleryItems.push('Segmentation')
-          }
-          if ('abi-plot' in response && response['abi-plot'].length) {
-            existGalleryItems.push('Plot')
-          }
+        if (response) {          
           if (
+            ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
+            ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) ||
+            ('video' in response && response['video'].length) ||
+            ('organs' in response && response['organs'].length) ||
+            ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
+            ('abi-plot' in response && response['abi-plot'].length) ||
             ('common-images' in response && response['common-images'].length) ||
             ('biolucida-2d' in response && response['biolucida-2d'].length) ||
             ('biolucida-3d' in response && response['biolucida-3d'].length)
           ) {
-            existGalleryItems.push('Image')
+            if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
+              existGalleryItems.push('Scaffold')
+            }
+            if ('video' in response && response['video'].length) {
+              existGalleryItems.push('Video')
+            }
+            if ('organs' in response && response['organs'].length) {
+              existGalleryItems.push('Flatmap')
+            }
+            if ('mbf-segmentation' in response && response['mbf-segmentation'].length) {
+              existGalleryItems.push('Segmentation')
+            }
+            if ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) {
+              existGalleryItems.push('Simulation')
+            }
+            if ('abi-plot' in response && response['abi-plot'].length) {
+              existGalleryItems.push('Plot')
+            }
+            if (
+              ('common-images' in response && response['common-images'].length) ||
+              ('biolucida-2d' in response && response['biolucida-2d'].length) ||
+              ('biolucida-3d' in response && response['biolucida-3d'].length)
+            ) {
+              existGalleryItems.push('Image')
+            }
+            cy.checkGalleyCardState()
           }
-          cy.checkGalleyCardState()
         } else {
           cy.get('.content > .full-size').should(($message) => {
             expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
@@ -140,6 +146,11 @@ datasetIds.forEach((datasetId) => {
                           expect($link, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
                         })
                       }
+                      if (item === 'Simulation') {
+                        cy.get('.plot-container > .user-select-none.svg-container').then(($simulation) => {
+                          expect($simulation, 'Simulation should be displayed').to.exist
+                        })
+                      }
                       if (item === 'Plot') {
                         cy.get('.plot-container > .user-select-none.svg-container').then(($plot) => {
                           expect($plot, 'Plot should be displayed').to.exist
@@ -161,6 +172,7 @@ datasetIds.forEach((datasetId) => {
                           })
                         })
                       }
+                      cy.wait(5000) // Wait for above actions to complete
                       cy.get('.subpage > .file-detail > :nth-child(2)').each(($row) => {
                         expect($row.text().length, 'Viewer metadata should exist').to.be.greaterThan(0)
                       })

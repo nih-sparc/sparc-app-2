@@ -108,7 +108,7 @@ export default {
           propPath: 'item.statistics'
         },
         {
-          displayName: 'Principal Investigator',
+          displayName: 'Contact Author',
           propPath: '_highlightResult.pennsieve.owner'
         },
         {
@@ -139,7 +139,7 @@ export default {
             ? organs.map(item => this.toTermUppercase(item.name.value)).join(', ')
             : undefined
         }
-        case 'Principal Investigator': {
+        case 'Contact Author': {
           const owner = _.get(item, property.propPath)
           return owner
             ? this.toTermUppercase(`${owner.first.name.value} ${this.toTermUppercase(owner.last.name.value)}`)

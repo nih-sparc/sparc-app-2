@@ -69,7 +69,8 @@
               </span>
             </div>
             <div class="metics-container">
-              <span class="label4">Downloads: {{numDownloadsText}}</span>
+              <span class="label4 mr-32">Citations: <span @click="onMetricClicked" class="link">{{numCitations}}</span></span>
+              <span class="label4">Downloads: <span @click="onMetricClicked" class="link">{{numDownloads}}</span></span>
             </div>
           </div>
         </el-col>
@@ -186,12 +187,6 @@ export default {
     showCitations: function() {
       return !this.embargoed && this.numCitations !== 0
     },
-    numCitationsText: function() {
-      return this.showCitations ? `${this.numCitations}` : 'N/A'
-    },
-    numDownloadsText: function() {
-      return this.embargoed ? 'N/A' : `${this.numDownloads}`
-    }
   },
 
   methods: {
@@ -217,9 +212,9 @@ export default {
     scrollToDatasetDetailsTabArea: function() {
       this.getDatasetDetailsTabArea().scrollIntoView()
     },
-    numCitationsClicked: function() {
+    onMetricClicked: function () {
       this.$router.replace({
-        query: { ...this.$route.query, datasetDetailsTab: 'references' }
+        query: { ...this.$route.query, datasetDetailsTab: 'metrics' }
       }).finally(() => {
         this.scrollToDatasetDetailsTabArea()
       })
@@ -276,5 +271,9 @@ export default {
   h1 {
     margin: 0 0 1rem;
   }
+}
+.link {
+  color: $purple;
+  cursor: pointer;
 }
 </style>

@@ -101,11 +101,9 @@ export default {
         pageOrResource: '',
         message: '',
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -113,13 +111,6 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-          typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
               required: true,
@@ -215,39 +206,64 @@ export default {
     async sendForm() {
       const config = useRuntimeConfig()
       this.isSubmitting = true
-      const description = `
+      const message = `
         <b>Is this about a specific page or resource?</b><br>${this.form.pageOrResource}<br><br>
-        <b>Your question or comment?</b><br>${this.form.message}<br><br>
+        <b>Please provide the specific page URL:</b><br>${this.form.pageUrl}<br><br>
+        <b>Provide a short description of your inquiry:</b><br>${this.form.description}<br><br>
+        <b>Your question or comment:</b><br>${this.form.message}<br><br>
         <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
         <b>Email:</b><br>${this.form.user.email}<br><br>
         <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
       `
-      let formData = new FormData();
-      formData.append("type", "general")
-      formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Question or Inquiry Submission: ${this.form.description}`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
-      formData.append("captcha_token", this.form.captchaToken)
+      const fullName = `${this.form.user.firstName} ${this.form.user.lastName}`
 
       // Save form to sessionStorage
       saveForm(this.form)
-
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
-          }
+      try {
+        const response = await this.$axios.post(`${config.public.portal_api}/contact_support`, {
+            name: fullName,
+            email: this.form.user.email,
+            message: message,
+            subject: 'SPARC Question or Inquiry Submission'
         })
-        .catch(() => {
+        const data = response.data
+        const status = response.status
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+        let response_message = ''
+        switch (status) {
+          case 200:
+            response_message = `${data?.message}`
+            ElMessage({
+              showClose: true,
+              message: response_message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          default:
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to submit your request. If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName)
+      } catch (e) {
+          ElMessage({
+            showClose: true,
+            message: `We encountered the following problem when attempting to submit your request: ${e} If this problem persists, please visit <a href='https://${config.public.ROOT_URL}/contact-us?type=bug' target='_blank'>here</a> to file an issue`,
+            type: 'error',
+            duration: 0,
+            dangerouslyUseHTMLString: true
+          })
           this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+      }
+      this.isSubmitting = false
     }
   },
 

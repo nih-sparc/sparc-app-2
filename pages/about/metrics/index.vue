@@ -8,7 +8,7 @@
     <Meta name="twitter:description" content="Browse Metrics" />
   </Head>
   <div class="page-data pb-16">
-    <breadcrumb :breadcrumb="breadcrumb" :title="searchType.label" />
+    <breadcrumb :breadcrumb="breadcrumb" title="Metrics"/>
     <div class="container">
       <div class="search-tabs__container">
         <h1>
@@ -37,14 +37,13 @@
       <user-behaviors
         v-if="$route.query.metricsType == 'userBehaviors'"
         :metrics-data="metricsData"
+        :date-last-updated="dateLastUpdated"
       />
       <scientific-contribution
         v-else
         :metrics-data="metricsData"
+        :date-last-updated="dateLastUpdated"
       />
-      <div class="body1 ml-16">
-        Last metrics update: {{ monthLastUpdate.toLocaleString('default', { month: 'long' }) }} {{ monthLastUpdate.getFullYear() }}
-      </div>
     </div>
   </div>
 </template>
@@ -81,12 +80,34 @@ const metricsTypes = [
   }
 ]
 
-const fetchMetrics = async (axios, url, month, year) => {
-  let ga4MetricsData = await axios.get(`${url}/ga4?year=${year}&month=${month}`)
+const fetchTotalDatasetDownloads = async (axios, url) => {
+  const currentDate = new Date()
+  const currentDay = currentDate.getDate().toString().padStart(2, '0')
+  let currentMonth = currentDate.getMonth() + 1
+  currentMonth = currentMonth.toString().padStart(2, '0')
+  const currentYear = currentDate.getFullYear()
+  const totalDownloadsUrl = `${url}/metrics/dataset/downloads/summary?startDate=2020-01-01&endDate=${currentYear}-${currentMonth}-${currentDay}`
+  let totalDownloads = 0
+  try {
+    const response = await axios.get(totalDownloadsUrl)
+    response.data.forEach(item => {
+        if (item.origin === 'SPARC') {
+          totalDownloads += parseInt(item['downloads'])
+        }
+    })
+  } catch (err) {
+    console.error('Error retrieving download count.', err)
+  } finally {
+    return totalDownloads
+  }
+}
+
+const fetchMetrics = async (axios, config, month, year) => {
+  let ga4MetricsData = await axios.get(`${config.public.METRICS_URL}/ga4?year=${year}&month=${month}`)
   ga4MetricsData = ga4MetricsData.data[0]
-  let pennsieveMetricsData = await axios.get(`${url}/pennsieve?year=${year}&month=${month}`)
+  let pennsieveMetricsData = await axios.get(`${config.public.METRICS_URL}/pennsieve?year=${year}&month=${month}`)
   pennsieveMetricsData = pennsieveMetricsData.data[0]
-  let sparcMetricsData = await axios.get(`${url}/sparc?year=${year}&month=${month}`)
+  let sparcMetricsData = await axios.get(`${config.public.METRICS_URL}/sparc?year=${year}&month=${month}`)
   sparcMetricsData = sparcMetricsData.data[0]
 
   const top5AnatomicalStructuresObject = sparcMetricsData['anatomical_structures_breakdown']['M']
@@ -96,6 +117,7 @@ const fetchMetrics = async (axios, url, month, year) => {
     name: key,
     value: parseInt(top5AnatomicalStructuresObject[key]['N'])
   }))
+  const totalDownloads = await fetchTotalDatasetDownloads(axios, config.public.discover_api_host)
   return {
     userBehaviors: {
       pageViewsLabels: ['Homepage', 'Find Data', 'Tools & Resources', 'Maps', 'News & Events'],
@@ -109,7 +131,8 @@ const fetchMetrics = async (axios, url, month, year) => {
       },
       totalDownloadsData: {
         lastMonth: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_mo']['N']),
-        last3Months: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_quarter']['N'])
+        last3Months: parseInt(pennsieveMetricsData['number_of_sparc_downloads_last_quarter']['N']),
+        total: totalDownloads
       },
       datasetContributorsData: {
         total: parseInt(pennsieveMetricsData['number_of_sparc_users_overall']['N']),
@@ -159,21 +182,18 @@ export default {
     // we use last months date to get the metrics bc the metrics for the current month aren't published until the end of the month
     const lastMonthsDate = getPreviousDate(currentMonth, currentYear)
     let metricsData = undefined
-    let monthLastUpdate
+    let dateLastUpdated
     try {
-      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, lastMonthsDate.month, lastMonthsDate.year)
-      monthLastUpdate = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
+      metricsData = await fetchMetrics($axios, config, lastMonthsDate.month, lastMonthsDate.year)
+      dateLastUpdated = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
-      metricsData = await fetchMetrics($axios, config.public.METRICS_URL, monthBeforeLastDate.month, monthBeforeLastDate.year)
-      .catch(err => {
-        console.error('Could not retreive metrics.', err)
-      })
-      monthLastUpdate = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
+      metricsData = await fetchMetrics($axios, config, monthBeforeLastDate.month, monthBeforeLastDate.year)
+      dateLastUpdated = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
     }
     return {
       metricsData,
-      monthLastUpdate
+      dateLastUpdated
     }
   },
 
@@ -194,16 +214,7 @@ export default {
           to: {
             name: 'about'
           }
-        },
-        {
-          to: {
-            name: 'about-metrics',
-            query: {
-              metricsType: 'scientificContribution'
-            }
-          },
-          label: 'Metrics'
-        },
+        }
       ]
     }
   },

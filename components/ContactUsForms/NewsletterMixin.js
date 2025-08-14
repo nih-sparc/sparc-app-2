@@ -19,9 +19,6 @@ export default {
           first_name: firstName,
           last_name: lastName
         })
-        .then(response => {
-          this.$emit('submit', firstName)
-        })
         .catch(() => {
           this.hasError = true
         })

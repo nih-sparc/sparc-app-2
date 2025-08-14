@@ -62,6 +62,24 @@
             <hr v-if="isFeedbackForm && formType != undefined && formType != 'feedback'" class="mt-32 mb-32" />  
           </template>
         </template>
+        <template v-else-if="isShareForm">
+          <template v-if="!isSubmitted">
+            <div class="heading2 mb-8">Let us know what you would like to share with us:</div>
+            <el-select
+              v-model="formType"
+              class="input-reason"
+              placeholder="Select a reason"
+            >
+              <el-option
+                v-for="option in shareFormTypeOptions"
+                :key="option.key"
+                :label="option.label"
+                :value="option.value"
+              />
+            </el-select>
+            <hr v-if="isShareForm && formType != undefined && formType != 'share'" class="mt-32 mb-32" />  
+          </template>
+        </template>
         <client-only>
           <component
             v-if="!isSubmitted"
@@ -92,7 +110,7 @@ import ResearchForm from '@/components/ContactUsForms/ResearchForm/ResearchForm.
 import ToolsAndResourcesForm from '@/components/ContactUsForms/ToolsAndResourcesForm/ToolsAndResourcesForm.vue'
 import NewsAndEventsForm from '@/components/ContactUsForms/NewsAndEventsForm/NewsAndEventsForm.vue'
 import CommunitySpotlightForm from '@/components/ContactUsForms/CommunitySpotlightForm/CommunitySpotlightForm.vue'
-import { defaultTo, pathOr, propOr } from 'ramda'
+import { defaultTo } from 'ramda'
 import MarkedMixin from '@/mixins/marked'
 
 let formTypes = [
@@ -104,30 +122,25 @@ let formTypes = [
   {
     type: 'feedback',
     id: '1PEIbcIV21upAq55ocnakO',
-    subtypes: ['bug', 'portal-feedback', 'sparc-service', 'general']
+    subtypes: ['bug', 'portal-feedback', 'general']
   },
   {
-    type: 'news-event',
-    id: '6yyjWHw7jfpH4qOqDXwfmi',
+    type: 'sparc-service',
+    id: '2a0X2700agbqMwKeEyMTjn',
     subtypes: []
   },
   {
-    type: 'story',
-    id: '5ZoMC1OGTj1ibNXJ5Na4Ja',
-    subtypes: []
-  },
-  {
-    type: 'tool',
-    id: '2FGDIx61NO5VBV3GBiXH2C',
-    subtypes: []
+    type: 'share',
+    id: '4wtBpa03nQJfchOXj6Ri7e',
+    subtypes: ['news-event', 'story', 'tool']
   }
 ]
 const formComponents = {
   bug: BugForm,
   'portal-feedback': FeedbackForm,
-  'sparc-service': InterestForm,
   general: GeneralForm,
   research: ResearchForm,
+  'sparc-service': InterestForm,
   tool: ToolsAndResourcesForm,
   'news-event': NewsAndEventsForm,
   story: CommunitySpotlightForm,
@@ -201,16 +214,26 @@ export default {
           value: 'portal-feedback'
         },
         {
-          label: 'I am interested in a SPARC Service',
-          value: 'sparc-service'
-        },
-        {
           label: 'I have another question or inquiry',
           value: 'general'
         },
       ],
+      shareFormTypeOptions: [
+        {
+          label: 'I want to share news or an event',
+          value: 'news-event'
+        },
+        {
+          label: 'I want to share a story',
+          value: 'story'
+        },
+        {
+          label: 'I want to share a tool or resource',
+          value: 'tool'
+        },
+      ],
       isSubmitted: false,
-      firstName: ''
+      firstName: '',
     }
   },
 
@@ -224,8 +247,12 @@ export default {
       const feedbackFormType = this.formTypes.find(formType => formType.type === 'feedback')
       return this.$route.query.type === 'feedback' || this.formType === feedbackFormType.type || feedbackFormType.subtypes.includes(this.formType)
     },
+    isShareForm() {
+      const shareFormType = this.formTypes.find(formType => formType.type === 'share')
+      return this.$route.query.type === 'share' || this.formType === shareFormType.type || shareFormType.subtypes.includes(this.formType)
+    },
     formComponent: function() {
-      if (this.$route.query.type === 'feedback') {
+      if (this.$route.query.type === 'feedback' || this.$route.query.type === 'share') {
         return ''
       }
       return defaultTo(ResearchForm, formComponents[this.$route.query.type])

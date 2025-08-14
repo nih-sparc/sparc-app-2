@@ -1,11 +1,13 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
     <dataset-banner-image :src="datasetImage" />
-    <sparc-pill class="sparc-pill" v-if="embargoed">
-      Embargoed
-    </sparc-pill>
+    <div class="pill-container" v-if="embargoed">
+      <sparc-pill v-if="embargoed" class="mb-4">
+        Embargoed
+      </sparc-pill>
+    </div>
     <div class="button-container">
-      <template v-if="datasetTypeName === 'scaffold' && !datasetInfo.study">
+      <template v-if="canViewScaffold">
         <template v-if="hasFiles">
           <el-button
             class="dataset-button"
@@ -20,7 +22,7 @@
             Get Scaffold
           </el-button>
         </template>
-        <el-button class="secondary" @click="actionButtonClicked('cite')">
+        <el-button v-if="datasetTypeName === 'scaffold'" class="secondary" @click="actionButtonClicked('cite')">
           Cite Scaffold
         </el-button>
       </template>
@@ -38,7 +40,7 @@
         </el-button>
       </template>
       <template v-else-if="datasetTypeName === 'computational model'">
-        <el-button v-if="canViewSimulation" @click="openSimulationViewer()">
+        <el-button v-if="canViewSimulation" @click="actionButtonClicked('images')">
           View Simulation
         </el-button>
         <a
@@ -120,6 +122,12 @@ export default {
      */
     datasetImage: function() {
       return propOr('', 'banner', this.datasetInfo)
+    },
+    /**
+     * Returns whether a scaffold can be viewed
+     */
+    canViewScaffold: function() {
+      return this.datasetInfo.sciCrunch ? this.datasetInfo.sciCrunch['abi-scaffold-metadata-file'] : false
     },
     /**
      * Returns whether a simulation can be viewed
@@ -221,11 +229,6 @@ export default {
   text-align: center;
   background: white;
   position: relative;
-  .sparc-pill {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-  }
   button {
     margin: .25rem 0;
   }
@@ -242,5 +245,10 @@ export default {
   .ospac-tooltip {
     color: $purple;
   }
+}
+.pill-container {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
 }
 </style>

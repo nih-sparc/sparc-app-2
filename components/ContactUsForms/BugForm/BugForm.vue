@@ -27,10 +27,19 @@
         v-model="form.detailedDescription"
         type="textarea"
         :rows="3"
+        placeholder="Please provide a detailed description so our team can fully understand the problem."
+      />
+    </el-form-item>
+
+    <el-form-item prop="stepsToReproduce" label="Provide the steps required to reproduce the issue *">
+      <el-input
+        v-model="form.stepsToReproduce"
+        type="textarea"
+        :rows="3"
         placeholder="Please provide specific steps so our team can reproduce your experience in order to resolve the issue."
       />
     </el-form-item>
-    
+
     <el-form-item class="file-upload" prop="fileAttachment" label="File Upload">
       <div class="body4 mb-8"><i>To help others understand your issue an image can really help.</i></div>
       <el-upload
@@ -49,6 +58,23 @@
           <span class="el-upload__tip ml-16">jpg/png file with a size less than 5MB</span>
         </template>
       </el-upload>
+    </el-form-item>
+
+    <el-form-item
+      prop="browser"
+      label="What browser were you using? *"
+    >
+      <el-select
+        v-model="form.browser"
+        placeholder="Select one"
+      >
+        <el-option
+          v-for="browser in browsers"
+          :key="browser"
+          :label="browser"
+          :value="browser"
+        />
+      </el-select>
     </el-form-item>
 
     <hr/>
@@ -83,9 +109,9 @@ import NewsletterMixin from '../NewsletterMixin'
 import FileUploadMixin from '@/mixins/file-upload/index'
 import RecaptchaMixin from '@/mixins/recaptcha/index'
 import UserContactFormItem from '../UserContactFormItem.vue'
-import { propOr } from 'ramda'
 import { useMainStore } from '@/store/index'
 import { loadForm, populateFormWithUserData, saveForm } from '~/utils/utils'
+import { propOr } from 'ramda'
 
 export default {
   name: 'BugForm',
@@ -98,17 +124,18 @@ export default {
 
   data() {
     return {
+      browsers: ['chrome', 'firefox', 'safari', 'other'],
       form: {
         captchaToken: '',
         pageUrl: '',
         shortDescription: '',
         detailedDescription: '',
+        stepsToReproduce: '',
+        browser: undefined,
         user: {
-          typeOfUser: '',
           firstName: useMainStore().firstName,
           lastName: useMainStore().lastName,
           email: useMainStore().profileEmail,
-          sendCopy: true,
           shouldFollowUp: true,
           shouldSubscribe: false,
         }
@@ -116,21 +143,15 @@ export default {
       isSubmitting: false,
       formRules: {
         user: {
-            typeOfUser: [
-            {
-              required: true,
-              message: 'Please select one',
-              trigger: 'change'
-            }
-          ],
           email: [
             {
-              required: true,
-              message: 'Please enter your email',
-              type: 'email',
-              trigger: 'blur',
+                required: true,
+                message: 'Please enter your email',
+                type: 'email',
+                trigger: 'blur',
             }
           ],
+
           firstName: [
             {
               required: true,
@@ -138,6 +159,7 @@ export default {
               trigger: 'blur',
             }
           ],
+
           lastName: [
             {
               required: true,
@@ -146,6 +168,14 @@ export default {
             }
           ]
         },
+
+        browser: [
+          {
+            required: true,
+            message: 'Please select a browser',
+            trigger: 'change'
+          }
+        ],
 
         shortDescription: [
           {
@@ -159,6 +189,14 @@ export default {
           {
             required: true,
             message: 'Please enter a description',
+            trigger: 'change'
+          }
+        ],
+
+        stepsToReproduce: [
+          {
+            required: true,
+            message: 'Please enter the steps',
             trigger: 'change'
           }
         ],
@@ -178,6 +216,14 @@ export default {
     bugSourceUrl() {
       return this.$route.query.source_url
     },
+    formattedDetailedDescription() {
+      // GitHub only treats double line breaks as a line break, so must do this to retain when the user presses enter key
+      return this.form.detailedDescription?.replace(/\n/g, '<br>\n')
+    },
+    formattedStepsToReproduce() {
+      // GitHub only treats double line breaks as a line break, so must do this to retain when the user presses enter key
+      return this.form.stepsToReproduce?.replace(/\n/g, '<br>\n')
+    }
   },
 
   mounted() {
@@ -216,45 +262,90 @@ export default {
       const config = useRuntimeConfig()
       this.isSubmitting = true
       const fileName = propOr('', 'name', this.file)
-      const description = `
-        <b>Problematic page URL:</b><br>${this.form.pageUrl ? this.form.pageUrl : 'N/A'}<br><br>
-        <b>Short description:</b><br>${this.form.shortDescription}<br><br>
-        <b>Detailed Description</b><br>${this.form.detailedDescription}<br><br>
-        ${fileName != '' ? `<b>File Attachment:</b><br>${fileName}<br><br>` : ''}
-        <b>What type of user are you?</b><br>${this.form.user.typeOfUser}<br><br>
-        <b>I'd like updates about this submission:</b><br>${this.form.user.shouldFollowUp ? 'Yes' : 'No'}<br><br>
-        <b>Name:</b><br>${this.form.user.firstName} ${this.form.user.lastName}<br><br>
-        <b>Email:</b><br>${this.form.user.email}
-      `
+      const body = `
+### Description
+${this.formattedDetailedDescription}
+
+### Problematic page URL
+${this.form.pageUrl ? this.form.pageUrl : 'N/A'}
+
+### Steps to reproduce
+${this.form.stepsToReproduce ? this.formattedStepsToReproduce : 'N/A'}
+
+### Browser
+${this.form.browser ? this.form.browser : 'N/A'}
+
+### Do you want to be notified when this issue is resolved?
+${this.form.user.shouldFollowUp ? 'Yes' : 'No'}
+
+## Contact Info
+
+### Name
+${this.form.user.firstName} ${this.form.user.lastName}
+
+### Email
+${this.form.user.email}`
+
       let formData = new FormData();
       formData.append("type", "bug")
-      formData.append("sendCopy", this.form.user.sendCopy)
-      formData.append("title", `SPARC Bug Submission: ${this.form.shortDescription}`)
-      formData.append("description", description)
-      formData.append("userEmail", this.form.user.email)
+      formData.append("title", `${this.form.shortDescription}`)
+      formData.append("body", body)
       formData.append("captcha_token", this.form.captchaToken)
+      formData.append("email", this.form.user.email)
       if (fileName != '') {
         const extension = fileName.substring(fileName.lastIndexOf('.')); 
         formData.append("attachment", this.file, `attachment${extension}`)
       }
+
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          } else {
-            this.$emit('submit', this.form.user.firstName)
-          }
+      try {
+        const { data } = await this.$axios.post(`${config.public.portal_api}/create_issue`, formData)
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+        const status = data?.status
+        const message = data?.message
+        switch (status) {
+          case 'success':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 'warning':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 'error':
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to create a bug report. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            break
+        }
+        this.$emit('submit', this.form.user.firstName)
+      } catch (e) {
+        ElMessage({
+          showClose: true,
+          message: `There was a problem when attempting to create a bug report. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+          type: 'error',
+          duration: 0,
+          dangerouslyUseHTMLString: true
         })
-        .catch(() => {
-          this.hasError = true
-        })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+        this.hasError = true
+      }
+      this.isSubmitting = false
     }
   },
 

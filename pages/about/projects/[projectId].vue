@@ -34,12 +34,14 @@
             <div v-if="fundingProgram.length > 0" class="body1 mb-4">
               FUNDING PROGRAM(S): <span class="label4">{{ fundingProgram.join(', ') }}</span>
             </div>
-            <div v-if="awardId" class="body1">
-              NIH AWARD:
-              <a class="link1" :href="nihReporterUrl" :target="!opensInNewTab(nihReporterUrl) ? '_self' : '_blank'">
-                {{ awardId }}
-                <svgo-icon-open v-if="!isInternalLink(nihReporterUrl)" class="icon-open" />
+            <div v-if="awards.length > 0" class="body1">
+              AWARD(S):
+              <span v-for="(award, index) in awards" :key=award.title class="body1">
+                <a class="link1" :href="award.url" :target="!opensInNewTab(award.url) ? '_self' : '_blank'">
+                {{ award.title }}
+                <svgo-icon-open v-if="!isInternalLink(award.url)" class="icon-open" /><span v-if="index < awards.length - 1">, </span>
               </a>
+              </span>
             </div>
             <hr class="mt-16" />
             <div class="body1 content" v-html="parseMarkdown(description)" />
@@ -76,7 +78,7 @@ import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
-import { propOr, isEmpty } from 'ramda'
+import { pathOr, propOr, isEmpty } from 'ramda'
 import consortiaMixin from '@/mixins/consortia'
 import { ref } from 'vue'
 
@@ -93,14 +95,21 @@ export default {
     const { $axios, $contentfulClient } = useNuxtApp()
     try {
       const project = await $contentfulClient.getEntry(route.params.projectId)
-      let associatedDatasets = {}
-      await $axios.get(`${config.public.portal_api}/project/${project.fields.awardId}`).then(({ data }) => {
-        associatedDatasets = data
-      }).catch(() => {
-        // No award ID found
-      })
+      const awards = pathOr(null, ['fields','awards'], project)
+      let associatedDatasets = []
+
+      await Promise.all(awards.map(async (award) => {
+        try {
+          const { data } = await $axios.get(`${config.public.portal_api}/project/${award.fields.title}`)
+          if (Array.isArray(data) && data.length > 0)
+          associatedDatasets = associatedDatasets.concat(data)
+        } catch (error) {
+          console.error(`Failed to fetch data for awardId ${award.fields.title}`, error)
+        }
+      }))
       return {
         fields: project.fields,
+        awards: awards.map(award => award.fields),
         associatedDatasets,
         associatedDatasetsMaxHeight: ref(0)
       }
@@ -139,6 +148,12 @@ export default {
         },
         {
           to: {
+            path: '/about/projects',
+          },
+          label: 'Projects'
+        },
+        {
+          to: {
             name: 'about-projects',
             query: {
               consortiaType: this.fundingProgram
@@ -153,9 +168,10 @@ export default {
      * @returns {String}
      */
     getImageSrc: function () {
-      return this.fields.institutions[0].fields.logo
-        ? this.fields.institutions[0].fields.logo.fields.file.url
-        : ''
+      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'url'], this.fields)
+    },
+    getImageAlt: function () {
+      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], this.fields)
     },
     title: function () {
       return this.fields.title
@@ -166,9 +182,6 @@ export default {
     fundingProgram: function () {
       return this.fields.program
     },
-    awardId: function () {
-      return this.fields.awardId
-    },
     institutions: function () {
       let names = ''
       this.fields.institutions.forEach(institution => {
@@ -178,18 +191,6 @@ export default {
     },
     investigators: function () {
       return this.fields.principalInvestigators
-    },
-    nihReporterUrl: function () {
-      return this.fields.nihReporterUrl || '#'
-    },
-    /**
-     * Get image source
-     * @returns {String}
-     */
-    getImageAlt: function () {
-      return this.fields.institutions[0].fields.logo
-        ? this.fields?.institutions[0].fields.logo.fields.file.description
-        : ''
     },
     /**
      * Compute subtitle based on its project section
