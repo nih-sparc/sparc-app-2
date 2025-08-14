@@ -56,7 +56,7 @@
             >
               <client-only>
                 <tools-and-resources-facet-menu
-                  :fundingFacets="resourcesFundingFacets"
+                  :fundingFacets="resourcesFundingFacets || []"
                   @tool-and-resources-selections-changed="onPaginationPageChange(1)"
                 />
               </client-only>
@@ -79,7 +79,7 @@
                 <span v-if="resources?.items?.length" class="label1">
                   Sort
                   <client-only>
-                    <sort-menu  
+                    <sort-menu
                       :options="sortOptions"
                       :selected-option="selectedSortOption"
                       @update-selected-option="onSortOptionChange"
