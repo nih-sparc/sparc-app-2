@@ -352,7 +352,7 @@ export default {
       handler: async function (newValue) {
         if (newValue && newValue !== '') {
           await this.fetchOrganizations()
-          this.fetchPublishedDatasets(newValue)
+          await this.fetchPublishedDatasets(newValue)
           await this.fetchInProgressDatasets()
           this.fetchDatasetSubmissions()
           this.fetchQuestions()
@@ -383,7 +383,7 @@ export default {
           })?.map(item =>
             item.doi.startsWith("10.17504/") ? item.doi.replace("10.17504/", "") : null
           )
-          const protocolsMap = await fetchProtocolsWithLimit(protocolSuffixes, 5)
+          const protocolsMap = await this.fetchProtocolsWithLimit(protocolSuffixes, 5)
           
           items.push({
               'name': datasetName,
@@ -534,7 +534,7 @@ export default {
         while (queue.length > 0) {
           const suffix = queue.shift()
           const url = `${this.$config.public.PROTOCOLS_IO_HOST}/api/v4/protocols/${suffix}`
-          const data = await fetchWithRetry(this.$axios, url)
+          const data = await this.fetchWithRetry(url)
           results[suffix] = data
         }
       })
