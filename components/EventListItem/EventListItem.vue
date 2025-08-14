@@ -26,30 +26,32 @@
         <div>
           <div class="body1 my-8" v-html="highlightMatches(item.fields.summary, $route.query.search)"/>
           <table class="property-table">
-            <tr>
-              <td class="property-name-column">
-                Event Type
-              </td>
-              <td>
-                {{ item.fields.eventType }}
-              </td>
-            </tr>
-            <tr>
-              <td class="property-name-column">
-                Event Date(s)
-              </td>
-              <td>
-                {{ dateRange }}
-              </td>
-            </tr>
-            <tr>
-              <td class="property-name-column">
-                Location
-              </td>
-              <td>
-                {{ item.fields.location }}
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td class="property-name-column">
+                  Event Type
+                </td>
+                <td>
+                  {{ item.fields.eventType }}
+                </td>
+              </tr>
+              <tr>
+                <td class="property-name-column">
+                  Event Date(s)
+                </td>
+                <td>
+                  {{ dateRange }}
+                </td>
+              </tr>
+              <tr>
+                <td class="property-name-column">
+                  Location
+                </td>
+                <td>
+                  {{ item.fields.location }}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
