@@ -45,22 +45,24 @@
         {{ story.fields.summary }}
       </div>
       <table v-if="story.spotlightType" class="property-table mt-8">
-        <tr>
-          <td class="property-name-column">
-            Spotlight Type
-          </td>
-          <td>
-            {{ story.spotlightType }}
-          </td>
-        </tr>
-        <tr>
-          <td class="property-name-column">
-            Focus
-          </td>
-          <td>
-            {{ anatomicalStructureText }}
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td class="property-name-column">
+              Spotlight Type
+            </td>
+            <td>
+              {{ story.spotlightType }}
+            </td>
+          </tr>
+          <tr>
+            <td class="property-name-column">
+              Focus
+            </td>
+            <td>
+              {{ anatomicalStructureText }}
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
