@@ -75,7 +75,7 @@
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
-                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
+                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="resolvedOsparcLink" />
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
@@ -406,6 +406,7 @@ export default {
       sparcAwards: [],
       showCopySuccess: false,
       subtitles: [],
+      resolvedOsparcLink: undefined,
     }
   },
 
@@ -424,7 +425,7 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     this.$gtm.trackEvent({
       event: "",
       category: "",
@@ -439,6 +440,8 @@ export default {
       file_path: "",
       file_type: "",
     })
+
+    this.resolvedOsparcLink = await this.getOsparcLink();
   },
 
   computed: {
@@ -563,10 +566,6 @@ export default {
     },
     sourceCodeLink: function () {
       return pathOr(null, ['release','repoUrl'], this.datasetInfo)
-    },
-    osparcLink: function () {
-      // using axios, get osparc file_viewers from /get_osparc_data API endpoint
-      return `${this.$config.public.osparc_host}view?file_type=IPYNB&viewer_key=simcore/services/dynamic/jupyter-math&viewer_version=2.0.9&download_link=https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata&file_size=1`
     },
     numDownloads: function () {
       let numDownloads = 0;
@@ -764,7 +763,23 @@ export default {
             throw error
           })
       }
-    }
+    },
+    getOsparcLink: async function () {
+      try {
+        // check if file exists on .hornet/metadata.json path using axios and then show the button
+        const response = await this.$axios.get(`https://api.pennsieve.net/discover/datasets/${this.datasetId}/versions/1/assets/browse?path=&limit=5&offset=0&file=.hornet/manifest.json`)
+        console.log('Response from Pennsieve API:', response.data)
+        if(response.data.totalCount === 0) {
+          // Hide the button if the metadata file is not present
+          return undefined
+        } else {
+          const downloadLink = `https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata`
+          return `${this.$config.public.osparc_host}view?file_type=IPYNB&viewer_key=simcore/services/dynamic/jupyter-math&viewer_version=2.0.9&download_link=${downloadLink}&file_size=100`
+        }
+      } catch (error) {
+        return undefined
+      }
+    },
   }
 }
 </script>

@@ -9,20 +9,21 @@
     <div class="mb-16"><span class="label4">Repository Link: </span><a target="_blank" :href="repoLink">{{ repoLink }}</a></div>
     <div class="flex-col">
       <a
-        class="fit-width"
+        class="inherit-width"
         :href="repoLink"
         target="_blank"
       >
-        <el-button>
+        <el-button class="inherit-width">
           Visit Repository <svgo-icon-open class="icon-open" />
         </el-button>
       </a>
       <a
-      class="fit-width"
+      class="inherit-width"
       :href="osparcLink"
       target="_blank"
+      :style="{ display: osparcLink === undefined ? 'none' : 'block' }"
       >
-        <el-button class="secondary no-shadow">
+        <el-button class="secondary no-shadow inherit-width">
           Run on Osparc <svgo-icon-open class="icon-open" />
         </el-button>
       </a>
@@ -41,7 +42,7 @@ export default {
     },
     osparcLink: {
       type: String,
-      default: () => "",
+      default: () => undefined,
       required: true
     },
   }
@@ -58,9 +59,10 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 160px;
 }
-.fit-width {
-  width: fit-content;
+.inherit-width {
+  width: inherit;
 }
 .no-shadow {
   box-shadow: none;
