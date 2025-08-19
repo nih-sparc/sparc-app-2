@@ -768,7 +768,6 @@ export default {
       try {
         // check if file exists on .hornet/metadata.json path using axios and then show the button
         const response = await this.$axios.get(`https://api.pennsieve.net/discover/datasets/${this.datasetId}/versions/1/assets/browse?path=&limit=5&offset=0&file=.hornet/manifest.json`)
-        console.log('Response from Pennsieve API:', response.data)
         if(response.data.totalCount === 0) {
           // Hide the button if the metadata file is not present
           return undefined
