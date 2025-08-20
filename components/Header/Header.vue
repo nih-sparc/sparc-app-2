@@ -232,6 +232,11 @@ export default {
     activeLink: function(query) {
       if (this.firstPath.includes(query)) {
         return true
+      } else if (
+        query.split('?')[0].replace('/', '') === 'data' &&
+        this.firstPath.replace('/', '') === 'datasets'
+      ) {
+        return true
       } else {
         return false
       }
