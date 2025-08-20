@@ -24,7 +24,7 @@
       :style="{ display: osparcLink === undefined ? 'none' : 'block' }"
       >
         <el-button class="secondary no-shadow inherit-width">
-          Run on Osparc <svgo-icon-open class="icon-open" />
+          Run on o²S²PARC <svgo-icon-open class="icon-open" />
         </el-button>
       </a>
     </div>
