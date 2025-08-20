@@ -30,12 +30,12 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@1.11.0-beta.1":
-  version "1.11.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.0-beta.1.tgz#78dadf671a1f9f62ad0333a2c474117e860f6bb7"
-  integrity sha512-9MjDKUFsDTGGpyCS4TTEcoQyUi8VGmMAXm1Pc7Pk+3ZRTuFlo5Kz4Xy5nWl+h+o/lGNnOTq2eZTfn0rE0e+Peg==
+"@abi-software/flatmapvuer@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.0.tgz#cfed4e5979da17e1591f58bbcdd99cebb059d599"
+  integrity sha512-iy9p+RbgjbOfJ+ri2DfppAgBw9I2bA62zZaoUuDy/v95NoCP9nEvHsIy2kGwu474Fj66g0FlRG0wI2y8OI5Qeg==
   dependencies:
-    "@abi-software/map-utilities" "^1.6.1-beta.6"
+    "@abi-software/map-utilities" "^1.7.0"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -75,13 +75,13 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@2.10.0-beta.8":
-  version "2.10.0-beta.8"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.10.0-beta.8.tgz#1fdd816ff8945618d85363880ef2c358d0d11545"
-  integrity sha512-sv5hwxmpMfoYuj8a6QvTpYxAG8QscthsC9JnC0nOXK9UwuZknsMwTAgeDFqdIe1AOeaL7QeNBI/V5D28SapUqA==
+"@abi-software/map-side-bar@2.10.0":
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.10.0.tgz#8fe2b5c294af7ace02c35cc56d59f63fdc10cf0f"
+  integrity sha512-amslg5ljnnp7LbOBL9Jp0p9lFOfcTvqps9doIr/hpna70G/+SfZhpxCEZEbTQt8gstOfTzV9Omv59xX/kz5Jdg==
   dependencies:
     "@abi-software/gallery" "^1.1.2"
-    "@abi-software/map-utilities" "1.6.1-beta.6"
+    "@abi-software/map-utilities" "^1.7.0"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
@@ -93,10 +93,10 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@1.6.1-beta.6", "@abi-software/map-utilities@^1.6.1-beta.6":
-  version "1.6.1-beta.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.6.1-beta.6.tgz#4901097e38898e2d3785c736305d44935a0b452c"
-  integrity sha512-cRFzvsZNNcV9FAFmxtTQ/YPPIOspb3IkeJOzvWEBBQSNA3Mda78hPio6fK3KvVltompbS2T7pypfr9M6ImbU2A==
+"@abi-software/map-utilities@1.7.0", "@abi-software/map-utilities@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.0.tgz#559dd81b23560a2703276be7447c13bca85a4458"
+  integrity sha512-crx5Ne4OVwhoNr74DyF0pn2wpYqngRSWoZb6Seb8K0FD6AeUycHC/Pa7VP35kQpXnbBBminsb8WNrXTCjrzx5Q==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -106,16 +106,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.11.1-beta.4":
-  version "1.11.1-beta.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.11.1-beta.4.tgz#64eacd2b544ab5393bf836e060ecb9b4fd9b1ee7"
-  integrity sha512-GF/mAYxUE6eYr9ID1UVRtStf5SLFOt2eLE44oub1CZRXUIKow7a7trHtQkqTIl637mgk+B7Sj3inFwMl/gNdpw==
+"@abi-software/mapintegratedvuer@1.12.0":
+  version "1.12.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.12.0.tgz#934b6615a6d3662fd4c7671e603db77d8bbfa435"
+  integrity sha512-zZKmAmxz2XfSR+3DYUo295gNHXo+u1xZRLJwaLYTfOHV+bs1NSjYsYxnEj3sG2oDZ2AodxIR+1wLprQG1kLrwg==
   dependencies:
-    "@abi-software/flatmapvuer" "1.11.0-beta.1"
-    "@abi-software/map-side-bar" "2.10.0-beta.8"
-    "@abi-software/map-utilities" "1.6.1-beta.6"
+    "@abi-software/flatmapvuer" "1.11.0"
+    "@abi-software/map-side-bar" "2.10.0"
+    "@abi-software/map-utilities" "1.7.0"
     "@abi-software/plotvuer" "1.0.4"
-    "@abi-software/scaffoldvuer" "1.11.0-beta.3"
+    "@abi-software/scaffoldvuer" "1.11.0"
     "@abi-software/simulationvuer" "2.0.14"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
@@ -165,12 +165,12 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@1.11.0-beta.3":
-  version "1.11.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.11.0-beta.3.tgz#35630b2c9d518aac4da1cc70ef784b2f807698b0"
-  integrity sha512-KPKkhUOu5GVmBi0AkddOdqSxOGhocTaKMeM97ON6Tf+vlHlrqFDSMAxzHu3M8FI+JyTupH8s5mPOYu6WSUNmtA==
+"@abi-software/scaffoldvuer@1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.11.0.tgz#900caacae9c5594be43eef8f52492b5f67eec534"
+  integrity sha512-H6OFVjm0kZmF8Cmu73ou+UHSvv7WPB4Bm+uVk3nuMM15NkinxxeSMoGyIdf+bWrXrsr3L8ojJcfdcg3aSQrB3A==
   dependencies:
-    "@abi-software/map-utilities" "1.6.1-beta.6"
+    "@abi-software/map-utilities" "^1.7.0"
     "@abi-software/sparc-annotation" "^0.3.2"
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
@@ -183,7 +183,7 @@
     vue "^3.4.21"
     vue-router "^4.2.5"
     vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.14.3"
+    zincjs "^1.15.0"
 
 "@abi-software/simulationvuer@2.0.14":
   version "2.0.14"
@@ -18547,10 +18547,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.14.3:
-  version "1.14.3"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.14.3.tgz#0d7abcf68f1868ece2dc1be424c286becb37757c"
-  integrity sha512-TWs/BZyyKpZtNLzpFT2Qk4OcfAACO5j3D+vkJ6526pM4FSpz6uewxdE0/LErFAnTQXTPxFG+Yqy6JlYEumDRTw==
+zincjs@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.15.0.tgz#3abfb30c2db543dec5bd839fcc3e88b89a850a85"
+  integrity sha512-QbUhJKkfMF765gWcsgZmD9Q4K4ZQiPUIsJyGkfYxlisbJm56xJPhM/39RJjYBvph0Qi8OWCRCzmymV6srY4jGA==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
