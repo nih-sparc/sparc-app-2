@@ -17,44 +17,46 @@
           }" v-html="highlightMatches(scope.row.fields.title, $route.query.search)" />
         <div class="mt-8 mb-8" v-html="highlightMatches(scope.row.fields.shortDescription, $route.query.search)" />
         <table class="property-table">
-          <tr v-if="scope.row.fields.focus">
-            <td class="property-name-column">
-              Focus
-            </td>
-            <td v-html="highlightMatches(scope.row.fields.focus.join(', '), $route.query.search)"/>
-          </tr>
-          <tr v-if="scope.row.fields.principalInvestigators">
-            <td class="property-name-column">
-              Principle Investigator(s)
-            </td>
-            <td v-html="highlightMatches(scope.row.fields.principalInvestigators.join(', '), $route.query.search)" />
-          </tr>
-          <tr v-if="scope.row.fields.institutions">
-            <td class="property-name-column">
-              Institution(s)
-            </td>
-            <td v-html="highlightMatches(getInstitutionNames(scope.row.fields.institutions), $route.query.search)" />
-          </tr>
-          <tr v-if="scope.row.fields.program.length > 0">
-            <td class="property-name-column">
-              Funding Program(s)
-            </td>
-            <td v-html="highlightMatches(scope.row.fields.program.join(', '), $route.query.search)" />
-          </tr>
-          <tr v-if="scope.row.fields.awards?.length > 0">
-            <td class="property-name-column">
-              Award(s)
-            </td>
-            <td>
-              <template v-for="(award, index) in scope.row.fields.awards" :key="award.fields.title">
-                <a :href="award.fields.url" target="_blank">
-                  {{ award.fields.title }}
-                  <svgo-icon-open class="open-icon" v-if="!isInternalLink(award.fields.url)" />
-                </a>
-                <span v-if="index < scope.row.fields.awards.length - 1">, </span>
-              </template>
-            </td>
-          </tr>
+          <tbody>
+            <tr v-if="scope.row.fields.focus">
+              <td class="property-name-column">
+                Focus
+              </td>
+              <td v-html="highlightMatches(scope.row.fields.focus.join(', '), $route.query.search)"/>
+            </tr>
+            <tr v-if="scope.row.fields.principalInvestigators">
+              <td class="property-name-column">
+                Principle Investigator(s)
+              </td>
+              <td v-html="highlightMatches(scope.row.fields.principalInvestigators.join(', '), $route.query.search)" />
+            </tr>
+            <tr v-if="scope.row.fields.institutions">
+              <td class="property-name-column">
+                Institution(s)
+              </td>
+              <td v-html="highlightMatches(getInstitutionNames(scope.row.fields.institutions), $route.query.search)" />
+            </tr>
+            <tr v-if="scope.row.fields.program.length > 0">
+              <td class="property-name-column">
+                Funding Program(s)
+              </td>
+              <td v-html="highlightMatches(scope.row.fields.program.join(', '), $route.query.search)" />
+            </tr>
+            <tr v-if="scope.row.fields.awards?.length > 0">
+              <td class="property-name-column">
+                Award(s)
+              </td>
+              <td>
+                <template v-for="(award, index) in scope.row.fields.awards" :key="award.fields.title">
+                  <a :href="award.fields.url" target="_blank">
+                    {{ award.fields.title }}
+                    <svgo-icon-open class="open-icon" v-if="!isInternalLink(award.fields.url)" />
+                  </a>
+                  <span v-if="index < scope.row.fields.awards.length - 1">, </span>
+                </template>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </template>
     </el-table-column>
