@@ -1,6 +1,5 @@
 {
   "name": "nuxt-app",
-  "private": false,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -66,7 +65,7 @@
     "vue": "3.4.21"
   },
   "engines": {
-    "node": "18.17.1"
+    "node": "20.19.0"
   },
   "type": "module"
 }
