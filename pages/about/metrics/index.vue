@@ -162,7 +162,7 @@ const fetchMetrics = async (axios, config, month, year) => {
       anatomicalStructuresChartLabels: top5AnatomicalStructuresArray.map(structure => structure.name),
       anatomicalStructuresChartData: top5AnatomicalStructuresArray.map(structure => structure.value),
       fileStorage: {
-        totalGB: parseInt(pennsieveMetricsData['total_number_gigabytes']['N'])
+        totalTB: parseInt(pennsieveMetricsData['total_number_gigabytes']['N'])/1000.00
       }
     }
   }
