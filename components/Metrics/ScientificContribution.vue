@@ -36,7 +36,7 @@
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
-          File Storage: <span class="col-data">{{ totalFileStorage }} GB </span><span class="body1">Across all Data</span>
+          File Storage: <span class="col-data">{{ totalFileStorage }} TB </span><span class="body1">Across all Data</span>
         </div>
       </div>
       <div v-if="totalProtocols" class="col">
@@ -237,7 +237,7 @@ export default {
       return pathOr('', ['subjects', 'total'], this.scientificContribution)
     },
     totalFileStorage() {
-      return pathOr('', ['fileStorage', 'totalGB'], this.scientificContribution)
+      return pathOr('', ['fileStorage', 'totalTB'], this.scientificContribution)
     },
     totalProtocols() {
       return pathOr(undefined, ['protocols', 'total'], this.scientificContribution)
