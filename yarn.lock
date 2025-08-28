@@ -30,14 +30,14 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.0.tgz#cfed4e5979da17e1591f58bbcdd99cebb059d599"
-  integrity sha512-iy9p+RbgjbOfJ+ri2DfppAgBw9I2bA62zZaoUuDy/v95NoCP9nEvHsIy2kGwu474Fj66g0FlRG0wI2y8OI5Qeg==
+"@abi-software/flatmapvuer@1.11.1":
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.1.tgz#b599259f183a12696591fe65c749cbcfc04686e2"
+  integrity sha512-Qi/xZVd4FmI+rLxd2q9Mi110T7P+47bh1KATJLyVe3rGV1j/mXO04FiD9P29NjHSYZrcSKz2HgbqF/slvzrsAQ==
   dependencies:
     "@abi-software/map-utilities" "^1.7.0"
     "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     css-element-queries "^1.2.2"
     element-plus "2.8.4"
@@ -65,24 +65,24 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.15"
 
-"@abi-software/gallery@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-1.1.2.tgz#14c0978dadffa277a5b37e1905ea365829c957fb"
-  integrity sha512-VeKL8k12yvm/m5Iiz83yq1PDzIThT3if+B9zQywOom3pWdUzmfCVfPZjeiJYcub6t/6BmZq1WZJmvDrCnVXgxw==
+"@abi-software/gallery@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/gallery/-/gallery-1.2.0.tgz#cc8b83f6ab5581596af222a045397c9ab58cfb25"
+  integrity sha512-PPsnpYVQNeq0jpwtLoOV7J442thBme/0fVoHmwStqHEAhJaPODjTNc4TfbcaausNT++E7Y38WYMhAPA2YpJG/Q==
   dependencies:
     axios "^1.6.5"
     element-plus "2.8.4"
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@2.10.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.10.0.tgz#8fe2b5c294af7ace02c35cc56d59f63fdc10cf0f"
-  integrity sha512-amslg5ljnnp7LbOBL9Jp0p9lFOfcTvqps9doIr/hpna70G/+SfZhpxCEZEbTQt8gstOfTzV9Omv59xX/kz5Jdg==
+"@abi-software/map-side-bar@2.10.2":
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.10.2.tgz#10b825fc76b6002ff8a7fd766fba7f36b01dde03"
+  integrity sha512-q8PihapiW2NBwlx74vP9dBdeyB9ut5ZkL80/bLbs9/BYUFVfLY/R2jDhleXjgeEcKxLwmYbEfisOosybwTm5BQ==
   dependencies:
-    "@abi-software/gallery" "^1.1.2"
+    "@abi-software/gallery" "^1.2.0"
     "@abi-software/map-utilities" "^1.7.0"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "^1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     algoliasearch "^4.10.5"
     element-plus "2.8.4"
@@ -106,19 +106,19 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.12.0":
-  version "1.12.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.12.0.tgz#934b6615a6d3662fd4c7671e603db77d8bbfa435"
-  integrity sha512-zZKmAmxz2XfSR+3DYUo295gNHXo+u1xZRLJwaLYTfOHV+bs1NSjYsYxnEj3sG2oDZ2AodxIR+1wLprQG1kLrwg==
+"@abi-software/mapintegratedvuer@1.12.1":
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.12.1.tgz#4dcbe223fc9ac82d74928c9b2b80186b3919e564"
+  integrity sha512-p2VYZGq87y4HeFMJQeEG1RX0hVDed7Y9398jXYV3vDPzVw99QMsqIfKoIqpc75lP+dfXpiRL8pMSfKi+37vEjQ==
   dependencies:
-    "@abi-software/flatmapvuer" "1.11.0"
-    "@abi-software/map-side-bar" "2.10.0"
+    "@abi-software/flatmapvuer" "1.11.1"
+    "@abi-software/map-side-bar" "2.10.2"
     "@abi-software/map-utilities" "1.7.0"
-    "@abi-software/plotvuer" "1.0.4"
-    "@abi-software/scaffoldvuer" "1.11.0"
-    "@abi-software/simulationvuer" "2.0.14"
+    "@abi-software/plotvuer" "1.0.5"
+    "@abi-software/scaffoldvuer" "1.11.2"
+    "@abi-software/simulationvuer" "2.0.17"
     "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     "@vitejs/plugin-vue" "^4.6.2"
     css-element-queries "^1.2.3"
@@ -149,12 +149,12 @@
   dependencies:
     papaparse "^5.5.1"
 
-"@abi-software/plotvuer@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.4.tgz#907ceceef0a4759e573e60a9cde3d754242b74b0"
-  integrity sha512-ptpD4qvH1bxVBakhuiO7N3YLpWIhnN86MSXNOM2ntB45AAdEyS49CLnZ9HJB2YvVUkZu/RCnFvz9uy32BJ5H3Q==
+"@abi-software/plotvuer@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.5.tgz#803f056040b68344e6933c8079569b75d69cd4af"
+  integrity sha512-xtIeuahhi9/biyZvoP/zRuzhUVJBniixIAqoX81VYCBQqmpM1Z8qGm9fBzYisIrYHBTxiAySXTp+B2Ve/zgnvw==
   dependencies:
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     css-element-queries "^1.2.3"
     element-plus "2.8.4"
     papaparse "^5.5.2"
@@ -165,14 +165,14 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@1.11.0":
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.11.0.tgz#900caacae9c5594be43eef8f52492b5f67eec534"
-  integrity sha512-H6OFVjm0kZmF8Cmu73ou+UHSvv7WPB4Bm+uVk3nuMM15NkinxxeSMoGyIdf+bWrXrsr3L8ojJcfdcg3aSQrB3A==
+"@abi-software/scaffoldvuer@1.11.2":
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.11.2.tgz#79877024b9c9741ef4402d9fbf9c7c63dccf79de"
+  integrity sha512-NGRE4gU+Ro+zZbrlBmVJflgDZFNgzuBpcYNHWQ4S26ZFPQ5a5lWjPzHZjc01JaQk2JpHm9VhBlaXVV7yfaTZZg==
   dependencies:
-    "@abi-software/map-utilities" "^1.7.0"
+    "@abi-software/map-utilities" "1.7.0"
     "@abi-software/sparc-annotation" "^0.3.2"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     core-js "^3.22.5"
     element-plus "2.8.4"
@@ -182,15 +182,14 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
     vue-router "^4.2.5"
-    vue3-component-svg-sprite "^0.0.1"
-    zincjs "^1.15.0"
+    zincjs "1.15.1"
 
-"@abi-software/simulationvuer@2.0.14":
-  version "2.0.14"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.14.tgz#6f627806ac7f42e02b2410648363bcf6d5e5e313"
-  integrity sha512-nv2HRSN/g0mvF+4iWEzU8qEgwmCtvqrid7ESa83iGHtFy/T7kHWtC40zu77Y9/VI9OTLNxBWuJVKypZhuZKsNA==
+"@abi-software/simulationvuer@2.0.17":
+  version "2.0.17"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.17.tgz#e1d84259541dff298a718021cbb4f63778b640c0"
+  integrity sha512-fa3x/bXiMZgijAIc19fDuirO/mt7nDISZrMyXZA0GXZVVUflFQSNRsz73jqGQkY7ZqdJy0rfT/+oWpTJoGWyAA==
   dependencies:
-    "@abi-software/plotvuer" "1.0.4"
+    "@abi-software/plotvuer" "1.0.5"
     element-plus "2.8.4"
     jsonschema "^1.4.0"
     mathjs "^13.0.2"
@@ -221,6 +220,13 @@
   integrity sha512-K1fFe3m/su/Tva1qMxKdv6a1AIQiEoVajNfMQycqAg8NM2Z9KDmiXqAe5PgPYx7YDOy3SluRNtysSXRqhyutgg==
   dependencies:
     vue "^3.3.13"
+
+"@abi-software/svg-sprite@1.0.2", "@abi-software/svg-sprite@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.2.tgz#5df468a00675bba71c8722c7ba734fc777725c79"
+  integrity sha512-pvNwhKgacuCC8tG30NTFOfPZBFZl9nzJiM2klGAm4wzQaZ52nuTKu1Xpj1mUxSeh/BenFHszybaaYT8x+NJuFg==
+  dependencies:
+    vue "^3.4.21"
 
 "@abi-software/svg-sprite@^1.0.1":
   version "1.0.1"
@@ -18121,13 +18127,6 @@ vue-social-sharing@^4.0.0-alpha4:
   resolved "https://registry.yarnpkg.com/vue-social-sharing/-/vue-social-sharing-4.0.0-alpha4.tgz#48d17f4ff2828c60689f2a065df86588af2bd1fb"
   integrity sha512-hMbgpZkY5aRAiznSB/sgzdMVgdSbkmIHEaELX7pUbuUd6KS1Z/GAi7a/q0Qn+GFn0+6qMMvwyp3ZOE0+WYPQ1w==
 
-vue3-component-svg-sprite@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/vue3-component-svg-sprite/-/vue3-component-svg-sprite-0.0.1.tgz#9341ef25f0d6a42618cfce94241f18445f80f21f"
-  integrity sha512-B1bjgv+qegg+oqjJ5i21kGJR8mEQAp+mREpkWs8ojV1vPF3AuUBMNhca1QRnsADPd7FNxcB0hRxUtNmVo/61gg==
-  dependencies:
-    vue "^3.3.13"
-
 vue@3.4.21, vue@^3.3.13, vue@^3.3.4, vue@^3.4.15, vue@^3.4.21:
   version "3.4.21"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.4.21.tgz#69ec30e267d358ee3a0ce16612ba89e00aaeb731"
@@ -18547,10 +18546,10 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@^1.15.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.15.0.tgz#3abfb30c2db543dec5bd839fcc3e88b89a850a85"
-  integrity sha512-QbUhJKkfMF765gWcsgZmD9Q4K4ZQiPUIsJyGkfYxlisbJm56xJPhM/39RJjYBvph0Qi8OWCRCzmymV6srY4jGA==
+zincjs@1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.15.1.tgz#0a61c8160c982617ba883bc692d947105ca892cb"
+  integrity sha512-t1YEl7nxupZRfYCrTqU1cm5hCwMfOOkDzCI0q2yxfsYaGw0mk3o7zUA3/XIKxMvWdtGi/Pi4bT8Fi9Q0r6aHCw==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
