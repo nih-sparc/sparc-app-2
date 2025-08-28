@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <!--<breadcrumb :breadcrumb="breadcrumb" :title=title />-->
+    <Breadcrumb :breadcrumb="breadcrumb" :title=title />
     <page-hero class="py-24">
       <div class="page-hero-content">
         <div>
@@ -11,7 +11,7 @@
         </div>
       </div>
     </page-hero>
-      <PennsieveDashboard class="px-32 dashboard-app" :options="dashboardOptions" />
+      <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
   </div>
 </template>
 <script setup >
@@ -22,7 +22,22 @@ import 'pennsieve-dashboard/style.css'
 import 'precision-dashwidgets/style.css'
 
 const s3Url = 'https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/precision_human_drg_data.parquet'
-
+const title = 'Precision Dashboard'
+const breadcrumb = [
+  {
+    label: 'Home',
+    to: {
+      name: 'index'
+    }
+  },
+  {
+    to: {
+      name: 'apps',
+    },
+    label: 'SPARC Apps',
+  }
+]
+      
 const availableWidgets = [
   { name: 'Umap', component: UMAP },
   { name: 'Data Explorer', component: DataExplorer },
@@ -57,12 +72,25 @@ const dashboardOptions = ref({
 
 <style scoped>
 /* set style vars from outside the dashboard > customize to match your application */
-.dashboard-app{
+.dashboard-app {
   --el-color-primary: #243d8e;
   --el-color-primary-light-3: #fbfdff;
   --el-color-primary-dark-2: #546085;
   --color:#243d8e;
   --el-dialog-width: 90%;
-  --dash-secondary: #243d8e;
+  --dash-secondary: #981f3280;
+}
+:deep(.dash-header) {
+  background-color: #f6f7fb;
+}
+:deep(.el-button) {
+  background: #981f32 !important;
+  border: 1px solid #981f32 !important;
+}
+:deep(.el-icon) {
+  color: #981f32;
+}
+:deep(svg > path) {
+  fill: #981f32;
 }
 </style>
