@@ -11,7 +11,7 @@
         </div>
       </div>
     </page-hero>
-      <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
+    <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
   </div>
 </template>
 <script setup >
