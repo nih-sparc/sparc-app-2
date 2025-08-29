@@ -249,7 +249,11 @@ export default {
       }
       return this.awards.filter(award => {
         const awardId = propOr('', 'identifier', award)
-        return !this.associatedProjects.some(project => pathOr(null, ['fields', 'awardId'], project) == awardId)
+        // Check if any project already references this award
+        return !this.associatedProjects.some(project => {
+          const projectAwards = pathOr([], ['fields', 'awards'], project)
+          return projectAwards.some(projectAward => pathOr('', ['fields', 'title'], projectAward) === awardId)
+        })
       })
     }
   },

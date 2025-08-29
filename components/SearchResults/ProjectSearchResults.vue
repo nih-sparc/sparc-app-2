@@ -99,16 +99,7 @@ export default {
       const defaultText = `Logo for ${pathOr('', ['row', 'fields', 'institutions', 0, 'fields', 'name'], scope)}`
       return pathOr(defaultText, ['row', 'fields', 'institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], scope)
     },
-
-    /**
-     * Get NIH Report Url
-     * @param {Object} scope
-     * @returns {String}
-     */
-    getNihReporterUrl: function(scope) {
-      return scope.row.fields.nihReporterUrl || '#'
-    },
-
+    
     /**
      * Get short description for dataset
      * @param {Object} scope
