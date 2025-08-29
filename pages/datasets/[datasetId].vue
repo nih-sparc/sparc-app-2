@@ -766,15 +766,24 @@ export default {
     },
     getOsparcLink: async function () {
       try {
-        // check if file exists on .hornet/metadata.json path using axios and then show the button
-        const response = await this.$axios.get(`https://api.pennsieve.net/discover/datasets/${this.datasetId}/versions/1/assets/browse?path=&limit=5&offset=0&file=.hornet/manifest.json`)
-        if(response.data.totalCount === 0) {
-          // Hide the button if the metadata file is not present
+        if(this.$config.public.osparc_disable_hornet_button) {
           return undefined
-        } else {
-          const downloadLink = `https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata`
-          return `${this.$config.public.osparc_host}view?file_type=IPYNB&viewer_key=simcore/services/dynamic/jupyter-math&viewer_version=2.0.9&download_link=${downloadLink}&file_size=100`
         }
+        if(this.$config.public.osparc_enable_check_hornet_manifest) {
+          // check if file exists on .hornet/metadata.json path using axios and then show the button
+          const fileExistsResponse = await this.$axios.get(`https://api.pennsieve.net/discover/datasets/${this.datasetId}/versions/1/assets/browse?path=&limit=5&offset=0&file=.hornet/cad_manifest.json`)
+          if(fileExistsResponse.data.totalCount === 0) {
+            // Hide the button if the metadata file is not present
+            return undefined
+          }
+        }
+        const osparcURL = await this.$axios.get(`https://osparc.io/v0/viewers/default?file_type=HORNET_REPO`).then(r => r.json())
+        if(osparcURL.data === undefined) {
+          return undefined
+        }
+        const metadataLink = `https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata`
+        const downloadLink = osparcURL.data[0].view_url + `&download_link=${metadataLink}&file_size=10`
+        return downloadLink
       } catch (error) {
         return undefined
       }
