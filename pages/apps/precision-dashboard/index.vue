@@ -23,13 +23,14 @@
         </template>
       </el-tooltip>
     </div>
-    <PennsieveDashboard class="px-32 dashboard-app" :options="dashboardOptions" />
+    <client-only>
+      <PennsieveDashboard v-if="dashboardOptions" class="px-32 dashboard-app" :options="dashboardOptions" />
+    </client-only>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-import {PennsieveDashboard, TextWidget, MarkdownWidget} from 'pennsieve-dashboard'
-import {UMAP, DataExplorer} from 'precision-dashwidgets'
+import { ref, onMounted } from 'vue';
+import { PennsieveDashboard, TextWidget, MarkdownWidget } from 'pennsieve-dashboard'
 import 'pennsieve-dashboard/style.css'
 import 'precision-dashwidgets/style.css'
 
@@ -49,36 +50,52 @@ const breadcrumb = [
     label: 'SPARC Apps',
   }
 ]
-      
-const availableWidgets = [
-  { name: 'Umap', component: UMAP },
-  { name: 'Data Explorer', component: DataExplorer },
-  { name: 'Text Widget', component: TextWidget},
-  { name: 'Markdown', component: MarkdownWidget}
-]
-const defaultLayout = [
-  {
-    id: 'Umap-1',
-    x: 0, y: 0, w: 6, h: 10,
-    componentKey: 'UMAP',
-    componentName: 'UMAP',
-    component: UMAP,
-  },
-  {
-    id: 'DataExplorer-2',
-    x: 6, y: 0, w: 4, h: 8,
-    componentKey: 'DataExplorer',
-    componentName: 'Data Explorer',
-    component: DataExplorer,
+
+const dashboardOptions = ref(null) // will be populated after dynamic import
+
+onMounted(async () => {
+  // dynamically import the browser-only widgets
+  const { UMAP, DataExplorer, ProportionPlot } = await import('precision-dashwidgets')
+
+  const availableWidgets = [
+    { name: 'Umap', component: UMAP },
+    { name: 'Data Explorer', component: DataExplorer },
+    { name: 'Text Widget', component: TextWidget },
+    { name: 'Markdown', component: MarkdownWidget },
+    { name: 'Proportion Plot', component: ProportionPlot }
+  ]
+
+  const defaultLayout = [
+    {
+      id: 'Umap-1',
+      x: 0, y: 0, w: 7, h: 10,
+      componentKey: 'UMAP',
+      componentName: 'UMAP',
+      component: UMAP,
+    },
+    {
+      id: 'DataExplorer-2',
+      x: 7, y: 0, w: 5, h: 10,
+      componentKey: 'DataExplorer',
+      componentName: 'Data Explorer',
+      component: DataExplorer,
+    },
+    {
+      id: 'ProportionPlot-3',
+      x: 0, y: 10, w: 12, h: 8,
+      componentKey: 'ProportionPlot',
+      componentName: 'Proportion Plot',
+      component: ProportionPlot,
+    }
+  ]
+  const services = {
+    s3Url
   }
-]
-const services = {
-  s3Url
-}
-const dashboardOptions = ref({
-  availableWidgets,
-  defaultLayout,
-  services
+  dashboardOptions.value = {
+    availableWidgets,
+    defaultLayout,
+    services
+  }
 })
 </script>
 
