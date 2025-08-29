@@ -67,7 +67,7 @@
         Please come back later.
       </div>
     </div>
-    <p style="text-align: flex-end">
+    <p style="text-align: end">
       More citations available at:
       <a
         :href="crosscite_host"
