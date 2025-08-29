@@ -55,14 +55,13 @@ const dashboardOptions = ref(null) // will be populated after dynamic import
 
 onMounted(async () => {
   // dynamically import the browser-only widgets
-  const { UMAP, DataExplorer, ProportionPlot } = await import('precision-dashwidgets')
+  const { UMAP, DataExplorer } = await import('precision-dashwidgets')
 
   const availableWidgets = [
     { name: 'Umap', component: UMAP },
     { name: 'Data Explorer', component: DataExplorer },
     { name: 'Text Widget', component: TextWidget },
     { name: 'Markdown', component: MarkdownWidget },
-    { name: 'Proportion Plot', component: ProportionPlot }
   ]
 
   const defaultLayout = [
@@ -79,13 +78,6 @@ onMounted(async () => {
       componentKey: 'DataExplorer',
       componentName: 'Data Explorer',
       component: DataExplorer,
-    },
-    {
-      id: 'ProportionPlot-3',
-      x: 0, y: 10, w: 12, h: 8,
-      componentKey: 'ProportionPlot',
-      componentName: 'Proportion Plot',
-      component: ProportionPlot,
     }
   ]
   const services = {

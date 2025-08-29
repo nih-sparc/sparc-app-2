@@ -15220,10 +15220,10 @@ pennsieve-dashboard@0.1.5:
     sass "^1.90.0"
     vue "^3.5.18"
 
-pennsieve-visualization@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.4.3.tgz#74f2419473e8a02a7b72f66e303d7e961e3aa200"
-  integrity sha512-T4JQIstCNU9XVRuXvm9Apo2iV6f6v1EaZ2uwkCqPKqVYr2/+Ka0lHGXXBjcDesRqMHVp6tyol647Pbb1MwPV9Q==
+pennsieve-visualization@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.4.4.tgz#802b713bd14a8bca6e4e6eef5112a2197839dbcb"
+  integrity sha512-PxfHzNxVKHfd3P8p7/tMOYWB9gko5l7WIyBViX9M1v37WaJr6MbAaMWZee6wdG16PRE7fK1jUZD1QoPXDfn6sA==
   dependencies:
     "@duckdb/duckdb-wasm" "^1.29.1-dev132.0"
     "@types/ramda" "^0.30.2"
@@ -15765,12 +15765,12 @@ potpack@^2.0.0:
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-2.0.0.tgz#61f4dd2dc4b3d5e996e3698c0ec9426d0e169104"
   integrity sha512-Q+/tYsFU9r7xoOJ+y/ZTtdVQwTWfzjbiXBDMM/JKUux3+QPP02iUuIoeBQ+Ot6oEDlC+/PGjB/5A3K7KKb7hcw==
 
-precision-dashwidgets@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.3.0.tgz#74d236f16b5c947db49ff0c9ebb1dd8ee6d64c5b"
-  integrity sha512-tDjo9eBoGfldTj8vyoUHkiDvel0n/LwzatCvF8I8ZxCJI+BUtR29rY0lAPNuQce+abgIi0rp3MDSMEI9lRJ84A==
+precision-dashwidgets@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.3.1.tgz#6c916dc5a40a618954e1610e8cb0008c84381926"
+  integrity sha512-V4uU7kiH5Av5bDaep1jIWEqnO3xkfAsBSt3s13VmYlpC1mfNPIUdvZnR0mpJ2qnM96VCjniDnTjaRuhed2Ddkg==
   dependencies:
-    pennsieve-visualization "^0.4.3"
+    pennsieve-visualization "^0.4.4"
     vue "^3.5.18"
 
 prelude-ls@^1.2.1:
