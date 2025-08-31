@@ -112,7 +112,11 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (flatmapData.length === 0) {
           flatmapData.push(speciesData)
         }
-        scicrunchData['flatmaps'] = flatmapData
+        if ('flatmaps' in scicrunchData) {
+          scicrunchData['flatmaps'].push(...flatmapData)
+        } else {
+          scicrunchData['flatmaps'] = flatmapData
+        }
       }
     }
   } catch (e) {
@@ -402,13 +406,41 @@ export default {
         }
 
         if ('flatmaps' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData.flatmaps, f => {
+          scicrunchData.flatmaps.forEach( f => {
+            if (('dataset' in f)) {
+              const flatmap_uuid = f.associated_flatmap?.identifier
+              if ((flatmap_uuid)) {
+                const id = f.identifier
+                const file_path = f.dataset.path
+                const thumbnail = this.getThumbnailPathForPlot(f, scicrunchData['abi-thumbnail'])
+                if (thumbnail.mimetype.name !== '' && thumbnail.dataset.path !== '') {
+                  this.retrieveThumbnailFromInfo(
+                    items,
+                    {
+                      id,
+                      fetchAttempts: 0,
+                      datasetId,
+                      mimetype: thumbnail.mimetype.name,
+                      file_path: thumbnail.dataset.path,
+                      s3Bucket: s3Bucket
+                    },
+                    this.defaultImg
+                  )
+                }
+                const linkUrl = `${baseRoute}maps?type=fc&dataset_version=${datasetVersion}&dataset_id=${datasetId}&fid=${flatmap_uuid}`
+                items.push({
+                  id,
+                  title: baseName(file_path),
+                  type: 'FC Map',
+                  thumbnail: this.defaultImg,
+                  link: linkUrl
+                })
+              }
+            } else {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) {
                 title = `View ${f.organ}`
               }
-
               let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}`
               if (f.uberonid) linkUrl = linkUrl + `&uberonid=${f.uberonid}`
               if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
@@ -430,9 +462,9 @@ export default {
                 },
                 true
               )
-              return item
-            })
-          )
+              items.push(item)
+            }
+          });
         }
 
         if ('mbf-segmentation' in scicrunchData) {

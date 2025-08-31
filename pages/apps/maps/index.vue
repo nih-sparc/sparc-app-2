@@ -237,22 +237,29 @@ const processEntry = async (route) => {
       successMessage = messages.successMessage
       failMessage = messages.failMessage
     }
-    if (route.query.type === 'fc' && anatomy) {
+  }
+  if (route.query.type === 'fc') {
+    if (anatomy || route.query.fid) {
       currentEntry = {
         type: 'Flatmap',
         resource: 'FunctionalConnectivity',
         label: 'Functional',
-        state: { searchTerm: anatomy }
       }
+      if (anatomy) {
+        currentEntry.state = { searchTerm: anatomy }
+      }
+      if (route.query.fid) {
+        currentEntry.resource = route.query.fid
+      }
+    } else {
+      startingMap = "FC"
     }
   }
   if (route.query.type === 'ac' || route.query.type === 'flatmap') {
     startingMap = "AC"
   }
-  if (route.query.type === 'fc') {
-    startingMap = "FC"
-  }
-  return [startingMap, organ_name, currentEntry, successMessage, failMessage, []]
+
+  return [startingMap, organ_name, currentEntry, successMessage, failMessage]
 }
 
 
@@ -401,7 +408,7 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   } else if (route.query.type === 'fc' ||
     route.query.type === 'ac' ||
     route.query.type === 'flatmap') {
-    return await processEntry(route)
+    return  [...(await processEntry(route)), facets]
   } else if (route.query.type === 'wholebody') {
     startingMap = "WholeBody"
   } else {
