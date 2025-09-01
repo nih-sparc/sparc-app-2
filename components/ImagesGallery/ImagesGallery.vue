@@ -409,7 +409,7 @@ export default {
           scicrunchData.flatmaps.forEach( f => {
             if (('dataset' in f)) {
               const flatmap_uuid = f.associated_flatmap?.identifier
-              if ((flatmap_uuid)) {
+              if (flatmap_uuid) {
                 const id = f.identifier
                 const file_path = f.dataset.path
                 const thumbnail = this.getThumbnailPathForPlot(f, scicrunchData['abi-thumbnail'])
