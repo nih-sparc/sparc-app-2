@@ -424,7 +424,9 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
 
 const constructMapEntries = (apps) => {
   if (!apps) return []
-  return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
+  return apps.filter((app) => {
+    return (app.fields.url.startsWith('/apps/maps?type=') && !(app.fields.url.startsWith('/apps/maps?type=fc')))
+  }).map((app) => {
     const words = pathOr('', ['fields', 'logo', 'fields', 'title'], app).split(" ");
     const buttonText = words.map((word) => {
       return word[0].toUpperCase() + word.substring(1);
@@ -681,7 +683,7 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-
+  padding-left: 3rem;
   .logo {
     height: 6rem;
     margin-bottom: 1.5rem;
