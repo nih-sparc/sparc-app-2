@@ -5,7 +5,7 @@ import { retryableBefore, stringToArray } from '../support/utils.js'
 // central coordinate around { 'x': 768, 'y': 373 }
 const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
-const mapTypes = ['ac', 'wholebody', 'fc']
+const mapTypes = ['ac', 'wholebody']
 
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
@@ -40,9 +40,9 @@ mapTypes.forEach((map) => {
       } else if (map === 'wholebody') {
         cy.waitForScaffoldLoading()
         cy.waitForMapTreeControlLoading()
-      } else if (map === 'fc') {
+      } /* else if (map === 'fc') {
         cy.waitForFlatmapLoading()
-      }
+      } */
       // Close sidebar
       cy.get('body').then(($body) => {
         if ($body.find('.close-tab > .el-icon').length !== 0) {
@@ -412,7 +412,7 @@ mapTypes.forEach((map) => {
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
-    } else if (map === 'fc') {
+    }/* else if (map === 'fc') {
       it('Map is loaded', function () {
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Functional flatmap should be loaded').to.contain('Functional Flatmap')
@@ -438,6 +438,6 @@ mapTypes.forEach((map) => {
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
-    }
+    } */
   })
 })

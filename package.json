@@ -27,10 +27,10 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.12.0",
+    "@abi-software/mapintegratedvuer": "1.12.3",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "2.0.14",
+    "@abi-software/simulationvuer": "2.0.17",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
@@ -65,7 +65,8 @@
   "resolutions": {
     "string-width": "4.2.3",
     "mlly": "1.4.0",
-    "vue": "3.4.21"
+    "vue": "3.4.21",
+    "@abi-software/map-utilities": "1.7.2"
   },
   "engines": {
     "node": "18.17.1"
