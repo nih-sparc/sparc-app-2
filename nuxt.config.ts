@@ -86,6 +86,7 @@ export default defineNuxtConfig({
     '/resources/software': { redirect: '/tools-and-resources/tools?resourceType=Software' },
     '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
     '/resources/submit': { redirect: '/contact-us?type=tool' },
+    '/apps/precision-dashboard': { ssr:false }
   },
   hooks: {
     'pages:extend'(pages) {

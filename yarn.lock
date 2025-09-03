@@ -15212,10 +15212,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennsieve-dashboard@0.1.4:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.1.4.tgz#de5eeb73e5264940f4af6d25a75f602f9a7f785b"
-  integrity sha512-rBOgrZvn2EHhW+l+SH/v2LSpCuVSogp0tveOrGiZ9+i3VYyVsoN3Qp3OSXc3kHop2eRMbn4IbRXIALLln+hQtA==
+pennsieve-dashboard@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.1.7.tgz#1af89c24ce25f4787febb8de188cdfc1c9bb3c1d"
+  integrity sha512-vzTNzvxDQsRfLD/UBbqBfAsjnEmMibKCsu7MtnMMxmb2dKd6K7e55FCfcA+UXTMilLMAomMYQfx+qNRKSgflmw==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
@@ -15223,19 +15223,21 @@ pennsieve-dashboard@0.1.4:
     gridstack "^9.5.0"
     marked "^15.0.7"
     pinia "^3.0.3"
+    precision-dashwidgets "0.3.3"
     sass "^1.90.0"
     vue "^3.5.18"
 
-pennsieve-visualization@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.3.0.tgz#80186c824dc5146de240f07fd3aa8901c0ad27dd"
-  integrity sha512-Vjf2sErgkuWKF4Ow18Hs/sfaB7NT1l8oGFtH3qzyvwUp1wL0KNiZCD75xwibcp6fb0oiCrr8AuCctGvtNCqzIw==
+pennsieve-visualization@^0.4.6, pennsieve-visualization@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.4.7.tgz#dcc77b65c2d7811e4b0078fcf6df1c782f7ea8ea"
+  integrity sha512-7y2zvthCiyoAghTFDDaUxksDbBWIuHLLdOXQ1HTsjoI1ZH8QfVVlZNaMkRN5jPgKoQTom+DGw4mEDg+zSOOMNA==
   dependencies:
     "@duckdb/duckdb-wasm" "^1.29.1-dev132.0"
     "@types/ramda" "^0.30.2"
     core-js "^3.8.3"
     d3 "^7.9.0"
     hyparquet "^1.12.1"
+    plotly.js-dist-min "^3.1.0"
     ramda "^0.31.3"
 
 perfect-debounce@^1.0.0:
@@ -15374,6 +15376,11 @@ pkg-types@^1.2.0:
     confbox "^0.1.8"
     mlly "^1.7.2"
     pathe "^1.1.2"
+
+plotly.js-dist-min@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/plotly.js-dist-min/-/plotly.js-dist-min-3.1.0.tgz#22318db3ed1608e4d6e7af5f8a925993d871c502"
+  integrity sha512-aihvA/+SnwEQxSufaPn8AWDUzdHFAbsCk2+w/IJResDafK3E2tvCvzW+ZV6JlMciJc7hQ3kCILS5Ao22OZ6kWA==
 
 plotly.js@2.35.3:
   version "2.35.3"
@@ -15765,12 +15772,20 @@ potpack@^2.0.0:
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-2.0.0.tgz#61f4dd2dc4b3d5e996e3698c0ec9426d0e169104"
   integrity sha512-Q+/tYsFU9r7xoOJ+y/ZTtdVQwTWfzjbiXBDMM/JKUux3+QPP02iUuIoeBQ+Ot6oEDlC+/PGjB/5A3K7KKb7hcw==
 
-precision-dashwidgets@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.2.2.tgz#69508d5ee689b636c6e923728efd4d29f520ffb4"
-  integrity sha512-vJL4utSHOs84Yt1G3rOoPQf7IJqaTJ4PdZLGKel3gcCXk4baul9dlT8Pywudn5ltv8nbw2uyXi9BuyxLxSHdDA==
+precision-dashwidgets@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.3.3.tgz#132de3e553bdf89aebd6f7ef75ca6e74f4774fd1"
+  integrity sha512-fsIwTXwEZboMdheviRgICrdtM2UrMjZhdmLAKxyjL0IJcCXiw7/uHuKFrmhy1qX9MP3FNFKU/GOZKEthAkM40A==
   dependencies:
-    pennsieve-visualization "^0.3.0"
+    pennsieve-visualization "^0.4.6"
+    vue "^3.5.18"
+
+precision-dashwidgets@0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.3.4.tgz#1a2a39f6d80229f1aca2869414640b2fe56575c3"
+  integrity sha512-oeqcDrgqmt1jB5a6Vpy2NHMnBkp1odCBZ/YUxGIi1cQxM9s0ZgXGxQFgl0i70+8Wr9TVNVJqO6wV1A6DmnHfjQ==
+  dependencies:
+    pennsieve-visualization "^0.4.7"
     vue "^3.5.18"
 
 prelude-ls@^1.2.1:
