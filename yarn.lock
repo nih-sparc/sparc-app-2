@@ -30,12 +30,12 @@
     minisearch "^2.2.1"
     polylabel "^1.1.0"
 
-"@abi-software/flatmapvuer@1.11.2":
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.2.tgz#84101600acfbefd85b0618afb0b69050d3ddbb14"
-  integrity sha512-SsGpStUAKULNszb3o6+srHFQA1+ZuIYssgG1MfJIfzsqoVcJpOtzexA4yXe7OJoMwqsni4BmelgGFD2qK7B6Yw==
+"@abi-software/flatmapvuer@1.11.3":
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.3.tgz#5fe2ab752d126689ab5551d23cf44cb1a5ea5aad"
+  integrity sha512-xMlnwaouoUyrO/cTKZdQOPEQLvPOV1JDpEMVlp+vZMYEEMrFJlDeTg0AfOEJ0NSB85TJ4f7ySpVV9fXtm0eGaA==
   dependencies:
-    "@abi-software/map-utilities" "^1.7.1"
+    "@abi-software/map-utilities" "1.7.2"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
@@ -106,12 +106,12 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.12.4":
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.12.4.tgz#94068936162cf53507a209253d135ae72b67f37b"
-  integrity sha512-cwW7zyAFKF6pf0/YrnomHB7XjpyiY8sgIr3n2I+qApLsq5Px7OZd5se4u9lHm/it9QA9fgafBmNAF4BN+K+dlQ==
+"@abi-software/mapintegratedvuer@1.12.5":
+  version "1.12.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.12.5.tgz#d1e81b55a9f4918c8928508bcc34b9af5bd67e81"
+  integrity sha512-YGFkh90GDDaSuKb2yIbNqbqm0IY37W+FWkkgQOSDeWsGbwNUU2jsDhH1kdD7cvYYrMNejb9bFjZFnlP5NrmADA==
   dependencies:
-    "@abi-software/flatmapvuer" "1.11.2"
+    "@abi-software/flatmapvuer" "1.11.3"
     "@abi-software/map-side-bar" "2.10.4"
     "@abi-software/map-utilities" "1.7.2"
     "@abi-software/plotvuer" "1.0.5"

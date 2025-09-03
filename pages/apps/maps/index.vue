@@ -92,6 +92,8 @@ const getScaffoldEntry = async (portalApi, route, $axios, s3Bucket) => {
           label: `Dataset ${route.query.dataset_id}`,
           url: `${portalApi}/s3-resource/${path}`,
           viewUrl: route.query.ViewURL,
+          dataset_id: route.query.dataset_id,
+          dataset_version: route.query.dataset_version,
         }
       } else {
         return undefined
