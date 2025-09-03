@@ -1,16 +1,6 @@
 <template>
   <div class="page-container">
     <Breadcrumb :breadcrumb="breadcrumb" :title=title />
-    <page-hero class="py-24">
-      <div class="page-hero-content">
-        <div>
-          <h1>Precision Dashboard</h1>
-          <p>
-            Explore an evolving collection of interactive widgets designed to analyze and interpret data about the NIH Precision Human Pain Network. This platform brings together visualizations, metrics, and insights to support research and discovery. Data publication is an ongoing effort, with new findings and resources continuously being added as the project advances.
-          </p>
-        </div>
-      </div>
-    </page-hero>
     <div class="px-32 py-4">
       <el-tooltip
         placement="right-start"
