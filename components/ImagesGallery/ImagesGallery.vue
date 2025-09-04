@@ -574,10 +574,12 @@ export default {
                 })
                 this.getThumbnailFromBiolucida(bItems, {
                   id: biolucidaId,
+                  link: linkUrl,
                   fetchAttempts: 0
                 })
                 this.getImageInfoFromBiolucida(bItems, {
                   id: biolucidaId,
+                  link: linkUrl,
                   fetchAttempts: 0
                 })
               }
@@ -787,7 +789,7 @@ export default {
     getThumbnailFromBiolucida(items, info) {
       biolucida.getThumbnail(info.id).then(
         response => {
-          let item = ref(items.find(x => x.id === info.id))
+          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
           if (response.data) {
             item.value['thumbnail'] = 'data:image/png;base64,' + response.data
           }
@@ -797,7 +799,7 @@ export default {
             info.fetchAttempts += 1
             this.getThumbnailFromBiolucida(items, info)
           } else {
-            let item = ref(items.find(x => x.id === info.id))
+            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
             item.value['thumbnail'] = this.defaultImg
           }
           // return Promise.reject('Maximum iterations reached.')
@@ -807,7 +809,7 @@ export default {
     getImageInfoFromBiolucida(items, info) {
       biolucida.getImageInfo(info.id).then(
         response => {
-          let item = ref(items.find(x => x.id === info.id))
+          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
           const name = response.name
           if (name) {
             item.value['title'] = name.substring(0, name.lastIndexOf('.'))
@@ -821,7 +823,7 @@ export default {
             info.fetchAttempts += 1
             this.getImageInfoFromBiolucida(items, info)
           } else {
-            let item = ref(items.find(x => x.id === info.id))
+            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
             item.value['thumbnail'] = this.defaultImg
           }
           // return Promise.reject('Maximum iterations reached.')
