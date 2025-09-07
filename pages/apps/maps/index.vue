@@ -32,8 +32,8 @@
               </template>
               <template #default>
                 <div class="popover-content" style="display: flex; flex-direction: column; gap: 0.5rem">
-                  <el-button 
-                    v-for="entry in mapEntries[item.buttonText]" 
+                  <el-button
+                    v-for="entry in mapEntries[item.buttonText]"
                     @click="setCurrentEntry(entry, item.buttonText)"
                   >
                     {{ entry }}
@@ -598,11 +598,13 @@ export default {
     },
     currentEntryUpdated: function () {
       if (this._instance && this.currentEntry) {
-        this._instance.setCurrentEntry(this.currentEntry)
+        this.$nextTick(() => {
+          this._instance.setCurrentEntry(this.currentEntry)
+        })
       }
     },
     setCurrentEntry: function (entry, type) {
-      let mapEntry = {}      
+      let mapEntry = {}
       if (type === 'AC Map') {
         mapEntry = {type: 'MultiFlatmap', resource: entry}
       } else if (type === '3D Whole Body') {
