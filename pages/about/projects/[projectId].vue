@@ -10,65 +10,130 @@
   <div :style="consortiaStyle" class="page pb-32">
     <breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="container">
-      <el-row class="row space-between">
-        <el-col class="subpage projects-subpage projects-details-container" :span="showAssociatedDatasets ? 17 : 24"
-          :xs="24">
-          <div ref="projectDetailsContainer">
-            <div class="row">
-              <div class="col image-container p-16 mb-8">
-                <img class="image" :src="getImageSrc" :alt="getImageAlt" />
-              </div>
-              <h1 class="col heading2 pl-16">
-                {{ title }}
-              </h1>
+      <div class="subpage projects-subpage projects-details-container">
+        <div ref="projectDetailsContainer">
+          <div class="row">
+            <div class="col image-container p-16 mb-8">
+              <img class="image" :src="getImageSrc" :alt="getImageAlt" />
             </div>
-            <div v-if="focus" class="body1">
-              FOCUS: <span class="label4">{{ focus }}</span>
+            <h1 class="col heading2 pl-16">
+              {{ title }}
+            </h1>
+          </div>
+          <div v-if="focus" class="body1">
+            FOCUS: <span class="label4">{{ focus }}</span>
+          </div>
+          <div v-if="investigators" class="body1 mb-4">
+            PRINCIPAL INVESTIGATOR(S): <span class="label4">{{ investigators.join(', ') }}</span>
+          </div>
+          <div v-if="institutions" class="body1 mb-4">
+            INSTITUTION(S): <span class="label4">{{ institutions }}</span>
+          </div>
+          <div v-if="fundingProgram.length > 0" class="body1 mb-4">
+            FUNDING PROGRAM(S): <span class="label4">{{ fundingProgram.join(', ') }}</span>
+          </div>
+          <div v-if="awards.length > 0" class="body1">
+            AWARD(S):
+            <span v-for="(award, index) in awards" :key=award.title class="body1">
+              <a class="link1" :href="award.url" :target="!opensInNewTab(award.url) ? '_self' : '_blank'">
+              {{ award.title }}
+              <svgo-icon-open v-if="!isInternalLink(award.url)" class="icon-open" /><span v-if="index < awards.length - 1">, </span>
+            </a>
+            </span>
+          </div>
+          <hr class="mt-16" />
+          <div class="body1 content" v-html="parseMarkdown(description)" />
+          <div class="body1">
+            <div class="label4">
+              SHARE
             </div>
-            <div v-if="investigators" class="body1 mb-4">
-              PRINCIPAL INVESTIGATOR(S): <span class="label4">{{ investigators.join(', ') }}</span>
-            </div>
-            <div v-if="institutions" class="body1 mb-4">
-              INSTITUTION(S): <span class="label4">{{ institutions }}</span>
-            </div>
-            <div v-if="fundingProgram.length > 0" class="body1 mb-4">
-              FUNDING PROGRAM(S): <span class="label4">{{ fundingProgram.join(', ') }}</span>
-            </div>
-            <div v-if="awards.length > 0" class="body1">
-              AWARD(S):
-              <span v-for="(award, index) in awards" :key=award.title class="body1">
-                <a class="link1" :href="award.url" :target="!opensInNewTab(award.url) ? '_self' : '_blank'">
-                {{ award.title }}
-                <svgo-icon-open v-if="!isInternalLink(award.url)" class="icon-open" /><span v-if="index < awards.length - 1">, </span>
-              </a>
-              </span>
-            </div>
+            <share-links class="share-links" />
             <hr class="mt-16" />
-            <div class="body1 content" v-html="parseMarkdown(description)" />
-            <div class="body1">
-              <div class="label4">
-                SHARE
+            <nuxt-link class="label4" :to="allProjectsLink">
+              View All Projects >
+            </nuxt-link>
+          </div>
+        </div>
+      </div>
+      <div v-if="associatedDatasets.length > 0" class="subpage associated-subpage">
+        <div class="heading2">
+          Associated Content
+        </div>
+        <el-table :data="associatedDatasets" :show-header="false" empty-text="No Results">
+          <el-table-column prop="banner" label="Image" width="160">
+            <template v-slot="scope">
+              <div v-if="scope.row?.pennsieve">
+                <nuxt-link
+                  :to="{
+                    name: 'datasets-datasetId',
+                    params: { datasetId: scope.row.object_id },
+                    query: {
+                      type: getSearchResultsType(scope.row?.item)
+                    }
+                  }"
+                  class="img-dataset"
+                > 
+                  <img
+                    v-if="scope.row.pennsieve.banner"
+                    :src="scope.row.pennsieve.banner.uri"
+                    :alt="`Banner for ${scope.row?.item.name}`"
+                    height="128"
+                    width="128"
+                  />
+                  <sparc-pill v-if="scope.row?.item.published" v-show='scope.row.item.published.status == "embargo"'>
+                    Embargoed
+                  </sparc-pill>
+                </nuxt-link>
               </div>
-              <share-links class="share-links" />
-              <hr class="mt-16" />
-              <nuxt-link class="label4" :to="allProjectsLink">
-                View All Projects >
-              </nuxt-link>
-            </div>
-          </div>
-        </el-col>
-        <el-col v-if="showAssociatedDatasets" class="subpage associated-subpage" :span="6" :xs="24">
-          <div class="heading2">
-            Associated Content
-          </div>
-          <div class="associated-datasets-container pr-16" :style="{ maxHeight: associatedDatasetsMaxHeight + 'px' }">
-            <br />
-            <div v-for="(dataset, index) in associatedDatasets" :key="index" class="body4">
-              <dataset-card :id="Number(dataset.objectID)" />
-            </div>
-          </div>
-        </el-col>
-      </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="400"
+          >
+            <template v-slot:default="scope">
+              <div v-if="scope.row?.pennsieve">
+                <nuxt-link
+                  :to="{
+                    name: 'datasets-datasetId',
+                    params: {datasetId: scope.row.object_id },
+                    query: {
+                      type: getSearchResultsType(scope.row.item)
+                    }
+                  }"
+                  v-html="scope.row._highlightResult.item.name.value"
+                />
+                <div
+                  class="my-8"
+                  v-if="scope.row._highlightResult.item.description"
+                  v-html="scope.row._highlightResult.item.description.value"
+                />
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div v-if="associatedPublications.length > 0" class="subpage associated-subpage">
+        <div class="heading2">
+          Associated Publications
+        </div>
+        <el-table :data="associatedPublications" :show-header="false" empty-text="No Results">
+          <el-table-column
+            min-width="400"
+          >
+            <template v-slot:default="scope">
+              <div v-if="scope.row?.citation" v-html="getCitationsText(scope.row.citation)" />
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div v-if="associatedTools.length > 0" class="subpage associated-subpage">
+        <div class="heading2 mb-16">Associated Tools &amp; Resources</div>
+        <gallery
+          class="resources-gallery mr-16 mb-16"
+          galleryItemType="resources"
+          :items="associatedTools"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -80,12 +145,14 @@ import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
 import { pathOr, propOr, isEmpty } from 'ramda'
 import consortiaMixin from '@/mixins/consortia'
+import Gallery from '@/components/Gallery/Gallery.vue'
 import { ref } from 'vue'
 
 export default {
   name: 'ProjectDetails',
   components: {
     DatasetCard,
+    Gallery,
     ShareLinks
   },
   mixins: [consortiaMixin, marked],
@@ -96,22 +163,39 @@ export default {
     try {
       const project = await $contentfulClient.getEntry(route.params.projectId)
       const awards = pathOr(null, ['fields','awards'], project)
-      let associatedDatasets = []
 
-      await Promise.all(awards.map(async (award) => {
+      let associatedDatasetsResults = await Promise.all(awards.map(async (award) => {
         try {
           const { data } = await $axios.get(`${config.public.portal_api}/project/${award.fields.title}`)
-          if (Array.isArray(data) && data.length > 0)
-          associatedDatasets = associatedDatasets.concat(data)
+          return Array.isArray(data) && data.length > 0 ? data : []
         } catch (error) {
-          console.error(`Failed to fetch data for awardId ${award.fields.title}`, error)
+          console.error(`Failed to fetch associated datasets for awardId ${award.fields.title}`, error)
+          return []
         }
       }))
+
+      const associatedDatasets = ref(associatedDatasetsResults.flat())
+
+      let associatedPublicationsResults = associatedDatasets.value.length <= 0 ? [] :
+        await Promise.all(associatedDatasets.value.map(async (dataset) => {
+          try {
+            if (dataset == undefined) { return }
+            const { data } = await $axios.get(`${config.public.portal_api}/dataset_citations/${dataset['objectID']}`)
+            return propOr([], 'citations', data).filter((citation) => { return citation['relationship']?.toLowerCase() === 'cites'})
+          } catch (error) {
+            console.error(`Failed to fetch publication data for dataset ${dataset['objectID']}`, error)
+            return []
+          }
+        }))
+
+      const associatedPublications = ref(associatedPublicationsResults.flat())
+
       return {
         fields: project.fields,
         awards: awards.map(award => award.fields),
         associatedDatasets,
-        associatedDatasetsMaxHeight: ref(0)
+        associatedPublications,
+        associatedDatasetsMaxHeight: ref(0),
       }
     } catch (e) {
       console.error(e)
@@ -128,7 +212,7 @@ export default {
       handler: function(){
         this.associatedDatasetsMaxHeight = this.$refs.projectDetailsContainer.clientHeight - 19
       }
-    }
+    },
   },
 
   computed: {
@@ -199,8 +283,8 @@ export default {
     focus: function () {
       return propOr([], 'focus', this.fields).join(", ")
     },
-    showAssociatedDatasets: function () {
-      return !isEmpty(this.associatedDatasets)
+    associatedTools: function() {
+      return propOr([], 'associatedTools', this.fields)
     },
     allProjectsLink() {
       return `/about/projects?consortiaType=${this.fundingProgram}`
@@ -209,7 +293,21 @@ export default {
 
   methods: {
     isInternalLink,
-    opensInNewTab
+    opensInNewTab,
+    getSearchResultsType(item) {
+      return item !== undefined ? 
+        (item.types[0].name === 'computational model' ? 'simulation'
+          : item.types[0].name === 'device' ? 'device'
+          : undefined) :
+        undefined
+    },
+    getCitationsText(citation) {
+      const doiLinkIndex = citation.lastIndexOf("https://doi.org/"); // Find the doi link to remove and make it a href
+      if (doiLinkIndex === -1) { return citation }
+      const doiLink = citation.slice(doiLinkIndex, citation.length)
+      // Remove the last instance of the substring by slicing and concatenating the parts
+      return `${citation.slice(0, doiLinkIndex)}<u><a href="${doiLink}" target="_blank">${doiLink}</a></u>`
+    }
   }
 }
 </script>
@@ -221,9 +319,6 @@ export default {
 }
 .row {
   display: flex;
-}
-.space-between {
-  justify-content: space-between;
 }
 .image-container {
   display: flex;
@@ -280,6 +375,17 @@ hr {
   padding-right: 0rem !important;
   padding-top: 1rem !important;
   padding-bottom: 0 !important;
+  > .el-table {
+    max-height: 32rem;
+    overflow-y: auto;
+  }
+}
+.subpage {
+  margin: 0;
+  margin-top: 2rem;
+}
+:deep(.resources-gallery-strip>.card-line) {
+  display: block !important;
 }
 :deep(.container) {
   a {
@@ -296,5 +402,8 @@ hr {
     border-color: var(--button-and-link-color) !important;
     color: var(--button-and-link-color) !important;
   }
+}
+:deep(.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell) {
+  background-color: white !important;
 }
 </style>
