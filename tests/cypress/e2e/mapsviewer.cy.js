@@ -148,6 +148,20 @@ mapTypes.forEach((map) => {
         })
       })
 
+      it('Load AC map with Rat taxon and verify species selection', function () {
+        // Visit the URL with AC map type and Rat taxon
+        cy.visit('/apps/maps?type=ac&taxo=NCBITaxon:10114')
+
+        // Wait for the page to fully load
+        cy.waitForViewerContainer('.mapClass')
+        cy.waitForPageLoading()
+        cy.waitForMapLoading()
+
+        // Check that the species selector shows "Rat"
+        cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+          .should('contain.text', 'Rat')
+      })
+
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
