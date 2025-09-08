@@ -20,7 +20,6 @@ export default {
           last_name: lastName
         })
         .catch(() => {
-          this.hasError = true
         })
         .finally(() => {
           this.isSubmitting = false
