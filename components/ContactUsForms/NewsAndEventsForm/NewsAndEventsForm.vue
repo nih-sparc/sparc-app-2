@@ -98,9 +98,6 @@
       <el-button class="primary" :disabled="isSubmitting" @click="onSubmit">
         Submit
       </el-button>
-      <p v-if="hasError" class="error">
-        An error has occurred, please try again.
-      </p>
     </el-form-item>
   </el-form>
 </template>
@@ -238,13 +235,14 @@ export default {
      */
     async sendForm() {
       const config = useRuntimeConfig()
+      this.hasError = false
       this.isSubmitting = true
       const description = `Contact Information
 First Name: ${this.form.user.firstName}
 Last Name: ${this.form.user.lastName}
 E-mail: ${this.form.user.email}
 
-News or Event Details:
+News or Event Details
 Title: ${this.form.title}
 Summary: ${this.form.summary}
 ${this.supportingLinksText}
@@ -274,20 +272,66 @@ End Date: ${this.form.endDate == '' ? 'N/A' : new Date(this.form.endDate).toDate
       // Save form to sessionStorage
       saveForm(this.form)
 
-      await this.$axios
-        .post(`${config.public.portal_api}/tasks`, formData)
-        .then(() => {
-          if (this.form.user.shouldSubscribe) {
-            this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
-          }
-          this.$emit('submit', this.form.user.firstName)
+      try {
+        const { data } = await this.$axios.post(`${config.public.portal_api}/tasks`, formData)
+        const status = data?.status
+        const message = data?.message
+        switch (status) {
+          case 'success':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'success',
+              duration: 5000
+            })
+            break
+          case 'warning':
+            ElMessage({
+              showClose: true,
+              message: message,
+              type: 'info',
+              duration: 0
+            })
+            break
+          case 'failure':
+            ElMessage({
+              showClose: true,
+              message: `There was a problem when attempting to submit the request. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+              type: 'error',
+              duration: 0,
+              dangerouslyUseHTMLString: true
+            })
+            this.hasError = true
+            break
+        }
+      } catch (e) {
+        ElMessage({
+          showClose: true,
+          message: `There was a problem when attempting to Share with SPARC. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+          type: 'error',
+          duration: 0,
+          dangerouslyUseHTMLString: true
         })
-        .catch(() => {
-          this.hasError = true
+        this.hasError = true
+      }
+      try {
+        if (this.form.user.shouldSubscribe) {
+          this.subscribeToNewsletter(this.form.user.email, this.form.user.firstName, this.form.user.lastName)
+        }
+      } catch (e) {
+        ElMessage({
+          showClose: true,
+          message: `There was a problem subscribing the user to the SPARC newsletter. If this problem persists, please visit <a href='https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues' target='_blank'>https://github.com/${config.public.GITHUB_ORG}/${config.public.GITHUB_REPO}/issues</a> to file a new issue`,
+          type: 'error',
+          duration: 0,
+          dangerouslyUseHTMLString: true
         })
-        .finally(() => {
-          this.isSubmitting = false
-        })
+      }
+      if (!this.hasError)
+      {
+        this.$emit('submit', this.form.user.firstName)
+      }
+      this.isSubmitting = false
     }
   },
 
