@@ -58,6 +58,18 @@
       <div v-if="associatedDatasets.length > 0" class="subpage associated-subpage">
         <div class="heading2">
           Associated Content
+          <el-tooltip
+            v-if="associatedContentTooltip"
+            placement="right-start"
+            effect="customized"
+          >
+            <template #default>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <template #content>
+              {{ associatedContentTooltip }}
+            </template>
+          </el-tooltip>
         </div>
         <el-table :data="associatedDatasets" :show-header="false" empty-text="No Results">
           <el-table-column prop="banner" label="Image" width="160">
@@ -114,7 +126,19 @@
       </div>
       <div v-if="associatedPublications.length > 0" class="subpage associated-subpage">
         <div class="heading2">
-          Associated Publications
+          Associated Primary Publications
+          <el-tooltip
+            v-if="associatedPublicationsTooltip"
+            placement="right-start"
+            effect="customized"
+          >
+            <template #default>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <template #content>
+              {{ associatedPublicationsTooltip }}
+            </template>
+          </el-tooltip>
         </div>
         <el-table :data="associatedPublications" :show-header="false" empty-text="No Results">
           <el-table-column
@@ -127,12 +151,49 @@
         </el-table>
       </div>
       <div v-if="associatedTools.length > 0" class="subpage associated-subpage">
-        <div class="heading2 mb-16">Associated Tools &amp; Resources</div>
+        <div class="heading2 mb-16">
+          {{ associatedToolsTitle }}
+          <el-tooltip
+            v-if="associatedToolsTooltip"
+            placement="right-start"
+            effect="customized"
+          >
+            <template #default>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <template #content>
+              {{ associatedToolsTooltip }}
+            </template>
+          </el-tooltip>
+        </div>
         <gallery
           class="resources-gallery mr-16 mb-16"
           galleryItemType="resources"
           :items="associatedTools"
         />
+      </div>
+      <div v-if="highlights.length > 0" class="subpage">
+        <div class="heading2 mb-16">
+          Highlights
+          <el-tooltip
+            v-if="highlightsTooltip"
+            placement="right-start"
+            effect="customized"
+          >
+            <template #default>
+              <svgo-icon-help class="help-icon"/>
+            </template>
+            <template #content>
+              {{ highlightsTooltip }}
+            </template>
+          </el-tooltip>
+        </div>
+        <template v-for="(item, index) in highlights" :key="index">
+          <div>
+            <learn-more-card :about-details-item="item" />
+            <hr v-if="highlights.length > 1 && index != highlights.length - 1" />
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -140,6 +201,7 @@
 
 <script>
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
@@ -153,6 +215,7 @@ export default {
   components: {
     DatasetCard,
     Gallery,
+    LearnMoreCard,
     ShareLinks
   },
   mixins: [consortiaMixin, marked],
@@ -266,6 +329,9 @@ export default {
     fundingProgram: function () {
       return this.fields.program
     },
+    associatedContentTooltip: function () {
+      return this.fields.associatedContentTooltip
+    },
     institutions: function () {
       let names = ''
       this.fields.institutions.forEach(institution => {
@@ -283,8 +349,23 @@ export default {
     focus: function () {
       return propOr([], 'focus', this.fields).join(", ")
     },
+    associatedPublicationsTooltip: function() {
+      return propOr(null, 'associatedPublicationsTooltip', this.fields)
+    },
     associatedTools: function() {
       return propOr([], 'associatedTools', this.fields)
+    },
+    associatedToolsTitle: function() {
+      return propOr('Associated Tools & Resources', 'associatedToolsTitle', this.fields)
+    },
+    associatedToolsTooltip: function() {
+      return propOr(null, 'associatedToolsTooltip', this.fields)
+    },
+    highlights: function() {
+      return propOr([], 'highlights', this.fields)
+    },
+    highlightsTooltip: function() {
+      return propOr(null, 'highlightsTooltip', this.fields)
     },
     allProjectsLink() {
       return `/about/projects?consortiaType=${this.fundingProgram}`
@@ -363,6 +444,11 @@ hr {
   width: 1.5rem;
   height: 1.5rem;
 }
+.help-icon {
+  color: var(--button-and-link-color);
+  height: 1.5rem;
+  width: 1.5rem;
+}
 .projects-details-container {
   height: fit-content;
 }
@@ -405,5 +491,14 @@ hr {
 }
 :deep(.el-table--enable-row-hover .el-table__body tr:hover>td.el-table__cell) {
   background-color: white !important;
+}
+:deep(.el-popper .el-popper__arrow::before) {
+  background-color: var(--button-and-link-secondary-color) !important;
+}
+:deep(.consortia-tooltips.el-popper) {
+  background: var(--button-and-link-secondary-color) !important;
+  border-color: var(--button-and-link-color) !important;
+  color: $grey !important;
+  border-radius: 4px;
 }
 </style>
