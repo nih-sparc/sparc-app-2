@@ -252,10 +252,10 @@ export default {
      * @returns {String}
      */
     getImageSrc: function () {
-      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'url'], this.fields)
+      return pathOr('', ['institution', 'fields', 'logo', 'fields', 'file', 'url'], this.fields)
     },
     getImageAlt: function () {
-      return pathOr('', ['institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], this.fields)
+      return pathOr('', ['institution', 'fields', 'logo', 'fields', 'file', 'description'], this.fields)
     },
     title: function () {
       return this.fields.title
