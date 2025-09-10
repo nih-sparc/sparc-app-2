@@ -257,7 +257,7 @@ export default {
           }
         })
       })
-      return institutions.length > 0 ? institutionNames.join(", ") : 'None specified'
+      return institutionNames.length > 0 ? institutionNames.join(", ") : 'None specified'
     }
   },
 }
