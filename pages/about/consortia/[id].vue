@@ -49,8 +49,18 @@
         <projects-and-datasets-card :title="featuredDataset.title" :description="featuredDataset.description"
           :banner="featuredDataset.banner" :link="featuredDatasetLink" button-text="View Dataset" />
       </div>
+      <div v-if="associatedTools.length > 0" class="gallery-items-container p-24 mt-32">
+        <div class="heading2 mb-16">
+          {{ associatedToolsTitle }}
+        </div>
+        <gallery
+          class="resources-gallery mb-16"
+          galleryItemType="resources"
+          :items="associatedTools"
+        />
+      </div>
       <div v-if="highlights.length > 0" class="gallery-items-container p-24 mt-32">
-        <div class="heading2 mb-16">Highlights</div>
+        <div class="heading2 mb-16">News</div>
         <gallery galleryItemType="highlights" :cardWidth="68" :items="highlights" />
       </div>
       <div v-if="learnMore.length > 0" class="subpage">
@@ -118,6 +128,8 @@ const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonL
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
 const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchButtonText'], consortiaItem.value))
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
+const associatedToolsTitle = computed(() => pathOr('Tools & Resources', ['fields', 'associatedToolsTitle'], consortiaItem.value))
+const associatedTools = computed(() => pathOr([], ['fields', 'associatedTools'], consortiaItem.value))
 //Temporarily disable RE-JOIN dataset button until RE-JOIN datasets are available
 const displayOurResearchButton = computed(() => !ourResearchButtonLink.value.includes('selectedFacetIds=RE-JOIN'))
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
@@ -142,15 +154,15 @@ const featuredDatasetLink = computed(() => {
   return {
     isInternal: true,
     path: datasetPath,
-  };
-});
+  }
+})
 
-const featuredDatasetIdKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetId`);
-const featuredDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_featuredDatasetIds`);
-const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value.fields.slug}_listOfAvailableDatasetIds`);
-const organizationIdFilterKey = computed(() => `${consortiaItem.value.fields.slug}_organizationIdFilter`);
-const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value.fields.slug}_dateToShowFeaturedDatasetsUntil`);
-const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value.fields.slug}_timeDeltaForFeaturedDatasets`);
+const featuredDatasetIdKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetId`);
+const featuredDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetIds`);
+const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_listOfAvailableDatasetIds`);
+const organizationIdFilterKey = computed(() => `${consortiaItem.value?.fields.slug}_organizationIdFilter`);
+const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value?.fields.slug}_dateToShowFeaturedDatasetsUntil`);
+const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value?.fields.slug}_timeDeltaForFeaturedDatasets`);
 
 const featuredDatasetId = ref(null);
 const featuredDataset = ref({});
@@ -343,5 +355,8 @@ onMounted(async () => {
   border-color: var(--consortia-tooltip-color) !important;
   color: $grey !important;
   border-radius: 4px;
+}
+:deep(.resources-gallery-strip>.card-line) {
+  display: block !important;
 }
 </style>

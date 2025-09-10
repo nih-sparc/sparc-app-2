@@ -1,5 +1,5 @@
 <template>
-  <el-card :style="{ border: 'none', maxWidth: width + 'rem' }" class="card">
+  <el-card :style="{ border: 'none', maxWidth: '100%' }" class="card">
     <news-list-item
       :item="item"
     />
