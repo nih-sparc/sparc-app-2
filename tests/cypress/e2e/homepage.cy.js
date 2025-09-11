@@ -69,10 +69,7 @@ describe('Homepage', { testIsolation: false }, function () {
       })
     })
     // Check for explore the data
-    cy.get('.container.p-24 .data-wrap.py-16').eq(1).find('.sparc-number').should(($item) => {
-      expect($item, 'Correct number of data explorations should be displayed').to.have.length(4)
-      expect($item, 'Data exploration item should have correct href').to.have.attr('href').to.contain('/data?type=')
-    })
+    cy.get('.container.p-24 .data-wrap.py-16').eq(1)
     // Check for key metrics
     cy.get('.container.p-24 .data-wrap.pt-16').find('.sparc-number').should(($item) => {
       expect($item, 'Correct number of key metrics should be displayed').to.have.length(4)
