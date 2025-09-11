@@ -75,7 +75,7 @@ describe('Homepage', { testIsolation: false }, function () {
     })
     // Check for key metrics
     cy.get('.container.p-24 .data-wrap.pt-16').find('.sparc-number').should(($item) => {
-      expect($item, 'Correct number of key metrics should be displayed').to.have.length.greaterThan(0)
+      expect($item, 'At least one key metric(s) should be displayed').to.have.length.greaterThan(0)
       expect($item, 'Key metrics should have a href').to.have.attr('href')
     })
   })
@@ -83,7 +83,7 @@ describe('Homepage', { testIsolation: false }, function () {
   it('Portal features', function () {
     // Check for the number of features
     cy.get('.feature-container').should(($feature) => {
-      expect($feature, 'Correct number of feature items should be displayed').to.have.length.greaterThan(0)
+      expect($feature, 'At least one feature item(s) should be displayed').to.have.length.greaterThan(0)
     })
     // Check for feature card
     cy.get(':nth-child(1) > .feature-container').within(() => {
