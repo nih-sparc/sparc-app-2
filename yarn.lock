@@ -12389,10 +12389,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennsieve-dashboard@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.2.0.tgz#a57602e2972f6d72244329a4110b51504d496a28"
-  integrity sha512-hhv0xr4oB3pknNZzxLFP2JU3qnazJfOj0Yidcm0mktu07UPhaEJK1o2vOsKYYeAnMHkzlEEmWPsA+EA1GyVGDg==
+pennsieve-dashboard@0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.2.1.tgz#a922b5f16f264463cad17585e712927f5b834bc1"
+  integrity sha512-AZZKyQZMpG4lYgBY5UlKmUGp67NI5M6CoyVwi8HZNP9oqp4kvOpMwcFdUXondNy3kRAakvvQdnN2cUhXFv88rw==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
@@ -14042,10 +14042,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.1.tgz#5720ac85a44c5990a7f59accb522ec106fe187ae"
-  integrity sha512-CDbNp01X8BWsf4DGJD2CeO73zRVrB+RxqyMa5Og4d2LNAJqn2WJPo3PAamRdLtPlxunHYTtgo4yAuYMqjk+j6A==
+sparc-dashwidgets@0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.3.tgz#bee8e7021457b92416985706c6cc565b71d04683"
+  integrity sha512-xqsSnH1XMvfuswv0BkYgadWdYM60OHFllFKqsDh2ZIqknejuj2R8r7C3SdbWyOlzDWVnhEUQ2/8RNEO/dA0m8w==
   dependencies:
     "@abi-software/flatmapvuer" "1.10.0-beta.0"
     axios "^1.6.7"

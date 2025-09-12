@@ -142,6 +142,7 @@ export default defineNuxtConfig({
       ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
       ctf_contact_us_form_type_id: 'contactUsForm',
       ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
+      ctf_sparc_dashboard_entry_id: '42ZU07Qgf0betl1wo9YX4X',
       ctf_consortia_content_type_id: 'consortia',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
@@ -194,6 +195,8 @@ export default defineNuxtConfig({
       PROTOCOLS_IO_HOST: process.env.PROTOCOLS_IO_HOST || 'https://www.protocols.io',
       PROTOCOLS_IO_TOKEN: process.env.PROTOCOLS_IO_TOKEN || '',
       GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
+      FLI_API_KEY: process.env.FLI_API_KEY || '',
+      SHOW_SPARC_DASHBOARD: process.env.SHOW_SPARC_DASHBOARD || 'false',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
