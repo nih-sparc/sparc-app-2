@@ -9,7 +9,7 @@
               <component v-if="galleryItemType === 'resources'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item.sys.id" :title="item.fields.name" :subtitle="item.fields.resourceType.join(', ')"
                 :showSparcTag="item.fields.developedBySparc" :description="item.fields.description"
-                :thumbnail-url="item.fields.logo.fields.file.url" :button-link="`/resources/${item.sys.id}`"
+                :thumbnail-url="item.fields.logo.fields.file.url" :button-link="item.fields.requiresDetailsPage ? `/resources/${item.sys.id}` : item.fields.url"
                 :external-url="item.fields.url" @card-clicked="cardClicked" />
               <component v-else-if="galleryItemType === 'metrics'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item.title" :title="item.title" :data="item.data" :subData="item.subData" :showSubData="showMetricsCardSubData"/>

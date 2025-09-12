@@ -18,9 +18,9 @@
         <div class="body1 mb-16">
           {{truncatedDescription}}
         </div>
-        <a v-if="buttonLink !== null" :href="buttonLink">
+        <a v-if="buttonLink !== null" :href="buttonLink" target="_blank">
           <el-button class="secondary">
-            Learn More
+            Learn More <svgo-icon-open class="open-icon" />
           </el-button>
         </a>
       </div>
@@ -126,5 +126,9 @@ export default {
   flex-grow: 1;
   max-height: 10rem;
   overflow-y: auto;
+}
+.open-icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>
