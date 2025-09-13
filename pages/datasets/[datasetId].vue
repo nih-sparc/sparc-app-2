@@ -38,7 +38,7 @@
       <div v-else-if="showTombstone">
         <tombstone :dataset-details="datasetInfo" />
       </div>
-      <div v-else-if="!isDatasetIndexed" class="container">
+      <div v-else-if="!isCollection && !isDatasetIndexed" class="container">
         <div class="heading2 subpage">
           <b>{{datasetName}}</b>
           <hr class="my-16"/>
@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div v-else-if="isOlderVersionIndexed" class="container">
+      <div v-else-if="!isCollection && isOlderVersionIndexed" class="container">
         <div class="heading2 subpage">
           <b>{{datasetName}}</b>
           <hr class="my-16"/>
@@ -60,7 +60,7 @@
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
             <dataset-action-box />
-            <similar-datasets-info-box :associated-projects="associatedProjects" :dataset-type-name="datasetTypeName" />
+            <similar-datasets-info-box v-if="!isCollection" :associated-projects="associatedProjects" :dataset-type-name="datasetTypeName" />
           </el-col>
           <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
             <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
@@ -68,15 +68,16 @@
             <client-only>
               <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
                 @tab-changed="tabChanged" routeName="datasetDetailsTab">
-                <dataset-description-info class="body1" v-show="activeTabId === 'abstract'" :markdown="markdown"
+                <dataset-description-info v-if="!isCollection" class="body1" v-show="activeTabId === 'abstract'" :markdown="markdown"
                   :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
-                <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
-                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
-                <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
+                <collection-contents v-if="isCollection" class="body1" v-show="activeTabId === 'contents'" />
+                <dataset-files-info class="body1" v-if="!isCollection && hasFiles" v-show="activeTabId === 'files'" />
+                <source-code-info class="body1" v-if="!isCollection && hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
+                <images-gallery v-if="!isCollection" class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
                     <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
@@ -120,9 +121,11 @@ import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
+import CollectionContents from '@/components/CollectionContents/CollectionContents.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+import { ORGANIZATION_TAGS } from '@/static/js/organizations.js'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
@@ -242,6 +245,7 @@ export default {
     DatasetVersionMessage,
     DatasetActionBox,
     SimilarDatasetsInfoBox,
+    CollectionContents,
     DatasetHeader,
     DatasetMetrics,
     DatasetDescriptionInfo,
@@ -341,15 +345,26 @@ export default {
 
       const creators = contributors?.concat(org)
       const canonicalLink = `${config.public.ROOT_URL}/datasets/${datasetId}`
-      const doi = propOr('', 'doi', datasetDetails)
+
+      const {
+        isUnpublished = false,
+        datasetType = '',
+        tags = [],
+        organizationId = '',
+        doi = '',
+        firstPublishedAt = ''
+      } = datasetDetails;
       const doiLink = doi ? `https://doi.org/${doi}` : ''
-      let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
-      const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
-      // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
-      if (!sparcOrganizationIds.includes(`${propOr('', 'organizationId', datasetDetails)}`) && !isEmpty(doiLink) && !showTombstone)
-      {
+      const showTombstone = isUnpublished;
+      const isCollection = datasetType === 'collection'
+      const hasOrganizationTag = tags.some(tag => ORGANIZATION_TAGS.includes(tag))
+      const isSparcOrg = sparcOrganizationIds.includes(`${organizationId}`)
+      const shouldRedirect = 
+        (isCollection && !hasOrganizationTag) || 
+        (!isCollection && !isSparcOrg && !isEmpty(doiLink) && !showTombstone)
+      /*if (shouldRedirect) {
         await navigateTo(doiLink, { external: true, redirectCode: 301 })
-      }
+      }*/
 
       return {
         tabs: tabsData,
@@ -360,12 +375,13 @@ export default {
         showTombstone,
         algoliaIndex,
         hasError: false,
-        originallyPublishedDate,
+        originallyPublishedDate: firstPublishedAt,
         creators,
         canonicalLink,
         isDatasetIndexed,
         isOlderVersionIndexed,
-        algoliaDatasetVersion
+        algoliaDatasetVersion,
+        isCollection
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
@@ -396,7 +412,7 @@ export default {
           label: 'Data & Models'
         }
       ],
-      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
+      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : this.isCollection ? 'about' : 'abstract',
       markdown: {},
       associatedProjects: [],
       loadingMarkdown: false,
@@ -628,6 +644,39 @@ export default {
           if (!hasSourceCodeTab) {
             this.tabs.splice(4, 0, { label: 'Source Code', id: 'source' })
           }
+        }
+      },
+      immediate: true
+    },
+    tabs: {
+      handler: function (newValue) {
+        if (!newValue.some(tab => tab.id == this.$route.query.datasetDetailsTab)) {
+          this.$router.replace({ path: this.$route.path, query: { ...this.$route.query, datasetDetailsTab: newValue[0].id } })
+        }
+      }
+    },
+    isCollection: {
+       handler: function (newValue) {
+        if (newValue) {
+          // remove the abstract, files, metrics, and gallery tabs
+          this.tabs = [
+            {
+              label: 'About',
+              id: 'about'
+            },
+            {
+              label: 'Cite',
+              id: 'cite'
+            },
+            {
+              label: 'Contents',
+              id: 'contents'
+            },
+            {
+              label: 'Metrics',
+              id: 'metrics'
+            }
+          ]
         }
       },
       immediate: true

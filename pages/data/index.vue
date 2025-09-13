@@ -45,7 +45,7 @@
       <el-row :gutter="32" type="flex">
         <el-col :span="24">
           <el-row :gutter="32">
-            <el-col class="facet-menu" :sm="24" :md="8" :lg="6">
+            <el-col v-if="searchType.type !== 'collection'" class="facet-menu" :sm="24" :md="8" :lg="6">
               <client-only>
                 <dataset-facet-menu :facets="facets" :visible-facets="visibleFacets"
                   @selected-facets-changed="onFacetSelectionChange()" @hook:mounted="facetMenuMounted"
@@ -71,8 +71,9 @@
                   Sorry, the search engine has encountered an unexpected
                   error, please try again later.
                 </p>
-                <dataset-search-results :tableData="tableData" />
-                <div v-if="searchHasAltResults" class="mt-24">
+                <collections-search-results v-if="searchType.type == 'collection'" :tableData="tableData" />
+                <dataset-search-results v-else :tableData="tableData" />
+                <div v-if="searchHasAltResults && searchType.type != 'collection'" class="mt-24">
                   <template v-if="searchData.total === 0">
                     No results were found for <strong>{{ searchType.label }}</strong>.
                   </template>
@@ -132,13 +133,15 @@ import DatasetFacetMenu from '@/components/FacetMenu/DatasetFacetMenu.vue'
 import { facetPropPathMapping, getAlgoliaFacets } from '../../utils/algolia'
 import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
+import CollectionsSearchResults from '@/components/SearchResults/CollectionsSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
   simulation: DatasetSearchResults,
   model: DatasetSearchResults,
-  device: DatasetSearchResults
+  device: DatasetSearchResults,
+  collections: CollectionsSearchResults
 }
 
 const searchTypes = [
@@ -157,6 +160,10 @@ const searchTypes = [
   {
     label: 'Devices',
     type: 'device'
+  },
+  {
+    label: 'Collections',
+    type: 'collection'
   }
 ]
 
@@ -166,6 +173,7 @@ export default {
   components: {
     SearchControlsContentful,
     DatasetFacetMenu,
+    CollectionsSearchResults,
     DatasetSearchResults,
     SortMenu,
   },
@@ -392,13 +400,17 @@ export default {
     }
     if (window.innerWidth <= 768) this.titleColumnWidth = 150
     window.onresize = () => this.onResize(window.innerWidth)
-    getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping)
-      .then(data => {
-        this.facets = data
-      })
-      .finally(() => {
-        this.fetchResults()
-      })
+    if (this.$route.query.type !== 'collections') {
+      getAlgoliaFacets(this.algoliaIndex, facetPropPathMapping)
+        .then(data => {
+          this.facets = data
+        })
+        .finally(() => {
+          this.fetchResults()
+        })
+    } else {
+      this.fetchResults()
+    }
   },
 
   methods: {
@@ -424,68 +436,87 @@ export default {
       const query = this.$route.query.search
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
-      const datasetsFilter =
-        searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
-          : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
-          : searchType === 'device' ? 'item.types.name:Device'
-          : "item.types.name:Dataset"
+      if (searchType == 'collection') {
+        const collectionsApiUrl = `${this.$config.public.discover_api_host}/datasets?${this.searchData.limit}&offset=${this.searchData.skip}&datasetType=collection&orderBy=relevance&orderDirection=desc`
+        this.$axios.get(collectionsApiUrl)
+          .then(({ data }) => {
+            const searchData = {
+              items: data.datasets,
+              total: data.totalCount
+            }
+            this.searchData = mergeLeft(searchData, this.searchData)
+            this.isLoadingSearch = false
+          })
+          .catch(() => {
+            this.isLoadingSearch = false
+            this.searchFailed = true
+          })
+        return
+      }
+      else {
+        const datasetsFilter =
+          searchType === 'simulation' ? '(NOT item.types.name:Dataset AND NOT item.types.name:Scaffold)'
+            : searchType === 'model' ? '(NOT item.types.name:Dataset AND item.types.name:Scaffold)'
+              : searchType === 'device' ? 'item.types.name:Device'
+                : "item.types.name:Dataset"
 
-      /* First we need to find only those facets that are relevant to the search query.
-       * If we attempt to do this in the same search as below than the response facets
-       * will only contain those specified by the filter */
-      this.latestSearchTerm = query
-      this.algoliaIndex
-        .search(query, {
-          facets: ['*'],
-          filters: `${datasetsFilter}`
-        })
-        .then(response => {
-          this.visibleFacets = response.facets
-        })
-        .catch(() => {
-          this.isLoadingSearch = false
-          this.searchFailed = true
-        })
-        .finally(() => {
-          var filters = this.$refs.datasetFacetMenu?.getFilters()
-          filters = filters === undefined ?
-            `${datasetsFilter}` :
-            filters + ` AND ${datasetsFilter}`
+        /* First we need to find only those facets that are relevant to the search query.
+        * If we attempt to do this in the same search as below than the response facets
+        * will only contain those specified by the filter */
+        this.latestSearchTerm = query
+        this.algoliaIndex
+          .search(query, {
+            facets: ['*'],
+            filters: `${datasetsFilter}`
+          })
+          .then(response => {
+            this.visibleFacets = response.facets
+          })
+          .catch(() => {
+            this.isLoadingSearch = false
+            this.searchFailed = true
+          })
+          .finally(() => {
+            var filters = this.$refs.datasetFacetMenu?.getFilters()
+            filters = filters === undefined ?
+              `${datasetsFilter}` :
+              filters + ` AND ${datasetsFilter}`
 
-          this.algoliaIndex
-            .search(query, {
-              facets: ['*'],
-              hitsPerPage: this.searchData.limit,
-              page: this.curSearchPage - 1,
-              filters: filters,
-              attributesToHighlight: [
-                'item.name',
-                'item.description',
-                'item.modalities',
-                'anatomy.organ',
-                'organisms.primary.species.name',
-                'pennsieve.owner.first.name',
-                'pennsieve.owner.last.name'
-              ],
-              highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
-              highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
-            })
-            .then(response => {
-              const searchData = {
-                items: response.hits,
-                total: response.nbHits
-              }
-              this.searchData = mergeLeft(searchData, this.searchData)
-              this.isLoadingSearch = false
+            this.algoliaIndex
+              .search(query, {
+                facets: ['*'],
+                hitsPerPage: this.searchData.limit,
+                page: this.curSearchPage - 1,
+                filters: filters,
+                attributesToHighlight: [
+                  'item.name',
+                  'item.description',
+                  'item.modalities',
+                  'anatomy.organ',
+                  'organisms.primary.species.name',
+                  'pennsieve.owner.first.name',
+                  'pennsieve.owner.last.name'
+                ],
+                highlightPreTag: `<${HIGHLIGHT_HTML_TAG}>`,
+                highlightPostTag: `</${HIGHLIGHT_HTML_TAG}>`
+              })
+              .then(response => {
+                const searchData = {
+                  items: response.hits,
+                  total: response.nbHits
+                }
+                this.searchData = mergeLeft(searchData, this.searchData)
+                this.isLoadingSearch = false
 
-              // Update alternative search results
-              this.alternativeSearchUpdate()
-            })
-            .catch(() => {
-              this.isLoadingSearch = false
-              this.searchFailed = true
-            })
-        })
+                // Update alternative search results
+                this.alternativeSearchUpdate()
+              })
+              .catch(() => {
+                this.isLoadingSearch = false
+                this.searchFailed = true
+              })
+          })
+      }
     },
 
     // alternaticeSearchUpdate: Updates this.resultCounts which is used for displaying other search options to the user
@@ -554,6 +585,9 @@ export default {
     },
 
     searchColSpan(viewport) {
+      if (this.searchType.type == 'collection') {
+        return 24
+      }
       const viewports = {
         sm: 24,
         md: 16,
