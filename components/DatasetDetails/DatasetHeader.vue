@@ -6,7 +6,12 @@
           <h1 class="heading2 mt-0">
             {{ title }}
           </h1>
-          <div class="dataset-owners">
+          <div v-if="isCollection" class="dataset-owners">
+            <span class="label4">Owner: 
+              <contributor-item class="contributor-item-wrap" :contributor="collectionOwner" />
+            </span>
+          </div>
+          <div v-else class="dataset-owners">
             <span class="label4">Contributors:&nbsp;</span>
             <div
               v-for="(contributor, idx) in contributors"
@@ -68,7 +73,7 @@
                 </template>
               </span>
             </div>
-            <div class="metics-container">
+            <div v-if="!isCollection" class="metics-container">
               <span class="label4 mr-32">Citations: <span @click="onMetricClicked" class="link">{{numCitations}}</span></span>
               <span class="label4">Downloads: <span @click="onMetricClicked" class="link">{{numDownloads}}</span></span>
             </div>
@@ -187,6 +192,16 @@ export default {
     showCitations: function() {
       return !this.embargoed && this.numCitations !== 0
     },
+    isCollection: function () {
+      return propOr('', 'datasetType', this.datasetInfo) == 'collection'
+    },
+    collectionOwner: function () {
+      return {
+        firstName: propOr('', 'ownerFirstName', this.datasetInfo),
+        lastName: propOr('', 'ownerLastName', this.datasetInfo),
+        orcid: propOr('', 'ownerOrcid', this.datasetInfo)
+      }
+    }
   },
 
   methods: {

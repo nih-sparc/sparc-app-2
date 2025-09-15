@@ -78,7 +78,7 @@
                 <dataset-files-info class="body1" v-if="!isCollection && hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="!isCollection && hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
                 <images-gallery v-if="!isCollection" class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div class="body1" v-show="activeTabId === 'metrics'">
+                <div v-if="!isCollection" class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
                     <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
                     <br />
@@ -362,9 +362,9 @@ export default {
       const shouldRedirect = 
         (isCollection && !hasOrganizationTag) || 
         (!isCollection && !isSparcOrg && !isEmpty(doiLink) && !showTombstone)
-      /*if (shouldRedirect) {
+      if (shouldRedirect) {
         await navigateTo(doiLink, { external: true, redirectCode: 301 })
-      }*/
+      }
 
       return {
         tabs: tabsData,
@@ -671,10 +671,6 @@ export default {
             {
               label: 'Contents',
               id: 'contents'
-            },
-            {
-              label: 'Metrics',
-              id: 'metrics'
             }
           ]
         }
