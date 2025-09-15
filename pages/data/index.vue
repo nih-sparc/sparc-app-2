@@ -33,7 +33,7 @@
           </template>
         </ul>
       </div>
-      <div class="search-bar__container">
+      <div v-if=" searchType.type != 'collection'" class="search-bar__container">
         <div class="body1 mb-8">
           Search within category
         </div>
@@ -438,15 +438,12 @@ export default {
 
       const searchType = pathOr('dataset', ['query', 'type'], this.$route)
       if (searchType == 'collection') {
-        const collectionsApiUrl = `${this.$config.public.discover_api_host}/datasets?${this.searchData.limit}&offset=${this.searchData.skip}&datasetType=collection&orderBy=relevance&orderDirection=desc`
+        const collectionsApiUrl = `${this.$config.public.discover_api_host}/datasets?${this.searchData.limit}&offset=${this.searchData.skip}&tags=${ORGANIZATION_TAGS.join(',')}&datasetType=collection&orderBy=relevance&orderDirection=desc`
         this.$axios.get(collectionsApiUrl)
           .then(({ data }) => {
-            const filteredCollections = data.datasets.filter(dataset =>
-              dataset.tags && dataset.tags.some(tag => ORGANIZATION_TAGS.includes(tag))
-            )
             const searchData = {
-              items: filteredCollections,
-              total: filteredCollections.length
+              items: data.datasets,
+              total: data.totalCount
             }
             this.searchData = mergeLeft(searchData, this.searchData)
             this.isLoadingSearch = false
