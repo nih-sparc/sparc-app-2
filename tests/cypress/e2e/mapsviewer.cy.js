@@ -162,6 +162,23 @@ mapTypes.forEach((map) => {
           .should('contain.text', 'Rat')
       })
 
+      it('Load AC map with Rat taxon and verify species selection', function () {
+        // Example of flatmap zoomed into a region on the Portal
+        cy.visit('/apps/maps?type=flatmap&dataset_version=1&dataset_id=241&taxo=NCBITaxon:9823&uberonid=UBERON:0000948&for_species=pig')
+
+        // Wait for the page to fully load
+        cy.waitForViewerContainer('.mapClass')
+        cy.waitForPageLoading()
+        cy.waitForMapLoading()
+
+        // Check that the species selector shows "Pig"
+        cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+          .should('contain.text', 'Pig')
+
+        cy.get('.mapcontent .side-bar .sidebar-container > .tabs-container > .tab.active-tab')
+          .should('contain.text', 'Dataset Explorer')
+      })
+
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
