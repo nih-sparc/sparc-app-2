@@ -31,7 +31,7 @@
       </template>
     </large-modal>
     <div class="heading2 mb-8">
-      Versions for this Dataset
+      Versions for this <span v-if="isCollection">collection</span><span v-else>dataset</span>
     </div>
     <div class="mb-8">
       <span class="label4">Current version: </span
@@ -215,6 +215,9 @@ export default {
     zipitUrl: function() {
       return this.$config.public.zipit_api_host
     },
+    isCollection: function () {
+      return propOr('', 'datasetType', this.datasetInfo) == 'collection'
+    }
   },
   methods: {
     getDoiLink(doi) {

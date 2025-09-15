@@ -41,7 +41,7 @@ const organizationsData = [
   }
 ]*/
 
-export const ORGANIZATION_TAGS = ['sparc', 'rejoin', 'precision']
+export const ORGANIZATION_TAGS = ['publisher:sparc']
 
 export const getOrganizationInfo = id => {
   const org = organizationsData.find(org => org.id == id)

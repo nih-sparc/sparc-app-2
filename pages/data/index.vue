@@ -135,6 +135,7 @@ import { HIGHLIGHT_HTML_TAG } from '../../utils/utils'
 import DatasetSearchResults from '@/components/SearchResults/DatasetSearchResults.vue'
 import CollectionsSearchResults from '@/components/SearchResults/CollectionsSearchResults.vue'
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
+import { ORGANIZATION_TAGS } from '@/static/js/organizations.js'
 
 const searchResultsComponents = {
   dataset: DatasetSearchResults,
@@ -440,9 +441,12 @@ export default {
         const collectionsApiUrl = `${this.$config.public.discover_api_host}/datasets?${this.searchData.limit}&offset=${this.searchData.skip}&datasetType=collection&orderBy=relevance&orderDirection=desc`
         this.$axios.get(collectionsApiUrl)
           .then(({ data }) => {
+            const filteredCollections = data.datasets.filter(dataset =>
+              dataset.tags && dataset.tags.some(tag => ORGANIZATION_TAGS.includes(tag))
+            )
             const searchData = {
-              items: data.datasets,
-              total: data.totalCount
+              items: filteredCollections,
+              total: filteredCollections.length
             }
             this.searchData = mergeLeft(searchData, this.searchData)
             this.isLoadingSearch = false
