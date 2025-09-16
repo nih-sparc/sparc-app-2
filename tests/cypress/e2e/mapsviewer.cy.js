@@ -148,37 +148,6 @@ mapTypes.forEach((map) => {
         })
       })
 
-      it('Load AC map with Rat taxon and verify species selection', function () {
-        // Visit the URL with AC map type and Rat taxon
-        cy.visit('/apps/maps?type=ac&taxo=NCBITaxon:10114')
-
-        // Wait for the page to fully load
-        cy.waitForViewerContainer('.mapClass')
-        cy.waitForPageLoading()
-        cy.waitForMapLoading()
-
-        // Check that the species selector shows "Rat"
-        cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
-          .should('contain.text', 'Rat')
-      })
-
-      it('Load AC map with Rat taxon and verify species selection', function () {
-        // Example of flatmap zoomed into a region on the Portal
-        cy.visit('/apps/maps?type=flatmap&dataset_version=1&dataset_id=241&taxo=NCBITaxon:9823&uberonid=UBERON:0000948&for_species=pig')
-
-        // Wait for the page to fully load
-        cy.waitForViewerContainer('.mapClass')
-        cy.waitForPageLoading()
-        cy.waitForMapLoading()
-
-        // Check that the species selector shows "Pig"
-        cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
-          .should('contain.text', 'Pig')
-
-        cy.get('.mapcontent .side-bar .sidebar-container > .tabs-container > .tab.active-tab')
-          .should('contain.text', 'Dataset Explorer')
-      })
-
       taxonModels.forEach((model, index) => {
 
         it(`Connectivity explorer for ${model}`, function () {
@@ -470,5 +439,32 @@ mapTypes.forEach((map) => {
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
     } */
+  })
+})
+
+// Add separate describe blocks for specific URL tests that don't need the beforeEach setup
+describe('Maps Viewer - Species Loading Tests', { testIsolation: false }, function () {
+
+  it('Load AC map with Rat taxon and verify species selection', function () {
+    cy.visit('/apps/maps?type=ac&taxo=NCBITaxon:10114')
+    cy.waitForViewerContainer('.mapClass')
+    cy.waitForPageLoading()
+    cy.waitForMapLoading()
+
+    cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+      .should('contain.text', 'Rat')
+  })
+
+  it('Load Flatmap with Pig taxon and verify species selection', function () {
+    cy.visit('/apps/maps?type=flatmap&dataset_version=1&dataset_id=241&taxo=NCBITaxon:9823&uberonid=UBERON:0000948&for_species=pig')
+    cy.waitForViewerContainer('.mapClass')
+    cy.waitForPageLoading()
+    cy.waitForMapLoading()
+
+    cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+      .should('contain.text', 'Pig')
+
+    cy.get('.mapcontent .side-bar .sidebar-container > .tabs-container > .tab.active-tab')
+      .should('contain.text', 'Dataset Explorer')
   })
 })
