@@ -466,5 +466,13 @@ describe('Maps Viewer - Species Loading Tests', { testIsolation: false }, functi
 
     cy.get('.mapcontent .side-bar .sidebar-container > .tabs-container > .tab.active-tab')
       .should('contain.text', 'Dataset Explorer')
+
+    // Dataset explorer filters - facets from dataset_id query
+    cy.get('.mapcontent .side-bar .sidebar-container .cascader-tag')
+      .should('contain.text', 'Cardiac nerve plexus')
+    cy.get('.el-popper.cascade-tags-popover')
+      .should('contain.text', 'Heart')
+    cy.get('.el-popper.cascade-tags-popover')
+      .should('contain.text', 'Pig')
   })
 })
