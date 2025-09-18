@@ -253,6 +253,9 @@ const processEntry = async (route) => {
       if (route.query.fid) {
         currentEntry.resource = route.query.fid
       }
+      if (route.query.dataset_id) {
+        currentEntry.dataset_id = route.query.dataset_id
+      }
     } else {
       startingMap = "FC"
     }
