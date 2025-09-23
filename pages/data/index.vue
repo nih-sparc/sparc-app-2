@@ -238,6 +238,7 @@ export default {
   },
 
   data: () => {
+    const config = useRuntimeConfig()
     return {
       searchQuery: '',
       searchData: {
@@ -265,7 +266,7 @@ export default {
       searchFailed: false,
       isSearchMapVisible: false,
       latestSearchTerm: '',
-      searchTypes: searchTypes,
+      searchTypes: config.public.SHOW_COLLECTIONS_FEATURE == 'false' ? searchTypes.filter(obj => obj.type !== 'collection') : searchTypes,
       breadcrumb: [
         {
           to: {

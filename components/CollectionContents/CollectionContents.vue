@@ -38,7 +38,7 @@ const { $axios } = useNuxtApp()
 const route = useRoute()
 const { datasetInfo } = storeToRefs(mainStore)
 const hasError = ref(false)
-const datasetId = propOr(route.params.datasetId, 'id', datasetInfo)
+const datasetId = propOr(route.params.collectionId, 'id', datasetInfo)
 const datasetVersion = propOr(1, 'version', datasetInfo)
 
 const contentsUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/dois?limit=999`

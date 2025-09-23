@@ -36,8 +36,8 @@
         <div class="pl-12">
           <nuxt-link
             :to="{
-              name: 'datasets-datasetId',
-              params: { datasetId: scope.row.id }
+              name: 'collections-collectionId',
+              params: { collectionId: scope.row.id }
             }"
             class="font-bold text-lg"
             v-html="scope.row.name"

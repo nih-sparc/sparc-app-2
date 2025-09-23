@@ -38,29 +38,10 @@
       <div v-else-if="showTombstone">
         <tombstone :dataset-details="datasetInfo" />
       </div>
-      <div v-else-if="!isDatasetIndexed" class="container">
-        <div class="heading2 subpage">
-          <b>{{datasetName}}</b>
-          <hr class="my-16"/>
-          <div class="heading3">
-            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }}, and is currently undergoing indexing in the SPARC Portal. As a result, some metadata may be incomplete, and the dataset may not yet appear in browse results. Full availability is expected once the indexing process is complete, which may take up to one week. We recommend checking back periodically for updates.
-          </div>
-        </div>
-      </div>
-      <div v-else-if="isOlderVersionIndexed" class="container">
-        <div class="heading2 subpage">
-          <b>{{datasetName}}</b>
-          <hr class="my-16"/>
-          <div class="heading3">
-            The dataset with identifier: <b>{{ datasetInfo.doi }}</b> was published on {{ latestVersionDate }}, and is currently undergoing indexing in the SPARC Portal. As a result, some metadata may not be up to date. Full availability is expected once the indexing process is complete, which may take up to one week. We recommend checking back periodically for updates. An older version of this dataset can be viewed <a :href="`/datasets/${datasetInfo.id}/version/${algoliaDatasetVersion}`">here.</a>
-          </div>
-        </div>
-      </div>
-      <div class="details-container" v-else>
+      <div class="details-container">
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
             <dataset-action-box />
-            <similar-datasets-info-box :associated-projects="associatedProjects" :dataset-type-name="datasetTypeName" />
           </el-col>
           <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
             <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
@@ -68,23 +49,11 @@
             <client-only>
               <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
                 @tab-changed="tabChanged" routeName="datasetDetailsTab">
-                <dataset-description-info class="body1" v-show="activeTabId === 'abstract'" :markdown="markdown"
-                  :dataset-records="datasetRecords" :loading-markdown="loadingMarkdown" :dataset-tags="datasetTags" />
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
-                <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
-                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
-                <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
-                <div class="body1" v-show="activeTabId === 'metrics'">
-                  <div v-if="hasCitations">
-                    <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
-                    <br />
-                    <hr />
-                  </div>
-                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
-                </div>
+                <collection-contents class="body1" v-show="activeTabId === 'contents'" />
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
               </content-tab-card>
@@ -94,7 +63,6 @@
       </div>
       <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version"
         :dataset-details="datasetInfo" />
-    
   </div>
 </template>
 
@@ -107,22 +75,21 @@ import { mapState, mapActions } from 'pinia'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
 import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
-import Scaffolds from '@/static/js/scaffolds.js'
 import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
 import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
-import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
-import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
+import CollectionContents from '@/components/CollectionContents/CollectionContents.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+import { ORGANIZATION_TAGS } from '@/static/js/organizations.js'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
@@ -184,24 +151,6 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
-const getOrganizationIds = async (algoliaIndex) => {
-  try {
-    const { facets } = await algoliaIndex.search('', {
-      hitsPerPage: 0,
-      sortFacetValuesBy: 'alpha',
-      facets: 'pennsieve.organization.identifier',
-    })
-    return Object.keys(facets['pennsieve.organization.identifier'])
-  } catch (error) {
-    return [
-      29, //IT'IS Foundation
-      367, // SPARC
-      661, // RE-JOIN
-      666, // PRECISION
-    ]
-  }
-}
-
 const getAlgoliaMetadata = async (algoliaIndex, id) => {
   try {
     const response = await algoliaIndex.getObject(id)
@@ -242,13 +191,12 @@ export default {
     DatasetVersionMessage,
     DatasetActionBox,
     SimilarDatasetsInfoBox,
+    CollectionContents,
     DatasetHeader,
     DatasetMetrics,
     DatasetDescriptionInfo,
     DatasetAboutInfo,
     CitationDetails,
-    DatasetFilesInfo,
-    SourceCodeInfo,
     ImagesGallery,
     DatasetReferences,
     VersionHistory,
@@ -270,7 +218,7 @@ export default {
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
-    const datasetId = route.params.datasetId
+    const datasetId = route.params.collectionId
     const filter = `objectID:${datasetId}`
     const datasetFacetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
       return data
@@ -281,7 +229,7 @@ export default {
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
     const store = useMainStore()
     try {
-      let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaDatasetMetadata] = await Promise.all([
+      let [datasetDetails, citationsInfo, versions, downloadsSummary, algoliaDatasetMetadata] = await Promise.all([
         getDatasetDetails(
           config,
           datasetId,
@@ -292,7 +240,6 @@ export default {
         getCitationsInfo(config, datasetId, $axios),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
-        getOrganizationIds(algoliaIndex),
         getAlgoliaMetadata(algoliaIndex, datasetId)
       ])
       // get contributors from Algolia and replace the list retrieved from Pennsieve because the Pennsieve list is based off
@@ -341,13 +288,20 @@ export default {
 
       const creators = contributors?.concat(org)
       const canonicalLink = `${config.public.ROOT_URL}/datasets/${datasetId}`
-      const doi = propOr('', 'doi', datasetDetails)
+
+      const {
+        isUnpublished = false,
+        datasetType = '',
+        tags = [],
+        doi = '',
+        firstPublishedAt = ''
+      } = datasetDetails;
       const doiLink = doi ? `https://doi.org/${doi}` : ''
-      let originallyPublishedDate = propOr('', 'firstPublishedAt', datasetDetails)
-      const showTombstone = propOr(false, 'isUnpublished', datasetDetails)
-      // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
-      if (!sparcOrganizationIds.includes(`${propOr('', 'organizationId', datasetDetails)}`) && !isEmpty(doiLink) && !showTombstone)
-      {
+      const showTombstone = isUnpublished;
+      const isCollection = datasetType === 'collection'
+      const hasOrganizationTag = tags.some(tag => ORGANIZATION_TAGS.includes(tag))
+      const shouldRedirect = isCollection && !hasOrganizationTag && !isEmpty(doiLink) && !showTombstone
+      if (shouldRedirect) {
         await navigateTo(doiLink, { external: true, redirectCode: 301 })
       }
 
@@ -360,12 +314,13 @@ export default {
         showTombstone,
         algoliaIndex,
         hasError: false,
-        originallyPublishedDate,
+        originallyPublishedDate: firstPublishedAt,
         creators,
         canonicalLink,
         isDatasetIndexed,
         isOlderVersionIndexed,
-        algoliaDatasetVersion
+        algoliaDatasetVersion,
+        isCollection
       }
     } catch (error) {
       const status = pathOr('', ['response', 'status'], error)
@@ -389,14 +344,20 @@ export default {
         {
           to: {
             name: 'data',
-            query: {
-              type: this.$route.query.type
-            }
           },
           label: 'Data & Models'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: 'collection'
+            }
+          },
+          label: 'Collections'
         }
       ],
-      activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
+      activeTabId: 'about',
       markdown: {},
       associatedProjects: [],
       loadingMarkdown: false,
@@ -428,7 +389,7 @@ export default {
     this.$gtm.trackEvent({
       event: "",
       category: "",
-      dataset_id: propOr(this.$route.params.datasetId, 'id', this.datasetInfo),
+      dataset_id: propOr(this.$route.params.collectionId, 'id', this.datasetInfo),
       version_id: propOr('', 'version', this.datasetInfo),
       doi: propOr('', 'doi', this.datasetInfo),
       event_name: "",
@@ -499,11 +460,7 @@ export default {
       return `${this.getRecordsUrl}&model=protocol`
     },
     datasetId: function () {
-      return pathOr('', ['params', 'datasetId'], this.$route)
-    },
-    hasFiles: function () {
-      // do not show the files tab for code repos
-      return this.fileCount >= 1 && !this.hasSourceCode
+      return pathOr('', ['params', 'collectionId'], this.$route)
     },
     fileCount: function () {
       return propOr('0', 'fileCount', this.datasetInfo)
@@ -526,13 +483,6 @@ export default {
     },
     organizationName: function () {
       return propOr('', 'organizationName', this.datasetInfo)
-    },
-    // This assumes that the subtitles are the organ types
-    organType: function () {
-      return this.subtitles[0] || ''
-    },
-    scaffold: function () {
-      return Scaffolds[this.organType.toLowerCase()]
     },
     primaryPublications: function () {
       const valObj = this.externalPublications.filter(function (elem) {
@@ -557,12 +507,6 @@ export default {
     },
     hasCitations: function () {
       return (this.primaryPublications || this.associatedPublications|| this.citingPublications) != null
-    },
-    hasSourceCode: function () {
-      return propOr(null, 'release', this.datasetInfo) !== null
-    },
-    sourceCodeLink: function () {
-      return pathOr(null, ['release','repoUrl'], this.datasetInfo)
     },
     osparcLink: function () {
       // using axios, get osparc file_viewers from /get_osparc_data API endpoint
@@ -610,24 +554,31 @@ export default {
         this.getMarkdown()
       },
     },
-    hasFiles: {
+    tabs: {
       handler: function (newValue) {
-        if (newValue && !this.hasError) {
-          const hasFilesTab = this.tabs.find(tab => tab.id === 'files') !== undefined
-          if (!hasFilesTab) {
-            this.tabs.splice(3, 0, { label: 'Files', id: 'files' })
-          }
+        if (!newValue.some(tab => tab.id == this.$route.query.datasetDetailsTab)) {
+          this.$router.replace({ path: this.$route.path, query: { ...this.$route.query, datasetDetailsTab: newValue[0].id } })
         }
-      },
-      immediate: true
+      }
     },
-    hasSourceCode: {
-      handler: function (newValue) {
-        if (newValue && !this.hasError) {
-          const hasSourceCodeTab = this.tabs.find(tab => tab.id === 'source') !== undefined
-          if (!hasSourceCodeTab) {
-            this.tabs.splice(4, 0, { label: 'Source Code', id: 'source' })
-          }
+    isCollection: {
+       handler: function (newValue) {
+        if (newValue) {
+          // remove the abstract, files, metrics, and gallery tabs
+          this.tabs = [
+            {
+              label: 'About',
+              id: 'about'
+            },
+            {
+              label: 'Cite',
+              id: 'cite'
+            },
+            {
+              label: 'Contents',
+              id: 'contents'
+            }
+          ]
         }
       },
       immediate: true
