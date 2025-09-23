@@ -1,19 +1,21 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
-    <div class="banner-container" v-if="isCollection">
-      <div class="img-grid">
+    <div class="banner-container mb-4" v-if="isCollection">
+      <div v-if="datasetInfo?.doiCollection?.banners?.length > 0" class="img-grid">
         <div class="grid"  
           :style="{
             gridTemplateColumns: `repeat(${getGridCols(datasetInfo?.doiCollection?.size)}, 1fr)`,
             gridTemplateRows: `repeat(${getGridRows(datasetInfo?.doiCollection?.size)}, 1fr)`
           }"
         >
-          <img
-            v-for="(img, index) in banners"
-            :key="index"
-            :src="img"
-            :alt="`Banner ${index + 1}`"
-          />
+          <client-only>
+            <img
+              v-for="(img, index) in datasetInfo?.doiCollection?.banners"
+              :key="index"
+              :src="img"
+              :alt="`Banner ${index + 1}`"
+            />
+          </client-only>
         </div>
       </div>
     </div>
@@ -86,9 +88,6 @@
         >
           View Contents
         </el-button>
-        <el-button class="secondary" @click="actionButtonClicked('cite')">
-          Cite Collection
-        </el-button>
       </template>
       <template v-else>
         <el-button
@@ -106,7 +105,7 @@
           Open Source Code
         </el-button>
       </template>
-      <template v-if="sdsViewer">
+      <template v-if="sdsViewer && !isCollection">
         <a
           :href="sdsViewer"
           target="_blank"

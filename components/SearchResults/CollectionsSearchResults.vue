@@ -29,8 +29,6 @@
         </div>
       </template>
     </el-table-column>
-
-    <!-- Right column: Title, Description, and Properties -->
     <el-table-column min-width="400">
       <template v-slot="scope">
         <div class="pl-12">
@@ -47,21 +45,6 @@
             v-if="scope.row.description"
             v-html="scope.row.description"
           />
-
-          <!--<table class="property-table">
-            <tbody>
-              <tr
-                v-for="(property, index) in PROPERTY_DATA"
-                v-show="getPropertyValue(scope.row, property)"
-                :key="index"
-              >
-                <td class="property-name-column">
-                  {{ property.displayName }}
-                </td>
-                <td v-html="getPropertyValue(scope.row, property)" />
-              </tr>
-            </tbody>
-          </table>-->
         </div>
       </template>
     </el-table-column>

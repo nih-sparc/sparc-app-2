@@ -52,7 +52,6 @@
                 <dataset-about-info class="body1" v-show="activeTabId === 'about'"
                   :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
-                <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <collection-contents class="body1" v-show="activeTabId === 'contents'" />
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
@@ -162,25 +161,9 @@ const getAlgoliaMetadata = async (algoliaIndex, id) => {
 
 const tabs = [
   {
-    label: 'Abstract',
-    id: 'abstract'
-  },
-  {
     label: 'About',
     id: 'about'
   },
-  {
-    label: 'Cite',
-    id: 'cite'
-  },
-  {
-    label: 'Gallery',
-    id: 'images'
-  },
-  {
-    label: 'Metrics',
-    id: 'metrics'
-  }
 ]
 
 export default {
@@ -569,10 +552,6 @@ export default {
             {
               label: 'About',
               id: 'about'
-            },
-            {
-              label: 'Cite',
-              id: 'cite'
             },
             {
               label: 'Contents',
