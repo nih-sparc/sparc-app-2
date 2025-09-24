@@ -259,7 +259,7 @@ export default {
       })
       return institutionNames.length > 0 ? institutionNames.join(", ") : 'None specified'
     }
-  },
+  }
 }
 </script>
 

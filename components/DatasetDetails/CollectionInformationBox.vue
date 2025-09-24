@@ -15,18 +15,12 @@
     <div class="header-stats-block my-8">
       <svgo-icon-files class="mr-8" height="20" width="20" />
       <div class="label2">
-        <template v-if="datasetFiles > 0">
-          {{ datasetFiles }} Files
+        <template v-if="collectionSize > 0">
+          {{ collectionSize }} Dataset(s)
         </template>
         <template v-else>
-          No Files
+          No Datasets
         </template>
-      </div>
-    </div>
-    <div class="header-stats-block mb-8" v-if="datasetTypeName === 'dataset'">
-      <svgo-icon-storage class="mr-8" height="20" width="20" />
-      <div class="label2">
-        {{ datasetStorage.number }} {{ datasetStorage.unit }}
       </div>
     </div>
     <div class="label4">Latest version: {{latestVersionRevision}}</div>
@@ -38,14 +32,14 @@
 <script>
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store'
-import { propOr, compose, split } from 'ramda'
+import { pathOr, propOr, compose, split } from 'ramda'
 
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DateUtils from '@/mixins/format-date'
 import { EMBARGO_ACCESS } from '@/utils/constants'
 
 export default {
-  name: 'DatasetInformationBox',
+  name: 'CollectionInformationBox',
 
   mixins: [DateUtils, FormatStorage],
 
@@ -65,7 +59,10 @@ export default {
      * Get dataset info from the store
      * @returns {Object}
      */
-    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName','showAllVersionsModal']),
+    ...mapState(useMainStore, ['datasetInfo', 'datasetTypeName', 'showAllVersionsModal']),
+    collectionSize() {
+      return pathOr(0, ['doiCollection','size'], this.datasetInfo)
+    },
     embargoAccess() {
       return propOr(null, 'embargoAccess', this.datasetInfo)
     },

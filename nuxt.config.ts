@@ -100,6 +100,11 @@ export default defineNuxtConfig({
             file: resolve('./pages/datasets/[datasetId].vue')
         },
         {
+            name: 'collection-version',
+            path: '/collections/:collectionId/version/:version',
+            file: resolve('./pages/collections/[collectionId].vue')
+        },
+        {
           name: 'tools',
           path: '/tools-and-resources/tools',
           file: resolve('./components/Resources/ResourcePage.vue')
@@ -197,6 +202,7 @@ export default defineNuxtConfig({
       GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
       FLI_API_KEY: process.env.FLI_API_KEY || '',
       SHOW_SPARC_DASHBOARD: process.env.SHOW_SPARC_DASHBOARD || 'false',
+      SHOW_COLLECTIONS_FEATURE: process.env.SHOW_COLLECTIONS_FEATURE || 'false',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,
