@@ -24,6 +24,12 @@
                 :src="img"
                 :alt="`Banner ${index+1} for ${scope.row.title}`"
               />
+              <!-- placeholders if less than 4 datasets in collection -->
+              <img
+                v-for="n in 4 - (scope.row?.doiCollection?.size || 4)"
+                :key="`fake-${n}`"
+                src=""
+              />
             </div>
           </nuxt-link>
         </div>
@@ -99,12 +105,10 @@ export default {
 
   methods: {
     getGridCols(count) {
-      if (count === 1) return 1
       if (count <= 4) return 2
       return 3
     },
     getGridRows(count) {
-      if (count === 1) return 1
       if (count <= 4) return 2
       return Math.ceil(count / 3)
     },
@@ -186,8 +190,8 @@ table:not([class^='el-table__'])::before {
 }
 .img-grid {
   display: block;
-  width: 160px;
-  height: 160px;
+  width: 128px;
+  height: 128px;
 
   .grid {
     display: grid;
