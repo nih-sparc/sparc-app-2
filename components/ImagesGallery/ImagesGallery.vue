@@ -112,10 +112,10 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (flatmapData.length === 0) {
           flatmapData.push(speciesData)
         }
-        if ('flatmaps' in scicrunchData) {
-          scicrunchData['flatmaps'].push(...flatmapData)
+        if ('abi-flatmap-file' in scicrunchData) {
+          scicrunchData['abi-flatmap-file'].push(...flatmapData)
         } else {
-          scicrunchData['flatmaps'] = flatmapData
+          scicrunchData['abi-flatmap-file'] = flatmapData
         }
       }
     }
@@ -405,8 +405,8 @@ export default {
           })
         }
 
-        if ('flatmaps' in scicrunchData) {
-          scicrunchData.flatmaps.forEach( f => {
+        if ('abi-flatmap-file' in scicrunchData) {
+          scicrunchData['abi-flatmap-file'].forEach( f => {
             if (('dataset' in f)) {
               const flatmap_uuid = f.associated_flatmap?.identifier
               if (flatmap_uuid) {
