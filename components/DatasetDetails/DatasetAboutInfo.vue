@@ -1,7 +1,7 @@
 <template>
   <div class="dataset-about-info">
     <div class="heading2 mb-8">
-      About this <span v-if="isCollection">collection</span><span v-else>dataset</span>
+      About this dataset
     </div>
     <div class="mb-16"><span class="label4">Title: </span>{{datasetTitle}}</div>
     <div class="mb-16"><span class="label4">First Published: </span>{{firstPublishedDate}}</div>
@@ -258,9 +258,6 @@ export default {
         })
       })
       return institutionNames.length > 0 ? institutionNames.join(", ") : 'None specified'
-    },
-    isCollection: function () {
-      return propOr('', 'datasetType', this.datasetInfo) == 'collection'
     }
   }
 }

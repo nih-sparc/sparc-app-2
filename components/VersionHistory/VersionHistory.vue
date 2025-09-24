@@ -41,7 +41,12 @@
       <span class="label4">Original version: </span
       >{{ originalVersionRevisionText }}
     </div>
-    <div class="mb-16">
+    <div v-if="isCollection" class="mb-16">
+      A collection version refers to a DOI-specific, version-controlled iteration
+      of a collection. A new version of a collection must be released to reflect
+      any changes made to the datasets contained inside a collection.
+    </div>
+    <div v-else class="mb-16">
       A dataset version refers to a DOI-specific, version-controlled iteration
       of a dataset. A new version of a dataset must be released when there are
       any changes to the files or scientific metadata made within a dataset. A

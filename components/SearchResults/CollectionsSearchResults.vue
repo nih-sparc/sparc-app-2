@@ -45,6 +45,22 @@
             v-if="scope.row.description"
             v-html="scope.row.description"
           />
+          <table class="property-table">
+            <tbody>
+              <tr
+                v-for="(property, index) in PROPERTY_DATA"
+                v-show="getPropertyValue(scope.row, property)"
+                :key="index"
+              >
+                <td class="property-name-column">
+                  {{ property.displayName }}
+                </td>
+                <td
+                  v-html="getPropertyValue(scope.row, property)"
+                />
+              </tr>
+            </tbody>
+          </table>
         </div>
       </template>
     </el-table-column>
@@ -70,20 +86,12 @@ export default {
     return {
       PROPERTY_DATA: [
         {
-          displayName: 'Created By',
-          propPath: 'owner'
-        },
-        {
           displayName: 'Number of Datasets',
-          propPath: 'datasetCount'
+          propPath: 'doiCollection.size'
         },
         {
-          displayName: 'Created On',
-          propPath: 'createdAt'
-        },
-        {
-          displayName: 'Last Updated',
-          propPath: 'updatedAt'
+          displayName: 'Publication Date',
+          propPath: undefined
         }
       ]
     }
@@ -115,19 +123,25 @@ export default {
     },
 
     getPropertyValue(item, property) {
-      const value = this.getNestedProperty(item, property.propPath);
-      if (!value) return undefined;
+      const value = this.getNestedProperty(item, property.propPath)
+      if (!value) return undefined
 
       switch (property.displayName) {
-        case 'Created On':
-        case 'Last Updated':
-          return this.formatDate(value);
         case 'Number of Datasets':
-          return `${value} datasets`;
-        case 'Created By':
-          return value.name ? value.name : value; // either a name string or {name: "..."}
+          return `${value}`
+        case 'Publication Date': {
+          if (value.firstPublishedAt == undefined || value.versionPublishedAt == undefined) {
+            return undefined
+          }
+          const firstPublishedAt = value.firstPublishedAt.split(",")[0]
+          const versionPublishedAt = value.versionPublishedAt.split(",")[0]
+          return this.formatDate(firstPublishedAt) +
+                    ' (Last updated ' +
+                    this.formatDate(versionPublishedAt) +
+                    ')'
+        }
         default:
-          return value;
+          return value
       }
     }
   }

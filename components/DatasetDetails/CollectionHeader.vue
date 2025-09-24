@@ -7,17 +7,9 @@
             {{ title }}
           </h1>
           <div class="dataset-owners">
-            <span class="label4">Contributors:&nbsp;</span>
-            <div
-              v-for="(contributor, idx) in contributors"
-              :key="contributor.id"
-              class="contributor-item-wrap mr-4"
-            >
-              <contributor-item :contributor="contributor" />
-              <template v-if="idx < contributors.length - 1">
-                ,
-              </template>
-            </div>
+            <span class="label4">Owner: 
+              <contributor-item class="contributor-item-wrap" :contributor="collectionOwner" />
+            </span>
           </div>
           <hr />
           <div>
@@ -25,26 +17,13 @@
           </div>
         </el-col>
         <el-col :sm="8" :md="6" :lg="5" :xl="4">
-          <dataset-information-box 
+          <collection-information-box 
             :latest-version-revision="latestVersionRevision"
             :latest-version-date="latestVersionDate"
           />
         </el-col>
         <el-col>
           <hr />
-          <div v-if="showPrimaryPublications">
-            <div class="publications-container">
-              <span class="primary-publications-title-column">
-                <span class="label4">Primary Publication(s): </span>
-              </span>
-              <span>
-                <div v-for="(item, index) in primaryPublications" :key="index" class="primary-publications-list-item">
-                  <apa-citation @doi-invalid="onDoiInvalid" class="mb-8" :doi="item.doi" :can-copy-citation="false" />
-                </div>
-              </span>
-            </div>
-            <hr />
-          </div>
           <div class="header-stats-block">
             <div>
               <span class="label4">
@@ -68,10 +47,6 @@
                 </template>
               </span>
             </div>
-            <div class="metics-container">
-              <span class="label4 mr-32">Citations: <span @click="onMetricClicked" class="link">{{numCitations}}</span></span>
-              <span class="label4">Downloads: <span @click="onMetricClicked" class="link">{{numDownloads}}</span></span>
-            </div>
           </div>
         </el-col>
       </el-row>
@@ -86,15 +61,15 @@ import { propOr } from 'ramda'
 import DoiChecker from '@/mixins/doi-checker'
 import ApaCitation from '@/components/DatasetCitations/ApaCitation.vue'
 import ContributorItem from '@/components/ContributorItem/ContributorItem.vue'
-import DatasetInformationBox from '@/components/DatasetDetails/DatasetInformationBox.vue'
+import CollectionInformationBox from '@/components/DatasetDetails/CollectionInformationBox.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
 
 export default {
-  name: 'DatasetHeader',
+  name: 'CollectionHeader',
 
   components: {
     ContributorItem,
-    DatasetInformationBox,
+    CollectionInformationBox,
     ApaCitation,
   },
 
@@ -178,15 +153,13 @@ export default {
     licenseName: function() {
       return propOr('', 'license', this.datasetInfo)
     },
-    primaryPublications: function() {
-      const valObj = this.externalPublications.filter(function(elem) {
-        return elem.relationshipType == 'IsDescribedBy'
-      })
-      return valObj.length > 0 ? valObj : null
-    },
-    showCitations: function() {
-      return !this.embargoed && this.numCitations !== 0
-    },
+    collectionOwner: function () {
+      return {
+        firstName: propOr('', 'ownerFirstName', this.datasetInfo),
+        lastName: propOr('', 'ownerLastName', this.datasetInfo),
+        orcid: propOr('', 'ownerOrcid', this.datasetInfo)
+      }
+    }
   },
 
   methods: {

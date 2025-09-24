@@ -1,25 +1,6 @@
 <template>
   <div class="dataset-action-box mt-16 p-8">
-    <div class="banner-container mb-4" v-if="isCollection">
-      <div v-if="datasetInfo?.doiCollection?.banners?.length > 0" class="img-grid">
-        <div class="grid"  
-          :style="{
-            gridTemplateColumns: `repeat(${getGridCols(datasetInfo?.doiCollection?.size)}, 1fr)`,
-            gridTemplateRows: `repeat(${getGridRows(datasetInfo?.doiCollection?.size)}, 1fr)`
-          }"
-        >
-          <client-only>
-            <img
-              v-for="(img, index) in datasetInfo?.doiCollection?.banners"
-              :key="index"
-              :src="img"
-              :alt="`Banner ${index + 1}`"
-            />
-          </client-only>
-        </div>
-      </div>
-    </div>
-    <dataset-banner-image v-else :src="datasetImage" />
+    <dataset-banner-image :src="datasetImage" />
     <div class="pill-container" v-if="embargoed">
       <sparc-pill v-if="embargoed" class="mb-4">
         Embargoed
@@ -81,14 +62,6 @@
           Cite Model
         </el-button>
       </template>
-      <template v-else-if="isCollection">
-        <el-button
-          v-if="hasContent"
-          @click="actionButtonClicked('contents')"
-        >
-          View Contents
-        </el-button>
-      </template>
       <template v-else>
         <el-button
           v-if="hasFiles"
@@ -105,7 +78,7 @@
           Open Source Code
         </el-button>
       </template>
-      <template v-if="sdsViewer && !isCollection">
+      <template v-if="sdsViewer">
         <a
           :href="sdsViewer"
           target="_blank"
@@ -122,7 +95,7 @@
 <script>
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store/index.js'
-import { pathOr, propOr } from 'ramda'
+import { propOr } from 'ramda'
 import DatasetBannerImage from '@/components/DatasetBannerImage/DatasetBannerImage.vue'
 import SparcPill from '@/components/SparcPill/SparcPill.vue'
 
@@ -150,31 +123,6 @@ export default {
     datasetImage: function() {
       return propOr('', 'banner', this.datasetInfo)
     },
-    isCollection: function () {
-      return propOr('', 'datasetType', this.datasetInfo) == 'collection'
-    },
-    banners: function () {
-      return pathOr([], ['doiCollection','banners'], this.datasetInfo)
-    },
-    gridCols() {
-      const count = this.banners?.length || 1
-      if (count === 1) return 1
-      return Math.ceil(Math.sqrt(count)) // closest square layout
-    },
-    gridRows() {
-      const count = this.banners?.length || 1
-      return Math.ceil(count / this.gridCols)
-    },
-    gridStyle() {
-      return {
-        display: 'grid',
-        gap: '2px',
-        width: '160px',
-        height: '160px',
-        gridTemplateColumns: `repeat(${this.gridCols}, 1fr)`,
-        gridTemplateRows: `repeat(${this.gridRows}, 1fr)`
-      }
-    },
     /**
      * Returns whether a scaffold can be viewed
      */
@@ -200,9 +148,6 @@ export default {
     hasFiles: function() {
       return this.fileCount >= 1
     },
-    hasContent: function () {
-      return pathOr(0, ['doiCollection','size'], this.datasetInfo) > 0
-    },
     hasSourceCode: function () {
       return propOr(null, 'release', this.datasetInfo) !== null
     },
@@ -223,16 +168,6 @@ export default {
   },
 
   methods: {
-    getGridCols(count) {
-      if (count === 1) return 1
-      if (count <= 4) return 2
-      return 3
-    },
-    getGridRows(count) {
-      if (count === 1) return 1
-      if (count <= 4) return 2
-      return Math.ceil(count / 3)
-    },
     /**
      * Get the dataset details tab area by id
      * @returns {Object}
@@ -315,29 +250,5 @@ export default {
   position: absolute;
   right: 1rem;
   top: 1rem;
-}
-
-.img-grid {
-  display: block;
-  width: 100%;
-  height: auto;
-
-  .grid {
-    display: grid;
-    gap: 2px;
-    width: 100%;
-    height: 100%;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 2px;
-  }
-}
-
-.pill-container {
-  margin-top: 8px;
 }
 </style>

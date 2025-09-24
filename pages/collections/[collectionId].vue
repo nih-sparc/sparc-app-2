@@ -41,27 +41,24 @@
       <div class="details-container">
         <el-row :gutter="16">
           <el-col :xs="24" :sm="8" :md="6" :lg="5" class="left-column">
-            <dataset-action-box />
+            <collection-action-box />
           </el-col>
           <el-col :xs="24" :sm="16" :md="18" :lg="19" class="right-column">
-            <dataset-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
+            <collection-header class="dataset-header" :latestVersionRevision="latestVersionRevision"
               :latestVersionDate="latestVersionDate" :numCitations="citingPublications?.length" :numDownloads="numDownloads" />
             <client-only>
               <content-tab-card class="mt-32" id="datasetDetailsTabsContainer" :tabs="tabs" :active-tab-id="activeTabId"
                 @tab-changed="tabChanged" routeName="datasetDetailsTab">
-                <dataset-about-info class="body1" v-show="activeTabId === 'about'"
-                  :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate"
-                  :associated-projects="associatedProjects" :awards="sparcAwards"/>
+                <collections-about-info class="body1" v-show="activeTabId === 'about'"
+                  :latestVersionRevision="latestVersionRevision" :latestVersionDate="latestVersionDate" />
                 <collection-contents class="body1" v-show="activeTabId === 'contents'" />
-                <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
-                  :versions="versions" />
+                <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'" :versions="versions" />
               </content-tab-card>
             </client-only>
           </el-col>
         </el-row>
       </div>
-      <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version"
-        :dataset-details="datasetInfo" />
+      <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version" :dataset-details="datasetInfo" />
   </div>
 </template>
 
@@ -72,13 +69,13 @@ import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
 import { useMainStore } from '../store/index.js'
 import { mapState, mapActions } from 'pinia'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
-import DatasetActionBox from '@/components/DatasetDetails/DatasetActionBox.vue'
+import CollectionActionBox from '@/components/DatasetDetails/CollectionActionBox.vue'
 import SimilarDatasetsInfoBox from '@/components/DatasetDetails/SimilarDatasetsInfoBox.vue'
-import DatasetHeader from '@/components/DatasetDetails/DatasetHeader.vue'
+import CollectionHeader from '@/components/DatasetDetails/CollectionHeader.vue'
 import DateUtils from '@/mixins/format-date'
 import FormatStorage from '@/mixins/bf-storage-metrics'
 import DatasetDescriptionInfo from '@/components/DatasetDetails/DatasetDescriptionInfo.vue'
-import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
+import CollectionsAboutInfo from '@/components/DatasetDetails/CollectionsAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
@@ -167,18 +164,18 @@ const tabs = [
 ]
 
 export default {
-  name: 'DatasetDetails',
+  name: 'CollectionDetails',
 
   components: {
     Tombstone,
     DatasetVersionMessage,
-    DatasetActionBox,
+    CollectionActionBox,
     SimilarDatasetsInfoBox,
     CollectionContents,
-    DatasetHeader,
+    CollectionHeader,
     DatasetMetrics,
     DatasetDescriptionInfo,
-    DatasetAboutInfo,
+    CollectionsAboutInfo,
     CitationDetails,
     ImagesGallery,
     DatasetReferences,
