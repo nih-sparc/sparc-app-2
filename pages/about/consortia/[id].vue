@@ -118,8 +118,7 @@ const whoWeAreButtonLink = computed(() => pathOr('', ['fields', 'whoWeAreButtonL
 const ourResearch = computed(() => pathOr('', ['fields', 'ourResearch'], consortiaItem.value))
 const ourResearchButtonText = computed(() => pathOr('', ['fields', 'ourResearchButtonText'], consortiaItem.value))
 const ourResearchButtonLink = computed(() => pathOr('', ['fields', 'ourResearchButtonLink'], consortiaItem.value))
-//Temporarily disable RE-JOIN dataset button until RE-JOIN datasets are available
-const displayOurResearchButton = computed(() => !ourResearchButtonLink.value.includes('selectedFacetIds=RE-JOIN'))
+const displayOurResearchButton = computed(() => !ourResearchButtonLink.value == '')
 const learnMore = computed(() => pathOr([], ['fields', 'learnMore'], consortiaItem.value))
 const logoUrl = computed(() => pathOr('', ['fields', 'logo', 'fields', 'file', 'url'], consortiaItem.value))
 const forInvestigators = computed(() => pathOr('', ['fields', 'forInvestigators'], consortiaItem.value))
