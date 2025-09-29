@@ -31,7 +31,7 @@
       </template>
     </large-modal>
     <div class="heading2 mb-8">
-      Versions for this Dataset
+      Versions for this <span v-if="isCollection">collection</span><span v-else>dataset</span>
     </div>
     <div class="mb-8">
       <span class="label4">Current version: </span
@@ -41,7 +41,12 @@
       <span class="label4">Original version: </span
       >{{ originalVersionRevisionText }}
     </div>
-    <div class="mb-16">
+    <div v-if="isCollection" class="mb-16">
+      A collection version refers to a DOI-specific, version-controlled iteration
+      of a collection. A new version of a collection must be released to reflect
+      any changes made to the datasets contained inside a collection.
+    </div>
+    <div v-else class="mb-16">
       A dataset version refers to a DOI-specific, version-controlled iteration
       of a dataset. A new version of a dataset must be released when there are
       any changes to the files or scientific metadata made within a dataset. A
@@ -215,6 +220,9 @@ export default {
     zipitUrl: function() {
       return this.$config.public.zipit_api_host
     },
+    isCollection: function () {
+      return propOr('', 'datasetType', this.datasetInfo) == 'collection'
+    }
   },
   methods: {
     getDoiLink(doi) {

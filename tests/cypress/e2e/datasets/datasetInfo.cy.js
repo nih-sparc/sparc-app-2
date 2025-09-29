@@ -82,7 +82,7 @@ datasetIds.forEach((datasetId) => {
         // Check 'View other version' directs to Versions tab
         cy.get('.dataset-information-box > div').contains('View other versions').click()
         cy.get('.active.style1.tab2.tab-link.p-16').should('contain', 'Versions')
-        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this Dataset').and('be.visible')
+        cy.get('[style=""] > .heading2.mb-8').should('contain', 'Versions for this').and('be.visible')
       })
     })
 
