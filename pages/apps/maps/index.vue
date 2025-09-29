@@ -462,7 +462,7 @@ export default {
 
     const options = {
       sparcApi: config.public.portal_api,
-      algoliaIndex: config.public.ALGOLIA_INDEX,
+      algoliaIndex: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC,
       algoliaKey: config.public.ALGOLIA_API_KEY,
       algoliaId: config.public.ALGOLIA_APP_ID,
       pennsieveApi: config.public.discover_api_host.replace('/discover', ''),
