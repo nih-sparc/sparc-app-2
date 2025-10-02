@@ -77,23 +77,23 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { useAsyncData, useRoute, useNuxtApp, useRuntimeConfig } from '#app';
+import { ref, computed, watch } from 'vue'
+import { useAsyncData, useRoute, useNuxtApp, useRuntimeConfig } from '#app'
 
-import Paper from '~/components/Paper/Paper.vue';
-import Gallery from '~/components/Gallery/Gallery.vue';
+import Paper from '~/components/Paper/Paper.vue'
+import Gallery from '~/components/Gallery/Gallery.vue'
 import ProjectsAndDatasetsCard from '~/components/ProjectsAndDatasets/ProjectsAndDatasetsCard/ProjectsAndDatasetsCard.vue'
-import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
+import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue'
 import ConsortiaMetrics from '@/components/ConsortiaMetrics/ConsortiaMetrics.vue'
 
-import { pathOr } from 'ramda';
+import { pathOr } from 'ramda'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
-import { useLocalStorage } from '~/composables/useLocalStorage';
+import { useLocalStorage } from '~/composables/useLocalStorage'
 
 const { storeInLocalStorage, getFromLocalStorage, storeTimeDelta, hasTimeDeltaPassed, resetTimestamp } = useLocalStorage()
 
-const route = useRoute();
-const { $contentfulClient, $pennsieveApiClient, $algoliaClient } = useNuxtApp();
+const route = useRoute()
+const { $contentfulClient, $pennsieveApiClient, $algoliaClient } = useNuxtApp()
 const config = useRuntimeConfig()
 const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
 
@@ -103,11 +103,11 @@ const { data: consortiaItem, error: contentfulError, pending } = useAsyncData(
       content_type: config.public.ctf_consortia_content_type_id,
       'fields.slug': route.params.id.toLowerCase(),
     })
-    return pathOr([], ['items'], response)[0];
+    return pathOr([], ['items'], response)[0]
   }
 )
 
-const highlights = ref([]);
+const highlights = ref([])
 const { items } = await $contentfulClient
   .getEntries({
     content_type: config.public.ctf_news_id,
@@ -115,7 +115,7 @@ const { items } = await $contentfulClient
     limit: 999,
     'fields.consortiaHighlight[in]': consortiaItem.value?.fields?.slug,
   })
-  highlights.value = items;
+  highlights.value = items
 
 const breadcrumb = [
   { to: { name: 'index' }, label: 'Home' },
@@ -152,19 +152,19 @@ const facetMetricsTitle = computed(() => pathOr('', ['fields', 'facetMetricsTitl
 const facetMetricsConsortiaIds = computed(() => pathOr([], ['fields', 'organizationIdsForFacetMetrics'], consortiaItem.value))
 
 const featuredDatasetLink = computed(() => {
-  const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/';
+  const datasetPath = featuredDataset.value?.id ? `/datasets/${featuredDataset.value.id}` : '/'
   return {
     isInternal: true,
     path: datasetPath,
   }
 })
 
-const featuredDatasetIdKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetId`);
-const featuredDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetIds`);
-const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_listOfAvailableDatasetIds`);
-const organizationIdFilterKey = computed(() => `${consortiaItem.value?.fields.slug}_organizationIdFilter`);
-const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value?.fields.slug}_dateToShowFeaturedDatasetsUntil`);
-const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value?.fields.slug}_timeDeltaForFeaturedDatasets`);
+const featuredDatasetIdKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetId`)
+const featuredDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_featuredDatasetIds`)
+const listOfAvailableDatasetIdsKey = computed(() => `${consortiaItem.value?.fields.slug}_listOfAvailableDatasetIds`)
+const organizationIdFilterKey = computed(() => `${consortiaItem.value?.fields.slug}_organizationIdFilter`)
+const dateToShowFeaturedDatasetsUntilKey = computed(() => `${consortiaItem.value?.fields.slug}_dateToShowFeaturedDatasetsUntil`)
+const timeDeltaForFeaturedDatasetsKey = computed(() => `${consortiaItem.value?.fields.slug}_timeDeltaForFeaturedDatasets`)
 
 const featuredDatasetId = ref(null)
 const featuredDataset = ref({})
@@ -180,7 +180,7 @@ watch(
           description: data.description,
           banner: data.banner,
           id: data.id,
-        };
+        }
       } catch {
         featuredDataset.value = {}
       }
@@ -191,10 +191,10 @@ watch(
 
 const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeaturedDatasetsUntil, organizationIds) => {
   if (featuredDatasetIds?.length > 0) {
-    const currentDate = new Date();
+    const currentDate = new Date()
     // If the reset time has not passed or it is not set then just use the list of featured dataset ids set in Contentful
     if (!dateToShowFeaturedDatasetsUntil || isNaN(dateToShowFeaturedDatasetsUntil.getTime()) || currentDate < dateToShowFeaturedDatasetsUntil) {
-      storeInLocalStorage(listOfAvailableDatasetIdsKey.value, featuredDatasetIds);
+      storeInLocalStorage(listOfAvailableDatasetIdsKey.value, featuredDatasetIds)
       return
     }
   }
@@ -276,7 +276,7 @@ const consortiaStyle = computed(() => {
   const bg2 = pathOr('f5f7fa', ['fields', 'secondColor'], consortiaItem.value)
   const bg3 = pathOr('', ['fields', 'thirdColor'], consortiaItem.value)
   const linkColor = pathOr('', ['fields', 'buttonAndLinkColor'], consortiaItem.value)
-  const secondaryButtonColor = pathOr('', ['fields', 'buttonSecondaryColor'], consortiaItem.value);
+  const secondaryButtonColor = pathOr('', ['fields', 'buttonSecondaryColor'], consortiaItem.value)
   return {
     backgroundImage: `linear-gradient(#${bg1}, #${bg2}${bg3 ? `, #${bg3}` : ''})`,
     '--button-and-link-color': `#${linkColor}`,
