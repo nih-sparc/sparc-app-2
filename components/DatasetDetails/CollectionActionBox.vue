@@ -16,12 +16,6 @@
               :src="img"
               :alt="`Banner ${index + 1}`"
             />
-            <!-- placeholders if less than 4 datasets in collection -->
-            <img
-              v-for="n in 4 - (collectionSize || 4)"
-              :key="`fake-${n}`"
-              src=""
-            />
           </div>
         </div>
       </client-only>
@@ -83,11 +77,13 @@ const sdsViewer = computed(() => {
 })
 
 function getGridCols(count) {
+  if (count === 1) return 1
   if (count <= 4) return 2
   return 3
 }
 
 function getGridRows(count) {
+  if (count === 1 || count === 2) return 1
   if (count <= 4) return 2
   return Math.ceil(count / 3)
 }
