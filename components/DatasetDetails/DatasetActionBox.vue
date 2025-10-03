@@ -133,7 +133,9 @@ export default {
      * Returns whether a simulation can be viewed
      */
     canViewSimulation: function() {
-      return this.datasetInfo.sciCrunch ? this.datasetInfo.sciCrunch['abi-simulation-file'] : false
+      return this.datasetInfo.sciCrunch ?
+        this.datasetInfo.sciCrunch['abi-simulation-file'] ||
+        this.datasetInfo.sciCrunch['abi-simulation-omex-file'] : false
     },
     /**
      * Returns simulation id for run simulation button
