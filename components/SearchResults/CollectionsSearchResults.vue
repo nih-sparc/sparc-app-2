@@ -6,8 +6,8 @@
         <div class="img-grid">
           <nuxt-link
             :to="{
-              name: 'datasets-datasetId',
-              params: { datasetId: scope.row.id }
+              name: 'collections-collectionId',
+              params: { collectionId: scope.row.id }
             }"
             class="img-dataset"
           >
@@ -99,14 +99,10 @@ export default {
 
   methods: {
     getGridCols(count) {
-      if (count === 1) return 1
-      if (count <= 4) return 2
-      return 3
+      return count == 1 ? 1 : 2
     },
     getGridRows(count) {
-      if (count === 1 || count === 2) return 1
-      if (count <= 4) return 2
-      return Math.ceil(count / 3)
+      return count <= 2 ? 1 : 2
     },
     getNestedProperty(obj, path, defaultValue = undefined) {
       if (!path) return obj ?? defaultValue;

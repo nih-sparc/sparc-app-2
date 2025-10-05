@@ -106,7 +106,7 @@
                   </client-only>
                 </p>
                 <client-only>
-                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                  <pagination :selected="curSearchPage"
                     :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
                 </client-only>
               </div>
@@ -266,7 +266,7 @@ export default {
       searchFailed: false,
       isSearchMapVisible: false,
       latestSearchTerm: '',
-      searchTypes: config.public.SHOW_COLLECTIONS_FEATURE == 'false' ? searchTypes.filter(obj => obj.type !== 'collection') : searchTypes,
+      searchTypes: searchTypes,
       breadcrumb: [
         {
           to: {
