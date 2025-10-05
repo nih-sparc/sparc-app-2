@@ -77,15 +77,11 @@ const sdsViewer = computed(() => {
 })
 
 function getGridCols(count) {
-  if (count === 1) return 1
-  if (count <= 4) return 2
-  return 3
+  return count == 1 ? 1 : 2
 }
 
 function getGridRows(count) {
-  if (count === 1 || count === 2) return 1
-  if (count <= 4) return 2
-  return Math.ceil(count / 3)
+  return count <= 2 ? 1 : 2
 }
 
 function getDatasetDetailsTabArea() {

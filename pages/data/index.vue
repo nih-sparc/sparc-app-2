@@ -106,7 +106,7 @@
                   </client-only>
                 </p>
                 <client-only>
-                  <pagination v-if="searchData.limit < searchData.total" :selected="curSearchPage"
+                  <pagination :selected="curSearchPage"
                     :page-size="searchData.limit" :total-count="searchData.total" @select-page="onPaginationPageChange" />
                 </client-only>
               </div>
