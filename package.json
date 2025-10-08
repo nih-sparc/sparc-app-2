@@ -27,7 +27,7 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.12.5",
+    "@abi-software/mapintegratedvuer": "1.13.1",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
     "@abi-software/simulationvuer": "2.0.17",
@@ -65,7 +65,8 @@
     "string-width": "4.2.3",
     "mlly": "1.4.0",
     "vue": "3.4.21",
-    "@abi-software/map-utilities": "1.7.2"
+    "@abi-software/map-utilities": "^1.7.5",
+    "@abi-software/mapintegratedvuer/@abi-software/flatmapvuer/@abi-software/map-utilities": "1.7.5"
   },
   "engines": {
     "node": "18.17.1"
