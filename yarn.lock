@@ -73,10 +73,10 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@1.7.2", "@abi-software/map-utilities@1.7.4", "@abi-software/map-utilities@1.7.5", "@abi-software/map-utilities@^1.6.0-beta.0", "@abi-software/map-utilities@^1.7.4":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.2.tgz#72fbe8f0fa5110037aef9794d1dc5d01a9d6ccb1"
-  integrity sha512-QFZk+TnZ4TYBFBiE+2UwpY0+l6wOdzTD4aTH/OkOwam+VBEGbHhXVoAUzslKNuQ1tja/GpskbiaU0MCdGyIdUQ==
+"@abi-software/map-utilities@1.7.2", "@abi-software/map-utilities@1.7.4", "@abi-software/map-utilities@1.7.5", "@abi-software/map-utilities@^1.6.0-beta.0", "@abi-software/map-utilities@^1.7.4", "@abi-software/map-utilities@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.5.tgz#b9bdce7b6902ae0b173b40083db0d1ff5d96edd1"
+  integrity sha512-3mCjdfEJwN5RnxBbWLU7U9WXiFW7jme70dmZIXy1pipKzqpg21IqC6hAfr/wVp16j6BUs4DD8ewl30Y+NTTgLA==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.1"
     "@element-plus/icons-vue" "^2.3.1"
