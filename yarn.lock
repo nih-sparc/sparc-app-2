@@ -7,14 +7,14 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@abi-software/flatmapvuer@1.10.0-beta.0":
-  version "1.10.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.10.0-beta.0.tgz#77ae9546e8554073b6925a087852cb172619a0aa"
-  integrity sha512-xCvbU+TJdwEyJt4xqhnGv4Nvhxp0ChStj2zndCkoRtJVsIyNqS+Eqtf5gOZOCYfMsEjrS90TyJgpoScRKzj3yQ==
+"@abi-software/flatmapvuer@1.11.3":
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.3.tgz#5fe2ab752d126689ab5551d23cf44cb1a5ea5aad"
+  integrity sha512-xMlnwaouoUyrO/cTKZdQOPEQLvPOV1JDpEMVlp+vZMYEEMrFJlDeTg0AfOEJ0NSB85TJ4f7ySpVV9fXtm0eGaA==
   dependencies:
-    "@abi-software/map-utilities" "^1.6.0-beta.0"
+    "@abi-software/map-utilities" "1.7.2"
     "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "^1.0.1"
+    "@abi-software/svg-sprite" "1.0.2"
     "@element-plus/icons-vue" "^2.3.1"
     css-element-queries "^1.2.2"
     element-plus "2.8.4"
@@ -73,7 +73,7 @@
     vue "^3.4.21"
     xss "^1.0.14"
 
-"@abi-software/map-utilities@1.7.2", "@abi-software/map-utilities@1.7.4", "@abi-software/map-utilities@1.7.5", "@abi-software/map-utilities@^1.6.0-beta.0", "@abi-software/map-utilities@^1.7.4", "@abi-software/map-utilities@^1.7.5":
+"@abi-software/map-utilities@1.7.2", "@abi-software/map-utilities@1.7.4", "@abi-software/map-utilities@1.7.5", "@abi-software/map-utilities@^1.7.4", "@abi-software/map-utilities@^1.7.5":
   version "1.7.5"
   resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.5.tgz#b9bdce7b6902ae0b173b40083db0d1ff5d96edd1"
   integrity sha512-3mCjdfEJwN5RnxBbWLU7U9WXiFW7jme70dmZIXy1pipKzqpg21IqC6hAfr/wVp16j6BUs4DD8ewl30Y+NTTgLA==
@@ -12396,10 +12396,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennsieve-dashboard@0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.2.1.tgz#a922b5f16f264463cad17585e712927f5b834bc1"
-  integrity sha512-AZZKyQZMpG4lYgBY5UlKmUGp67NI5M6CoyVwi8HZNP9oqp4kvOpMwcFdUXondNy3kRAakvvQdnN2cUhXFv88rw==
+pennsieve-dashboard@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.2.3.tgz#d16a15ed2fea6fc316d31682a2786677a1edb22e"
+  integrity sha512-ssYCiup5jcvmT7nPAHFYqQ4kvPkAmt5dhiBYLNVF+NNynmE63x79SvvSL0rXUNa26OpqjG2nSJrPiyed7cvrCA==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
@@ -14049,12 +14049,12 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.3.tgz#bee8e7021457b92416985706c6cc565b71d04683"
-  integrity sha512-xqsSnH1XMvfuswv0BkYgadWdYM60OHFllFKqsDh2ZIqknejuj2R8r7C3SdbWyOlzDWVnhEUQ2/8RNEO/dA0m8w==
+sparc-dashwidgets@0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.5.tgz#f5195a97c0657cfe1b50940407fc178d7d8beec3"
+  integrity sha512-4DGrjKSFC9mOHy+DojSCMghnFNHPtsl6bFY6rWDysdAyJTZ/6c6LqfaJzAxe0DS0igtYmOl+x8422TkUHiODIw==
   dependencies:
-    "@abi-software/flatmapvuer" "1.10.0-beta.0"
+    "@abi-software/flatmapvuer" "1.11.3"
     axios "^1.6.7"
     epic-spinners "^2.0.0"
     js-base64 "^3.7.7"
