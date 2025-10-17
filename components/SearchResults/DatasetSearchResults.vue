@@ -123,12 +123,28 @@ export default {
 
   methods: {
     toTermUppercase: function(term) {
-      let value = _.upperFirst(term)
+      let value = term
+        ? term.charAt(0).toUpperCase() + term.slice(1)
+        : ''
       if (value.indexOf(`<${HIGHLIGHT_HTML_TAG}>`) === 0) {
         // If first word is a search term coincidence, set first letter to uppercase
         value = value.slice(0, 3) + value.charAt(3).toUpperCase() + value.slice(4)
       }
       return value
+    },
+    getNestedProperty: function (obj, path, defaultValue = undefined) {
+      if (!path) return obj ?? defaultValue;
+
+      // Convert path string like "a[0].b.c" into ["a", "0", "b", "c"]
+      const keys = path
+        .replace(/\[(\d+)\]/g, '.$1') // turn [0] into .0
+        .split('.')
+        .filter(Boolean);
+
+      return keys.reduce((acc, key) => {
+        if (acc == null) return undefined;
+        return acc[key];
+      }, obj) ?? defaultValue;
     },
     getPropertyValue: function(item, property) {
       if (item == undefined) {
@@ -136,24 +152,24 @@ export default {
       }
       switch (property.displayName) {
         case 'Anatomical Structure': {
-          const organs = _.get(item, property.propPath)
+          const organs = this.getNestedProperty(item, property.propPath)
           return organs
             ? organs.map(item => this.toTermUppercase(item.name.value)).join(', ')
             : undefined
         }
         case 'Contact Author': {
-          const owner = _.get(item, property.propPath)
+          const owner = this.getNestedProperty(item, property.propPath)
           return owner
             ? this.toTermUppercase(`${owner.first.name.value} ${this.toTermUppercase(owner.last.name.value)}`)
             : undefined
         }
         case 'Includes': {
-          const published = _.get(item, property.propPath)
+          const published = this.getNestedProperty(item, property.propPath)
           return (published == undefined || published == 'false') ? undefined : 'Publications'
         }
         case 'Samples': {
-          const sampleCount = _.get(item, property.propPath + '.samples.count')
-          const subjectCount = _.get(
+          const sampleCount = this.getNestedProperty(item, property.propPath + '.samples.count')
+          const subjectCount = this.getNestedProperty(
             item,
             property.propPath + '.subjects.count'
           )
@@ -162,7 +178,7 @@ export default {
             : undefined
         }
         case 'Experimental Approach': {
-          const techniques = _.get(item, property.propPath)
+          const techniques = this.getNestedProperty(item, property.propPath)
           return techniques
             ? techniques
                 .map(item => this.toTermUppercase(item.keyword.value))
@@ -170,7 +186,7 @@ export default {
             : undefined
         }
         case 'Publication Date': {
-          const pennsieve = _.get(item, property.propPath)
+          const pennsieve = this.getNestedProperty(item, property.propPath)
           if (pennsieve.firstPublishedAt == undefined || pennsieve.versionPublishedAt == undefined) {
             return undefined
           }
@@ -182,7 +198,8 @@ export default {
                     ')'
         }
         default: {
-          return _.upperFirst(_.get(item, property.propPath))
+          const value = this.getNestedProperty(item, property.propPath)
+          return value ? value.charAt(0).toUpperCase() + value.slice(1) : ''
         }
       }
     },

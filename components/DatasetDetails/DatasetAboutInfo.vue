@@ -70,8 +70,8 @@
         Institution(s): 
       </span>
       <span v-if="associatedProjects == null || associatedProjects.length < 1">None specified</span>
-      <span v-else v-for="(project, index) in associatedProjects" :key="index">
-        {{ getProjectInstitution(project) }}<span v-if="index < associatedProjects.length - 1">, </span>
+      <span v-else>
+        {{ associatedProjectsInstitutionNames }}
       </span>
     </div>
     <hr />
@@ -162,18 +162,7 @@ export default {
       const fields = propOr(null, 'fields', associatedProject)
       const title = propOr(null, 'title', fields)
       return title ?? 'N/A'
-    },
-    /**
-     * Compute the project institution
-     * @returns {String}
-     */
-    getProjectInstitution: function(associatedProject) {
-      const fields = propOr(null, 'fields', associatedProject)
-      const institution = propOr(null, 'institution', fields)
-      const institutionFields = propOr(null, 'fields', institution)
-      const institutionName = propOr(null, 'name', institutionFields)
-      return institutionName ?? 'N/A'
-    },
+    }
   },
 
   computed: {
@@ -249,10 +238,28 @@ export default {
       }
       return this.awards.filter(award => {
         const awardId = propOr('', 'identifier', award)
-        return !this.associatedProjects.some(project => pathOr(null, ['fields', 'awardId'], project) == awardId)
+        // Check if any project already references this award
+        return !this.associatedProjects.some(project => {
+          const projectAwards = pathOr([], ['fields', 'awards'], project)
+          return projectAwards.some(projectAward => pathOr('', ['fields', 'title'], projectAward) === awardId)
+        })
       })
+    },
+    associatedProjectsInstitutionNames() {
+      let institutionNames = []
+      this.associatedProjects.forEach((project) => {
+        const fields = propOr(null, 'fields', project)
+        const institutions = propOr([], 'institutions', fields)
+        institutions.forEach((institution) => {
+          const institutionName = pathOr(null, ['fields', 'name'], institution)
+          if (institutionName != null && !institutionNames.includes(institutionName)) {
+            institutionNames.push(institutionName)
+          }
+        })
+      })
+      return institutionNames.length > 0 ? institutionNames.join(", ") : 'None specified'
     }
-  },
+  }
 }
 </script>
 

@@ -27,10 +27,10 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.11.1-beta.4",
+    "@abi-software/mapintegratedvuer": "1.13.1",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "2.0.14",
+    "@abi-software/simulationvuer": "2.0.17",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
@@ -46,14 +46,15 @@
     "isomorphic-dompurify": "^1.9.0",
     "js-base64": "^3.7.7",
     "js-file-download": "^0.4.12",
-    "lodash": "^4.17.21",
     "marked": "^8.0.1",
     "mitt": "^3.0.1",
+    "pennsieve-dashboard": "0.2.3",
     "plotly.js": "2.35.3",
     "plyr": "^3.7.8",
     "postscribe": "^2.0.8",
+    "precision-dashwidgets": "0.3.5",
     "ramda": "^0.29.0",
-    "sparc-dashboard-beta": "^0.2.0",
+    "sparc-dashwidgets": "0.1.6",
     "sparc-design-system-components-2": "1.0.1",
     "striptags": "^3.2.0",
     "uint8array-extras": "^1.0.0",
@@ -63,7 +64,9 @@
   "resolutions": {
     "string-width": "4.2.3",
     "mlly": "1.4.0",
-    "vue": "3.4.21"
+    "vue": "3.4.21",
+    "@abi-software/map-utilities": "^1.7.5",
+    "@abi-software/mapintegratedvuer/@abi-software/flatmapvuer/@abi-software/map-utilities": "1.7.5"
   },
   "engines": {
     "node": "18.17.1"

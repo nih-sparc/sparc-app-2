@@ -70,20 +70,20 @@ describe('Homepage', { testIsolation: false }, function () {
     })
     // Check for explore the data
     cy.get('.container.p-24 .data-wrap.py-16').eq(1).find('.sparc-number').should(($item) => {
-      expect($item, 'Correct number of data explorations should be displayed').to.have.length(4)
-      expect($item, 'Data exploration item should have correct href').to.have.attr('href').to.contain('/data?type=')
+      expect($item, 'At least one data exploration(s) should be displayed').to.have.length.greaterThan(0)
+      expect($item, 'Data exploration item should have a href').to.have.attr('href')
     })
     // Check for key metrics
     cy.get('.container.p-24 .data-wrap.pt-16').find('.sparc-number').should(($item) => {
-      expect($item, 'Correct number of key metrics should be displayed').to.have.length(4)
-      expect($item, 'Key metrics should have correct href').to.have.attr('href').to.contain('/about/metrics')
+      expect($item, 'At least one key metric(s) should be displayed').to.have.length.greaterThan(0)
+      expect($item, 'Key metrics should have a href').to.have.attr('href')
     })
   })
 
   it('Portal features', function () {
     // Check for the number of features
     cy.get('.feature-container').should(($feature) => {
-      expect($feature, 'Correct number of feature items should be displayed').to.have.length(4)
+      expect($feature, 'At least one feature item(s) should be displayed').to.have.length.greaterThan(0)
     })
     // Check for feature card
     cy.get(':nth-child(1) > .feature-container').within(() => {

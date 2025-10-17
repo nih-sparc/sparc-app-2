@@ -3,7 +3,7 @@
     <el-table-column width="160">
       <template v-slot="scope">
         <div class="image-container">
-          <img v-if="scope.row.fields.institutions" class="img-project" :src="getImageSrc(scope)"
+          <img v-if="scope.row.fields.institution" class="img-project" :src="getImageSrc(scope)"
             :alt="getImageAlt(scope)" />
         </div>
       </template>
@@ -88,7 +88,7 @@ export default {
      * @returns {String}
      */
     getImageSrc: function (scope) {
-      return pathOr('', ['row', 'fields', 'institutions', 0, 'fields', 'logo', 'fields', 'file', 'url'], scope)
+      return pathOr('', ['row', 'fields', 'institution', 'fields', 'logo', 'fields', 'file', 'url'], scope)
     },
     /**
      * Get image source
@@ -96,19 +96,10 @@ export default {
      * @returns {String}
      */
     getImageAlt: function (scope) {
-      const defaultText = `Logo for ${pathOr('', ['row', 'fields', 'institutions', 0, 'fields', 'name'], scope)}`
-      return pathOr(defaultText, ['row', 'fields', 'institutions', 0, 'fields', 'logo', 'fields', 'file', 'description'], scope)
+      const defaultText = `Logo for ${pathOr('', ['row', 'fields', 'institution', 'fields', 'name'], scope)}`
+      return pathOr(defaultText, ['row', 'fields', 'institution', 'fields', 'logo', 'fields', 'file', 'description'], scope)
     },
-
-    /**
-     * Get NIH Report Url
-     * @param {Object} scope
-     * @returns {String}
-     */
-    getNihReporterUrl: function(scope) {
-      return scope.row.fields.nihReporterUrl || '#'
-    },
-
+    
     /**
      * Get short description for dataset
      * @param {Object} scope

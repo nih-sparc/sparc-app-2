@@ -32,8 +32,8 @@
               </template>
               <template #default>
                 <div class="popover-content" style="display: flex; flex-direction: column; gap: 0.5rem">
-                  <el-button 
-                    v-for="entry in mapEntries[item.buttonText]" 
+                  <el-button
+                    v-for="entry in mapEntries[item.buttonText]"
                     @click="setCurrentEntry(entry, item.buttonText)"
                   >
                     {{ entry }}
@@ -92,6 +92,8 @@ const getScaffoldEntry = async (portalApi, route, $axios, s3Bucket) => {
           label: `Dataset ${route.query.dataset_id}`,
           url: `${portalApi}/s3-resource/${path}`,
           viewUrl: route.query.ViewURL,
+          dataset_id: route.query.dataset_id,
+          dataset_version: route.query.dataset_version,
         }
       } else {
         return undefined
@@ -237,22 +239,32 @@ const processEntry = async (route) => {
       successMessage = messages.successMessage
       failMessage = messages.failMessage
     }
-    if (route.query.type === 'fc' && anatomy) {
+  }
+  if (route.query.type === 'fc') {
+    if (anatomy || route.query.fid) {
       currentEntry = {
         type: 'Flatmap',
         resource: 'FunctionalConnectivity',
         label: 'Functional',
-        state: { searchTerm: anatomy }
       }
+      if (anatomy) {
+        currentEntry.state = { searchTerm: anatomy }
+      }
+      if (route.query.fid) {
+        currentEntry.resource = route.query.fid
+      }
+      if (route.query.dataset_id) {
+        currentEntry.dataset_id = route.query.dataset_id
+      }
+    } else {
+      startingMap = "FC"
     }
   }
   if (route.query.type === 'ac' || route.query.type === 'flatmap') {
     startingMap = "AC"
   }
-  if (route.query.type === 'fc') {
-    startingMap = "FC"
-  }
-  return [startingMap, organ_name, currentEntry, successMessage, failMessage, []]
+
+  return [startingMap, organ_name, currentEntry, successMessage, failMessage]
 }
 
 
@@ -401,7 +413,7 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
   } else if (route.query.type === 'fc' ||
     route.query.type === 'ac' ||
     route.query.type === 'flatmap') {
-    return await processEntry(route)
+    return  [...(await processEntry(route)), facets]
   } else if (route.query.type === 'wholebody') {
     startingMap = "WholeBody"
   } else {
@@ -417,7 +429,9 @@ const openViewWithQuery = async (router, route, $axios, sparcApi, algoliaIndex, 
 
 const constructMapEntries = (apps) => {
   if (!apps) return []
-  return apps.filter((app) => app.fields.url.startsWith('/apps/maps?type=')).map((app) => {
+  return apps.filter((app) => {
+    return (app.fields.url.startsWith('/apps/maps?type=') && !(app.fields.url.startsWith('/apps/maps?type=fc')))
+  }).map((app) => {
     const words = pathOr('', ['fields', 'logo', 'fields', 'title'], app).split(" ");
     const buttonText = words.map((word) => {
       return word[0].toUpperCase() + word.substring(1);
@@ -448,7 +462,7 @@ export default {
 
     const options = {
       sparcApi: config.public.portal_api,
-      algoliaIndex: config.public.ALGOLIA_INDEX,
+      algoliaIndex: config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC,
       algoliaKey: config.public.ALGOLIA_API_KEY,
       algoliaId: config.public.ALGOLIA_APP_ID,
       pennsieveApi: config.public.discover_api_host.replace('/discover', ''),
@@ -587,11 +601,13 @@ export default {
     },
     currentEntryUpdated: function () {
       if (this._instance && this.currentEntry) {
-        this._instance.setCurrentEntry(this.currentEntry)
+        this.$nextTick(() => {
+          this._instance.setCurrentEntry(this.currentEntry)
+        })
       }
     },
     setCurrentEntry: function (entry, type) {
-      let mapEntry = {}      
+      let mapEntry = {}
       if (type === 'AC Map') {
         mapEntry = {type: 'MultiFlatmap', resource: entry}
       } else if (type === '3D Whole Body') {
@@ -674,7 +690,7 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 1rem;
-
+  padding-left: 3rem;
   .logo {
     height: 6rem;
     margin-bottom: 1.5rem;

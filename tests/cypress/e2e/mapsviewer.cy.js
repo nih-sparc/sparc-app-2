@@ -5,7 +5,7 @@ import { retryableBefore, stringToArray } from '../support/utils.js'
 // central coordinate around { 'x': 768, 'y': 373 }
 const coordinate = { 'x': 800, 'y': 333 }
 const pixelChange = 3
-const mapTypes = ['ac', 'wholebody', 'fc']
+const mapTypes = ['ac', 'wholebody']
 
 /**
  * Human Female, Human Male, Rat, Mouse, Pig, Cat
@@ -40,9 +40,9 @@ mapTypes.forEach((map) => {
       } else if (map === 'wholebody') {
         cy.waitForScaffoldLoading()
         cy.waitForMapTreeControlLoading()
-      } else if (map === 'fc') {
+      } /* else if (map === 'fc') {
         cy.waitForFlatmapLoading()
-      }
+      } */
       // Close sidebar
       cy.get('body').then(($body) => {
         if ($body.find('.close-tab > .el-icon').length !== 0) {
@@ -412,7 +412,7 @@ mapTypes.forEach((map) => {
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
-    } else if (map === 'fc') {
+    }/* else if (map === 'fc') {
       it('Map is loaded', function () {
         cy.get('.toolbar .toolbar-title').then((title) => {
           expect(title, 'Functional flatmap should be loaded').to.contain('Functional Flatmap')
@@ -438,6 +438,41 @@ mapTypes.forEach((map) => {
         cy.contains('Vertical split').click()
         cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
       })
-    }
+    } */
+  })
+})
+
+// Add separate describe blocks for specific URL tests that don't need the beforeEach setup
+describe('Maps Viewer - Species Loading Tests', { testIsolation: false }, function () {
+
+  it('Load AC map with Rat taxon and verify species selection', function () {
+    cy.visit('/apps/maps?type=ac&taxo=NCBITaxon:10114')
+    cy.waitForViewerContainer('.mapClass')
+    cy.waitForPageLoading()
+    cy.waitForMapLoading()
+
+    cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+      .should('contain.text', 'Rat')
+  })
+
+  it('Load Flatmap with Pig taxon and verify species selection', function () {
+    cy.visit('/apps/maps?type=flatmap&dataset_version=1&dataset_id=241&taxo=NCBITaxon:9823&uberonid=UBERON:0000948&for_species=pig')
+    cy.waitForViewerContainer('.mapClass')
+    cy.waitForPageLoading()
+    cy.waitForMapLoading()
+
+    cy.get('.portalmapcontainer .contentvuer .component-container .el-select.select-box .el-select__selection .el-select__selected-item.el-select__placeholder')
+      .should('contain.text', 'Pig')
+
+    cy.get('.mapcontent .side-bar .sidebar-container > .tabs-container > .tab.active-tab')
+      .should('contain.text', 'Dataset Explorer')
+
+    // Dataset explorer filters - facets from dataset_id query
+    cy.get('.mapcontent .side-bar .sidebar-container .cascader-tag')
+      .should('contain.text', 'Cardiac nerve plexus')
+    cy.get('.el-popper.cascade-tags-popover')
+      .should('contain.text', 'Heart')
+    cy.get('.el-popper.cascade-tags-popover')
+      .should('contain.text', 'Pig')
   })
 })

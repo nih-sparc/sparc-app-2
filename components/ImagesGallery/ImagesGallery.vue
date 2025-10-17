@@ -112,7 +112,11 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
         if (flatmapData.length === 0) {
           flatmapData.push(speciesData)
         }
-        scicrunchData['flatmaps'] = flatmapData
+        if ('abi-flatmap-file' in scicrunchData) {
+          scicrunchData['abi-flatmap-file'].push(...flatmapData)
+        } else {
+          scicrunchData['abi-flatmap-file'] = flatmapData
+        }
       }
     }
   } catch (e) {
@@ -401,14 +405,42 @@ export default {
           })
         }
 
-        if ('flatmaps' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData.flatmaps, f => {
+        if ('abi-flatmap-file' in scicrunchData) {
+          scicrunchData['abi-flatmap-file'].forEach( f => {
+            if (('dataset' in f)) {
+              const flatmap_uuid = f.associated_flatmap?.identifier
+              if (flatmap_uuid) {
+                const id = f.identifier
+                const file_path = f.dataset.path
+                const thumbnail = this.getThumbnailPathForPlot(f, scicrunchData['abi-thumbnail'])
+                if (thumbnail.mimetype.name !== '' && thumbnail.dataset.path !== '') {
+                  this.retrieveThumbnailFromInfo(
+                    items,
+                    {
+                      id,
+                      fetchAttempts: 0,
+                      datasetId,
+                      mimetype: thumbnail.mimetype.name,
+                      file_path: thumbnail.dataset.path,
+                      s3Bucket: s3Bucket
+                    },
+                    this.defaultImg
+                  )
+                }
+                const linkUrl = `${baseRoute}maps?type=fc&dataset_version=${datasetVersion}&dataset_id=${datasetId}&fid=${flatmap_uuid}`
+                items.push({
+                  id,
+                  title: baseName(file_path),
+                  type: 'FC Map',
+                  thumbnail: this.defaultImg,
+                  link: linkUrl
+                })
+              }
+            } else {
               let title = f.uberonid ? f.uberonid : null
               if (f.organ) {
                 title = `View ${f.organ}`
               }
-
               let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}`
               if (f.uberonid) linkUrl = linkUrl + `&uberonid=${f.uberonid}`
               if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
@@ -430,9 +462,9 @@ export default {
                 },
                 true
               )
-              return item
-            })
-          )
+              items.push(item)
+            }
+          });
         }
 
         if ('mbf-segmentation' in scicrunchData) {
@@ -542,10 +574,12 @@ export default {
                 })
                 this.getThumbnailFromBiolucida(bItems, {
                   id: biolucidaId,
+                  link: linkUrl,
                   fetchAttempts: 0
                 })
                 this.getImageInfoFromBiolucida(bItems, {
                   id: biolucidaId,
+                  link: linkUrl,
                   fetchAttempts: 0
                 })
               }
@@ -755,7 +789,7 @@ export default {
     getThumbnailFromBiolucida(items, info) {
       biolucida.getThumbnail(info.id).then(
         response => {
-          let item = ref(items.find(x => x.id === info.id))
+          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
           if (response.data) {
             item.value['thumbnail'] = 'data:image/png;base64,' + response.data
           }
@@ -765,7 +799,7 @@ export default {
             info.fetchAttempts += 1
             this.getThumbnailFromBiolucida(items, info)
           } else {
-            let item = ref(items.find(x => x.id === info.id))
+            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
             item.value['thumbnail'] = this.defaultImg
           }
           // return Promise.reject('Maximum iterations reached.')
@@ -775,7 +809,7 @@ export default {
     getImageInfoFromBiolucida(items, info) {
       biolucida.getImageInfo(info.id).then(
         response => {
-          let item = ref(items.find(x => x.id === info.id))
+          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
           const name = response.name
           if (name) {
             item.value['title'] = name.substring(0, name.lastIndexOf('.'))
@@ -789,7 +823,7 @@ export default {
             info.fetchAttempts += 1
             this.getImageInfoFromBiolucida(items, info)
           } else {
-            let item = ref(items.find(x => x.id === info.id))
+            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
             item.value['thumbnail'] = this.defaultImg
           }
           // return Promise.reject('Maximum iterations reached.')

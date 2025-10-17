@@ -96,8 +96,11 @@ export default defineNuxtConfig({
   },
   vite: {
     define: {
-      "window.global": {},
+      'window.global': {},
     },
+    resolve: {
+      dedupe:['element-plus']
+    }
     /*css: {
       preprocessorOptions: {
         scss: {
@@ -107,27 +110,16 @@ export default defineNuxtConfig({
     },*/
   },
   routeRules: {
-    "/resources": { redirect: "/tools-and-resources/tools" },
-    "/tools-and-resources": { redirect: "/tools-and-resources/tools" },
-    "/resources/biological": {
-      redirect: "/tools-and-resources/tools?resourceType=Biological",
-    },
-    "/resources/databases": {
-      redirect: "/tools-and-resources/tools?resourceType=Data+and+Models",
-    },
-    "/resources/devices": {
-      redirect: "/tools-and-resources/tools?resourceType=Devices",
-    },
-    "/resources/information-services": {
-      redirect: "/tools-and-resources/tools?resourceType=Information+Services",
-    },
-    "/resources/software": {
-      redirect: "/tools-and-resources/tools?resourceType=Software",
-    },
-    "/resources/osparc-services": {
-      redirect: "/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH",
-    },
-    "/resources/submit": { redirect: "/contact-us?type=tool" },
+    '/resources': { redirect: '/tools-and-resources/tools' },
+    '/tools-and-resources': { redirect: '/tools-and-resources/tools' },
+    '/resources/biological': { redirect: '/tools-and-resources/tools?resourceType=Biological' },
+    '/resources/databases': { redirect: '/tools-and-resources/tools?resourceType=Data+and+Models' },
+    '/resources/devices': { redirect: '/tools-and-resources/tools?resourceType=Devices' },
+    '/resources/information-services': { redirect: '/tools-and-resources/tools?resourceType=Information+Services' },
+    '/resources/software': { redirect: '/tools-and-resources/tools?resourceType=Software' },
+    '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
+    '/resources/submit': { redirect: '/contact-us?type=tool' },
+    '/apps/precision-dashboard': { ssr:false }
   },
   hooks: {
     "pages:extend"(pages) {
@@ -138,9 +130,14 @@ export default defineNuxtConfig({
           file: resolve("./pages/datasets/[datasetId].vue"),
         },
         {
-          name: "tools",
-          path: "/tools-and-resources/tools",
-          file: resolve("./components/Resources/ResourcePage.vue"),
+            name: 'collection-version',
+            path: '/collections/:collectionId/version/:version',
+            file: resolve('./pages/collections/[collectionId].vue')
+        },
+        {
+          name: 'tools',
+          path: '/tools-and-resources/tools',
+          file: resolve('./components/Resources/ResourcePage.vue')
         },
         {
           name: "resources",
@@ -168,32 +165,30 @@ export default defineNuxtConfig({
         process.env.OSPARC_ENABLE_CHECK_HORNET_MANIFEST || "false",
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
-      CTF_API_HOST: process.env.CTF_API_HOST || "preview.contentful.com",
-      ctf_home_page_id: "4qJ9WUWXg09FAUvCnbGxBY",
-      ctf_portal_notification_entry_id: "5S8eazBlD1Y47pTO1EQfQ3",
-      ctf_contact_us_form_options_id: "79rwRA0rUqUj6rc913BFsz",
-      ctf_project_id: "sparcAward",
-      ctf_about_page_id: "4VOSvJtgtFv1PS2lklMcnS",
-      ctf_about_details_content_type_id: "aboutPageSecondLevel",
-      ctf_news_id: "news",
-      ctf_event_id: "event",
-      ctf_resource_id: "sparcPartners",
-      ctf_news_and_events_page_id: "4IoMamTLRlN3OpxT1zgnU",
-      ctf_about_portal_page_id: "2156L8jQgaifFNpgeylaQp",
-      ctf_what_we_offer_page_id: "4wuZ2gzxota1GLTFUXSLNb",
-      ctf_share_data_page_id: "5w2F52873w6g9TH4YMVxXW",
-      ctf_team_and_leadership_page_id: "7EL9Plxo7q2GyCzg1sqIcg",
-      ctf_get_involved_page_id: "1UUoE2ICWvdsQo0npvJcpq",
-      ctf_osparc_resource_entry_id: "4LkLiH5s4FV0LVJd3htsvH",
-      ctf_contact_us_form_type_id: "contactUsForm",
-      ctf_apps_page_id: "4LyfrYarHrt8Fke5ufyjdy",
-      ctf_consortia_content_type_id: "consortia",
-      portal_api:
-        process.env.PORTAL_API_HOST || "https://sparc-api.herokuapp.com",
-      flatmap_api:
-        process.env.FLATMAP_API_HOST ||
-        "https://mapcore-demo.org/current/flatmap/v3/",
-      DEPLOY_ENV: process.env.DEPLOY_ENV || "development",
+      CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
+      ctf_home_page_id: '4qJ9WUWXg09FAUvCnbGxBY',
+      ctf_portal_notification_entry_id: '5S8eazBlD1Y47pTO1EQfQ3',
+      ctf_contact_us_form_options_id: '79rwRA0rUqUj6rc913BFsz',
+      ctf_project_id: 'sparcAward',
+      ctf_about_page_id: '4VOSvJtgtFv1PS2lklMcnS',
+      ctf_about_details_content_type_id: 'aboutPageSecondLevel',
+      ctf_news_id: 'news',
+      ctf_event_id: 'event',
+      ctf_resource_id: 'sparcPartners',
+      ctf_news_and_events_page_id: '4IoMamTLRlN3OpxT1zgnU',
+      ctf_about_portal_page_id: '2156L8jQgaifFNpgeylaQp',
+      ctf_what_we_offer_page_id: '4wuZ2gzxota1GLTFUXSLNb',
+      ctf_share_data_page_id: '5w2F52873w6g9TH4YMVxXW',
+      ctf_team_and_leadership_page_id: '7EL9Plxo7q2GyCzg1sqIcg',
+      ctf_get_involved_page_id: '1UUoE2ICWvdsQo0npvJcpq',
+      ctf_osparc_resource_entry_id: '4LkLiH5s4FV0LVJd3htsvH',
+      ctf_contact_us_form_type_id: 'contactUsForm',
+      ctf_apps_page_id: '4LyfrYarHrt8Fke5ufyjdy',
+      ctf_sparc_dashboard_entry_id: '42ZU07Qgf0betl1wo9YX4X',
+      ctf_consortia_content_type_id: 'consortia',
+      portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
+      flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
+      DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
       ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
       ALGOLIA_INDEX: process.env.ALGOLIA_INDEX || "k-core_dev",
@@ -258,18 +253,18 @@ export default defineNuxtConfig({
       ROOT_URL: process.env.ROOT_URL || "http://localhost:3000",
       METRICS_URL: process.env.METRICS_URL || "https://metrics.sparc.science",
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
-      bitly_expand_endpoint: "https://api-ssl.bitly.com/v4/expand",
-      PENNSIEVE_URL: process.env.PENNSIEVE_URL || "https://app.pennsieve.io",
-      INTERNAL_TRAFFIC_KEY:
-        process.env.INTERNAL_TRAFFIC_KEY || "internal_traffic",
-      INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || "internal",
-      SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || "false",
-      SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || "false",
-      PROTOCOLS_IO_HOST:
-        process.env.PROTOCOLS_IO_HOST || "https://www.protocols.io",
-      PROTOCOLS_IO_TOKEN: process.env.PROTOCOLS_IO_TOKEN || "",
-      GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID:
-        process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
+      bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
+      PENNSIEVE_URL: process.env.PENNSIEVE_URL || 'https://app.pennsieve.io',
+      INTERNAL_TRAFFIC_KEY: process.env.INTERNAL_TRAFFIC_KEY || 'internal_traffic',
+      INTERNAL_TRAFFIC_VALUE: process.env.INTERNAL_TRAFFIC_VALUE || 'internal',
+      SHOW_REHYDRATION_FEATURE: process.env.SHOW_REHYDRATION_FEATURE || 'false',
+      SHOW_DEVICE_TYPE: process.env.SHOW_DEVICE_TYPE || 'false',
+      PROTOCOLS_IO_HOST: process.env.PROTOCOLS_IO_HOST || 'https://www.protocols.io',
+      PROTOCOLS_IO_TOKEN: process.env.PROTOCOLS_IO_TOKEN || '',
+      GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
+      FLI_API_KEY: process.env.FLI_API_KEY || '',
+      SHOW_SPARC_DASHBOARD: process.env.SHOW_SPARC_DASHBOARD || 'false',
+      SHOW_COLLECTIONS_FEATURE: process.env.SHOW_COLLECTIONS_FEATURE || 'false',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || "GTM-TPT2CVCS",
         defer: true,

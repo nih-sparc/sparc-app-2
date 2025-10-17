@@ -26,16 +26,10 @@
             </div>
           </div>
         </div>
-        <div class="truncated">
-          <client-only>
-            <sparc-tooltip placement="bottom-center" :content="resource.fields.name" is-repeating-item-content>
-              <template #item>
-                <div class="heading1 truncated">
-                  {{ resource.fields.name }}
-                </div>
-              </template>
-            </sparc-tooltip>
-          </client-only>
+        <div>
+          <div class="heading1">
+            {{ resource.fields.name }}
+          </div>
           <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
             SPARC Program
           </span>
