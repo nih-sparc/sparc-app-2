@@ -26,10 +26,10 @@
     "@esbuild/linux-x64" "0.25.3"
     "@rollup/rollup-linux-x64-gnu" "4.23.0"
 
-"@abi-software/flatmapvuer@1.12.0-beta.0":
-  version "1.12.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.12.0-beta.0.tgz#33695d4206ee168d7530926d7679c2fb148f513e"
-  integrity sha512-9kSLGAulQyUip8pJMsiG5NNnc4YWtVKF7Yzf9lH5pZWHeYCJ8dAESCIuY8TOuRsKO1uBsWEn7Vq1mzooRqEnRg==
+"@abi-software/flatmapvuer@1.12.0-beta.1":
+  version "1.12.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.12.0-beta.1.tgz#0142c52bdcbc90cd205ce2342e7b616084df4806"
+  integrity sha512-qIGVjT2YWJr8frEJ8CKCwn70395MskYnVWdAMck7xbAoRBPaCOdaLPNdPkmf9oD2qotQV9DSY5BhZmXg9nBShA==
   dependencies:
     "@abi-software/map-utilities" "^1.7.6"
     "@abi-software/sparc-annotation" "0.3.2"
@@ -55,10 +55,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@2.11.0":
-  version "2.11.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.11.0.tgz#9ddfd21f25b33765a696dd85e10274324e73992f"
-  integrity sha512-DRFgCpJdtaAmvps5YLLJXg9eaLFfSfzAQ0oWmckvLHst4eJObHTBZBDbeLqgJ58McNJOvCheVv+2S/vne7ra5g==
+"@abi-software/map-side-bar@2.11.2":
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.11.2.tgz#44c5b100de9872b52d6a44f882b81c4f34ab135d"
+  integrity sha512-3Z/f8knteJfKqRktXVpVv+Y6Wa9SVNXOHiPGRfd/L174RYuWo4OX/GJWhN5e/fTYjSA++6mbNEDylBaN790oLA==
   dependencies:
     "@abi-software/gallery" "^1.2.0"
     "@abi-software/map-utilities" "1.7.6"
@@ -99,13 +99,13 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.14.0-beta.0":
-  version "1.14.0-beta.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.14.0-beta.0.tgz#40013ecacd579ffd82e86b7c221701efacbb970b"
-  integrity sha512-eGdK78L52uqMf3TWx5pM6+8ZTigbu74cnUMUBYc4CK47JcRr85EdRctSNEE03yVvdx5ziccWVs6RFKhuy6dpIQ==
+"@abi-software/mapintegratedvuer@1.14.0-beta.1":
+  version "1.14.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.14.0-beta.1.tgz#21f41eaa5130636dbadf270b693a5749af2d775e"
+  integrity sha512-qVMdQqEK7vdOgDJ9bwB36O+Mw+hCOMH2U09F/Wg8yxH/glarJ1u+rbF9TJDbpFe0dwQkwfTzqgdzb6IPlVc8pQ==
   dependencies:
-    "@abi-software/flatmapvuer" "1.12.0-beta.0"
-    "@abi-software/map-side-bar" "2.11.0"
+    "@abi-software/flatmapvuer" "1.12.0-beta.1"
+    "@abi-software/map-side-bar" "2.11.2"
     "@abi-software/map-utilities" "1.7.6"
     "@abi-software/plotvuer" "1.0.5"
     "@abi-software/scaffoldvuer" "1.13.0-beta.0"
