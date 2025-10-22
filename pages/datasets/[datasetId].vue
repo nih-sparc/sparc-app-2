@@ -547,7 +547,8 @@ export default {
       return valObj.length > 0 ? valObj : null
     },
     citingPublications: function () {
-      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate)
+      // Do not include protocols in publications list
+      const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate && !citation.curie.includes("doi:10.17504/"))
       return pubs?.length > 0 ? pubs : null
     },
     protocolSuffixes: function () {
