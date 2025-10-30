@@ -228,9 +228,11 @@ const processEntry = async (route) => {
       // Error caught return empty data.
     }
     if (route.query.type === 'ac' || route.query.type === 'flatmap') {
+      // Use human male if provided taxon is not available
+      const target = taxon && !flatmaps.speciesMap[taxon] ? 'NCBITaxon:9606' : taxon
       currentEntry = {
         type: 'MultiFlatmap',
-        taxo: taxon,
+        taxo: target,
         biologicalSex: biologicalSex,
         uuid: route.query.fid,
         organ: anatomy,
