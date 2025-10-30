@@ -166,10 +166,11 @@ const checkSpecies = (route, organ, organ_name, taxo, for_species) => {
     successMessage = "A flatmap's unique id is provided, a legacy map may be displayed instead."
   } else {
     if (!target) {
-      if (organ) {
-        failMessage += `The ${organ_name} of a human male has been shown instead.`
+      failMessage = `Sorry! A flatmap for the specified species does not yet exist.`
+      if (organ && organ_name) {
+        failMessage += ` The ${organ_name} of a human male has been shown instead.`
       } else {
-        failMessage += 'A generic human male flatmap has been shown instead.'
+        failMessage += ` A generic human male flatmap has been shown instead.`
       }
     }
   }
