@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <Breadcrumb :breadcrumb="breadcrumb" :title=title />
+    <Breadcrumb :breadcrumb="breadcrumb" :title="title" />
     <div class="px-32 py-4">
       <el-tooltip
         placement="right-start"
@@ -9,101 +9,144 @@
         effect="customized"
       >
         <template #default>
-          <div class="beta-tag"><el-icon class="beta-icon"><WarningFilled /></el-icon>Beta</div>
+          <div class="beta-tag">
+            <el-icon class="beta-icon"><WarningFilled /></el-icon>Beta
+          </div>
         </template>
       </el-tooltip>
     </div>
-    <PennsieveDashboard class="px-32 dashboard-app" :options="dashboardOptions" />
+    <MultiDashboard
+      class="dashboard-app px-32"
+      :dashboardOptions="dashboardOptions"
+      :default="geneCoexpressionDash"
+    ></MultiDashboard>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue';
-import { PennsieveDashboard, TextWidget, MarkdownWidget } from 'pennsieve-dashboard'
-import { UMAP, DataExplorer, ProportionPlot } from 'precision-dashwidgets'
-import 'pennsieve-dashboard/style.css'
-import 'precision-dashwidgets/style.css'
+import { ref } from "vue";
+import {
+  MultiDashboard,
+  TextWidget,
+  MarkdownWidget,
+} from "pennsieve-dashboard";
+import { GeneExpression, SideBySide } from "precision-dashwidgets";
+import "pennsieve-dashboard/style.css";
+import "precision-dashwidgets/style.css";
 
-const s3Url = 'https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/precision_human_drg_data.parquet'
-const title = 'Precision Dashboard'
+const s3Url =
+  "https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/precision_human_drg_data.parquet";
+const title = "Precision Dashboard";
 const breadcrumb = [
   {
-    label: 'Home',
+    label: "Home",
     to: {
-      name: 'index'
-    }
-  },
-  {
-    to: {
-      name: 'apps',
+      name: "index",
     },
-    label: 'SPARC Apps',
-  }
-]
-      
-const availableWidgets = [
-  { name: 'Umap', component: UMAP },
-  { name: 'Data Explorer', component: DataExplorer },
-  { name: 'Text Widget', component: TextWidget},
-  { name: 'Markdown', component: MarkdownWidget },
-  { name: 'Proportion Plot', component:ProportionPlot }
-]
+  },
+  {
+    to: {
+      name: "apps",
+    },
+    label: "SPARC Apps",
+  },
+];
 
-const defaultLayout = [
-  {
-    id:'Markdown-0',
-    x: 0, y: 0, w: 3, h: 8,
-    componentKey: 'Markdown',
-    componentName:'READ ME',
-    component:MarkdownWidget,
-    Props:{
-      markdownText:[
-    '# Human DRG Dataset Dashboard',
-    '',
-    'This is a dashboard associated with the **NIH HEAL PRECISION Human Pain** consortium project. It aggregates data from several U19 centers in a standardized way. Using the different widgets, you can view, query and export the data in various ways:',
-    '',
-    '## Widgets',
-    '',
-    '### UMAP Viewer',
-    'This widget provides the UMAP representation of the entire dataset, you can select the color mapping based on different metadata elements.',
-    '',
-    '### The Data Explorer',
-    'Directly query over the data using SQL and export the results as a CSV file.',
-    '',
-    '### Proportion Viewer',
-    'Explore metrics between the different datasets that comprise the aggregated data.'
-  ].join('\n')
-    }
-  },
-  {
-    id: 'Umap-1',
-    x: 3, y: 0, w: 5, h: 8,
-    componentKey: 'UMAP',
-    componentName: 'UMAP',
-    component: UMAP,
-  },
-  {
-    id: 'ProportionPlot-3',
-    x: 8, y: 0, w: 4, h: 8,
-    componentKey: 'Proportion Plot',
-    componentName: 'Proportion Plot',
-    component: ProportionPlot,   
-  }, 
-  {
-    id: 'DataExplorer-2',
-    x: 0, y: 8, w: 12, h: 6,
-    componentKey: 'Data Explorer',
-    componentName: 'Data Explorer',
-    component: DataExplorer,
-  },
-]
+const availableWidgets = [
+  { name: "GeneExpression", component: GeneExpression },
+  { name: "SideBySide", component: SideBySide },
+];
+
 const services = {
-  s3Url
-}
-const dashboardOptions = ref({
+  s3Url,
+};
+// Define layouts for each dashboard
+const geneCoexpressionDash = {
+  defaultLayout: [
+    {
+      id: "GeneEx-1",
+      x: 0,
+      y: 0,
+      w: 12,
+      h: 10,
+      componentKey: "GeneExpression",
+      componentName: "Gene Expression",
+      component: GeneExpression,
+    },
+  ],
   availableWidgets,
-  defaultLayout,
-  services
-})
+  services,
+  name: "Gene CoExpression",
+};
+
+const geneCellComparisonDash = {
+  defaultLayout: [
+    {
+      id: "SideBySide-1",
+      x: 0,
+      y: 0,
+      w: 12,
+      h: 10,
+      componentKey: "SideBySide",
+      componentName: "Side By Side Comparison",
+      component: SideBySide,
+    },
+  ],
+  availableWidgets,
+  services,
+  name: "Side By Side",
+};
+
+// const defaultLayout = [
+//   {
+//     id:'Markdown-0',
+//     x: 0, y: 0, w: 3, h: 8,
+//     componentKey: 'Markdown',
+//     componentName:'READ ME',
+//     component:MarkdownWidget,
+//     Props:{
+//       markdownText:[
+//     '# Human DRG Dataset Dashboard',
+//     '',
+//     'This is a dashboard associated with the **NIH HEAL PRECISION Human Pain** consortium project. It aggregates data from several U19 centers in a standardized way. Using the different widgets, you can view, query and export the data in various ways:',
+//     '',
+//     '## Widgets',
+//     '',
+//     '### UMAP Viewer',
+//     'This widget provides the UMAP representation of the entire dataset, you can select the color mapping based on different metadata elements.',
+//     '',
+//     '### The Data Explorer',
+//     'Directly query over the data using SQL and export the results as a CSV file.',
+//     '',
+//     '### Proportion Viewer',
+//     'Explore metrics between the different datasets that comprise the aggregated data.'
+//   ].join('\n')
+//     }
+//   },
+//   {
+//     id: 'Umap-1',
+//     x: 3, y: 0, w: 5, h: 8,
+//     componentKey: 'UMAP',
+//     componentName: 'UMAP',
+//     component: UMAP,
+//   },
+//   {
+//     id: 'ProportionPlot-3',
+//     x: 8, y: 0, w: 4, h: 8,
+//     componentKey: 'Proportion Plot',
+//     componentName: 'Proportion Plot',
+//     component: ProportionPlot,
+//   },
+//   {
+//     id: 'DataExplorer-2',
+//     x: 0, y: 8, w: 12, h: 6,
+//     componentKey: 'Data Explorer',
+//     componentName: 'Data Explorer',
+//     component: DataExplorer,
+//   },
+// ]
+
+//now a list of options
+const dashboardOptions = ref([geneCoexpressionDash, geneCellComparisonDash]);
 </script>
 
 <style scoped lang="scss">
@@ -115,11 +158,13 @@ const dashboardOptions = ref({
   --el-color-primary: #243d8e;
   --el-color-primary-light-3: #fbfdff;
   --el-color-primary-dark-2: #546085;
-  --color:#243d8e;
+  --color: #243d8e;
   --el-dialog-width: 90%;
   --dash-secondary: #981f3280;
   --dash-background: #f6f7fb;
+  height: 900px;
 }
+
 :deep(.dash-header) {
   background-color: #f6f7fb;
 }
@@ -145,21 +190,21 @@ const dashboardOptions = ref({
 .beta-icon {
   font-size: 25px;
 }
-:deep(.pp-field button){
+:deep(.pp-field button) {
   height: 2rem;
   background: #981f32 !important;
   border-color: #981f32 !important;
 }
-:deep(.pp-field div){
+:deep(.pp-field div) {
   line-height: 20px;
 }
-:deep(.data-explorer-wrap .dashboard-header div){
+:deep(.data-explorer-wrap .dashboard-header div) {
   height: 20px;
   padding: 6px;
   align-content: center;
   line-height: 0;
 }
-:deep(.pp-controls > :nth-child(1 of .pp-field)){
+:deep(.pp-controls > :nth-child(1 of .pp-field)) {
   display: none;
 }
 :deep(.beta-icon svg > path) {
