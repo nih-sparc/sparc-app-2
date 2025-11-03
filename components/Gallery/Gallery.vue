@@ -8,7 +8,7 @@
             <template v-if="item">
               <component v-if="galleryItemType === 'resources'" :is="galleryItemComponent" :width="cardWidth"
                 :key="item.sys.id" :title="item.fields.name" :subtitle="item.fields.resourceType.join(', ')"
-                :showSparcTag="item.fields.developedBySparc" :description="item.fields.description"
+                :description="item.fields.description"
                 :thumbnail-url="item.fields.logo.fields.file.url" :button-link="item.fields.requiresDetailsPage ? `/resources/${item.sys.id}` : item.fields.url"
                 :external-url="item.fields.url" @card-clicked="cardClicked" />
               <component v-else-if="galleryItemType === 'metrics'" :is="galleryItemComponent" :width="cardWidth"

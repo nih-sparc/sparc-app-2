@@ -39,14 +39,8 @@
           <h2><span v-html="highlightMatches(data.fields.name, $route.query.search)"/><svgo-icon-open class="icon-open"/></h2>
         </a>
         <div class="mb-8">
-          <span v-if="data.fields.developedBySparc" class="resource-category">
-            SPARC Program
-          </span>
           <span v-if="data.fields.codeathon" class="resource-category">
             Codeathon
-          </span>
-          <span v-if="data.fields.developedByNihPrecision" class="resource-category">
-            NIH PRECISION
           </span>
         </div>
         <template v-if="data.fields.contactEmail">
