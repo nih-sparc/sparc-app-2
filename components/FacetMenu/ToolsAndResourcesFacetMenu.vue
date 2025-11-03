@@ -70,12 +70,16 @@ const TYPE_CATEGORY = {
   id: 'type',
   data: [
     {
-      label: 'SPARC',
+      label: 'SPARC Program',
       id: 'developedBySparc'
     },
     {
       label: 'Codeathon',
       id: 'codeathon'
+    },
+    {
+      label: 'NIH PRECISION',
+      id: 'developedByNihPrecision'
     }
   ]
 }

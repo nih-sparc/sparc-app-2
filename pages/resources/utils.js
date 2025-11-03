@@ -15,6 +15,7 @@ export const fetchResources = async (resourceType, fundingProgram, isTool, terms
   // Eventually, we should update the content type to be one field that can have multiple tags/values set on it
   const developedBySparc = type?.includes('developedBySparc') ? true : undefined
   const codeathon = type?.includes('codeathon') ? true : undefined
+  const developedByNihPrecision = type?.includes('developedByNihPrecision') ? true : undefined
 
   try {
     return await $contentfulClient.getEntries({
@@ -26,6 +27,7 @@ export const fetchResources = async (resourceType, fundingProgram, isTool, terms
       'fields.resourceType[in]': resourceType,
       'fields.developedBySparc': developedBySparc,
       'fields.codeathon': codeathon,
+      'fields.developedByNihPrecision': developedByNihPrecision,
       'fields.category': isTool,
       'fields.program[in]': fundingProgram
     }).then(async response => {

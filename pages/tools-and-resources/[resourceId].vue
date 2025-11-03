@@ -36,6 +36,9 @@
           <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
             Codeathon
           </span>
+          <span v-if="resource.fields.developedByNihPrecision" class="mb-4 resource-category">
+            NIH PRECISION
+          </span>
           <div class="label4">
             URL
           </div>

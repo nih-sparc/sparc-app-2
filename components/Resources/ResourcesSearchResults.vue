@@ -45,6 +45,9 @@
           <span v-if="data.fields.codeathon" class="resource-category">
             Codeathon
           </span>
+          <span v-if="data.fields.developedByNihPrecision" class="resource-category">
+            NIH PRECISION
+          </span>
         </div>
         <template v-if="data.fields.contactEmail">
           <h3 class="metadata-title">
