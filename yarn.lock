@@ -193,18 +193,6 @@
     vue-router "^4.2.5"
     zincjs "^1.16.2"
 
-"@abi-software/simulationvuer@2.0.17":
-  version "2.0.17"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.17.tgz#e1d84259541dff298a718021cbb4f63778b640c0"
-  integrity sha512-fa3x/bXiMZgijAIc19fDuirO/mt7nDISZrMyXZA0GXZVVUflFQSNRsz73jqGQkY7ZqdJy0rfT/+oWpTJoGWyAA==
-  dependencies:
-    "@abi-software/plotvuer" "1.0.5"
-    element-plus "2.8.4"
-    jsonschema "^1.4.0"
-    mathjs "^13.0.2"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.21"
-
 "@abi-software/simulationvuer@2.0.18":
   version "2.0.18"
   resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.18.tgz#e64db1de4f05e7bddf6c4faaa61fca4b2aadd296"
