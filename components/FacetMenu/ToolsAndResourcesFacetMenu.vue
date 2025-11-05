@@ -70,10 +70,6 @@ const TYPE_CATEGORY = {
   id: 'type',
   data: [
     {
-      label: 'SPARC',
-      id: 'developedBySparc'
-    },
-    {
       label: 'Codeathon',
       id: 'codeathon'
     }

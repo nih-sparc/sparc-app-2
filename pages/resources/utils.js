@@ -13,7 +13,6 @@ export const fetchResources = async (resourceType, fundingProgram, isTool, terms
   const query = replaceTerms(terms)
   // Since these are different fields in contentful, we must set them to undefined instead of false or else the query will always return false when it and's the values.
   // Eventually, we should update the content type to be one field that can have multiple tags/values set on it
-  const developedBySparc = type?.includes('developedBySparc') ? true : undefined
   const codeathon = type?.includes('codeathon') ? true : undefined
 
   try {
@@ -24,7 +23,6 @@ export const fetchResources = async (resourceType, fundingProgram, isTool, terms
       limit,
       skip,
       'fields.resourceType[in]': resourceType,
-      'fields.developedBySparc': developedBySparc,
       'fields.codeathon': codeathon,
       'fields.category': isTool,
       'fields.program[in]': fundingProgram

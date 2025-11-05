@@ -30,9 +30,6 @@
           <div class="heading1">
             {{ resource.fields.name }}
           </div>
-          <span v-if="resource.fields.developedBySparc" class="mb-4 resource-category">
-            SPARC Program
-          </span>
           <span v-if="resource.fields.codeathon" class="mb-16 resource-category">
             Codeathon
           </span>
