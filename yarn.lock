@@ -99,19 +99,19 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.14.0":
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.14.0.tgz#362255cc949360e925021f8dfe83325a98db8efb"
-  integrity sha512-TF6d993CrIyTu3taR/qz28k6QW6tVK7njPvg06hjIHiLjMI+1mw8e7/kKHAkGOIbi7wHyIG1W+oj5Ab3QI8sQg==
+"@abi-software/mapintegratedvuer@1.14.1":
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.14.1.tgz#9cef88a79edecc012455a697d80523b789cafa54"
+  integrity sha512-qijuL1yr3V0mIJDK+G+QFphLx3RXjZ31jLnOhLNd24BsYZWuoSaG5zEroMurnQkxQ1JTEzGsPimWoC01fmU+6A==
   dependencies:
     "@abi-software/flatmapvuer" "1.12.0"
     "@abi-software/map-side-bar" "2.11.3"
     "@abi-software/map-utilities" "1.7.6"
-    "@abi-software/plotvuer" "1.0.5"
+    "@abi-software/plotvuer" "1.0.7"
     "@abi-software/scaffoldvuer" "1.13.0"
-    "@abi-software/simulationvuer" "2.0.18"
+    "@abi-software/simulationvuer" "2.0.20"
     "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "1.0.3"
+    "@abi-software/svg-sprite" "1.0.4"
     "@element-plus/icons-vue" "^2.3.1"
     "@vitejs/plugin-vue" "^4.6.2"
     css-element-queries "^1.2.3"
@@ -142,26 +142,10 @@
   dependencies:
     papaparse "^5.5.1"
 
-"@abi-software/plotvuer@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.5.tgz#803f056040b68344e6933c8079569b75d69cd4af"
-  integrity sha512-xtIeuahhi9/biyZvoP/zRuzhUVJBniixIAqoX81VYCBQqmpM1Z8qGm9fBzYisIrYHBTxiAySXTp+B2Ve/zgnvw==
-  dependencies:
-    "@abi-software/svg-sprite" "1.0.2"
-    css-element-queries "^1.2.3"
-    element-plus "2.8.4"
-    papaparse "^5.5.2"
-    plotly.js "2.35.3"
-    unplugin-vue-components "^0.26.0"
-    vite-plugin-node-polyfills "^0.19.0"
-    vue "^3.4.21"
-    vue-draggable-resizable "^2.2.0"
-    vue-router "^4.2.5"
-
-"@abi-software/plotvuer@1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.6.tgz#80b770555ebfa2dc33056a4eec3c7b864ca2d627"
-  integrity sha512-O6ZVmbfiqOYn/edzQIeiZhRqBdl2vf1oNhB3ic4iXuIZgyaQ03SQdSK55RH1CAaj3qMoWXoG/h3oC2yHJHUAYw==
+"@abi-software/plotvuer@1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@abi-software/plotvuer/-/plotvuer-1.0.7.tgz#5ba495601e3f4eccf15dc20761164db6b079370a"
+  integrity sha512-5zvhoiCOcsyq24vLwRtJvArMi1z+ZOfRODikwiu/4G+8MYj8b469UgtsMBHdBHiHDsDJRVZox45Lrrj9hd+GRg==
   dependencies:
     "@abi-software/svg-sprite" "^1.0.3"
     css-element-queries "^1.2.3"
@@ -193,12 +177,12 @@
     vue-router "^4.2.5"
     zincjs "^1.16.2"
 
-"@abi-software/simulationvuer@2.0.18":
-  version "2.0.18"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.18.tgz#e64db1de4f05e7bddf6c4faaa61fca4b2aadd296"
-  integrity sha512-+C61SqaF0KxvC5vf3AoWN1XG4qxfrdhreLYBB7d/dNjGpkErvgtqwgOc2xgq03ldEoKbVoEr3KXRx4oTOxcBpQ==
+"@abi-software/simulationvuer@2.0.20":
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-2.0.20.tgz#210eeb80e24a1fd802c82120c3e2bcf73ed95f7b"
+  integrity sha512-L/ELK1JYQNURvE+sUoXT9Xf8TSUwWl7aliz2JZdrZqZOzksJ6iY9f6lVnIxqi//+zCKycL1jLe0RsuzJAInreA==
   dependencies:
-    "@abi-software/plotvuer" "1.0.6"
+    "@abi-software/plotvuer" "1.0.7"
     element-plus "2.8.4"
     jsonschema "^1.4.0"
     mathjs "^13.0.2"
@@ -225,6 +209,13 @@
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.3.tgz#0470d220baa092ec3e696226dcf80fb613c234f0"
   integrity sha512-T82YYSiLYBtRvOWCZbXes8WB3UkIs6D389za/7s2jNDEV3JAhcj6lUo2WD8n4HkNnD5eTFa3tCyW6Wjm1Cc2Dg==
+  dependencies:
+    vue "^3.4.21"
+
+"@abi-software/svg-sprite@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.4.tgz#1ea6cafb5f4f3661f204388da0f976987be7a21b"
+  integrity sha512-Rk3OHigl73JN0BtwN/jhivv7uz6E7yrjpGV6PnC+dO9d6EXCZ4x8ER3wCleQU3fyV9nnJVMZszAy8fXE1wTeLQ==
   dependencies:
     vue "^3.4.21"
 
