@@ -8,6 +8,11 @@
           <p>
             {{ description }}
           </p>
+          <a href="https://docs.sparc.science/docs/sparc-dashboard" target="_blank">
+            <el-button class="secondary">
+              View User Guide <svgo-icon-open class="icon-open" />
+            </el-button>
+          </a>  
         </div>
       </div>
     </page-hero>
@@ -162,6 +167,11 @@ const description = computed(() => pathOr('', ['fields', 'longDescription'], das
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
 /* set style vars from outside the dashboard > customize to match your application */
+.icon-open {
+  height: 1.5rem;
+  width: 1.5rem;
+  margin-bottom: 0;
+}
 .beta-tooltip {
   display: flex;
   width: fit-content;
