@@ -14092,10 +14092,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.6.tgz#1eec1b7358db2d7115342dfd1ea127b50cc203db"
-  integrity sha512-N3sAnQS2gKeEcYuI2IXuCQikrK7jgDg5cwKcj/8jNtzjwX1DVC3erWu+PLHa66defRxQyyKZpqRnepHzsAXtcA==
+sparc-dashwidgets@0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.7.tgz#37992ea0bec5a6705afcf503570bc9502c831fc2"
+  integrity sha512-tBB6L9J2zOjqua+qRMoKUPTPJsiHPSCxDwd2MEu2SzGVb71ZqL+Q4gaHbpwLqeB6h17TUTNHonDxCowY6ra27Q==
   dependencies:
     "@abi-software/flatmapvuer" "1.11.3"
     axios "^1.6.7"
