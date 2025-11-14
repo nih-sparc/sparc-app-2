@@ -29,7 +29,11 @@ import {
   TextWidget,
   MarkdownWidget,
 } from "pennsieve-dashboard";
-import { GeneExpression, SideBySide } from "precision-dashwidgets";
+import {
+  GeneExpression,
+  SideBySide,
+  GeneXDistribution,
+} from "precision-dashwidgets";
 import "pennsieve-dashboard/style.css";
 import "precision-dashwidgets/style.css";
 
@@ -54,6 +58,7 @@ const breadcrumb = [
 const availableWidgets = [
   { name: "GeneExpression", component: GeneExpression },
   { name: "SideBySide", component: SideBySide },
+  { name: "GeneXDistribution", component: GeneXDistribution },
 ];
 
 const services = {
@@ -95,58 +100,32 @@ const geneCellComparisonDash = {
   services,
   name: "Side By Side",
 };
-
-// const defaultLayout = [
-//   {
-//     id:'Markdown-0',
-//     x: 0, y: 0, w: 3, h: 8,
-//     componentKey: 'Markdown',
-//     componentName:'READ ME',
-//     component:MarkdownWidget,
-//     Props:{
-//       markdownText:[
-//     '# Human DRG Dataset Dashboard',
-//     '',
-//     'This is a dashboard associated with the **NIH HEAL PRECISION Human Pain** consortium project. It aggregates data from several U19 centers in a standardized way. Using the different widgets, you can view, query and export the data in various ways:',
-//     '',
-//     '## Widgets',
-//     '',
-//     '### UMAP Viewer',
-//     'This widget provides the UMAP representation of the entire dataset, you can select the color mapping based on different metadata elements.',
-//     '',
-//     '### The Data Explorer',
-//     'Directly query over the data using SQL and export the results as a CSV file.',
-//     '',
-//     '### Proportion Viewer',
-//     'Explore metrics between the different datasets that comprise the aggregated data.'
-//   ].join('\n')
-//     }
-//   },
-//   {
-//     id: 'Umap-1',
-//     x: 3, y: 0, w: 5, h: 8,
-//     componentKey: 'UMAP',
-//     componentName: 'UMAP',
-//     component: UMAP,
-//   },
-//   {
-//     id: 'ProportionPlot-3',
-//     x: 8, y: 0, w: 4, h: 8,
-//     componentKey: 'Proportion Plot',
-//     componentName: 'Proportion Plot',
-//     component: ProportionPlot,
-//   },
-//   {
-//     id: 'DataExplorer-2',
-//     x: 0, y: 8, w: 12, h: 6,
-//     componentKey: 'Data Explorer',
-//     componentName: 'Data Explorer',
-//     component: DataExplorer,
-//   },
-// ]
+const GeneXDistributionDash = {
+  defaultLayout: [
+    {
+      id: "GeneXDistribution-1",
+      x: 0,
+      y: 0,
+      w: 12,
+      h: 9,
+      componentKey: "GeneXDistribution",
+      componentName: "Gene Expresion Distribution",
+      component: GeneXDistribution,
+    },
+  ],
+  availableWidgets,
+  services,
+  name: "Gene Distribution",
+  hideEditGrid: true,
+  hideHeader: true,
+};
 
 //now a list of options
-const dashboardOptions = ref([geneCoexpressionDash, geneCellComparisonDash]);
+const dashboardOptions = ref([
+  geneCoexpressionDash,
+  geneCellComparisonDash,
+  GeneXDistributionDash,
+]);
 </script>
 
 <style scoped lang="scss">

@@ -12430,10 +12430,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennsieve-dashboard@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.1.tgz#3310602e159945d926388e7bbb2d6d6af6465994"
-  integrity sha512-O0AgwlTAdyXZT1Ep3DWvhReU0+rLaO4Tgc8kjJCixf7aWLsorr+zB/S4DeWXNWxlkFiMKKnMyc+6hvg6K8pTHw==
+pennsieve-dashboard@0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.2.tgz#14d48b34595b8bfab78ae4f612a19984fb9f7d48"
+  integrity sha512-KL0GY+tgGagN/PDwi2X7MTEuaSBtyE3whJXhYcXr55C7LEi+aGm3Fxmsvx4de4TilKawiwIfrOJNQIqXkw8DPw==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
@@ -12948,10 +12948,10 @@ potpack@^2.0.0:
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-2.0.0.tgz#61f4dd2dc4b3d5e996e3698c0ec9426d0e169104"
   integrity sha512-Q+/tYsFU9r7xoOJ+y/ZTtdVQwTWfzjbiXBDMM/JKUux3+QPP02iUuIoeBQ+Ot6oEDlC+/PGjB/5A3K7KKb7hcw==
 
-precision-dashwidgets@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.4.1.tgz#56d13a5c32c27f0ba6db498274f2956ee2d6faa1"
-  integrity sha512-5TY7i0LCSBbBYkdnhETGUiIPk24SX0hcXbcDQzSvo5UXEHDXlp9MtZPJwpdkqcQQtoTrYOhRT/n991yqYntCmQ==
+precision-dashwidgets@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.5.0.tgz#aa27477a1f3db2af4a87ca1b03cac176f06a5407"
+  integrity sha512-pyZdL+qbepokTyBoefen2uvZa2FQCsawKR317zVxcCEqGyanoXcazXBnqXocs1wUgCLx8rc8OMKeebI/Q7R4zg==
   dependencies:
     "@duckdb/duckdb-wasm" "^1.30.0"
     chart.js "^4.5.1"
