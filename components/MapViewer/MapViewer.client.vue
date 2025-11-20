@@ -144,3 +144,11 @@
   }
 }
 </style>
+
+<style lang="scss">
+
+.el-popper.filter-help-popover {
+  word-break: normal;
+}
+
+</style>
