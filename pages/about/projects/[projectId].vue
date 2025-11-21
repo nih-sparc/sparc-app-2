@@ -145,7 +145,7 @@
             min-width="400"
           >
             <template v-slot:default="scope">
-              <div v-if="scope.row?.citation" v-html="getCitationsText(scope.row.citation)" />
+              <apa-citation v-if="scope.row?.doi" @doi-invalid="onDoiInvalid" class="mb-8" :doi="scope.row.doi" />
             </template>
           </el-table-column>
         </el-table>
@@ -200,12 +200,14 @@
 </template>
 
 <script>
+import DoiChecker from '@/mixins/doi-checker'
+import ApaCitation from '@/components/DatasetCitations/ApaCitation'
 import DatasetCard from '@/components/DatasetCard/DatasetCard.vue'
 import LearnMoreCard from '@/components/LearnMoreCard/LearnMoreCard.vue';
 import ShareLinks from '@/components/ShareLinks/ShareLinks.vue'
 import marked from '@/mixins/marked/index'
 import { isInternalLink, opensInNewTab } from '@/mixins/marked/index'
-import { pathOr, propOr, isEmpty } from 'ramda'
+import { pathOr, propOr } from 'ramda'
 import consortiaMixin from '@/mixins/consortia'
 import Gallery from '@/components/Gallery/Gallery.vue'
 import { ref } from 'vue'
@@ -213,12 +215,13 @@ import { ref } from 'vue'
 export default {
   name: 'ProjectDetails',
   components: {
+    ApaCitation,
     DatasetCard,
     Gallery,
     LearnMoreCard,
     ShareLinks
   },
-  mixins: [consortiaMixin, marked],
+  mixins: [consortiaMixin, marked, DoiChecker],
   async setup() {
     const config = useRuntimeConfig()
     const route = useRoute()
@@ -243,15 +246,27 @@ export default {
         await Promise.all(associatedDatasets.value.map(async (dataset) => {
           try {
             if (dataset == undefined) { return }
-            const { data } = await $axios.get(`${config.public.portal_api}/dataset_citations/${dataset['objectID']}`)
-            return propOr([], 'citations', data).filter((citation) => { return citation['relationship']?.toLowerCase() === 'cites'})
+            const { data } = await $axios.get(`${config.public.discover_api_host}/datasets/${dataset['objectID']}`)
+            return propOr([], 'externalPublications', data).filter(function (elem) {
+              return elem.relationshipType == 'IsDescribedBy'
+            })
           } catch (error) {
             console.error(`Failed to fetch publication data for dataset ${dataset['objectID']}`, error)
             return []
           }
         }))
 
-      const associatedPublications = ref(associatedPublicationsResults.flat())
+      const flattenedPublications = associatedPublicationsResults.flat()
+
+      // Deduplicate by DOI
+      const seen = new Set()
+      const uniquePublications = flattenedPublications.filter((pub) => {
+        if (seen.has(pub.doi)) return false
+        seen.add(pub.doi)
+        return true
+      })
+
+      const associatedPublications = ref(uniquePublications)
 
       return {
         fields: project.fields,
