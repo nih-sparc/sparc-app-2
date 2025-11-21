@@ -145,7 +145,7 @@
             min-width="400"
           >
             <template v-slot:default="scope">
-              <apa-citation v-if="scope.row?.doi" @doi-invalid="onDoiInvalid" class="mb-8" :doi="scope.row.doi" />
+              <apa-citation v-if="scope.row?.doi" @doi-invalid="onDoiInvalid" :doi="scope.row.doi" />
             </template>
           </el-table-column>
         </el-table>
