@@ -7,25 +7,6 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@abi-software/flatmapvuer@1.11.3":
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.11.3.tgz#5fe2ab752d126689ab5551d23cf44cb1a5ea5aad"
-  integrity sha512-xMlnwaouoUyrO/cTKZdQOPEQLvPOV1JDpEMVlp+vZMYEEMrFJlDeTg0AfOEJ0NSB85TJ4f7ySpVV9fXtm0eGaA==
-  dependencies:
-    "@abi-software/map-utilities" "1.7.2"
-    "@abi-software/sparc-annotation" "0.3.2"
-    "@abi-software/svg-sprite" "1.0.2"
-    "@element-plus/icons-vue" "^2.3.1"
-    css-element-queries "^1.2.2"
-    element-plus "2.8.4"
-    mitt "^3.0.1"
-    pinia "^2.1.7"
-    unplugin-vue-components "^0.26.0"
-    vue "^3.4.21"
-  optionalDependencies:
-    "@esbuild/linux-x64" "0.25.3"
-    "@rollup/rollup-linux-x64-gnu" "4.23.0"
-
 "@abi-software/flatmapvuer@1.12.1":
   version "1.12.1"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.12.1.tgz#80c8b77f52f3bcacb7554eb1aeffcf5311582c48"
@@ -72,19 +53,6 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
     xss "^1.0.14"
-
-"@abi-software/map-utilities@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-utilities/-/map-utilities-1.7.2.tgz#72fbe8f0fa5110037aef9794d1dc5d01a9d6ccb1"
-  integrity sha512-QFZk+TnZ4TYBFBiE+2UwpY0+l6wOdzTD4aTH/OkOwam+VBEGbHhXVoAUzslKNuQ1tja/GpskbiaU0MCdGyIdUQ==
-  dependencies:
-    "@abi-software/svg-sprite" "^1.0.1"
-    "@element-plus/icons-vue" "^2.3.1"
-    cytoscape "^3.30.2"
-    cytoscape-dagre "^2.5.0"
-    element-plus "2.8.4"
-    mitt "^3.0.1"
-    vue "^3.4.21"
 
 "@abi-software/map-utilities@1.7.7":
   version "1.7.7"
@@ -211,13 +179,6 @@
     js-cookie "^3.0.5"
     rdflib "^2.2.32"
 
-"@abi-software/svg-sprite@1.0.2", "@abi-software/svg-sprite@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.2.tgz#5df468a00675bba71c8722c7ba734fc777725c79"
-  integrity sha512-pvNwhKgacuCC8tG30NTFOfPZBFZl9nzJiM2klGAm4wzQaZ52nuTKu1Xpj1mUxSeh/BenFHszybaaYT8x+NJuFg==
-  dependencies:
-    vue "^3.4.21"
-
 "@abi-software/svg-sprite@1.0.3", "@abi-software/svg-sprite@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.3.tgz#0470d220baa092ec3e696226dcf80fb613c234f0"
@@ -238,6 +199,13 @@
   integrity sha512-VZgA5dmYucSLhd3eoePRmSPVSHtbJgrqCvM6hEJdpY4baasLau9FeE08moBvLfYUcsVoe94+n+5+ID4X7MVw/g==
   dependencies:
     vue "^3.3.13"
+
+"@abi-software/svg-sprite@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@abi-software/svg-sprite/-/svg-sprite-1.0.2.tgz#5df468a00675bba71c8722c7ba734fc777725c79"
+  integrity sha512-pvNwhKgacuCC8tG30NTFOfPZBFZl9nzJiM2klGAm4wzQaZ52nuTKu1Xpj1mUxSeh/BenFHszybaaYT8x+NJuFg==
+  dependencies:
+    vue "^3.4.21"
 
 "@algolia/cache-browser-local-storage@4.22.1":
   version "4.22.1"
@@ -9590,10 +9558,10 @@ gridstack@^10.1.2:
   resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.1.2.tgz#58b5ae0057a8aa5e4f6563041c4ca2def3aa4268"
   integrity sha512-Nn27XGQ68WtBC513cKQQ4t/dA2uuN/xnNUU50puXEJv6IFk5SzT0Dnsq68GpopO1n0tXUKZKm1Rw7uOUMDz1KQ==
 
-gridstack@^9.5.0:
-  version "9.5.1"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-9.5.1.tgz#10858848d36160b2d834f8cf0c304944ba2b6505"
-  integrity sha512-ZzBXY8J2dTPwVOP14d6vHhrXZMWh4qCgb+FJ1COSOrI02OtiPJtDgEQbz1rDlVR/tFU5WQP67w1RYz0eF0FkuA==
+gridstack@^12.3.3:
+  version "12.3.3"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-12.3.3.tgz#0c4fc3cdf6e1c16e6095bc79ff7240a590d2c200"
+  integrity sha512-Bboi4gj7HXGnx1VFXQNde4Nwi5srdUSuCCnOSszKhFjBs8EtMEWhsKX02BjIKkErq/FjQUkNUbXUYeQaVMQ0jQ==
 
 gzip-size@^6.0.0:
   version "6.0.0"
@@ -12443,14 +12411,14 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennsieve-dashboard@0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.2.tgz#14d48b34595b8bfab78ae4f612a19984fb9f7d48"
-  integrity sha512-KL0GY+tgGagN/PDwi2X7MTEuaSBtyE3whJXhYcXr55C7LEi+aGm3Fxmsvx4de4TilKawiwIfrOJNQIqXkw8DPw==
+pennsieve-dashboard@0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.3.tgz#8a6cd1bd9d1e15eeea90324b48586c27d71d37ce"
+  integrity sha512-XGPO0dZFH0LvTlEdWpZ+u538yjfzcgV6E2s5wKFOmGoPFcc3A7qKcS80kHUWnr3C8wdxD7OMbhlVBB/LS6pNhA==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
-    gridstack "^9.5.0"
+    gridstack "^12.3.3"
     marked "^15.0.7"
     sass "^1.90.0"
     vue "^3.5.18"
@@ -14105,15 +14073,16 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.1.7.tgz#37992ea0bec5a6705afcf503570bc9502c831fc2"
-  integrity sha512-tBB6L9J2zOjqua+qRMoKUPTPJsiHPSCxDwd2MEu2SzGVb71ZqL+Q4gaHbpwLqeB6h17TUTNHonDxCowY6ra27Q==
+sparc-dashwidgets@0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.2.11.tgz#34abc43f713b6478ed8b06f5266e81b37b83a4ac"
+  integrity sha512-vpHpNUh3Jtj5vKL/WZXxxGM+IXhgbnEfXBF/zMJToQGBCyDWLbZx+OcQ4yrGTjaA1L0Ys8D58ZKYtLC9L5nLoQ==
   dependencies:
-    "@abi-software/flatmapvuer" "1.11.3"
+    "@abi-software/flatmapvuer" "1.12.1"
     axios "^1.6.7"
     epic-spinners "^2.0.0"
     js-base64 "^3.7.7"
+    pennsieve-dashboard "0.3.3"
     vue "^3.5.18"
 
 sparc-design-system-components-2@1.0.1:
