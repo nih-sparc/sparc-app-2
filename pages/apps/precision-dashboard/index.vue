@@ -16,7 +16,7 @@
       </el-tooltip>
     </div>
     <MultiDashboard
-      class="dashboard-app px-32"
+      class="dashboard-app"
       :dashboardOptions="dashboardOptions"
       :default="geneCoexpressionDash"
     ></MultiDashboard>
@@ -173,6 +173,10 @@ const dashboardOptions = ref([
 .beta-icon {
   font-size: 25px;
 }
+:deep(.grid-stack-item) {
+  width: 100%;
+  height: 100%;
+}
 :deep(.pp-field button) {
   height: 2rem;
   background: #981f32 !important;
@@ -192,9 +196,6 @@ const dashboardOptions = ref([
 }
 :deep(.beta-icon svg > path) {
   fill: #ff8400 !important;
-}
-:deep(.grid-stack) {
-  flex: none;
 }
 :global(.beta-tooltip.el-popper.is-customized .el-popper__arrow::before) {
   background-color: #ffe8ec !important;
