@@ -81,6 +81,8 @@ const geneCoexpressionDash = {
   availableWidgets,
   services,
   name: "Gene CoExpression",
+  hideEditGrid: true,
+  hideHeader: true,
 };
 
 const geneCellComparisonDash = {
@@ -99,6 +101,8 @@ const geneCellComparisonDash = {
   availableWidgets,
   services,
   name: "Side By Side",
+  hideEditGrid: true,
+  hideHeader: true,
 };
 const GeneXDistributionDash = {
   defaultLayout: [
@@ -188,6 +192,9 @@ const dashboardOptions = ref([
 }
 :deep(.beta-icon svg > path) {
   fill: #ff8400 !important;
+}
+:deep(.grid-stack) {
+  flex: none;
 }
 :global(.beta-tooltip.el-popper.is-customized .el-popper__arrow::before) {
   background-color: #ffe8ec !important;
