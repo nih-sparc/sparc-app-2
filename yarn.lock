@@ -190,10 +190,10 @@
     vue-router "^4.2.5"
     zincjs "^1.16.2"
 
-"@abi-software/simulationvuer@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.0.tgz#17f43dc5825de81520a93aa1420f0bd30d08795a"
-  integrity sha512-XdUrobq5yfzZL5omR+NVhLmPVUZUup+N5mN5RCfOT4wdNVciXTBn5AF6YGd7uaE9QAgqMHojQ76VJHTNF2g9bg==
+"@abi-software/simulationvuer@3.0.0", "@abi-software/simulationvuer@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.1.tgz#986d90fc0d932f12fbd0505461afead4407fd335"
+  integrity sha512-Pqx0TKqBDCri1MznsbLgM6Ds6xH8+YVDTbOETQrEZhCSnRNFabJOjQmf1hEtW067CKHYvYLQzf6FLRNIoN0Kbg==
   dependencies:
     "@abi-software/plotvuer" "1.0.7"
     "@opencor/opencor" "^0.20251112.0"
