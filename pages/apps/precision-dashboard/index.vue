@@ -16,7 +16,7 @@
       </el-tooltip>
     </div>
     <MultiDashboard
-      class="dashboard-app px-32"
+      class="dashboard-app"
       :dashboardOptions="dashboardOptions"
       :default="geneCoexpressionDash"
     ></MultiDashboard>
@@ -81,6 +81,8 @@ const geneCoexpressionDash = {
   availableWidgets,
   services,
   name: "Gene CoExpression",
+  hideEditGrid: true,
+  hideHeader: true,
 };
 
 const geneCellComparisonDash = {
@@ -99,6 +101,8 @@ const geneCellComparisonDash = {
   availableWidgets,
   services,
   name: "Side By Side",
+  hideEditGrid: true,
+  hideHeader: true,
 };
 const GeneXDistributionDash = {
   defaultLayout: [
@@ -168,6 +172,10 @@ const dashboardOptions = ref([
 }
 .beta-icon {
   font-size: 25px;
+}
+:deep(.grid-stack-item) {
+  width: 100%;
+  height: 100%;
 }
 :deep(.pp-field button) {
   height: 2rem;
