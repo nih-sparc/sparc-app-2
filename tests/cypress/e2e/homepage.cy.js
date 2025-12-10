@@ -129,6 +129,7 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.el-select-dropdown > .el-scrollbar > .el-select-dropdown__wrap > .el-select-dropdown__list > .el-select-dropdown__item').as('options')
     cy.get('@options').then(($dropdown) => {
       expect($dropdown, 'Dropdown should have at least one item').to.have.length.above(0)
+      cy.wait(5000)
       for (let index = 0; index < $dropdown.length; index++) {
         cy.wrap($dropdown).eq(index).click()
         cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').should(($card) => {
