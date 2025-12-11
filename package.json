@@ -7,7 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
-    "postinstall": "patch-package && nuxt prepare",
+    "postinstall": "patch-package && nuxt prepare && node ./verify-resolutions.js",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
@@ -24,7 +24,8 @@
     "nuxt-svgo": "^3.5.6",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "sass": "^1.66.1"
+    "sass": "^1.66.1",
+    "semver": "^7.7.3"
   },
   "dependencies": {
     "@abi-software/mapintegratedvuer": "1.15.1",
@@ -64,7 +65,8 @@
   "resolutions": {
     "string-width": "4.2.3",
     "mlly": "1.4.0",
-    "vue": "3.4.21"
+    "vue": "3.4.21",
+    "@abi-software/flatmapvuer": "1.12.1"
   },
   "engines": {
     "node": "18.17.1"
