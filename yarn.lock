@@ -158,13 +158,13 @@
     vue-router "^4.2.5"
     zincjs "^1.16.2"
 
-"@abi-software/simulationvuer@3.0.0", "@abi-software/simulationvuer@3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.7.tgz#d959a4b55ac22a2ac3c978d820e6d2de1ad8e1ab"
-  integrity sha512-QgXjfHRT91WL8/99xu3TASIck0IsZ8/2vMgJUk2Ug/ZGk2ljs04e+ViJ0Jj/GXx+jbNoFtkH9Ede99qpkmjiKA==
+"@abi-software/simulationvuer@3.0.0", "@abi-software/simulationvuer@3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.8.tgz#970991d67edbc2fa30f954ef11578ed74ad02899"
+  integrity sha512-OzssTawPaKNCLlwIGnLzG2csPsFX4P8dGHUEvSvlL2fV+mJtpcqxk/VwoZqnmqbIy9CyX9mtb+ZC2rnDJjxbBA==
   dependencies:
     "@abi-software/plotvuer" "1.0.7"
-    "@opencor/opencor" "^0.20251210.0"
+    "@opencor/opencor" "^0.20251215.0"
     element-plus "2.8.4"
     jsonschema "^1.4.0"
     mathjs "^15.1.0"
@@ -3916,10 +3916,10 @@
     defu "^6.1.2"
     pathe "^1.1.1"
 
-"@opencor/opencor@^0.20251210.0":
-  version "0.20251210.0"
-  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20251210.0.tgz#f0e2f8b69e47f92f62c81b02b36b42bbc3e0db9e"
-  integrity sha512-jkoQtZ+qYvW0apD3NQKsMyk+Vl9Ie8u3jCt2ERbui3zzAn36DATUgz3El1hJyRVP725QfIiXkJJUu71gt0SVtQ==
+"@opencor/opencor@^0.20251215.0":
+  version "0.20251215.0"
+  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20251215.0.tgz#e1ad47d66555c4eef245a5c7811fa56bf0d1d66c"
+  integrity sha512-SkxrO+CXBivLbS/i76ftd7LMTVpdQ0Z703OwmRQWd9XZ/sjo9wHPkfK7TlXHWY/7y7Zc3I0MRF7aGlS0faJ6pA==
   dependencies:
     "@primeuix/themes" "^1.2.5"
     "@primevue/auto-import-resolver" "4.2.5"
@@ -3929,7 +3929,7 @@
     primeicons "^7.0.0"
     primevue "4.2.5"
     quill "^2.0.3"
-    ua-parser-js "^2.0.6"
+    ua-parser-js "^2.0.7"
     vue "3.4.21"
 
 "@parcel/watcher-android-arm64@2.4.0":
@@ -15096,10 +15096,10 @@ ua-is-frozen@^0.1.2:
   resolved "https://registry.yarnpkg.com/ua-is-frozen/-/ua-is-frozen-0.1.2.tgz#bfbc5f06336e379590e36beca444188c7dc3a7f3"
   integrity sha512-RwKDW2p3iyWn4UbaxpP2+VxwqXh0jpvdxsYpZ5j/MLLiQOfbsV5shpgQiw93+KMYQPcteeMQ289MaAFzs3G9pw==
 
-ua-parser-js@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-2.0.6.tgz#1dd221f7f2a27357c6a342296852f6391d77d4f0"
-  integrity sha512-EmaxXfltJaDW75SokrY4/lXMrVyXomE/0FpIIqP2Ctic93gK7rlme55Cwkz8l3YZ6gqf94fCU7AnIkidd/KXPg==
+ua-parser-js@^2.0.7:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-2.0.7.tgz#0f22e3f8430cce9c43463b8603e54b45cbae68d5"
+  integrity sha512-CFdHVHr+6YfbktNZegH3qbYvYgC7nRNEUm2tk7nSFXSODUu4tDBpaFpP1jdXBUOKKwapVlWRfTtS8bCPzsQ47w==
   dependencies:
     detect-europe-js "^0.1.2"
     is-standalone-pwa "^0.1.1"
