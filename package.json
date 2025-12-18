@@ -30,7 +30,7 @@
     "@abi-software/mapintegratedvuer": "1.15.1-sim3",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "3.0.8",
+    "@abi-software/simulationvuer": "3.0.9",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
@@ -65,7 +65,7 @@
     "string-width": "4.2.3",
     "mlly": "1.4.0",
     "vue": "3.4.21",
-    "@abi-software/simulationvuer": "3.0.8"
+    "@abi-software/simulationvuer": "3.0.9"
   },
   "engines": {
     "node": "18.17.1"

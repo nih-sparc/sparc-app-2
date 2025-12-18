@@ -158,13 +158,13 @@
     vue-router "^4.2.5"
     zincjs "^1.16.2"
 
-"@abi-software/simulationvuer@3.0.0", "@abi-software/simulationvuer@3.0.8":
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.8.tgz#970991d67edbc2fa30f954ef11578ed74ad02899"
-  integrity sha512-OzssTawPaKNCLlwIGnLzG2csPsFX4P8dGHUEvSvlL2fV+mJtpcqxk/VwoZqnmqbIy9CyX9mtb+ZC2rnDJjxbBA==
+"@abi-software/simulationvuer@3.0.0", "@abi-software/simulationvuer@3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.9.tgz#dd75079e83e5df3b85b581c0626952b12e2b8bb1"
+  integrity sha512-DwkGm532yeSp0Vm8VJTe/svlvVodD7LwU82Ztlvif0wZdRNiKThjxqBNIUbq7wd36HCCRfnr/mkC55Iuii4sSg==
   dependencies:
     "@abi-software/plotvuer" "1.0.7"
-    "@opencor/opencor" "^0.20251215.0"
+    "@opencor/opencor" "^0.20251218.0"
     element-plus "2.8.4"
     jsonschema "^1.4.0"
     mathjs "^15.1.0"
@@ -3916,10 +3916,10 @@
     defu "^6.1.2"
     pathe "^1.1.1"
 
-"@opencor/opencor@^0.20251215.0":
-  version "0.20251215.0"
-  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20251215.0.tgz#e1ad47d66555c4eef245a5c7811fa56bf0d1d66c"
-  integrity sha512-SkxrO+CXBivLbS/i76ftd7LMTVpdQ0Z703OwmRQWd9XZ/sjo9wHPkfK7TlXHWY/7y7Zc3I0MRF7aGlS0faJ6pA==
+"@opencor/opencor@^0.20251218.0":
+  version "0.20251218.0"
+  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20251218.0.tgz#6d4e80d17462281e8ba8168a18c2a630544bc3ce"
+  integrity sha512-xkiZ7xUUz3cw2RnczWXRIx1/o8KLpm3iw5hZbrXORHVn9Vc3MrnjVKncb1YOhuxey7un517/H7dumpiuaGPlpQ==
   dependencies:
     "@primeuix/themes" "^1.2.5"
     "@primevue/auto-import-resolver" "4.2.5"
