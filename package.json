@@ -28,10 +28,10 @@
     "semver": "^7.7.3"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.15.1",
+    "@abi-software/mapintegratedvuer": "1.16.1-beta.0",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "2.0.20",
+    "@abi-software/simulationvuer": "3.0.9",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
