@@ -124,6 +124,17 @@ Cypress.Commands.add('waitForConnectivityGraphLoading', () => {
   cy.wait(5000)
 })
 
+Cypress.Commands.add('waitForDashboardLoading', () => {
+  cy.get('.dashboard-app', { timeout: 60000 }).should(($dashboard) => {
+    expect($dashboard, 'Dashboard should exist').to.exist
+  })
+  // Wait for dashboard widgets to load (pennsieve-dashboard uses grid-stack)
+  cy.get('.dashboard-app .grid-stack-item, .dashboard-app [class*="widget"], .dashboard-app .dash-widget', { timeout: 60000 }).should(($gridItems) => {
+    expect($gridItems, 'Dashboard widgets should be loaded').to.have.length.greaterThan(0)
+  })
+  cy.wait(5000)
+})
+
 Cypress.Commands.add('waitForSidebarReferenceLoading', () => {
   cy.get('.resource-container > .citation-list > .loading', { timeout: 60000 }).should(($loadingMask) => {
     expect($loadingMask, 'Sidebar reference loading mask should not exist').to.not.exist
