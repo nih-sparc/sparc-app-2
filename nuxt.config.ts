@@ -151,6 +151,7 @@ export default defineNuxtConfig({
       ctf_consortia_content_type_id: 'consortia',
       portal_api: process.env.PORTAL_API_HOST || 'https://sparc-api.herokuapp.com',
       flatmap_api: process.env.FLATMAP_API_HOST || 'https://mapcore-demo.org/current/flatmap/v3/',
+      DASHBOARD_FLATMAP_API: process.env.DASHBOARD_FLATMAP_API || 'https://mapcore-demo.org/current/flatmap/v3/',
       DEPLOY_ENV: process.env.DEPLOY_ENV || 'development',
       ALGOLIA_API_KEY: process.env.ALGOLIA_API_KEY,
       ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,

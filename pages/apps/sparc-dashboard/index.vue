@@ -182,9 +182,9 @@ const defaultLayout = [
 
 const services = {
   ScicrunchApiKey: config.public.FLI_API_KEY,
-  FlatmapAPI: config.public.flatmap_api,
+  FlatmapAPI: config.public.DASHBOARD_FLATMAP_API,
 };
-
+console.log(services)
 const dashboardOptions = ref({
   availableWidgets,
   defaultLayout,
