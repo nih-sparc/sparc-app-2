@@ -124,7 +124,7 @@ const defaultLayout = [
     id: "FlatmapViewer-1",
     x: 3,
     y: 3,
-    w: 2,
+    w: 3,
     h: 7,
     componentKey: "FlatmapViewer",
     componentName: "Flatmap Viewer",
@@ -132,9 +132,9 @@ const defaultLayout = [
   },
   {
     id: "VagusImageSelector-2",
-    x: 5,
+    x: 6,
     y: 3,
-    w: 3,
+    w: 2,
     h: 7,
     componentKey: "VagusImageSelector",
     componentName: "Image Selector",
@@ -169,11 +169,20 @@ const defaultLayout = [
     componentKey: "QDBGraph",
     componentName: "QDB Graph",
     component: QDBGraph,
+    Props: {
+      defaultMetric: "fascicle-cross-section",
+      defaultXAspect: "diameter",
+      defaultYAspect: "distance",
+      defaultVisualization: "Scatter",
+      defaultDataPointLimit: 1000,
+      searchAllData: false,
+    },
   },
 ];
 
 const services = {
   ScicrunchApiKey: config.public.FLI_API_KEY,
+  FlatmapAPI: config.public.DASHBOARD_FLATMAP_API,
 };
 
 const dashboardOptions = ref({
@@ -239,6 +248,9 @@ const description = computed(() =>
   svg > path {
     fill: $lightPurple;
   }
+}
+:deep(.range-apply-btn) {
+  background: none;
 }
 :deep(.subject-selector) {
   overflow-x: auto !important;

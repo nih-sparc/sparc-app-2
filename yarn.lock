@@ -12589,6 +12589,18 @@ pennsieve-dashboard@0.3.3:
     sass "^1.90.0"
     vue "^3.5.18"
 
+pennsieve-dashboard@0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.4.tgz#61630927e5058cac1d886c69f94fae6e3289e9eb"
+  integrity sha512-tGo7IUeP5K8lv6N+khR9rVgbzaBtd4tG5vXV6BOrmyDj9TWedSGJVPImztAMIGmQk/eTSoxqZc7QiDSV+zJrcg==
+  dependencies:
+    "@element-plus/icons-vue" "^2.3.2"
+    dompurify "^3.2.6"
+    gridstack "^12.3.3"
+    marked "^15.0.7"
+    sass "^1.90.0"
+    vue "^3.5.18"
+
 pennsieve-visualization@^0.4.8:
   version "0.4.8"
   resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.4.8.tgz#4df8ea8f7e41347734fa70b318dcfadf01e7f191"
@@ -14278,12 +14290,11 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.2.11.tgz#34abc43f713b6478ed8b06f5266e81b37b83a4ac"
-  integrity sha512-vpHpNUh3Jtj5vKL/WZXxxGM+IXhgbnEfXBF/zMJToQGBCyDWLbZx+OcQ4yrGTjaA1L0Ys8D58ZKYtLC9L5nLoQ==
+sparc-dashwidgets@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.3.0.tgz#5e9877add42c4f13d791c3586dafe909e4a3dd85"
+  integrity sha512-IRSqxJRYJnYFcj3f5XjQy90npUdCVr+Fpxq426RuEeFCTYQKymhRbqaguLg8I3JOszCJbEszpKO9D3scBfjYHg==
   dependencies:
-    "@abi-software/flatmapvuer" "1.12.1"
     axios "^1.6.7"
     epic-spinners "^2.0.0"
     js-base64 "^3.7.7"
