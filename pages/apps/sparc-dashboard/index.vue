@@ -171,8 +171,8 @@ const defaultLayout = [
     component: QDBGraph,
     Props: {
       defaultMetric: "fascicle-cross-section",
-      defaultXAspect: "diameter",
-      defaultYAspect: "distance",
+      defaultXAspect: "distance",
+      defaultYAspect: "diameter",
       defaultVisualization: "Scatter",
       defaultDataPointLimit: 1000,
       searchAllData: false,
