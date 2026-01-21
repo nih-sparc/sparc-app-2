@@ -75,7 +75,7 @@
                   :associated-projects="associatedProjects" :awards="sparcAwards"/>
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
-                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
+                <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="resolvedOsparcLink" />
                 <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
@@ -128,7 +128,7 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => { 
+  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => {
     const status = propOr('', 'status', error.response)
     // If not found, then try accessing it directly from Pennsieve in case it has been unpublished
     if (status == 404) {
@@ -406,6 +406,7 @@ export default {
       sparcAwards: [],
       showCopySuccess: false,
       subtitles: [],
+      resolvedOsparcLink: undefined,
     }
   },
 
@@ -424,7 +425,7 @@ export default {
     }
   },
 
-  mounted() {
+  async mounted() {
     this.$gtm.trackEvent({
       event: "",
       category: "",
@@ -439,6 +440,8 @@ export default {
       file_path: "",
       file_type: "",
     })
+
+    this.resolvedOsparcLink = await this.getOsparcLink();
   },
 
   computed: {
@@ -564,10 +567,6 @@ export default {
     },
     sourceCodeLink: function () {
       return pathOr(null, ['release','repoUrl'], this.datasetInfo)
-    },
-    osparcLink: function () {
-      // using axios, get osparc file_viewers from /get_osparc_data API endpoint
-      return `${this.$config.public.osparc_host}view?file_type=IPYNB&viewer_key=simcore/services/dynamic/jupyter-math&viewer_version=2.0.9&download_link=https://api.pennsieve.io/discover/datasets/${this.datasetId}/versions/1/metadata&file_size=1`
     },
     numDownloads: function () {
       let numDownloads = 0;
@@ -765,7 +764,31 @@ export default {
             throw error
           })
       }
-    }
+    },
+    getOsparcLink: async function () {
+      try {
+        if(this.$config.public.osparc_disable_hornet_button) {
+          return undefined
+        }
+        if(this.$config.public.osparc_enable_check_hornet_manifest) {
+          // check if file exists on .hornet/metadata.json path using axios and then show the button
+          const fileExistsResponse = await this.$axios.get(`${this.$config.public.discover_api_host}/datasets/${this.datasetId}/versions/1/assets/browse?path=&limit=5&offset=0&file=.hornet/cad_manifest.json`)
+          if(fileExistsResponse.data.totalCount === 0) {
+            // Hide the button if the metadata file is not present
+            return undefined
+          }
+        }
+        const osparcURL = await this.$axios.get(`https://osparc.io/v0/viewers/default?file_type=HORNET_REPO`).then(r => r.json())
+        if(osparcURL.data === undefined) {
+          return undefined
+        }
+        const metadataLink = new URL(`/datasets/${this.datasetId}/versions/1/metadata`, this.$config.public.discover_api_host).href
+        const downloadLink = osparcURL.data[0].view_url + `&download_link=${metadataLink}&file_size=10`
+        return downloadLink
+      } catch (error) {
+        return undefined
+      }
+    },
   }
 }
 </script>
