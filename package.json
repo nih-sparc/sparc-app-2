@@ -28,7 +28,7 @@
     "semver": "^7.7.3"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.16.1",
+    "@abi-software/mapintegratedvuer": "1.16.2",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
     "@abi-software/simulationvuer": "3.0.9",
