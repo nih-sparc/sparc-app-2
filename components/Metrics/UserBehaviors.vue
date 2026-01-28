@@ -21,12 +21,12 @@
         <div class="card">
           <div class="heading2">Dataset Downloads</div>
           <div class="heading1 data">{{ totalDownloads }}</div>
-          <div class="sub-label">({{ totalDownloadsLastMonth }} in {{ monthLastUpdated }})</div>
+          <div class="sub-label">Total</div>
         </div>
         <div class="card">
           <div class="heading2">Dataset Contributors</div>
           <div class="heading1 data">{{ totalContributers }}</div>
-          <div class="sub-label">({{ newContributers }} new in {{  monthLastUpdated }})</div>
+          <div class="sub-label">Total</div>
         </div>
         <div v-if="totalCitations" class="card">
           <div class="heading2">Dataset Citations</div>
@@ -93,9 +93,9 @@ export default {
         }
         this.pageChartData = {
           labels: behaviors.pageViewsLabels,
-          datasets: [ 
-            { 
-              label: 'Last Month',
+          datasets: [
+            {
+              label: 'Last Quarter',
               backgroundColor: [
                 'rgba(131, 0, 191, .5)',
                 'rgba(131, 0, 191, .5)',
@@ -105,43 +105,21 @@ export default {
                 'rgba(131, 0, 191, .5)',
               ],
               borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.pageViewsData?.lastMonth
-            },
-            { 
-              label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-              ],
-              borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.pageViewsData?.last3Months
+              data: behaviors.pageViewsData?.lastQuarter
             }
           ]
         }
         this.usersChartData = {
           labels: [ 'Returning', 'New' ],
-          datasets: [ 
-            { 
-              label: 'Last Month',
+          datasets: [
+            {
+              label: 'Last Quarter',
               backgroundColor: [
                 'rgba(131, 0, 191, .5)',
                 'rgba(131, 0, 191, .5)',
               ],
               borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.usersData?.lastMonth
-            },
-            { 
-              label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-              ],
-              borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.usersData?.last3Months
+              data: behaviors.usersData?.lastQuarter
             }
           ]
         }

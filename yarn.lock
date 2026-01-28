@@ -7,7 +7,7 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@abi-software/flatmapvuer@1.12.1", "@abi-software/flatmapvuer@1.12.2":
+"@abi-software/flatmapvuer@1.12.2":
   version "1.12.2"
   resolved "https://registry.yarnpkg.com/@abi-software/flatmapvuer/-/flatmapvuer-1.12.2.tgz#8a1824013d298a1c81c8f76eea74d75a91d83cf8"
   integrity sha512-DXEIAPXSJUCr/fD0BNqvCsoV88BwslMG8yjmytcGJvS0qHWsT0IuWlmYzrlq+989OZGp9g0ag0Hsen7mnevnYA==
@@ -14290,10 +14290,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.3.0.tgz#5e9877add42c4f13d791c3586dafe909e4a3dd85"
-  integrity sha512-IRSqxJRYJnYFcj3f5XjQy90npUdCVr+Fpxq426RuEeFCTYQKymhRbqaguLg8I3JOszCJbEszpKO9D3scBfjYHg==
+sparc-dashwidgets@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-0.3.1.tgz#c6ac93329c942c67a089e140f3665e65e4f3a1df"
+  integrity sha512-67/C0fBm7OuGz0pkKPWWa6IDHtalMxZ02yA20g0Xuhvf8JeEFmluN56WYx0J18EZ7LgWE0XymgTapAF3OCqsVg==
   dependencies:
     axios "^1.6.7"
     epic-spinners "^2.0.0"
