@@ -6,7 +6,6 @@
     </div>
     <div v-else-if="hasError" class="error-container">
       <p class="error">{{ errorMessage }}</p>
-      <el-button @click="loadViewer">Try again</el-button>
     </div>
     <template v-else>
       <div class="viewer-wrapper">
