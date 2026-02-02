@@ -10,9 +10,10 @@
     </div>
     <template v-else>
       <div class="viewer-wrapper">
-        <OmeViewer
+        <MicroCtOmeViewer
           v-if="presignedUrl"
-          :url="presignedUrl"
+          :source="presignedUrl"
+          source-type="ome-tiff"
         />
       </div>
       <generic-viewer-metadata
@@ -28,14 +29,15 @@
 import { ref, onMounted, defineComponent } from 'vue'
 import { propOr } from 'ramda'
 import GenericViewerMetadata from '@/components/ViewersMetadata/GenericViewerMetadata.vue'
-import { OmeViewer } from '@pennsieve-viz/micro-ct'
+import { OmeViewer as MicroCtOmeViewer } from '@pennsieve-viz/micro-ct'
+import '@pennsieve-viz/micro-ct/style.css'
 
 export default defineComponent({
   name: 'OmeViewerWrapper',
 
   components: {
     GenericViewerMetadata,
-    OmeViewer,
+    MicroCtOmeViewer,
   },
 
   props: {
@@ -62,18 +64,6 @@ export default defineComponent({
 
     const discoverUrl = config.public.discover_api_host
 
-    const getPackageFiles = async (packageId) => {
-      try {
-        const response = await $axios.get(
-          `${discoverUrl}/packages/N:package:${packageId}/files`
-        )
-        return response.data
-      } catch (error) {
-        console.error('Error fetching package files:', error)
-        throw error
-      }
-    }
-
     const fetchManifestUrl = async (datasetId, version, filePath) => {
       try {
         const response = await $axios.post(
@@ -95,31 +85,17 @@ export default defineComponent({
       try {
         const datasetId = propOr('', 'id', props.datasetInfo)
         const version = propOr('', 'version', props.datasetInfo)
-        const sourcePackageId = propOr('', 'sourcePackageId', props.file)
+        const filePath = propOr('', 'path', props.file)
 
-        if (!sourcePackageId) {
-          throw new Error('No package ID found for this file')
+        if (!filePath) {
+          throw new Error('No file path provided')
         }
 
-        // Extract the package ID without the N:package: prefix if present
-        const packageId = sourcePackageId.replace('N:package:', '')
-
-        // Step 1: Get package files to find the file path
-        const packageFiles = await getPackageFiles(packageId)
-
-        if (!packageFiles || packageFiles.length === 0) {
-          throw new Error('No files found in package')
+        if (!datasetId || !version) {
+          throw new Error('Missing dataset ID or version')
         }
 
-        // Find the OME-TIFF file in the package files
-        const omeTiffFile = packageFiles.find(f =>
-          f.name?.toLowerCase().endsWith('.ome.tiff') ||
-          f.name?.toLowerCase().endsWith('.ome.tif')
-        ) || packageFiles[0]
-
-        const filePath = omeTiffFile.path || props.file.path
-
-        // Step 2: Get presigned URL from download manifest
+        // Get presigned URL from download manifest
         const url = await fetchManifestUrl(datasetId, version, filePath)
 
         if (!url) {
@@ -187,6 +163,12 @@ export default defineComponent({
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 1rem;
+
+  :deep(.ome-viewer-wrapper) {
+    width: 100%;
+    min-height: 500px;
+    height: 100%;
+  }
 }
 
 @keyframes rotating {
