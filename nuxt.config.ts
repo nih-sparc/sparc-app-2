@@ -69,7 +69,7 @@ export default defineNuxtConfig({
       'window.global': {},
     },
     resolve: {
-      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
+      dedupe:['element-plus']
     }
     /*css: {
       preprocessorOptions: {
