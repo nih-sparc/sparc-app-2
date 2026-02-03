@@ -80,17 +80,15 @@ const metricsTypes = [
   }
 ]
 
-// Legacy /ga4 endpoint to get page views and user types quarterly data
+// Legacy enpoint for google analytics ga4
 // Uses METRICS_URL_LEGACY env variable
 const fetchLegacyGA4Metrics = async (config, month, year) => {
   try {
     const response = await $fetch(`${config.public.METRICS_URL_LEGACY}/ga4?year=${year}&month=${month}`)
     const responseData = JSON.parse(response)
 
-    // The legacy endpoint returns array, first item contains ga4 metrics
     const ga4MetricsData = Array.isArray(responseData) ? responseData[0] : responseData
 
-    // Helper to safely parse value - handles DynamoDB format {N: "value"} and direct values
     const parseValue = (data, key) => {
       const value = data?.[key]
       if (!value) return 0
@@ -134,18 +132,15 @@ const fetchLegacyGA4Metrics = async (config, month, year) => {
   }
 }
 
-// Legacy /sparc endpoint to get cumulative data for the first chart (dataChartData)
-// These variables are not available in the new combined /sparc endpoint format
+// Legacy /sparc endpoint - new enpoint is single call, legacy needs 2
 // Uses METRICS_URL_LEGACY env variable
 const fetchLegacySparcMetrics = async (config, month, year) => {
   try {
     const response = await $fetch(`${config.public.METRICS_URL_LEGACY}/sparc?year=${year}&month=${month}`)
     const responseData = JSON.parse(response)
 
-    // The legacy endpoint returns array, first item contains sparc metrics
     const sparcMetricsData = Array.isArray(responseData) ? responseData[0] : responseData
 
-    // Helper to safely parse value - handles DynamoDB format {N: "value"} and direct values
     const parseValue = (data, key) => {
       const value = data?.[key]
       if (!value) return 0
@@ -155,7 +150,6 @@ const fetchLegacySparcMetrics = async (config, month, year) => {
       return parseInt(value) || 0
     }
 
-    // Check if this data has the legacy cumulative fields
     const hasLegacyData = sparcMetricsData?.['all_sparc_categories_cumulative'] !== undefined
 
     if (!hasLegacyData) {
@@ -205,7 +199,7 @@ const fetchTotalDatasetDownloads = async (url) => {
 }
 
 const fetchMetrics = async (config, month, year) => {
-  // Fetch all metrics from single endpoint using $fetch (handles SSR/CORS properly)
+  // Fetch all metrics from NEW metrics enpoint - single call
   const response = await $fetch(`${config.public.METRICS_URL}/sparc?year=${year}&month=${month}`)
   if(!response){return}
   const metricsArray = JSON.parse(response);
@@ -214,7 +208,6 @@ const fetchMetrics = async (config, month, year) => {
   const ga4MetricsData = metricsArray.find(item => item.Report === 'ga4') || {}
   const pennsieveMetricsData = metricsArray.find(item => item.Report === 'pennsieve') || {}
 
-  // Convert anatomy organ name object to array for chart
   const anatomyOrganName = algoliaData['anatomy.organ.name'] || {}
   let highlightedOrgans = []
   Object.keys(anatomyOrganName).forEach(key => highlightedOrgans.push({
