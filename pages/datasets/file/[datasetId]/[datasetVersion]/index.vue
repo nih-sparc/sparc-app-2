@@ -23,8 +23,6 @@
             :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
             :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
-          <ome-viewer-component v-if="hasOmeViewer" v-show="activeTabId === 'omeViewer'"
-            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
         </content-tab-card>
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />
@@ -48,7 +46,6 @@ import BiolucidaViewer from '@/components/BiolucidaViewer/BiolucidaViewer'
 import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import PlotViewer from '@/components/PlotViewer/PlotViewer.vue'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
-import OmeViewerComponent from '@/components/OmeViewer/OmeViewer.client.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
@@ -68,7 +65,6 @@ export default {
     SegmentationViewer,
     PlotViewer,
     VideoViewer,
-    OmeViewerComponent,
     FileViewerMetadata,
     Gallery
   },
@@ -215,16 +211,7 @@ export default {
       router.push(`/datasets/timeseriesviewer?dataset_id=${route.params.datasetId}&dataset_version=${route.params.datasetVersion}&file_path=${filePath}`)
     }
 
-    // Check for OME-TIFF files by filename
-    const isOmeTiffFile = (fileName) => {
-      if (!fileName) return false
-      const lowerName = fileName.toLowerCase()
-      return lowerName.endsWith('.ome.tiff') || lowerName.endsWith('.ome.tif')
-    }
-    const hasOmeViewer = isOmeTiffFile(file.name)
-
-    let activeTabId = hasOmeViewer ? 'omeViewer' :
-      hasBiolucidaViewer ? 'imageViewer' :
+    let activeTabId = hasBiolucidaViewer ? 'imageViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
       hasSegmentationViewer ? 'segmentationViewer' : 
       hasSimulationViewer ? 'simulationViewer' :
@@ -274,7 +261,6 @@ export default {
       hasSegmentationViewer,
       hasSimulationViewer,
       hasVideoViewer,
-      hasOmeViewer,
       sourcePackageId,
       signedUrl,
       packageType,
@@ -313,10 +299,6 @@ export default {
         plotViewer: {
           name: 'Plot Viewer',
           link: 'plot-viewer'
-        },
-        omeViewer: {
-          name: 'OME-TIFF Viewer',
-          link: 'ome-tiff-viewer'
         }
       }
     }
@@ -325,7 +307,7 @@ export default {
   computed: {
     hasViewer: function() {
       return this.hasBiolucidaViewer || this.hasSegmentationViewer || this.hasSimulationViewer ||
-        this.hasPlotViewer || this.hasVideoViewer || this.hasOmeViewer
+        this.hasPlotViewer || this.hasVideoViewer
     },
     datasetId: function() {
       return this.$route.params.datasetId
@@ -438,19 +420,6 @@ export default {
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'segmentationViewer')
-        }
-      },
-      immediate: true
-    },
-    hasOmeViewer: {
-      handler: function(hasViewer) {
-        if (hasViewer) {
-          this.tabs.push({
-            label: 'OME-TIFF Viewer',
-            id: 'omeViewer'
-          })
-        } else {
-          this.tabs = this.tabs.filter(tab => tab.id !== 'omeViewer')
         }
       },
       immediate: true
