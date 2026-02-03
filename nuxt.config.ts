@@ -191,6 +191,7 @@ export default defineNuxtConfig({
       NL_LINK_PREFIX: 'https://sparc.biolucida.net:8081',
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',
       METRICS_URL: process.env.METRICS_URL || 'https://metrics.sparc.science',
+      METRICS_URL_LEGACY:'https://metrics.sparc.science',
       BITLY_ACCESS_TOKEN: process.env.BITLY_ACCESS_TOKEN,
       bitly_expand_endpoint: 'https://api-ssl.bitly.com/v4/expand',
       PENNSIEVE_URL: process.env.PENNSIEVE_URL || 'https://app.pennsieve.io',

@@ -96,16 +96,15 @@ export default {
           datasets: [
             {
               label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-              ],
-              borderColor: 'rgba(131, 0, 191, .5)',
+              backgroundColor: 'rgba(131, 0, 191, .7)',
+              borderColor: 'rgba(131, 0, 191, .7)',
               data: behaviors.pageViewsData?.lastQuarter
+            },
+            {
+              label: 'Last Month',
+              backgroundColor: 'rgba(131, 0, 191, .3)',
+              borderColor: 'rgba(131, 0, 191, .3)',
+              data: behaviors.pageViewsData?.lastMonth
             }
           ]
         }
@@ -114,12 +113,15 @@ export default {
           datasets: [
             {
               label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-              ],
-              borderColor: 'rgba(131, 0, 191, .5)',
+              backgroundColor: 'rgba(131, 0, 191, .7)',
+              borderColor: 'rgba(131, 0, 191, .7)',
               data: behaviors.usersData?.lastQuarter
+            },
+            {
+              label: 'Last Month',
+              backgroundColor: 'rgba(131, 0, 191, .3)',
+              borderColor: 'rgba(131, 0, 191, .3)',
+              data: behaviors.usersData?.lastMonth
             }
           ]
         }

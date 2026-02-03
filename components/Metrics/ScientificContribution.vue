@@ -227,7 +227,6 @@ export default {
   },
   computed: {
     scientificContribution() {
-      console.log(this.metricsData)
       return propOr({}, 'scientificContribution', this.metricsData)
     },
     hasDataChartData() {

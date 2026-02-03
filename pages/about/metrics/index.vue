@@ -80,6 +80,108 @@ const metricsTypes = [
   }
 ]
 
+// Legacy /ga4 endpoint to get page views and user types quarterly data
+// Uses METRICS_URL_LEGACY env variable
+const fetchLegacyGA4Metrics = async (config, month, year) => {
+  try {
+    const response = await $fetch(`${config.public.METRICS_URL_LEGACY}/ga4?year=${year}&month=${month}`)
+    const responseData = JSON.parse(response)
+
+    // The legacy endpoint returns array, first item contains ga4 metrics
+    const ga4MetricsData = Array.isArray(responseData) ? responseData[0] : responseData
+
+    // Helper to safely parse value - handles DynamoDB format {N: "value"} and direct values
+    const parseValue = (data, key) => {
+      const value = data?.[key]
+      if (!value) return 0
+      if (typeof value === 'object' && value.N) {
+        return parseInt(value.N) || 0
+      }
+      return parseInt(value) || 0
+    }
+
+    return {
+      pageViewsData: {
+        lastQuarter: [
+          parseValue(ga4MetricsData, 'all_home_page_views_last_quarter'),
+          parseValue(ga4MetricsData, 'all_find_data_page_views_last_quarter'),
+          parseValue(ga4MetricsData, 'all_tools_resources_page_views_last_quarter'),
+          parseValue(ga4MetricsData, 'all_maps_page_views_last_quarter'),
+          parseValue(ga4MetricsData, 'all_news_events_page_views_last_quarter')
+        ],
+        lastMonth: [
+          parseValue(ga4MetricsData, 'all_home_page_views_last_mo'),
+          parseValue(ga4MetricsData, 'all_find_data_page_views_last_mo'),
+          parseValue(ga4MetricsData, 'all_tools_resources_page_views_last_mo'),
+          parseValue(ga4MetricsData, 'all_maps_page_views_last_mo'),
+          parseValue(ga4MetricsData, 'all_news_events_page_views_last_mo')
+        ]
+      },
+      usersData: {
+        lastQuarter: [
+          parseValue(ga4MetricsData, 'returning_users_in_last_quarter'),
+          parseValue(ga4MetricsData, 'new_users_in_last_quarter')
+        ],
+        lastMonth: [
+          parseValue(ga4MetricsData, 'returning_users_in_last_month'),
+          parseValue(ga4MetricsData, 'new_users_in_last_month')
+        ]
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching legacy GA4 metrics:', err)
+    return null
+  }
+}
+
+// Legacy /sparc endpoint to get cumulative data for the first chart (dataChartData)
+// These variables are not available in the new combined /sparc endpoint format
+// Uses METRICS_URL_LEGACY env variable
+const fetchLegacySparcMetrics = async (config, month, year) => {
+  try {
+    const response = await $fetch(`${config.public.METRICS_URL_LEGACY}/sparc?year=${year}&month=${month}`)
+    const responseData = JSON.parse(response)
+
+    // The legacy endpoint returns array, first item contains sparc metrics
+    const sparcMetricsData = Array.isArray(responseData) ? responseData[0] : responseData
+
+    // Helper to safely parse value - handles DynamoDB format {N: "value"} and direct values
+    const parseValue = (data, key) => {
+      const value = data?.[key]
+      if (!value) return 0
+      if (typeof value === 'object' && value.N) {
+        return parseInt(value.N) || 0
+      }
+      return parseInt(value) || 0
+    }
+
+    // Check if this data has the legacy cumulative fields
+    const hasLegacyData = sparcMetricsData?.['all_sparc_categories_cumulative'] !== undefined
+
+    if (!hasLegacyData) {
+      console.warn('Legacy SPARC metrics fields not found in response')
+      return null
+    }
+
+    return {
+      dataChartLabels: ['All', 'Datasets', 'Anatomical Models', 'Computational Models', 'Embargoed (across all)'],
+      dataChartData: {
+        total: [
+          parseValue(sparcMetricsData, 'all_sparc_categories_cumulative'),
+          parseValue(sparcMetricsData, 'sparc_datasets_cumulative'),
+          parseValue(sparcMetricsData, 'sparc_maps_cumulative'),
+          parseValue(sparcMetricsData, 'sparc_computational_models_cumulative'),
+          parseValue(sparcMetricsData, 'embargoed_overall')
+        ]
+      },
+      anatomicalStructuresTotal: parseValue(sparcMetricsData, 'current_number_of_anatomical_structures')
+    }
+  } catch (err) {
+    console.error('Error fetching legacy SPARC metrics:', err)
+    return null
+  }
+}
+
 const fetchTotalDatasetDownloads = async (url) => {
   const currentDate = new Date()
   const currentDay = currentDate.getDate().toString().padStart(2, '0')
@@ -188,11 +290,62 @@ export default {
     let metricsData = undefined
     let dateLastUpdated
     try {
-      metricsData = await fetchMetrics(config, lastMonthsDate.month, lastMonthsDate.year)
+      // Fetch new metrics, legacy SPARC metrics (for cumulative chart data), and legacy GA4 metrics (for page views/user types)
+      const [newMetrics, legacySparcMetrics, legacyGA4Metrics] = await Promise.all([
+        fetchMetrics(config, lastMonthsDate.month, lastMonthsDate.year),
+        fetchLegacySparcMetrics(config, lastMonthsDate.month, lastMonthsDate.year),
+        fetchLegacyGA4Metrics(config, lastMonthsDate.month, lastMonthsDate.year)
+      ])
+
+      metricsData = newMetrics
+
+      // Merge legacy GA4 data into userBehaviors for page views and user types charts (quarterly data)
+      if (legacyGA4Metrics && metricsData?.userBehaviors) {
+        metricsData.userBehaviors.pageViewsData = legacyGA4Metrics.pageViewsData
+        metricsData.userBehaviors.usersData = legacyGA4Metrics.usersData
+      }
+
+      // Merge legacy SPARC data into scientificContribution for the first chart
+      // New metrics data takes priority, legacy fills in missing cumulative fields
+      if (legacySparcMetrics && metricsData?.scientificContribution) {
+        metricsData.scientificContribution.dataChartLabels = legacySparcMetrics.dataChartLabels
+        metricsData.scientificContribution.dataChartData = legacySparcMetrics.dataChartData
+        // Use legacy anatomicalStructures total if new one is empty
+        if (!metricsData.scientificContribution.anatomicalStructures?.total && legacySparcMetrics.anatomicalStructuresTotal) {
+          metricsData.scientificContribution.anatomicalStructures = {
+            total: legacySparcMetrics.anatomicalStructuresTotal
+          }
+        }
+      }
+
       dateLastUpdated = new Date(`${lastMonthsDate.month}/01/${lastMonthsDate.year}`)
     } catch (e) {
       const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
-      metricsData = await fetchMetrics(config, monthBeforeLastDate.month, monthBeforeLastDate.year)
+
+      const [newMetrics, legacySparcMetrics, legacyGA4Metrics] = await Promise.all([
+        fetchMetrics(config, monthBeforeLastDate.month, monthBeforeLastDate.year),
+        fetchLegacySparcMetrics(config, monthBeforeLastDate.month, monthBeforeLastDate.year),
+        fetchLegacyGA4Metrics(config, monthBeforeLastDate.month, monthBeforeLastDate.year)
+      ])
+
+      metricsData = newMetrics
+
+      // Merge legacy GA4 data into userBehaviors for page views and user types charts (quarterly data)
+      if (legacyGA4Metrics && metricsData?.userBehaviors) {
+        metricsData.userBehaviors.pageViewsData = legacyGA4Metrics.pageViewsData
+        metricsData.userBehaviors.usersData = legacyGA4Metrics.usersData
+      }
+
+      if (legacySparcMetrics && metricsData?.scientificContribution) {
+        metricsData.scientificContribution.dataChartLabels = legacySparcMetrics.dataChartLabels
+        metricsData.scientificContribution.dataChartData = legacySparcMetrics.dataChartData
+        if (!metricsData.scientificContribution.anatomicalStructures?.total && legacySparcMetrics.anatomicalStructuresTotal) {
+          metricsData.scientificContribution.anatomicalStructures = {
+            total: legacySparcMetrics.anatomicalStructuresTotal
+          }
+        }
+      }
+
       dateLastUpdated = new Date(`${monthBeforeLastDate.month}/01/${monthBeforeLastDate.year}`)
     }
     return {
