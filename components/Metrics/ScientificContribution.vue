@@ -1,13 +1,15 @@
 <template>
   <div class="scientific-contribution-container p-16 mt-16">
-    <div class="heading2 mb-0">
-      Data
+    <div v-if="hasDataChartData">
+      <div class="heading2 mb-0">
+        Data
+      </div>
+      <BarChart
+        :chartData="dataChartData"
+        :chartOptions="dataChartOptions"
+      />
+      <hr class="my-16"/>
     </div>
-    <BarChart
-      :chartData="dataChartData"
-      :chartOptions="dataChartOptions"
-    />
-    <hr class="my-16"/>
     <div class="row">
       <div class="col">
         <div class="col-header heading2 mb-0">
@@ -27,7 +29,7 @@
     <span class="col-data pl-32 mr-4">
       {{ totalAnatomicalStructures }}
     </span><span>Different Anatomical Structures</span>
-    <div class="heading3 chart-title">Top 5 Anatomical Structures</div>
+    <div class="heading3 chart-title">Highlight Organs</div>
     <BarChart
       :chartData="anatomicalStructuresChartData"
       :chartOptions="anatomicalStructuresChartOptions"
@@ -90,7 +92,7 @@ export default {
               data: contribution.dataChartData?.total
             },
           ]
-        },
+        }
         this.anatomicalStructuresChartData = {
           labels: contribution.anatomicalStructuresChartLabels,
           datasets: [ 
@@ -227,6 +229,10 @@ export default {
     scientificContribution() {
       return propOr({}, 'scientificContribution', this.metricsData)
     },
+    hasDataChartData() {
+      const data = pathOr([], ['dataChartData', 'total'], this.scientificContribution)
+      return data && data.length > 0
+    },
     totalAnatomicalStructures() {
       return pathOr('', ['anatomicalStructures', 'total'], this.scientificContribution)
     },
@@ -237,7 +243,8 @@ export default {
       return pathOr('', ['subjects', 'total'], this.scientificContribution)
     },
     totalFileStorage() {
-      return pathOr('', ['fileStorage', 'totalTB'], this.scientificContribution)
+      const tb = pathOr(0, ['fileStorage', 'totalTB'], this.scientificContribution)
+      return tb ? tb.toFixed(2) : ''
     },
     totalProtocols() {
       return pathOr(undefined, ['protocols', 'total'], this.scientificContribution)

@@ -21,12 +21,12 @@
         <div class="card">
           <div class="heading2">Dataset Downloads</div>
           <div class="heading1 data">{{ totalDownloads }}</div>
-          <div class="sub-label">({{ totalDownloadsLastMonth }} in {{ monthLastUpdated }})</div>
+          <div class="sub-label">Total</div>
         </div>
         <div class="card">
           <div class="heading2">Dataset Contributors</div>
           <div class="heading1 data">{{ totalContributers }}</div>
-          <div class="sub-label">({{ newContributers }} new in {{  monthLastUpdated }})</div>
+          <div class="sub-label">Total</div>
         </div>
         <div v-if="totalCitations" class="card">
           <div class="heading2">Dataset Citations</div>
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="body1 mt-32">
-      Last metrics update: {{ monthLastUpdated }} {{ yearLastUpdated }}
+      Last Updated: end of {{ monthLastUpdated }} {{ yearLastUpdated }}
     </div>
   </div>
 </template>
@@ -93,55 +93,35 @@ export default {
         }
         this.pageChartData = {
           labels: behaviors.pageViewsLabels,
-          datasets: [ 
-            { 
-              label: 'Last Month',
-              backgroundColor: [
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-              ],
-              borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.pageViewsData?.lastMonth
-            },
-            { 
+          datasets: [
+            {
               label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-              ],
-              borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.pageViewsData?.last3Months
+              backgroundColor: 'rgba(131, 0, 191, .7)',
+              borderColor: 'rgba(131, 0, 191, .7)',
+              data: behaviors.pageViewsData?.lastQuarter
+            },
+            {
+              label: 'Last Month',
+              backgroundColor: 'rgba(131, 0, 191, .3)',
+              borderColor: 'rgba(131, 0, 191, .3)',
+              data: behaviors.pageViewsData?.lastMonth
             }
           ]
         }
         this.usersChartData = {
           labels: [ 'Returning', 'New' ],
-          datasets: [ 
-            { 
-              label: 'Last Month',
-              backgroundColor: [
-                'rgba(131, 0, 191, .5)',
-                'rgba(131, 0, 191, .5)',
-              ],
-              borderColor: 'rgba(131, 0, 191, .5)',
-              data: behaviors.usersData?.lastMonth
-            },
-            { 
+          datasets: [
+            {
               label: 'Last Quarter',
-              backgroundColor: [
-                'rgba(188, 0, 252, .25)',
-                'rgba(188, 0, 252, .25)',
-              ],
-              borderColor: 'rgba(188, 0, 252, .25)',
-              data: behaviors.usersData?.last3Months
+              backgroundColor: 'rgba(131, 0, 191, .7)',
+              borderColor: 'rgba(131, 0, 191, .7)',
+              data: behaviors.usersData?.lastQuarter
+            },
+            {
+              label: 'Last Month',
+              backgroundColor: 'rgba(131, 0, 191, .3)',
+              borderColor: 'rgba(131, 0, 191, .3)',
+              data: behaviors.usersData?.lastMonth
             }
           ]
         }

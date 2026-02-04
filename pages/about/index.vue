@@ -109,24 +109,14 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
 const { data: metricsData, error: metricsError } = useAsyncData('metricsData', async () => {
   try {
     const { $axios } = useNuxtApp()
-    const url = `${config.public.METRICS_URL}/pennsieve?year=${lastMonthsDate.year}&month=${lastMonthsDate.month}`
+    const url = `${config.public.METRICS_URL}/sparc?year=${currentYear}&month=${currentMonth}`
     const response = await $axios.get(url)
-    const metrics = response.data[0]
+    const algoliaMetricsData = response?.data?.find(item => item.Report === 'algolia') || {}
     return {
-      totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
-      newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-      downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
+      totalContributors: parseInt(algoliaMetricsData['contributors.name']['countributors_count']) || 0
     }
   } catch (err) {
-    const monthBeforeLastDate = getPreviousDate(lastMonthsDate.month, lastMonthsDate.year)
-    const url = `${config.public.METRICS_URL}/pennsieve?year=${monthBeforeLastDate.year}&month=${monthBeforeLastDate.month}`
-    const response = await $axios.get(url)
-    const metrics = response.data[0]
-    return {
-      totalContributors: parseInt(metrics['number_of_sparc_users_overall']['N']),
-      newContributors: parseInt(metrics['number_of_new_sparc_users_last_quarter']['N']),
-      downloadsLastMonth: parseInt(metrics['number_of_sparc_downloads_last_mo']['N'])
-    }
+    console.error(err)
   }
 })
 
@@ -183,7 +173,7 @@ const { data: highlights, error: highlightsError } = useAsyncData('highlightsDat
     })
     return response.items
   } catch (err) {
-    console.log('Could not retrieve highlights.', err)
+    console.error('Could not retrieve highlights.', err)
     return []
   }
 })
@@ -193,12 +183,12 @@ const metricsItems = computed(() => {
     {
       title: 'Dataset Downloads',
       data: totalDownloadsData.value?.toString(),
-      subData: `(${metricsData.value?.downloadsLastMonth} in ${months[lastMonthsDate.month - 1]})`
+      subData:null
     },
     {
       title: 'Dataset Contributors',
       data: metricsData.value?.totalContributors?.toString(),
-      subData: `(${metricsData.value?.newContributors} new in ${months[lastMonthsDate.month - 1]})`
+      subData:null
     },
     {
       title: 'Protocol Views',
