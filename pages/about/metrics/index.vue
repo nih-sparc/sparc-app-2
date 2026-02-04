@@ -208,6 +208,7 @@ const fetchMetrics = async (config, month, year) => {
   const ga4MetricsData = metricsArray.find(item => item.Report === 'ga4') || {}
   const pennsieveMetricsData = metricsArray.find(item => item.Report === 'pennsieve') || {}
 
+
   const anatomyOrganName = algoliaData['anatomy.organ.name'] || {}
   let highlightedOrgans = []
   Object.keys(anatomyOrganName).forEach(key => highlightedOrgans.push({
@@ -243,7 +244,7 @@ const fetchMetrics = async (config, month, year) => {
         total: totalDownloads
       },
       datasetContributorsData: {
-        total: parseInt(pennsieveMetricsData['total_users']) || 0
+        total: parseInt(algoliaData['contributors.name']['countributors_count']) || 0
       },
     },
     scientificContribution: {

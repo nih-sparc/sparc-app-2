@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="body1 mt-32">
-      Last metrics update: {{ monthLastUpdated }} {{ yearLastUpdated }}
+      Last Updated: end of {{ monthLastUpdated }} {{ yearLastUpdated }}
     </div>
   </div>
 </template>
