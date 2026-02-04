@@ -29,7 +29,6 @@ import { ref, onMounted, defineComponent } from 'vue'
 import { propOr } from 'ramda'
 import GenericViewerMetadata from '@/components/ViewersMetadata/GenericViewerMetadata.vue'
 import { OmeViewer as MicroCtOmeViewer } from '@pennsieve-viz/micro-ct'
-
 import '@pennsieve-viz/micro-ct/style.css'
 
 export default defineComponent({
