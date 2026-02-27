@@ -107,11 +107,6 @@ describe("SPARC Dashboard", { testIsolation: false }, function () {
   //     expect($widget, "Image Selector widget should exist").to.exist;
   //   });
 
-  //   // Check for Biolucida Viewer widget
-  //   cy.contains("Biolucida Viewer", { timeout: 60000 }).should(($widget) => {
-  //     expect($widget, "Biolucida Viewer widget should exist").to.exist;
-  //   });
-
   //   // Check for Markdown Widget content
   //   cy.contains("SPARC Dashboard", { timeout: 60000 }).should(($content) => {
   //     expect($content, "Markdown Widget content should exist").to.exist;

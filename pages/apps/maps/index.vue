@@ -474,7 +474,7 @@ export default {
       algoliaId: config.public.ALGOLIA_APP_ID,
       pennsieveApi: config.public.discover_api_host.replace('/discover', ''),
       flatmapAPI: config.public.flatmap_api,
-      nlLinkPrefix: config.public.NL_LINK_PREFIX,
+      nlLinkPrefix: '',
       rootUrl: config.public.ROOT_URL,
     }
     let lastChar = options.sparcApi.substr(-1)

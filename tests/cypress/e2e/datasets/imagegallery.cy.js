@@ -36,8 +36,6 @@ datasetIds.forEach((datasetId) => {
             ('mbf-segmentation' in response && response['mbf-segmentation'].length) ||
             ('abi-plot' in response && response['abi-plot'].length) ||
             ('common-images' in response && response['common-images'].length) ||
-            ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-            ('biolucida-3d' in response && response['biolucida-3d'].length)
           ) {
             if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
               existGalleryItems.push('Scaffold')
@@ -58,9 +56,7 @@ datasetIds.forEach((datasetId) => {
               existGalleryItems.push('Plot')
             }
             if (
-              ('common-images' in response && response['common-images'].length) ||
-              ('biolucida-2d' in response && response['biolucida-2d'].length) ||
-              ('biolucida-3d' in response && response['biolucida-3d'].length)
+              ('common-images' in response && response['common-images'].length)
             ) {
               existGalleryItems.push('Image')
             }
@@ -142,7 +138,7 @@ datasetIds.forEach((datasetId) => {
                           .and('have.prop', 'ended', false)
                       }
                       if (item === 'Segmentation') {
-                        cy.get('.biolucida-viewer > p > a').then(($link) => {
+                        cy.get('.segmentation-viewer > p > a').then(($link) => {
                           expect($link, 'Button should open a new tab').to.have.attr('target').to.contain('blank')
                         })
                       }
@@ -154,22 +150,6 @@ datasetIds.forEach((datasetId) => {
                       if (item === 'Plot') {
                         cy.get('.plot-container > .user-select-none.svg-container').then(($plot) => {
                           expect($plot, 'Plot should be displayed').to.exist
-                        })
-                      }
-                      if (item === 'Image') {
-                        let windowOpenStub
-                        cy.get('.biolucida-viewer > .el-row > div > .el-button').each(($button, index) => {
-                          cy.window().then((window) => {
-                            windowOpenStub = cy.stub(window, 'open').as(`Open${index}`)
-                          })
-                          cy.wrap($button).click()
-                          cy.get(`@Open${index}`).should('be.calledWith', Cypress.sinon.match.any).then((stub) => {
-                            const link = stub.args[0][0]
-                            expect(link.length, 'Button should contain external resource link').to.be.greaterThan(0)
-                          })
-                          cy.then(() => {
-                            windowOpenStub.restore()
-                          })
                         })
                       }
                       cy.wait(5000) // Wait for above actions to complete

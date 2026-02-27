@@ -1,5 +1,5 @@
 <template>
-  <div class="biolucida-viewer">
+  <div class="segmentation-viewer">
     <template v-if="data.status !== 'error'">
       <p>
         <a :href="data.share_link" target="_blank">

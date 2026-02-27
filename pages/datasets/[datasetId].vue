@@ -76,7 +76,6 @@
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
-                <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
                     <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
@@ -116,7 +115,6 @@ import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
-import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
@@ -225,10 +223,6 @@ const tabs = [
     id: 'cite'
   },
   {
-    label: 'Gallery',
-    id: 'images'
-  },
-  {
     label: 'Metrics',
     id: 'metrics'
   }
@@ -249,7 +243,6 @@ export default {
     CitationDetails,
     DatasetFilesInfo,
     SourceCodeInfo,
-    ImagesGallery,
     DatasetReferences,
     VersionHistory,
     error400,
