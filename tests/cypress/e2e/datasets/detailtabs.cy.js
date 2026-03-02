@@ -450,19 +450,6 @@ datasetIds.forEach((datasetId) => {
       })
     })
 
-    describe('Gallery Tab', { testIsolation: false }, function () {
-
-      beforeEach(function () {
-        cy.clickOnDetailTab('Gallery').then((tab) => {
-          if (!tab) {
-            this.skip()
-          }
-        })
-      })
-
-      it('Gallery', function () { })
-    })
-
     describe('References Tab', { testIsolation: false }, function () {
 
       beforeEach(function () {

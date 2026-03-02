@@ -13,8 +13,6 @@
           </a>
         </span>
         <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
-          <segmentation-viewer v-if="hasSegmentationViewer" v-show="activeTabId === 'segmentationViewer'"
-            :data="segmentationData" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
             :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
@@ -42,7 +40,6 @@
 <script>
 import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
-import SegmentationViewer from '@/components/SegmentationViewer/SegmentationViewer'
 import PlotViewer from '@/components/PlotViewer/PlotViewer.vue'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
 import OmeViewerComponent from '@/components/OmeViewer/OmeViewer.client.vue'
@@ -60,7 +57,6 @@ export default {
   name: 'DatasetFileDetailPage',
 
   components: {
-    SegmentationViewer,
     PlotViewer,
     VideoViewer,
     OmeViewerComponent,
@@ -115,30 +111,6 @@ export default {
       console.log(`Error retrieving sci crunch data (possibly because there is none for this file): ${e}`)
     }
 
-    let segmentationData = {}
-    // We should just be able to just pull from scicrunch response as shown below, but due to discrepancies we pull from the sparc api endpoint
-    // const matchedSegmentationData = scicrunchData['mbf-segmentation']?.filter(function(el) {
-    //   return el.identifier == expectedScicrunchIdentifier
-    // })
-    // segmentationData = segmentationData?.length > 0 ? matchedSegmentationData[0] : {}*/
-    try {
-      if (packageType == 'Unsupported') {
-        await discover.getSegmentationInfo(route.params.datasetId, filePath, s3Bucket).then(({ data }) => {
-          segmentationData = data
-          // file is from Pennsieve, filePath is from Scicrunch
-          if (file.path != filePath) {
-            // Normally filePath will be correct if file.path and filePath not the same
-            file.path = filePath
-            // Need to update the file.name as well if file.path is changed
-            file.name = filePath.substring(filePath.lastIndexOf('/') + 1)
-          }
-        })
-      }
-    } catch(e) {
-      console.log(`Error retrieving segmentation data (possibly because there is none for this file): ${e}`)
-    }
-    const hasSegmentationViewer = !isEmpty(segmentationData)
-
     const hasSimulationViewer = scicrunchData['abi-simulation-omex-file'] ? true : false
 
     let plotInfo = {}
@@ -190,7 +162,6 @@ export default {
 
     let activeTabId = hasOmeViewer ? 'omeViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
-      hasSegmentationViewer ? 'segmentationViewer' :
       hasSimulationViewer ? 'simulationViewer' :
       hasPlotViewer ? 'plotViewer' :
       hasVideoViewer ? 'videoViewer' : ''
@@ -227,13 +198,8 @@ export default {
     return {
       videoData,
       plotInfo,
-      segmentationData: {
-        share_link: '',
-        status: ''
-      },
       file,
       hasPlotViewer,
-      hasSegmentationViewer,
       hasSimulationViewer,
       hasVideoViewer,
       hasOmeViewer,
@@ -255,10 +221,6 @@ export default {
       zipData: '',
       zipitUrl: config.public.zipit_api_host,
       helpers: {
-        segmentationViewer: {
-          name: 'Segmentation Viewer',
-          link: 'segmentation-viewer-overview'
-        },
         simulationViewer: {
           name: 'Simulation Viewer',
           link: 'simulation-viewer-overview'
@@ -277,7 +239,7 @@ export default {
 
   computed: {
     hasViewer: function() {
-      return this.hasSegmentationViewer || this.hasSimulationViewer ||
+      return this.hasSimulationViewer ||
         this.hasPlotViewer || this.hasVideoViewer || this.hasOmeViewer
     },
     datasetId: function() {
@@ -365,19 +327,6 @@ export default {
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'videoViewer')
-        }
-      },
-      immediate: true
-    },
-    hasSegmentationViewer: {
-      handler: function(hasViewer) {
-        if (hasViewer) {
-          this.tabs.push({
-            label: 'Segmentation Viewer',
-            id: 'segmentationViewer'
-          })
-        } else {
-          this.tabs = this.tabs.filter(tab => tab.id !== 'segmentationViewer')
         }
       },
       immediate: true

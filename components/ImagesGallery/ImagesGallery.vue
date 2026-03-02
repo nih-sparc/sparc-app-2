@@ -464,24 +464,6 @@ export default {
           });
         }
 
-        if ('mbf-segmentation' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const id = segmentation.identifier
-              let file_path = segmentation.dataset.path
-              const link = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
-
-              return {
-                id,
-                title: baseName(file_path),
-                type: 'Segmentation',
-                thumbnail: this.defaultImg,
-                link
-              }
-            })
-          )
-        }
-
         if ('abi-plot' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['abi-plot'], plot => {

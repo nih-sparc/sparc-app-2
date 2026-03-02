@@ -206,13 +206,6 @@
                   </template>
                 </sparc-tooltip>
               </div>
-              <div v-if="isSegmentationViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
-                <sparc-tooltip placement="bottom-center" content="Open Segmentation Viewer">
-                  <template #item>
-                    <svgo-icon-view class="action-icon" />
-                  </template>
-                </sparc-tooltip>
-              </div>
               <div v-if="isOmeTiffFile(scope.row.name)" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open OME-TIFF Viewer">
                   <template #item>
@@ -754,9 +747,6 @@ export default {
     },
     isVideoViewFile: function(path) {
       return this.isSpecifiedTypeFile(path, 'video')
-    },
-    isSegmentationViewFile: function(path) {
-      return this.isSpecifiedTypeFile(path, 'mbf-segmentation')
     },
     isOmeTiffFile: function(fileName) {
       if (!fileName) return false
