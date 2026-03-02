@@ -16,8 +16,8 @@ export default {
         const {  $pennsieveApiClient } = useNuxtApp()
         const fileLocationEndIndex = filePath.lastIndexOf('/')
         const filesLocation = filePath.substring(0, fileLocationEndIndex)
-        const filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse?path=${filesLocation}`
-        const filesResponse = await $pennsieveApiClient.value.get(filesUrl)
+        const filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse`
+        const filesResponse = await $pennsieveApiClient.value.get(filesUrl, { params: { path: filesLocation } })
         const files = filesResponse.data.files
         if (files.length === 0) {
           console.warn(`

@@ -386,15 +386,20 @@ export default {
      * Compute endpoint URL to get dataset's files
      * @returns {String}
      */
-    getFilesurl: function() {
+    getFilesBaseUrl: function() {
       const id = pathOr('', ['params', 'datasetId'], this.$route)
       const version = this.datasetVersion
-      const url = `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
-      let filesUrl = `${url}?path=${this.path}&limit=${this.limit}`
-      if (this.userToken) {
-        filesUrl += `&api_key=${this.userToken}`
+      return `${this.$config.public.discover_api_host}/datasets/${id}/versions/${version}/files/browse`
+    },
+    getFilesParams: function() {
+      const params = {
+        path: this.path,
+        limit: this.limit
       }
-      return filesUrl
+      if (this.userToken) {
+        params.api_key = this.userToken
+      }
+      return params
     },
 
     /**
@@ -529,7 +534,7 @@ export default {
       this.previousPath = this.path
 
       this.$axios
-        .get(this.getFilesurl)
+        .get(this.getFilesBaseUrl, { params: this.getFilesParams })
         .then(({ data }) => {
           this.data = data.files
         })
