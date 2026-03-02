@@ -13,10 +13,6 @@ export default {
       return 'Sorry, the resource you are looking for is \
       currently unavailable, please try again later.'
     },
-    biolucida: function() {
-      return 'Sorry, the image you are looking for is currently \
-        unavailable, please try again later.'
-    },
     crosscite: function() {
       return 'Sorry, we cannot retrieve the information for some \
       citations at this moment, please try again later.'

@@ -185,13 +185,6 @@
                   </template>
                 </sparc-tooltip>
               </div>
-              <div v-if="isBiolucidaViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
-                <sparc-tooltip placement="bottom-center" content="Open Biolucida Viewer">
-                  <template #item>
-                    <svgo-icon-view class="action-icon" />
-                  </template>
-                </sparc-tooltip>
-              </div>
               <div v-if="isPlotViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open Plot Viewer">
                   <template #item>
@@ -208,13 +201,6 @@
               </div>
               <div v-if="isVideoViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open Video Viewer">
-                  <template #item>
-                    <svgo-icon-view class="action-icon" />
-                  </template>
-                </sparc-tooltip>
-              </div>
-              <div v-if="isSegmentationViewFile(scope.row.path)" class="circle" @click="openViewerFile(scope)">
-                <sparc-tooltip placement="bottom-center" content="Open Segmentation Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
@@ -753,28 +739,6 @@ export default {
     isScaffoldMetaFile: function(path) {
       return this.isSpecifiedTypeFile(path, 'abi-scaffold-metadata-file')
     },
-    isBiolucidaViewFile: function(path) {
-      if (
-        path &&
-        this.datasetScicrunch &&
-        (this.datasetScicrunch['biolucida-2d'] || this.datasetScicrunch['biolucida-3d'])
-      ) {
-        const biolucida2dObjects = this.datasetScicrunch['biolucida-2d']
-        const biolucida3dObjects = this.datasetScicrunch['biolucida-3d']
-        const biolucidaObjects =
-          biolucida2dObjects == undefined
-            ? biolucida3dObjects
-            : biolucida2dObjects.concat(biolucida3dObjects).filter(item => item !== undefined)
-        path = path.replace('files/', '')
-        for (let i = 0; i < biolucidaObjects.length; i++) {
-          const biolucidaId = biolucidaObjects[i]?.biolucida?.identifier
-          if (biolucidaObjects[i].dataset.path === path && biolucidaId !== undefined) {
-            return true
-          }
-        }
-      }
-      return false
-    },
     isPlotViewFile: function(path) {
       return this.isSpecifiedTypeFile(path, 'abi-plot')
     },
@@ -783,9 +747,6 @@ export default {
     },
     isVideoViewFile: function(path) {
       return this.isSpecifiedTypeFile(path, 'video')
-    },
-    isSegmentationViewFile: function(path) {
-      return this.isSpecifiedTypeFile(path, 'mbf-segmentation')
     },
     isOmeTiffFile: function(fileName) {
       if (!fileName) return false

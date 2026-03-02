@@ -26,7 +26,6 @@
 
 <script>
 import { ref } from 'vue'
-import biolucida from '@/services/biolucida'
 import discover from '@/services/discover'
 import scicrunch from '@/services/scicrunch'
 import flatmaps from '@/services/flatmaps'
@@ -173,7 +172,6 @@ export default {
       ro: null,
       maxWidth: 3,
       scicrunchItems: [],
-      biolucidaItems: [],
       timeseriesItems: [],
       timeseriesData: [],
       datasetScicrunch: {},
@@ -194,7 +192,7 @@ export default {
     },
     galleryItems() {
       if (this.isGalleryFilterSet) {
-        const items = this.biolucidaItems.concat(this.scicrunchItems).filter(item => {
+        const items = this.scicrunchItems.filter(item => {
           return this.selectedGalleryFilter.some(filter => {
             const index = filter[0]
             const label = this.galleryFilterOptions.find(option => option.value == index)?.label
@@ -203,7 +201,7 @@ export default {
         })
         return items
       } else {
-        return this.biolucidaItems.concat(this.scicrunchItems).concat(this.timeseriesItems)
+        return this.scicrunchItems.concat(this.timeseriesItems)
       }
     },
     hasDescription() {
@@ -282,7 +280,6 @@ export default {
       immediate: true,
       handler: function (scicrunchData) {
         let items = []
-        let bItems = []
         const baseRoute = this.$router.options.base || '/'
         let datasetId = -1
         let datasetVersion = -1
@@ -467,32 +464,6 @@ export default {
           });
         }
 
-        if ('mbf-segmentation' in scicrunchData) {
-          items.push(
-            ...Array.from(scicrunchData['mbf-segmentation'], segmentation => {
-              const id = segmentation.identifier
-              let file_path = segmentation.dataset.path
-              const link = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${file_path}`
-
-              this.getSegmentationThumbnail(items, {
-                id,
-                fetchAttempts: 0,
-                datasetId: datasetId,
-                datasetVersion: datasetVersion,
-                segmentationFilePath: file_path
-              })
-
-              return {
-                id,
-                title: baseName(file_path),
-                type: 'Segmentation',
-                thumbnail: null,
-                link
-              }
-            })
-          )
-        }
-
         if ('abi-plot' in scicrunchData) {
           items.push(
             ...Array.from(scicrunchData['abi-plot'], plot => {
@@ -543,52 +514,7 @@ export default {
         }
         this.scicrunchItems = items
 
-        if ('biolucida-2d' in scicrunchData || 'biolucida-3d' in scicrunchData) {
-          const biolucida2DItems = pathOr([], ['biolucida-2d'], scicrunchData)
-          // Images need to exist in both Scicrunch and Biolucida
-          biolucida2DItems.concat(pathOr([], ['biolucida-3d'], scicrunchData)).forEach(bObject => {
-            const biolucidaId = pathOr('', ['biolucida', 'identifier'], bObject)
-            if (biolucidaId) {
-              const sourcepkg_id = pathOr('', ['identifier'], bObject)
-              if (sourcepkg_id) {
-                let filePath = ''
-                filePath = 'files/' + pathOr('', ['dataset', 'path'], bObject)
-                let linkUrl =
-                  filePath != ''
-                    ? baseRoute + `datasets/file/${datasetId}/${datasetVersion}?path=${filePath}`
-                    : baseRoute +
-                      'datasets/biolucidaviewer/' +
-                      biolucidaId +
-                      '&dataset_version=' +
-                      datasetVersion +
-                      '&dataset_id=' +
-                      datasetId +
-                      '&item_id=' +
-                      sourcepkg_id
-                bItems.push({
-                  id: biolucidaId,
-                  title: null,
-                  type: 'Image',
-                  thumbnail: null,
-                  link: linkUrl
-                })
-                this.getThumbnailFromBiolucida(bItems, {
-                  id: biolucidaId,
-                  link: linkUrl,
-                  fetchAttempts: 0
-                })
-                this.getImageInfoFromBiolucida(bItems, {
-                  id: biolucidaId,
-                  link: linkUrl,
-                  fetchAttempts: 0
-                })
-              }
-            }
-          })
-        }
-        this.biolucidaItems = bItems
-
-        const galleryItems = this.scicrunchItems.concat(this.biolucidaItems)
+        const galleryItems = this.scicrunchItems
         const filterLabels = [...new Set(galleryItems.map(item => item.type))]
         const labelCounts = galleryItems.reduce((counts, item) => {
           counts[item.type] = (counts[item.type] || 0) + 1
@@ -718,36 +644,6 @@ export default {
 
       return what
     },
-    getSegmentationThumbnail(items, segmentation_info) {
-      biolucida
-        .getNeurolucidaThumbnail(
-          segmentation_info.datasetId,
-          segmentation_info.datasetVersion,
-          segmentation_info.segmentationFilePath
-        )
-        .then(
-          response => {
-            let item = items.find(x => x.id === segmentation_info.id)
-            this.scaleThumbnailImage(item, {
-              mimetype: 'image/png',
-              data: response
-            })
-          },
-          reason => {
-            if (
-              reason.message.includes('timeout') &&
-              reason.message.includes('exceeded') &&
-              segmentation_info.fetchAttempts < 3
-            ) {
-              segmentation_info.fetchAttempts += 1
-              this.getSegmentationThumbnail(items, segmentation_info)
-            } else {
-              let item = ref(items.find(x => x.id === segmentation_info.id))
-              item.value['thumbnail'] = this.defaultImg
-            }
-          }
-        )
-    },
     scaleThumbnailImage(item, image_info, local_file = false) {
       if (typeof window !== 'undefined') {
         let img = document.createElement('img')
@@ -785,50 +681,6 @@ export default {
           img.src = `data:${image_info.mimetype};base64,${image_info.data}`
         }
       }
-    },
-    getThumbnailFromBiolucida(items, info) {
-      biolucida.getThumbnail(info.id).then(
-        response => {
-          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
-          if (response.data) {
-            item.value['thumbnail'] = 'data:image/png;base64,' + response.data
-          }
-        },
-        reason => {
-          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && info.fetchAttempts < 3) {
-            info.fetchAttempts += 1
-            this.getThumbnailFromBiolucida(items, info)
-          } else {
-            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
-            item.value['thumbnail'] = this.defaultImg
-          }
-          // return Promise.reject('Maximum iterations reached.')
-        }
-      )
-    },
-    getImageInfoFromBiolucida(items, info) {
-      biolucida.getImageInfo(info.id).then(
-        response => {
-          let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
-          const name = response.name
-          if (name) {
-            item.value['title'] = name.substring(0, name.lastIndexOf('.'))
-            if (name.lastIndexOf('.') === -1) {
-              item.value['title'] = name
-            }
-          }
-        },
-        reason => {
-          if (reason.message.includes('timeout') && reason.message.includes('exceeded') && info.fetchAttempts < 3) {
-            info.fetchAttempts += 1
-            this.getImageInfoFromBiolucida(items, info)
-          } else {
-            let item = ref(items.find(x => (x.id === info.id && x.link === info.link)))
-            item.value['thumbnail'] = this.defaultImg
-          }
-          // return Promise.reject('Maximum iterations reached.')
-        }
-      )
     },
     galleryFilterChanged(newVal) {
       this.selectedGalleryFilter = newVal
