@@ -15,11 +15,13 @@
         </template>
       </el-tooltip>
     </div>
-    <MultiDashboard
-      class="dashboard-app"
-      :dashboardOptions="dashboardOptions"
-      :default="geneCoexpressionDash"
-    ></MultiDashboard>
+    <ClientOnly>
+      <MultiDashboard
+        class="dashboard-app"
+        :dashboardOptions="dashboardOptions"
+        :default="geneCoexpressionDash"
+      ></MultiDashboard>
+    </ClientOnly>
   </div>
 </template>
 <script setup>
@@ -76,6 +78,7 @@ const geneCoexpressionDash = {
       componentKey: "GeneExpression",
       componentName: "Gene Expression",
       component: GeneExpression,
+      Props: { initialGene1: "CDH9", initialGene2: "TAC1" },
     },
   ],
   availableWidgets,
@@ -96,6 +99,7 @@ const geneCellComparisonDash = {
       componentKey: "SideBySide",
       componentName: "Side By Side Comparison",
       component: SideBySide,
+      Props: { initialGene: "CDH9", },
     },
   ],
   availableWidgets,
@@ -115,6 +119,7 @@ const GeneXDistributionDash = {
       componentKey: "GeneXDistribution",
       componentName: "Gene Expresion Distribution",
       component: GeneXDistribution,
+      Props: { initialGene: "CDH9"},
     },
   ],
   availableWidgets,
