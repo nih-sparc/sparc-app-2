@@ -50,7 +50,7 @@
     "js-file-download": "^0.4.12",
     "marked": "^8.0.1",
     "mitt": "^3.0.1",
-    "pennsieve-dashboard": "0.3.4",
+    "pennsieve-dashboard": "0.3.71",
     "plotly.js": "2.35.3",
     "plyr": "^3.7.8",
     "postscribe": "^2.0.8",

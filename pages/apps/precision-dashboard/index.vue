@@ -15,11 +15,13 @@
         </template>
       </el-tooltip>
     </div>
-    <MultiDashboard
-      class="dashboard-app"
-      :dashboardOptions="dashboardOptions"
-      :default="geneCoexpressionDash"
-    ></MultiDashboard>
+    <ClientOnly>
+      <MultiDashboard
+        class="dashboard-app"
+        :dashboardOptions="dashboardOptions"
+        :default="geneCoexpressionDash"
+      ></MultiDashboard>
+    </ClientOnly>
   </div>
 </template>
 <script setup>

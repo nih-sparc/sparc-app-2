@@ -13416,10 +13416,10 @@ pennsieve-dashboard@0.3.3:
     sass "^1.90.0"
     vue "^3.5.18"
 
-pennsieve-dashboard@0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.4.tgz#61630927e5058cac1d886c69f94fae6e3289e9eb"
-  integrity sha512-tGo7IUeP5K8lv6N+khR9rVgbzaBtd4tG5vXV6BOrmyDj9TWedSGJVPImztAMIGmQk/eTSoxqZc7QiDSV+zJrcg==
+pennsieve-dashboard@0.3.71:
+  version "0.3.71"
+  resolved "https://registry.yarnpkg.com/pennsieve-dashboard/-/pennsieve-dashboard-0.3.71.tgz#0f3b0b98064ea9048eda9c90abb9cbfde7ed9cc7"
+  integrity sha512-Y2Kc4xovWkaMwemjmH0E9fY6qzFSO44i3PJxZPpU9UN5Q8Owkrt63U8cLlDPdnpvMO1GvjP73VPqerxuGZsuxw==
   dependencies:
     "@element-plus/icons-vue" "^2.3.2"
     dompurify "^3.2.6"
