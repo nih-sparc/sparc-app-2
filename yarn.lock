@@ -13934,10 +13934,10 @@ potpack@^2.0.0:
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-2.0.0.tgz#61f4dd2dc4b3d5e996e3698c0ec9426d0e169104"
   integrity sha512-Q+/tYsFU9r7xoOJ+y/ZTtdVQwTWfzjbiXBDMM/JKUux3+QPP02iUuIoeBQ+Ot6oEDlC+/PGjB/5A3K7KKb7hcw==
 
-precision-dashwidgets@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.5.2.tgz#eb1118b95eb0fede7b092b7ba5273ea3883cc637"
-  integrity sha512-T89dtHKCxrB54NfSueWIyoGHIZm12xTksc2eblibmzqh1COcBOD+HAJ4brFLlKcW1kXf1QrlexrjHKDeRZXQVg==
+precision-dashwidgets@0.5.4:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.5.4.tgz#fa9ddc1e18eab33b87ab3249db73ebace678bc4e"
+  integrity sha512-SbhouK5cIIo8rjzWsWEWjHDyc9ZLsL2dCNy735g1vhft3hjzbwpBHAmx+MRQbeRcdy/CWjOQCjwUEIVrpedIWw==
   dependencies:
     "@duckdb/duckdb-wasm" "^1.30.0"
     "@pennsieve-viz/core" "0.1.6"

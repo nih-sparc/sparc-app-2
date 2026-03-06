@@ -54,7 +54,7 @@
     "plotly.js": "2.35.3",
     "plyr": "^3.7.8",
     "postscribe": "^2.0.8",
-    "precision-dashwidgets": "0.5.2",
+    "precision-dashwidgets": "0.5.4",
     "ramda": "^0.29.0",
     "sparc-dashwidgets": "0.3.0",
     "sparc-design-system-components-2": "1.0.1",

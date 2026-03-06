@@ -40,7 +40,7 @@ import "pennsieve-dashboard/style.css";
 import "precision-dashwidgets/style.css";
 
 const s3Url =
-  "https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/precision_human_drg_data.parquet";
+  "https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/humandrg/v2";
 const title = "Precision Dashboard";
 const breadcrumb = [
   {
