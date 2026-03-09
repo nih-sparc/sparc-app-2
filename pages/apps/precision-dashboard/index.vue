@@ -35,6 +35,7 @@ import {
   GeneExpression,
   SideBySide,
   GeneXDistribution,
+  ProportionPlot,
 } from "precision-dashwidgets";
 import "pennsieve-dashboard/style.css";
 import "precision-dashwidgets/style.css";
@@ -61,6 +62,7 @@ const availableWidgets = [
   { name: "GeneExpression", component: GeneExpression },
   { name: "SideBySide", component: SideBySide },
   { name: "GeneXDistribution", component: GeneXDistribution },
+  { name: "ProportionPlot", component: ProportionPlot },
 ];
 
 const services = {
@@ -129,11 +131,33 @@ const GeneXDistributionDash = {
   hideHeader: true,
 };
 
+const proportionPlotDash = {
+  defaultLayout: [
+    {
+      id: "ProportionPlot-1",
+      x: 0,
+      y: 0,
+      w: 12,
+      h: 10,
+      componentKey: "ProportionPlot",
+      componentName: "Proportion Plot",
+      component: ProportionPlot,
+      Props: {},
+    },
+  ],
+  availableWidgets,
+  services,
+  name: "Proportion Plot",
+  hideEditGrid: true,
+  hideHeader: true,
+};
+
 //now a list of options
 const dashboardOptions = ref([
   geneCoexpressionDash,
   geneCellComparisonDash,
   GeneXDistributionDash,
+  proportionPlotDash,
 ]);
 </script>
 
