@@ -399,7 +399,11 @@ export default {
       this.agreementId = id
     },
     openAgreementPopup: function() {
-      this.showAgreementPopup = true
+      if (this.agreementId) {
+        this.showAgreementPopup = true
+      } else {
+        this.requestAccess()
+      }
     },
     requestAccess() {
       const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
