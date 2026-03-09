@@ -2821,13 +2821,6 @@
     ky-universal "^0.11.0"
     undici "^5.21.2"
 
-"@duckdb/duckdb-wasm@^1.29.1-dev132.0":
-  version "1.29.1-dev132.0"
-  resolved "https://registry.yarnpkg.com/@duckdb/duckdb-wasm/-/duckdb-wasm-1.29.1-dev132.0.tgz#a2b5c0ab2f1241d095a8244a5303cc109d1f29d8"
-  integrity sha512-OUkJuH9564GQ/OgggdgJ/Yxmlk5PYnWiJe0rrNkEs0Sfsi00nK6WZgJmWGGAtCK6le2KJxFWZ4Z2MjUKGBzLuQ==
-  dependencies:
-    apache-arrow "^17.0.0"
-
 "@duckdb/duckdb-wasm@^1.30.0":
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/@duckdb/duckdb-wasm/-/duckdb-wasm-1.30.0.tgz#b6dcc228af441a38de2c54208f6f653d8342b38d"
@@ -5253,13 +5246,6 @@
   resolved "https://registry.yarnpkg.com/@types/pbf/-/pbf-3.0.5.tgz#a9495a58d8c75be4ffe9a0bd749a307715c07404"
   integrity sha512-j3pOPiEcWZ34R6a6mN07mUkM4o4Lwf6hPNt8eilOeZhTFbxFXmKhvXl9Y28jotFPaI1bpPDJsbCprUoNke6OrA==
 
-"@types/ramda@^0.30.2":
-  version "0.30.2"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.30.2.tgz#70661b20c1bb969589a551b7134ae75008ffbfb6"
-  integrity sha512-PyzHvjCalm2BRYjAU6nIB3TprYwMNOUY/7P/N8bSzp9W/yM2YrtGtAnnVtaCNSeOZ8DzKyFDvaqQs7LnWwwmBA==
-  dependencies:
-    types-ramda "^0.30.1"
-
 "@types/resolve@1.20.2":
   version "1.20.2"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.20.2.tgz#97d26e00cd4a0423b4af620abecf3e6f442b7975"
@@ -7521,11 +7507,6 @@ core-js@^3.22.5, core-js@^3.26.1:
   version "3.35.1"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.1.tgz#9c28f8b7ccee482796f8590cc8d15739eaaf980c"
   integrity sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==
-
-core-js@^3.8.3:
-  version "3.45.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.45.1.tgz#5810e04a1b4e9bc5ddaa4dd12e702ff67300634d"
-  integrity sha512-L4NPsJlCfZsPeXukyzHFlg/i7IIVwHSItR0wg0FLNqYClJ4MQYTYLbC7EkjKYRLZF2iof2MUgN0EGy7MdQFChg==
 
 core-util-is@1.0.2:
   version "1.0.2"
@@ -13428,18 +13409,6 @@ pennsieve-dashboard@0.3.71:
     sass "^1.90.0"
     vue "^3.5.18"
 
-pennsieve-visualization@^0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/pennsieve-visualization/-/pennsieve-visualization-0.4.8.tgz#4df8ea8f7e41347734fa70b318dcfadf01e7f191"
-  integrity sha512-QQmlXURM7HlBup5JLsJhSfiw/B8SuVgoVbtz6p0C3epfGia5KsP0KfFpV5fwGDxQT3UIIoEtpw9RMEngoWIjOg==
-  dependencies:
-    "@duckdb/duckdb-wasm" "^1.29.1-dev132.0"
-    "@types/ramda" "^0.30.2"
-    core-js "^3.8.3"
-    d3 "^7.9.0"
-    hyparquet "^1.12.1"
-    ramda "^0.31.3"
-
 perfect-debounce@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/perfect-debounce/-/perfect-debounce-1.0.0.tgz#9c2e8bc30b169cc984a58b7d5b28049839591d2a"
@@ -13934,16 +13903,15 @@ potpack@^2.0.0:
   resolved "https://registry.yarnpkg.com/potpack/-/potpack-2.0.0.tgz#61f4dd2dc4b3d5e996e3698c0ec9426d0e169104"
   integrity sha512-Q+/tYsFU9r7xoOJ+y/ZTtdVQwTWfzjbiXBDMM/JKUux3+QPP02iUuIoeBQ+Ot6oEDlC+/PGjB/5A3K7KKb7hcw==
 
-precision-dashwidgets@0.5.4:
-  version "0.5.4"
-  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.5.4.tgz#fa9ddc1e18eab33b87ab3249db73ebace678bc4e"
-  integrity sha512-SbhouK5cIIo8rjzWsWEWjHDyc9ZLsL2dCNy735g1vhft3hjzbwpBHAmx+MRQbeRcdy/CWjOQCjwUEIVrpedIWw==
+precision-dashwidgets@0.5.6:
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/precision-dashwidgets/-/precision-dashwidgets-0.5.6.tgz#b3b66e976663027c3186a7aedafcaae436f50852"
+  integrity sha512-uQrnVqItwU58eqaODNWngjVV9DxOqojF6Sls+kEwtRZ/iKok8TfdAuQU99IHtUH0TolteiPqiH3145boW6ciiA==
   dependencies:
     "@duckdb/duckdb-wasm" "^1.30.0"
     "@pennsieve-viz/core" "0.1.6"
     chart.js "^4.5.1"
     d3 "^7.9.0"
-    pennsieve-visualization "^0.4.8"
     regl "^2.1.1"
     vue "^3.5.18"
 
@@ -15799,11 +15767,6 @@ truncate-utf8-bytes@^1.0.0:
   dependencies:
     utf8-byte-length "^1.0.1"
 
-ts-toolbelt@^9.6.0:
-  version "9.6.0"
-  resolved "https://registry.yarnpkg.com/ts-toolbelt/-/ts-toolbelt-9.6.0.tgz#50a25426cfed500d4a09bd1b3afb6f28879edfd5"
-  integrity sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==
-
 tsconfig-paths@^3.15.0:
   version "3.15.0"
   resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-3.15.0.tgz#5299ec605e55b1abb23ec939ef15edaf483070d4"
@@ -15953,13 +15916,6 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
-
-types-ramda@^0.30.1:
-  version "0.30.1"
-  resolved "https://registry.yarnpkg.com/types-ramda/-/types-ramda-0.30.1.tgz#03d255128e3696aeaac76281ca19949e01dddc78"
-  integrity sha512-1HTsf5/QVRmLzcGfldPFvkVsAdi1db1BBKzi7iW3KBUlOICg/nKnFS+jGqDJS3YD8VsWbAh7JiHeBvbsw8RPxA==
-  dependencies:
-    ts-toolbelt "^9.6.0"
 
 typical@^4.0.0:
   version "4.0.0"
