@@ -20,6 +20,9 @@
           />
         </div>
         <div class="close-button-container pt-16">
+          <button class="download-agreement-link" @click="downloadAgreement">
+            Download Agreement
+          </button>
           <el-button class="secondary" @click="dialogVisible = false">
             Cancel
           </el-button>
@@ -99,12 +102,37 @@ export default {
       this.dialogVisible = false
       this.$emit('agreement-signed', true)
     },
+    downloadAgreement() {
+      const blob = new Blob([this.content], { type: 'text/html' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `${this.title || 'Data-Use-Agreement'}.html`
+      link.click()
+      URL.revokeObjectURL(url)
+    },
   }
 }
 </script>
 <style scoped lang="scss">
 .close-button-container {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+.download-agreement-link {
+  background: none;
+  border: none;
+  color: #8300bf;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin-right: auto;
+  &:hover {
+    color: #6a0099;
+  }
 }
 .agreement-body-container {
   max-height: 20rem; 

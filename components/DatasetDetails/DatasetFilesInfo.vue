@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="heading2 mb-8">Download Dataset</div>
-    <div v-if="embargoed && userToken == null">
+    <div v-if="embargoed && !userToken">
       This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.
       SPARC datasets are subject to a 1-year
       embargo during which time the datasets
@@ -399,7 +399,11 @@ export default {
       this.agreementId = id
     },
     openAgreementPopup: function() {
-      this.showAgreementPopup = true
+      if (this.agreementId) {
+        this.showAgreementPopup = true
+      } else {
+        this.requestAccess()
+      }
     },
     requestAccess() {
       const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
