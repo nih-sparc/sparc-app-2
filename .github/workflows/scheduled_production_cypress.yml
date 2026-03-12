@@ -48,7 +48,11 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      latest-sha: ${{ steps.latest-deployment-sha.outputs.deployment-sha }}
+      latest-sha: ${{ steps.latest-deployment-sha.outputs.sha }}
+
+    permissions:
+      deployments: read
+      contents: read
 
     steps:
       - name: Checkout
@@ -57,8 +61,10 @@ jobs:
 
       - name: Get sha of latest deployment in main branch
         id: latest-deployment-sha
-        uses: go-fjords/get-active-deployment-action@v0.0.3
+        uses: vrnithinkumar/latest-deployment-sha@v1.0.0
         with:
+          repo_owner: nih-sparc
+          repo_name: sparc-app-2
           environment: sparc-app-prod
 
       - name: Print latest deployment sha
