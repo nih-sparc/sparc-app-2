@@ -61,14 +61,14 @@ jobs:
 
       - name: Get sha of latest deployment in main branch
         id: latest-deployment-sha
-        uses: vrnithinkumar/latest-deployment-sha@v1.0.0
+        uses: ABI-Software/get-latest-deployment-sha@v1.0.1
         with:
           repo_owner: nih-sparc
           repo_name: sparc-app-2
           environment: sparc-app-prod
 
       - name: Print latest deployment sha
-        run: echo "${{ steps.latest-deployment-sha.outputs.deployment-sha }}"
+        run: echo "${{ steps.latest-deployment-sha.outputs.sha }}"
 
   cypress-run:
     runs-on: ubuntu-latest
