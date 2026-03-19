@@ -89,8 +89,8 @@ mapTypes.forEach((map) => {
             cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
             cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
             // wait for highlighting alert connectivity
-            cy.wait(5000)
-            cy.get('@canvas').compareSnapshot('mapalert').then(comparisonResults => {
+            cy.wait(10000)
+            cy.get('@canvas', {force: true}).compareSnapshot('mapalert').then(comparisonResults => {
               expect(comparisonResults.percentage).to.greaterThan(0)
             })
           }
@@ -199,7 +199,7 @@ mapTypes.forEach((map) => {
 
             // Check for the provenance content
             cy.get('.connectivity-info-title').within(($content) => {
-              cy.get('.block > .title-group > .title').then(($title) => {
+              cy.get('.block > .title-group > .title > span').then(($title) => {
                 expect($title, 'The provenance card should have the neuron name').to.exist
                 const neuronName = $title.text().trim()
                 cy.print({
