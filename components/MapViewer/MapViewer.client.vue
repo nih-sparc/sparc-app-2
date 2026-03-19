@@ -105,6 +105,10 @@
     }
   }
 
+  .reconciliation-table-inner {
+    padding: 0px;
+  }
+
   .open-map-popper.el-popover.el-popper {
     width: unset !important;
   }
