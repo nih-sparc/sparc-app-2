@@ -103,7 +103,7 @@ mapTypes.forEach((map) => {
 
       it('In-display search', function () {
         // Search keyword in displayed viewers
-        cy.get('.el-autocomplete > .el-input > .el-input__wrapper > .el-input__inner').as('searchInput')
+        cy.get('.search-container > .el-autocomplete > .el-input > .el-input__wrapper .el-input__inner').as('searchInput')
         cy.get('@searchInput').clear()
         cy.get('@searchInput').type('neuron type aacar 11')
         cy.get('.search-container > .map-icon > use').as('mapSearchIcon')
@@ -199,7 +199,7 @@ mapTypes.forEach((map) => {
 
             // Check for the provenance content
             cy.get('.connectivity-info-title').within(($content) => {
-              cy.get('.block > .title').then(($title) => {
+              cy.get('.block > .title-group > .title').then(($title) => {
                 expect($title, 'The provenance card should have the neuron name').to.exist
                 const neuronName = $title.text().trim()
                 cy.print({
@@ -237,7 +237,7 @@ mapTypes.forEach((map) => {
                 })
               }
             })
-            cy.get('.population-display > .buttons-row').as('populationDisplay')
+            cy.get('.population-details > .buttons-row').as('populationDisplay')
             // List view
             cy.get('@populationDisplay').contains('List view').click()
             // Check for the provenance button click
@@ -391,7 +391,7 @@ mapTypes.forEach((map) => {
         cy.get('.title-text').then((text) => {
           expect(text, 'Tree control title should exist').to.exist
         })
-        cy.get('.traditional-container .selections-container').then(() => {
+        cy.get('.tree-controls-container .selections-container').then(() => {
           cy.get('.region-tree-node > .lastChildInItem').then((region) => {
             expect(region, 'Tree control helper region should exist').to.contain('_helper')
           })
