@@ -356,7 +356,7 @@ export default {
       return datasetSize > this.$config.public.max_download_size
     },
     /**
-     * Checks whether the dataset is opendata on aws
+     * Checks whether the dataset is opendata on AWS
      * @returns {Boolean}
      */
     isOpenData: function() {
@@ -376,15 +376,15 @@ export default {
     datasetId: function() {
       return propOr(0, 'id', this.datasetInfo)
     },
-      /**
-     * Aws command to download dataset
+    /**
+     * AWS command to download dataset
      * @returns {String}
      */
      downloadDatasetArn: function() {
       return `aws s3 cp --no-sign-request ${this.datasetArn} . --recursive`
     },
     /**
-     * Aws command to explorer dataset
+     * AWS command to explorer dataset
      * @returns {String}
      */
     explorerDatasetArn: function() {
