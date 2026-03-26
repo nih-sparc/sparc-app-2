@@ -143,7 +143,7 @@
           </div>
           <div>
             * See our <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="blank">Help page</a> for information on
-            AWS S3 and links to tutorials. AWS required for 5GB and over.
+            AWS S3 and links to tutorials.
           </div>
         </el-col>
         <el-col v-else :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
