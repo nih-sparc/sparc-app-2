@@ -97,7 +97,56 @@
             </el-button>
           </a>
         </el-col>
-        <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
+
+        <el-col v-if="isOpenData" :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
+          <div class="mb-8">
+            <span class="label4">Option 2 - AWS Open Data:</span>
+            Access data directly from the registry of
+            <a href="https://registry.opendata.aws/sparc" target="_blank">open data on AWS</a>.
+          </div>
+          <div class="aws-block mb-16 px-16 pb-16 pt-8">
+            <template v-if="isLatestVersion || !showRehydrationFeature">
+              <div class="heading3">
+                <span class="label4">
+                  <a href="https://registry.opendata.aws/sparc" target="_blank">AWS CLI</a>
+                  Access (No AWS account required)
+                </span>
+              </div>
+              <div class="mb-0"><span class="heading3">Explore this dataset:</span></div>
+              <div class="download-text-block mb-8 p-4">
+                {{ explorerDatasetArn }}
+                <button class="copy-button" @click="handleCitationCopy(explorerDatasetArn)">
+                  <img src="../../static/images/copyIcon.png" />
+                </button>
+              </div>
+              <div class="heading3 mb-0">Download this dataset:</div>
+              <div class="download-text-block p-4 aws">
+                {{ downloadDatasetArn}}
+                <button class="copy-button" @click="handleCitationCopy(downloadDatasetArn)">
+                  <img src="../../static/images/copyIcon.png" />
+                </button>
+              </div>
+            </template>
+            <template v-else>
+              <div class="label4">
+                Requesting Access from AWS
+              </div>
+              <p>
+                Access to older versions of the dataset on AWS is no longer readily available.
+                To obtain access to previous versions directly from your AWS account, click "Request Access" below.
+                More information is available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
+              </p>
+              <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
+                Request Access
+              </el-button>
+            </template>
+          </div>
+          <div>
+            * See our <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="blank">Help page</a> for information on
+            AWS S3 and links to tutorials. AWS required for 5GB and over.
+          </div>
+        </el-col>
+        <el-col v-else :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
             <span class="label4">Option 2 - AWS S3:</span>
             Download or transfer using Amazon AWS S3. Quickly obtain dataset files from our S3 bucket with your AWS account at Amazon's
@@ -126,8 +175,8 @@
                 Requesting Access from AWS
               </div>
               <p>
-                Access to older versions of the dataset on AWS is no longer readily available. 
-                To obtain access to previous versions directly from your AWS account, click "Request Access" below. 
+                Access to older versions of the dataset on AWS is no longer readily available.
+                To obtain access to previous versions directly from your AWS account, click "Request Access" below.
                 More information is available in the <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="_blank">SPARC Help Center</a>.
               </p>
               <el-button :style="'display: flex; margin: auto'" @click="showRehydrationModal = true">
@@ -180,7 +229,7 @@
           </div>
         </div>
         <div>
-          To make it easy, the SPARC Portal provides the option of different citation formats in the 
+          To make it easy, the SPARC Portal provides the option of different citation formats in the
           <nuxt-link :to="{
             query: {
               ...route.query,
@@ -216,7 +265,7 @@ const citationLoading = ref(true)
 const crosscite_host = ref('')
 crosscite_host.value = config.public.crosscite_api_host
 
-osparcViewers.value = 
+osparcViewers.value =
   await $axios
     .get(`${config.public.portal_api}/sim/file`)
     .then(({ data }) => data['file_viewers'])
@@ -307,6 +356,13 @@ export default {
       return datasetSize > this.$config.public.max_download_size
     },
     /**
+     * Checks whether the dataset is opendata on aws
+     * @returns {Boolean}
+     */
+    isOpenData: function() {
+      return this.datasetArn.includes('aod-discover')
+    },
+    /**
      * Gets dataset ARN
      * @returns {String}
      */
@@ -319,6 +375,20 @@ export default {
      */
     datasetId: function() {
       return propOr(0, 'id', this.datasetInfo)
+    },
+      /**
+     * Aws command to download dataset
+     * @returns {String}
+     */
+     downloadDatasetArn: function() {
+      return `aws s3 cp --no-sign-request ${this.datasetArn} . --recursive`
+    },
+    /**
+     * Aws command to explorer dataset
+     * @returns {String}
+     */
+    explorerDatasetArn: function() {
+      return `aws s3 ls --no-sign-request ${this.datasetArn}`
     },
     /**
      * Gets dataset version
