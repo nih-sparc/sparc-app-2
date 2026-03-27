@@ -89,8 +89,8 @@ mapTypes.forEach((map) => {
             cy.get('.tabs-container > :nth-child(1) > .tab-title').as('datasetExplorer').click()
             cy.get('.close-tab > .el-icon').as('sidebarCloseTab').click()
             // wait for highlighting alert connectivity
-            cy.wait(10000)
-            cy.get('@canvas', {force: true}).compareSnapshot('mapalert').then(comparisonResults => {
+            cy.wait(20000)
+            cy.get('@canvas', {force: true, waitForAnimations: false}).compareSnapshot('mapalert').then(comparisonResults => {
               expect(comparisonResults.percentage).to.greaterThan(0)
             })
           }

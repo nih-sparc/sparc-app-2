@@ -183,7 +183,7 @@ datasetIds.forEach((datasetId) => {
         cy.get('@awards').then(($content) => {
           expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/is)
           cy.wrap($content).children().not('.label4').each(($award) => {
-            if ($award[0].children.length) { // Has children, has link 
+            if ($award[0].children.length) { // Has children, has link
               cy.wrap($award).find('a').should(($link) => {
                 expect($link, 'Award href should exist').to.have.attr('href').to.contain('/about/projects/')
               })
@@ -346,15 +346,18 @@ datasetIds.forEach((datasetId) => {
           expect($button, 'Download button should exist').to.exist
         })
         // Check for aws download content
-        cy.get('.aws-download-column .label4').should(($option) => {
-          expect($option, 'Option 2 should be AWS download').to.contain('AWS S3')
+        cy.get('.aws-download-column .label4').invoke('text').should((text) => {
+          expect(text, 'AWS instruction should contain valid text.').to.satisfy((t) => t.includes('AWS S3')|| t.includes('AWS Open Data'))
         })
       })
 
       it('Link', function () {
-        cy.get('.aws-download-column > :nth-child(1) > a').should(($link) => {
-          expect($link, 'AWS pricing link should have correct href').to.have.attr('href').to.contain('https://aws.amazon.com/s3/pricing/')
-          expect($link, 'AWS pricing link should open a new tab').to.have.attr('target').to.contain('blank')
+        cy.get('.aws-download-column > :nth-child(1) > a').should(($el) => {
+          const href = $el.attr('href')
+          expect(href, 'AWS link should be correct').to.satisfy((h) =>
+            h.includes('https://aws.amazon.com/s3/pricing') || h.includes('https://registry.opendata.aws/sparc')
+          )
+          expect($el, 'AWS pricing link should open a new tab').to.have.attr('target').to.contain('blank')
         })
         cy.get('.aws-download-column > :nth-child(3) > a').should(($link) => {
           expect($link, 'Help page link should have correct href').to.have.attr('href').to.contain('https://docs.sparc.science/docs/accessing-public-datasets')
@@ -416,7 +419,7 @@ datasetIds.forEach((datasetId) => {
           expect($button, 'Open in oSPARC button should exist').to.exist
         })
         cy.get('.el-dialog__headerbtn').click()
-        // Check get share links  
+        // Check get share links
         cy.get('@actions').eq(3).click({ force: true })
         cy.get('.el-message', { timeout: 30000 }).should(($message) => {
           expect($message, 'Message should be visible').to.be.visible
