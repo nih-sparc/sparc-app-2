@@ -6,7 +6,7 @@
         <h1 hidden>File viewer for {{ file.path }}</h1>
         <form ref="zipForm" method="POST" :action="zipitUrl">
           <input v-model="zipData" type="hidden" name="data" />
-        </form>  
+        </form>
         <span class="help-link" v-if="hasViewer && (activeTabId in helpers)">
           <a :href="`https://docs.sparc.science/docs/${helpers[activeTabId].link}`" target="_blank">
             Find out more about the {{ helpers[activeTabId].name }}
@@ -84,7 +84,7 @@ export default {
       datasetInfo = data
     })
     const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
-    const filePath = route.query.path   
+    const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       filePath,
       route.params.datasetId,
@@ -111,7 +111,15 @@ export default {
       console.log(`Error retrieving sci crunch data (possibly because there is none for this file): ${e}`)
     }
 
-    const hasSimulationViewer = scicrunchData['abi-simulation-omex-file'] ? true : false
+    let hasSimulationViewer = false
+
+    scicrunchData['abi-simulation-omex-file']?.find(function(el) {
+      if (el.identifier == expectedScicrunchIdentifier) {
+        hasSimulationViewer = true
+        return true
+      }
+      return false
+    })
 
     let plotInfo = {}
     const matchedplotInfo = scicrunchData['abi-plot']?.filter(function(el) {
@@ -365,7 +373,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.zipForm.submit() // eslint-disable-line no-undef
       })
-      
+
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
