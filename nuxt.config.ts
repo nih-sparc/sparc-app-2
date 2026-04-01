@@ -182,7 +182,7 @@ export default defineNuxtConfig({
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
       crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.doi.org',
-      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
+      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '10000000000'),
       osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
       MBF_SPARC_API: process.env.MBF_SPARC_API || 'https://mbfsparcapi.com',
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',

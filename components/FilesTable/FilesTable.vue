@@ -154,7 +154,7 @@
                 </sparc-tooltip>
               </div>
               <div v-else class="circle disabled">
-                <sparc-tooltip placement="bottom-center" content="Files over 5GB in size must be downloaded via AWS">
+                <sparc-tooltip placement="bottom-center" :content="`Files over ${maxDownloadSize} in size must be downloaded via AWS`">
                   <template #item>
                     <svgo-icon-download class="action-icon" />
                   </template>
@@ -276,7 +276,7 @@
       v-else-if="selectedFilesSizeTooLarge"
       class="tooltip"
       placement="left-center"
-      content="Selected file size(s) exceed 5GB"
+      :content="`Selected file size(s) exceed ${maxDownloadSize}`"
     >
       <template #item>
         <bf-download-file
@@ -432,6 +432,9 @@ export default {
         totalSize += file.size
       })
       return totalSize >= this.$config.public.max_download_size
+    },
+    maxDownloadSize() {
+      return this.formatMetric(this.$config.public.max_download_size)
     },
     isFilterApplied() {
       return this.filtersApplied.length > 0

@@ -1,6 +1,8 @@
 <template>
   <div>
     <div class="heading2 mb-8">Download Dataset</div>
+    <!-- TEMP TEST BUTTON: calls requestAccess() directly -->
+    <el-button type="danger" class="mb-8" @click="requestAccess()">TEST: requestAccess()</el-button>
     <div v-if="embargoed && !userToken">
       This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.
       SPARC datasets are subject to a 1-year
@@ -77,13 +79,13 @@
           </div>
           <div v-else>
             <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of
-              charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS.
+              charge for datasets that are {{ maxDownloadSize }} or smaller. Datasets bigger than {{ maxDownloadSize }} will need to be downloaded via AWS.
             </div>
             <div class="mt-24">If you only need certain files or folders, select and download them from the <span class="label4">Dataset Files</span> listing.</div>
             <sparc-tooltip placement="left-center">
               <template #data>
                 <div>
-                  Dataset size is over 5GB. To download, use <b>Option 2 - AWS download</b>
+                  Dataset size is over {{ maxDownloadSize }}. To download, use <b>Option 2 - AWS download</b>
                 </div>
               </template>
               <template #item>
@@ -100,13 +102,15 @@
         <el-col :md="12" class="bx--col-sm-4 bx--col-md-8 bx--col aws-download-column">
           <div class="mb-8">
             <span class="label4">Option 2 - AWS S3:</span>
-            Download or transfer using Amazon AWS S3. Quickly obtain dataset files from our S3 bucket with your AWS account at Amazon's
-            <a href="https://aws.amazon.com/s3/pricing/" target="_blank">nominally priced usage rates</a>.
+            Download or transfer using Amazon AWS S3. Quickly obtain dataset files from our S3 bucket with your AWS account. 
+          </div>
+          <div class="mb-8">
+            <span><a href="https://docs.aws.amazon.com/data-exchange/latest/userguide/open-data.html" target="blank">How To Use AWS Open Data</a></span>
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
             <template v-if="isLatestVersion || !showRehydrationFeature">
               <div class="heading3">Resource Type</div>
-              <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
+              <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span></div>
               <div class="download-text-block mb-8 p-4">
                 {{ datasetArn }}
                 <button class="copy-button" @click="handleCitationCopy(datasetArn)">
@@ -137,7 +141,7 @@
           </div>
           <div>
             * See our <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="blank">Help page</a> for information on
-            AWS S3 and links to tutorials. AWS required for 5GB and over.
+            AWS S3 and links to tutorials.
           </div>
         </el-col>
       </el-row>
@@ -282,16 +286,24 @@ export default {
       return propOr({}, 'sciCrunch', this.datasetInfo)
     },
     accessGranted: function() {
-      return this.embargoAccess == EMBARGO_ACCESS.GRANTED
+      const result = this.embargoAccess == EMBARGO_ACCESS.GRANTED
+      console.log('[EMBARGO] accessGranted:', result, '| embargoAccess:', this.embargoAccess, '| expected:', EMBARGO_ACCESS.GRANTED)
+      return result
     },
     requestPending: function() {
-      return this.embargoAccess == EMBARGO_ACCESS.REQUESTED
+      const result = this.embargoAccess == EMBARGO_ACCESS.REQUESTED
+      console.log('[EMBARGO] requestPending:', result, '| embargoAccess:', this.embargoAccess, '| expected:', EMBARGO_ACCESS.REQUESTED)
+      return result
     },
     embargoed: function() {
-      return propOr(false, 'embargo', this.datasetInfo)
+      const result = propOr(false, 'embargo', this.datasetInfo)
+      console.log('[EMBARGO] embargoed:', result)
+      return result
     },
     embargoAccess() {
-      return propOr(null, 'embargoAccess', this.datasetInfo)
+      const result = propOr(null, 'embargoAccess', this.datasetInfo)
+      console.log('[EMBARGO] embargoAccess raw value:', result, '| type:', typeof result, '| datasetInfo.embargoAccess:', this.datasetInfo?.embargoAccess)
+      return result
     },
     embargoedReleaseDate() {
       const embargoPublishDate = this.formatDate(propOr('', 'firstPublishedAt', this.datasetInfo))
@@ -299,7 +311,14 @@ export default {
       return embargoReleaseDate != '' ? embargoReleaseDate : `1 year after ${embargoPublishDate}`
     },
     /**
-     * Checks whether the dataset download size is larger or smaller than 5GB
+     * Compute max download size in human readable format
+     * @returns {String}
+     */
+    maxDownloadSize() {
+      return this.formatMetric(this.$config.public.max_download_size)
+    },
+    /**
+     * Checks whether the dataset download size is larger than the max download size
      * @returns {Boolean}
      */
     isDatasetSizeLarge: function() {
@@ -407,7 +426,7 @@ export default {
     },
     requestAccess() {
       const url = `${this.$config.public.discover_api_host}/datasets/${this.datasetInfo.id}/preview`
-
+      console.log(url)
       this.$pennsieveApiClient.value
         .post(url, {
           dataUseAgreementId: this.agreementId,
