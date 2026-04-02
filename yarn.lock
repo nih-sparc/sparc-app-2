@@ -4579,10 +4579,10 @@
     marked "^15.0.7"
     ramda "^0.31.3"
 
-"@pennsieve-viz/micro-ct@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@pennsieve-viz/micro-ct/-/micro-ct-1.0.2.tgz#cae1943710bf8bacd36d249c56287fd124c936b3"
-  integrity sha512-G6tB0sY1VRe4pTdxBS7VJK1iAeE+ZFOu4aTwTZ1q/dhq2+ySNtyuBMd3I73vGyVVG30CObb4uLXzyS2vQxQxEw==
+"@pennsieve-viz/micro-ct@1.0.71":
+  version "1.0.71"
+  resolved "https://registry.yarnpkg.com/@pennsieve-viz/micro-ct/-/micro-ct-1.0.71.tgz#d168a1929796e8d108ec1b0ef38bd56e58414899"
+  integrity sha512-x1D247I39YBSzbZK1QJCoKyVnDxEGDoPyA0keqG2WDpD+NT6mWnoqWm89+xDX/6VNrMzpJfOsL1pAcpjXM9wmQ==
   dependencies:
     "@vivjs/extensions" "^0.18.0"
     "@vivjs/layers" "^0.18.0"

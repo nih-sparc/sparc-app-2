@@ -13,6 +13,7 @@
           v-if="presignedUrl"
           :source="presignedUrl"
           source-type="ome-tiff"
+          :cache-id="filePath"
         />
       </div>
       <generic-viewer-metadata
@@ -57,6 +58,7 @@ export default defineComponent({
     const config = useRuntimeConfig()
 
     const presignedUrl = ref('')
+    const filePath = ref('')
     const isLoading = ref(true)
     const hasError = ref(false)
     const errorMessage = ref('')
@@ -84,9 +86,9 @@ export default defineComponent({
       try {
         const datasetId = propOr('', 'id', props.datasetInfo)
         const version = propOr('', 'version', props.datasetInfo)
-        const filePath = propOr('', 'path', props.file)
+        filePath.value = propOr('', 'path', props.file)
 
-        if (!filePath) {
+        if (!filePath.value) {
           throw new Error('No file path provided')
         }
 
@@ -95,7 +97,7 @@ export default defineComponent({
         }
 
         // Get presigned URL from download manifest
-        const url = await fetchManifestUrl(datasetId, version, filePath)
+        const url = await fetchManifestUrl(datasetId, version, filePath.value)
 
         if (!url) {
           throw new Error('Failed to get presigned URL for file')
@@ -117,6 +119,7 @@ export default defineComponent({
 
     return {
       presignedUrl,
+      filePath,
       isLoading,
       hasError,
       errorMessage,
