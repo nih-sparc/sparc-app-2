@@ -108,7 +108,7 @@
             <template v-if="isLatestVersion || !showRehydrationFeature">
               <div class="heading3">
                 <span class="label4">
-                  <a href="https://registry.opendata.aws/sparc" target="_blank">AWS CLI</a>
+                  <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html" target="_blank">AWS CLI</a>
                   Access (No AWS account required)
                 </span>
               </div>
