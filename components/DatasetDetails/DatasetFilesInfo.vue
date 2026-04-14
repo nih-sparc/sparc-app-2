@@ -102,7 +102,7 @@
           <div class="mb-8">
             <span class="label4">Option 2 - AWS Open Data:</span>
             Access data directly from the registry of
-            <a href="https://registry.opendata.aws/sparc" target="_blank">open data on AWS</a>.
+            <a href="https://registry.opendata.aws/sparc" target="_blank">open data on AWS</a>, free of charge.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
             <template v-if="isLatestVersion || !showRehydrationFeature">
