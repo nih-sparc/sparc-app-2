@@ -140,7 +140,7 @@ export default {
     availabilityCitationType() {
       return {
         label: 'Data Availability Statement',
-        citationText: `Data are publicly available on the SPARC Portal (RRID:SCR_017041) at the following the URL: ${ this.datasetDoiUrl }`
+        citationText: `Data are publicly available on the SPARC Portal (RRID:SCR_017041) at the following DOI: ${ this.datasetDoiUrl }`
       }
     }
   },
