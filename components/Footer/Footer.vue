@@ -39,8 +39,11 @@
                   <img class="footer-logo mr-32 mb-32" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing">
                 </a>
                 <a href="https://www.autonomicneuroscience.com/">
-                  <img class="footer-logo mb-32" :src="anbcLogo" />
+                  <img class="footer-logo mr-32 mb-32" :src="anbcLogo" />
                 </a>
+                <div class="cfde-wheel-wrapper">
+                  <CfdeWheel />
+                </div>
             </div>
           </div>
         </el-col>
@@ -106,12 +109,14 @@ import { mapState } from 'pinia'
 import FooterLink from './FooterLink.vue'
 import { useMainStore } from '../store/index.js'
 import SparcLogo from 'sparc-design-system-components-2/src/components/SparcLogo'
+import CfdeWheel from '../CfdeWheel/CfdeWheel.vue'
 
 export default {
   name: 'SparcFooter',
   components: {
     FooterLink,
-    SparcLogo
+    SparcLogo,
+    CfdeWheel
   },
   data() {
     return {
@@ -126,9 +131,20 @@ export default {
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
-
+:deep(.cfde-wheel-wrapper) {
+  position: relative !important;
+  margin-top: -2.3rem;
+  button {
+    position: static !important;
+    img {
+      position: static !important;
+      width: 90px !important;
+      height: 90px !important;
+    }
+  }
+}
 .footer-logo {
-  width: 185px;
+  width: 145px;
 }
 .row {
   display: flex;

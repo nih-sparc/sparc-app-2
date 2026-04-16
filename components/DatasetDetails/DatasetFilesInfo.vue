@@ -83,7 +83,7 @@
             <sparc-tooltip placement="left-center">
               <template #data>
                 <div>
-                  Dataset size is over 5GB. To download, use <b>Option 2 - AWS download</b>
+                  Dataset size is over 5GB. To download, use <b>Option 2 - AWS Open Data</b>
                 </div>
               </template>
               <template #item>

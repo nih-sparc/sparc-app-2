@@ -47,6 +47,12 @@ export default defineNuxtConfig({
           href:
             'https://fonts.googleapis.com/css?family=Asap:400,400i,500,600,700&display=swap'
         }
+      ],
+      script: [
+        {
+          src: "https://cdn.jsdelivr.net/gh/TACC/cfde-wheel-embed@v0.1.4/dist/cfde-wheel.iife.js",
+          defer: true
+        }
       ]
     }
   },
