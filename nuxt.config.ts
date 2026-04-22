@@ -181,6 +181,7 @@ export default defineNuxtConfig({
       GITHUB_REPO: process.env.GITHUB_REPO || 'sparc-app-2',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
+      orthogonal_viewer_url: process.env.PENNSIEVE_ORTHOGONAL_VIEWER_URL || 'https://orthogonal-viewer.pennsieve.net',
       SHOW_HIERARCHAL_FACETS: process.env.SHOW_HIERARCHAL_FACETS || 'false',
       SHOW_SDS_VIEWER: process.env.SHOW_SDS_VIEWER || 'false',
       SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
