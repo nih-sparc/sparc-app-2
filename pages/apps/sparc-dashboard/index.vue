@@ -38,7 +38,7 @@
 </template>
 <script setup>
 import { pathOr } from "ramda";
-import { defineAsyncComponent, ref } from "vue";
+import { defineAsyncComponent, ref } from "vue"
 import {
   FlatmapWidget,
   BiolucidaViewer,
@@ -46,17 +46,11 @@ import {
   VagusImageSelector,
   QDBGraph,
 } from "sparc-dashwidgets";
-import { PennsieveDashboard, MarkdownWidget } from "pennsieve-dashboard";
-import "pennsieve-dashboard/style.css";
-import "sparc-dashwidgets/style.css";
+import { PennsieveDashboard, MarkdownWidget } from "pennsieve-dashboard"
+import "pennsieve-dashboard/style.css"
+import "sparc-dashwidgets/style.css"
 
-const config = useRuntimeConfig();
-if (config.public.SHOW_SPARC_DASHBOARD == "false") {
-  const router = useRouter();
-  await router.push("/");
-}
-
-const { $contentfulClient } = useNuxtApp();
+const { $contentfulClient } = useNuxtApp()
 
 const breadcrumb = [
   {
@@ -73,7 +67,7 @@ const breadcrumb = [
   },
 ];
 
-const FlatmapCmp = defineAsyncComponent(FlatmapWidget.loader);
+const FlatmapCmp = defineAsyncComponent(FlatmapWidget.loader)
 const availableWidgets = [
   { name: "BiolucidaViewer", component: markRaw(BiolucidaViewer) },
   { name: "FlatmapViewer", component: markRaw(FlatmapCmp) },
