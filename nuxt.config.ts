@@ -131,6 +131,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
+      PENNSIEVE_DISCOVER_API_HOST_V2: process.env.PENNSIEVE_DISCOVER_API_HOST_V2 || 'https://api2.pennsieve.io',
       zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
@@ -181,6 +182,7 @@ export default defineNuxtConfig({
       GITHUB_REPO: process.env.GITHUB_REPO || 'sparc-app-2',
       LOGIN_API_URL: process.env.LOGIN_API_URL || 'https://api.pennsieve.net',
       PENNSIEVE_API_VERSION_2: process.env.PENNSIEVE_API_VERSION_2 || 'https://api2.pennsieve.net',
+      orthogonal_viewer_url: process.env.PENNSIEVE_ORTHOGONAL_VIEWER_URL || 'https://orthogonal-viewer.pennsieve.net',
       SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
       SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
