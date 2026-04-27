@@ -7,12 +7,22 @@
         <form ref="zipForm" method="POST" :action="zipitUrl">
           <input v-model="zipData" type="hidden" name="data" />
         </form>
-        <span class="help-link" v-if="hasViewer && (activeTabId in helpers)">
-          <a :href="`https://docs.sparc.science/docs/${helpers[activeTabId].link}`" target="_blank">
-            Find out more about the {{ helpers[activeTabId].name }}
+        <span class="help-link" v-if="hasViewer && (activeHelperId in helpers)">
+          <a :href="`https://docs.sparc.science/docs/${helpers[activeHelperId].link}`" target="_blank">
+            Find out more about the {{ helpers[activeHelperId].name }}
           </a>
         </span>
         <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
+          <template v-if="hasOrthogonalViewer">
+            <orthogonal-viewer
+              v-for="(asset, idx) in viewerAssets"
+              :key="asset.asset_url"
+              v-show="activeTabId === `orthogonalViewer-${idx}`"
+              :asset="asset"
+              :datasetInfo="datasetInfo"
+              :file="file"
+              @download-file="executeDownload" />
+          </template>
           <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
             :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
           <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
@@ -43,6 +53,7 @@ import scicrunch from '@/services/scicrunch'
 import PlotViewer from '@/components/PlotViewer/PlotViewer.vue'
 import VideoViewer from '@/components/VideoViewer/VideoViewer'
 import OmeViewerComponent from '@/components/OmeViewer/OmeViewer.client.vue'
+import OrthogonalViewer from '@/components/OrthogonalViewer/OrthogonalViewer.client.vue'
 import FileViewerMetadata from '@/components/ViewersMetadata/FileViewerMetadata.vue'
 import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
@@ -60,6 +71,7 @@ export default {
     PlotViewer,
     VideoViewer,
     OmeViewerComponent,
+    OrthogonalViewer,
     FileViewerMetadata,
     Gallery
   },
@@ -168,7 +180,19 @@ export default {
     }
     const hasOmeViewer = isOmeTiffFile(file.name)
 
-    let activeTabId = hasOmeViewer ? 'omeViewer' :
+    // Fetch orthogonal viewer assets (ome-zarr / neuroglancer-precomputed) for this package.
+    // The api2 endpoint returns ready zarr assets regardless of source file type
+    // (nii.gz and ome.tiff packages are server-side converted to zarr).
+    let viewerAssets = []
+    if (sourcePackageId) {
+      const { fetchViewerAssets } = useViewerAssets()
+      const result = await fetchViewerAssets(sourcePackageId)
+      viewerAssets = result.assets
+    }
+    const hasOrthogonalViewer = viewerAssets.length > 0
+
+    let activeTabId = hasOrthogonalViewer ? 'orthogonalViewer-0' :
+      hasOmeViewer ? 'omeViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
       hasSimulationViewer ? 'simulationViewer' :
       hasPlotViewer ? 'plotViewer' :
@@ -211,6 +235,8 @@ export default {
       hasSimulationViewer,
       hasVideoViewer,
       hasOmeViewer,
+      hasOrthogonalViewer,
+      viewerAssets,
       sourcePackageId,
       signedUrl,
       packageType,
@@ -240,6 +266,10 @@ export default {
         omeViewer: {
           name: 'OME-TIFF Viewer',
           link: 'ome-tiff-viewer'
+        },
+        orthogonalViewer: {
+          name: 'Orthogonal Viewer',
+          link: 'orthogonal-viewer'
         }
       }
     }
@@ -248,7 +278,16 @@ export default {
   computed: {
     hasViewer: function() {
       return this.hasSimulationViewer ||
-        this.hasPlotViewer || this.hasVideoViewer || this.hasOmeViewer
+        this.hasPlotViewer || this.hasVideoViewer || this.hasOmeViewer ||
+        this.hasOrthogonalViewer
+    },
+    activeHelperId: function() {
+      // Orthogonal tab ids are suffixed per asset (orthogonalViewer-0); map back
+      // to the single helper entry.
+      if (typeof this.activeTabId === 'string' && this.activeTabId.startsWith('orthogonalViewer')) {
+        return 'orthogonalViewer'
+      }
+      return this.activeTabId
     },
     datasetId: function() {
       return this.$route.params.datasetId
@@ -348,6 +387,21 @@ export default {
           })
         } else {
           this.tabs = this.tabs.filter(tab => tab.id !== 'omeViewer')
+        }
+      },
+      immediate: true
+    },
+    hasOrthogonalViewer: {
+      handler: function(hasViewer) {
+        // Remove any prior orthogonal tabs, then push one per ready asset.
+        this.tabs = this.tabs.filter(tab => !tab.id.startsWith('orthogonalViewer'))
+        if (hasViewer) {
+          const orthogonalTabs = this.viewerAssets.map((asset, idx) => ({
+            label: asset.name || `Orthogonal Viewer ${idx + 1}`,
+            id: `orthogonalViewer-${idx}`
+          }))
+          // Prepend so orthogonal tabs appear first in the tab order.
+          this.tabs = [...orthogonalTabs, ...this.tabs]
         }
       },
       immediate: true
