@@ -131,6 +131,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
+      PENNSIEVE_DISCOVER_API_HOST_V2: process.env.PENNSIEVE_DISCOVER_API_HOST_V2 || 'https://api2.pennsieve.io',
       zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,

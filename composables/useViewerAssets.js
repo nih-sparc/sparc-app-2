@@ -9,7 +9,7 @@ export const useViewerAssets = () => {
       return { assets: [], cloudfront: null }
     }
 
-    const url = `${config.public.PENNSIEVE_API_VERSION_2}/packages/discover/assets?package_id=${encodeURIComponent(packageId)}`
+    const url = `${config.public.PENNSIEVE_DISCOVER_API_HOST_V2}/packages/discover/assets?package_id=${encodeURIComponent(packageId)}`
 
     try {
       const { data } = await $axios.get(url)
