@@ -50,6 +50,8 @@ import { PennsieveDashboard, MarkdownWidget } from "pennsieve-dashboard"
 import "pennsieve-dashboard/style.css"
 import "sparc-dashwidgets/style.css"
 
+const config = useRuntimeConfig()
+
 const { $contentfulClient } = useNuxtApp()
 
 const breadcrumb = [
