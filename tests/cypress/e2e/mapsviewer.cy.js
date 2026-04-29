@@ -54,7 +54,7 @@ mapTypes.forEach((map) => {
       cy.get('.viewing-mode-selector > .toolbar-dropdown').as('changeViewingMode')
       cy.get('.toolbar-dropdown-popper .el-dropdown-menu__item > h5').as('viewingModes')
       cy.get('@changeViewingMode').trigger('mouseenter')
-      cy.get('@viewingModes').contains('Exploration').click()
+      cy.get('@viewingModes').contains('Exploration').click({force: true})
       cy.get('@changeViewingMode').trigger('mouseleave')
       cy.wait(5000)
     })

@@ -56,6 +56,9 @@ export default defineNuxtConfig({
       ]
     }
   },
+  build: {
+    transpile: ['dayjs']
+  },
   devtools: { enabled: true },
   modules: [
     '@element-plus/nuxt',
