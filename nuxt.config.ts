@@ -75,7 +75,7 @@ export default defineNuxtConfig({
       'window.global': {},
     },
     resolve: {
-      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
+      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers', 'dayjs']
     }
     /*css: {
       preprocessorOptions: {
@@ -274,6 +274,11 @@ export default defineNuxtConfig({
     ] : ['/'],
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
+  },
+  nitro: {
+    externals: {
+      inline: ['dayjs']
+    }
   },
   vue: {
     compilerOptions: {
