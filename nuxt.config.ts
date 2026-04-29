@@ -56,9 +56,6 @@ export default defineNuxtConfig({
       ]
     }
   },
-  build: {
-    transpile: ['dayjs']
-  },
   devtools: { enabled: true },
   modules: [
     '@element-plus/nuxt',
@@ -78,7 +75,7 @@ export default defineNuxtConfig({
       'window.global': {},
     },
     resolve: {
-      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers', 'dayjs']
+      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
     }
     /*css: {
       preprocessorOptions: {
