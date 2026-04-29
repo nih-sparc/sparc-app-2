@@ -105,7 +105,7 @@
             <a href="https://registry.opendata.aws/sparc" target="_blank">open data on AWS</a>, free of charge.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
-            <template v-if="isLatestVersion || !showRehydrationFeature">
+            <template v-if="isLatestVersion">
               <div class="heading3">
                 <span class="label4">
                   <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html" target="_blank">AWS CLI</a>
@@ -153,7 +153,7 @@
             <a href="https://aws.amazon.com/s3/pricing/" target="_blank">nominally priced usage rates</a>.
           </div>
           <div class="aws-block mb-16 px-16 pb-16 pt-8">
-            <template v-if="isLatestVersion || !showRehydrationFeature">
+            <template v-if="isLatestVersion">
               <div class="heading3">Resource Type</div>
               <div class="mb-0"><span class="heading3">Amazon S3 Bucket</span> (Requester Pays) *</div>
               <div class="download-text-block mb-8 p-4">
@@ -412,15 +412,12 @@ export default {
       return url
     },
     sdsViewer: function() {
-      if (this.datasetInfo.doi && this.$config.public.SHOW_SDS_VIEWER === 'true') {
+      if (this.datasetInfo.doi) {
         const metacellUrl = new URL(this.$config.public.METACELL_SDS_VIEWER_URL)
         metacellUrl.searchParams.append('doi', this.datasetInfo.doi)
         return metacellUrl.toString()
       }
       return null
-    },
-    showRehydrationFeature() {
-      return this.$config.public.SHOW_REHYDRATION_FEATURE == 'true'
     }
   },
 

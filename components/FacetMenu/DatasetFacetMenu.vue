@@ -78,7 +78,7 @@ export default {
 
   setup() {
     const config = useRuntimeConfig()
-    const visibleDatasetsFacetCategories = config.public.SHOW_HIERARCHAL_FACETS === 'true' ?
+    const visibleDatasetsFacetCategories =
       [
         'anatomy.organ.category.name',
         'anatomy.organ.subcategory.name',
@@ -88,20 +88,10 @@ export default {
         'attributes.subject.ageCategory.value',
         'supportingAwards.consortium.name',
         'availability'
-      ] :
-      [
-        'anatomy.organ.name',
-        'organisms.primary.species.name',
-        'item.modalities.keyword',
-        'attributes.subject.sex.value',
-        'attributes.subject.ageCategory.value',
-        'supportingAwards.consortium.name',
-        'availability'
       ]
 
-    const visibleModelsAndSimulationsFacetCategories = config.public.SHOW_HIERARCHAL_FACETS === 'true' ?
-      ['anatomy.organ.category.name', 'anatomy.organ.subcategory.name', 'supportingAwards.consortium.name', 'availability', 'organisms.primary.species.name'] :
-      ['anatomy.organ.name', 'supportingAwards.consortium.name', 'availability', 'organisms.primary.species.name']
+    const visibleModelsAndSimulationsFacetCategories = 
+      ['anatomy.organ.category.name', 'anatomy.organ.subcategory.name', 'supportingAwards.consortium.name', 'availability', 'organisms.primary.species.name']
 
     return {
       visibleDatasetsFacetCategories,
