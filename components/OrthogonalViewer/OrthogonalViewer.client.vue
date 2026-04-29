@@ -19,9 +19,8 @@
 </template>
 
 <script>
-import { defineComponent, defineAsyncComponent } from 'vue'
+import { defineComponent, defineAsyncComponent, onMounted } from 'vue'
 import GenericViewerMetadata from '@/components/ViewersMetadata/GenericViewerMetadata.vue'
-import '@pennsieve-viz/core/style.css'
 
 // Lazy so @pennsieve-viz/core (which touches `document` at module load) only
 // evaluates in the browser, avoiding SSR ReferenceError.
@@ -55,6 +54,8 @@ export default defineComponent({
   emits: ['download-file'],
 
   setup(props) {
+    onMounted(() => import('@pennsieve-viz/core/style.css'))
+
     const config = useRuntimeConfig()
     const embedUrl = config.public.orthogonal_viewer_url
 
