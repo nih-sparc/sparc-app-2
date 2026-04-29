@@ -12,25 +12,28 @@
             Find out more about the {{ helpers[activeHelperId].name }}
           </a>
         </span>
-        <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId">
+        <content-tab-card v-if="hasViewer" class="mt-24" :tabs="tabs" :active-tab-id="activeTabId"
+          @tab-changed="activeTabId = $event.id">
           <template v-if="hasOrthogonalViewer">
-            <orthogonal-viewer
-              v-for="(asset, idx) in viewerAssets"
-              :key="asset.asset_url"
-              v-show="activeTabId === `orthogonalViewer-${idx}`"
-              :asset="asset"
-              :datasetInfo="datasetInfo"
-              :file="file"
-              @download-file="executeDownload" />
+            <template v-for="(asset, idx) in viewerAssets" :key="asset.asset_url">
+              <orthogonal-viewer
+                v-if="activeTabId === `orthogonalViewer-${idx}`"
+                :asset="asset"
+                :datasetInfo="datasetInfo"
+                :file="file"
+                @download-file="executeDownload" />
+            </template>
           </template>
-          <simulation-viewer v-if="hasSimulationViewer" v-show="activeTabId === 'simulationViewer'"
+          <simulation-viewer v-if="hasSimulationViewer && activeTabId === 'simulationViewer'"
             :apiLocation="apiLocation" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
-          <plot-viewer v-if="hasPlotViewer" v-show="activeTabId === 'plotViewer'" :plotInfo="plotInfo"
+          <plot-viewer v-if="hasPlotViewer && activeTabId === 'plotViewer'" :plotInfo="plotInfo"
             :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
-          <video-viewer v-if="hasVideoViewer" v-show="activeTabId === 'videoViewer'" :videoData="videoData"
+          <video-viewer v-if="hasVideoViewer && activeTabId === 'videoViewer'" :videoData="videoData"
             :videoSource="signedUrl" :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
-          <ome-viewer-component v-if="hasOmeViewer" v-show="activeTabId === 'omeViewer'"
-            :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
+          <KeepAlive>
+            <ome-viewer-component v-if="hasOmeViewer && activeTabId === 'omeViewer'"
+              :datasetInfo="datasetInfo" :file="file" @download-file="executeDownload" />
+          </KeepAlive>
         </content-tab-card>
         <file-viewer-metadata v-if="!hasViewer" :datasetInfo="datasetInfo" :file="file"
           @download-file="executeDownload" />
@@ -191,12 +194,12 @@ export default {
     }
     const hasOrthogonalViewer = viewerAssets.length > 0
 
-    let activeTabId = hasOrthogonalViewer ? 'orthogonalViewer-0' :
+    const activeTabId = ref(hasOrthogonalViewer ? 'orthogonalViewer-0' :
       hasOmeViewer ? 'omeViewer' :
       hasTimeseriesViewer ? 'timeseriesViewer' :
       hasSimulationViewer ? 'simulationViewer' :
       hasPlotViewer ? 'plotViewer' :
-      hasVideoViewer ? 'videoViewer' : ''
+      hasVideoViewer ? 'videoViewer' : '')
 
     const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
     const { supportingAwards } = await algoliaIndex.getObject(route.params.datasetId)
