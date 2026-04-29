@@ -205,6 +205,7 @@ export default defineNuxtConfig({
       GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID: process.env.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID || "",
       FLI_API_KEY: process.env.FLI_API_KEY || '',
       SHOW_COLLECTIONS_FEATURE: process.env.SHOW_COLLECTIONS_FEATURE || 'false',
+      SHOW_ORTHOGONAL_VIEWER: process.env.SHOW_ORTHOGONAL_VIEWER || 'false',
       gtm: {
         id: process.env.GOOGLE_TAG_MANAGER_ID || 'GTM-TPT2CVCS',
         defer: true,

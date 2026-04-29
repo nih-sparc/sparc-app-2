@@ -181,7 +181,7 @@ export default {
       const lowerName = fileName.toLowerCase()
       return lowerName.endsWith('.ome.tiff') || lowerName.endsWith('.ome.tif')
     }
-    const hasOmeViewer = isOmeTiffFile(file.name)
+    const hasOmeViewer = isOmeTiffFile(file.name) && config.public.SHOW_ORTHOGONAL_VIEWER == 'true'
 
     // Fetch orthogonal viewer assets (ome-zarr / neuroglancer-precomputed) for this package.
     // The api2 endpoint returns ready zarr assets regardless of source file type
@@ -192,7 +192,7 @@ export default {
       const result = await fetchViewerAssets(sourcePackageId)
       viewerAssets = result.assets
     }
-    const hasOrthogonalViewer = viewerAssets.length > 0
+    const hasOrthogonalViewer = viewerAssets.length > 0 && config.public.SHOW_ORTHOGONAL_VIEWER == 'true'
 
     const activeTabId = ref(hasOrthogonalViewer ? 'orthogonalViewer-0' :
       hasOmeViewer ? 'omeViewer' :
