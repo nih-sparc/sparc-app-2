@@ -275,11 +275,6 @@ export default defineNuxtConfig({
     blockNonSeoBots: true,
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
   },
-  nitro: {
-    externals: {
-      inline: ['dayjs']
-    }
-  },
   vue: {
     compilerOptions: {
       isCustomElement: (tag: string) => [
