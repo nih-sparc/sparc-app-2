@@ -4606,16 +4606,14 @@
     marked "^15.0.7"
     ramda "^0.31.3"
 
-"@pennsieve-viz/core@0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@pennsieve-viz/core/-/core-0.3.1.tgz#9a16f8dec36aa177a5c4a1aa91ca0a10c4675ccc"
-  integrity sha512-qJ3VMZb84frnXa+kM1VWJwNZi1tu+2GhpfAKzrLiKYEqfct3uM8CHLqtFxLifcTYrpUMwM8mHczArv9cZ62jeg==
+"@pennsieve-viz/core@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@pennsieve-viz/core/-/core-0.3.2.tgz#183dc5bcebcc1b84f1f9221fd82041c1cd267639"
+  integrity sha512-kwQzdIEvWHnUCjvJjmEFKzhMsyfZ0Mb9W+ipAL/oc4ThyBUKbdLjG+vZ3m4hnPKu9Z+J6P+zkK3Yf8x5N/PIzA==
   dependencies:
-    "@element-plus/icons-vue" "^2.3.1"
     "@niivue/niivue" "^0.68.1"
     d3 "^7.9.0"
     dompurify "^3.2.6"
-    element-plus "^2.3.0"
     hyparquet "^1.12.1"
     marked "^15.0.7"
     ramda "^0.31.3"

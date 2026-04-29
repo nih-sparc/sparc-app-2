@@ -35,7 +35,7 @@
     "@abi-software/simulationvuer": "3.0.16",
     "@element-plus/nuxt": "^1.0.10",
     "@nuxtjs/sitemap": "^5.1.4",
-    "@pennsieve-viz/core": "0.3.1",
+    "@pennsieve-viz/core": "0.3.2",
     "@pennsieve-viz/micro-ct": "1.0.71",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
