@@ -56,6 +56,12 @@ export default defineNuxtConfig({
       ]
     }
   },
+  build: {
+    // the dayjs transpile change was needed after https://github.com/nih-sparc/sparc-app-2/pull/486
+    transpile: [
+      ...(process.env.NODE_ENV === 'production' ? ['dayjs'] : [])
+    ]
+  },
   devtools: { enabled: true },
   modules: [
     '@element-plus/nuxt',
