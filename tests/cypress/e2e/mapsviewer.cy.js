@@ -98,7 +98,7 @@ mapTypes.forEach((map) => {
         // Close new opened dialog
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
         cy.contains('Vertical split').click()
-        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click({force: true})
       })
 
       it('In-display search', function () {
@@ -410,7 +410,7 @@ mapTypes.forEach((map) => {
         // Close new opened dialog
         cy.get('.header > .icon-group > .map-icon:visible').first().click()
         cy.contains('Vertical split').click()
-        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click()
+        cy.get('.pane-1 > .content-container > .toolbar > .el-row > .map-icon').click({force: true})
       })
     }/* else if (map === 'fc') {
       it('Map is loaded', function () {
