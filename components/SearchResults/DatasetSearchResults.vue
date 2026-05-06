@@ -110,10 +110,6 @@ export default {
           propPath: 'item.statistics'
         },
         {
-          displayName: 'Contact Author',
-          propPath: '_highlightResult.pennsieve.owner'
-        },
-        {
           displayName: 'Publication Date',
           propPath: 'pennsieve'
         }
@@ -155,12 +151,6 @@ export default {
           const organs = this.getNestedProperty(item, property.propPath)
           return organs
             ? organs.map(item => this.toTermUppercase(item.name.value)).join(', ')
-            : undefined
-        }
-        case 'Contact Author': {
-          const owner = this.getNestedProperty(item, property.propPath)
-          return owner
-            ? this.toTermUppercase(`${owner.first.name.value} ${this.toTermUppercase(owner.last.name.value)}`)
             : undefined
         }
         case 'Includes': {
