@@ -28,7 +28,7 @@
     <hr />
     <projects-and-datasets :datasetSectionTitle="datasetSectionTitle" :projectOrResource="featuredProject" :dataset="featuredDataset" />
     <hr />
-    <div class="secondary-background">
+    <div v-if="newsAndEvents?.length > 0" class="secondary-background">
       <homepage-news :news="newsAndEvents" />
     </div>
     <hr />
