@@ -176,9 +176,6 @@ datasetIds.forEach((datasetId) => {
         cy.get('.dataset-about-info .label4').contains(/Last Published/i).parent().should(($content) => {
           expect($content.text().trim(), '"Last Published" content should exist').to.match(/Last Published:(.+)/is)
         })
-        cy.get('.dataset-about-info .label4').contains(/Contact Author/i).parent().should(($content) => {
-          expect($content.text().trim(), '"Contact Author" content should exist').to.match(/Contact Author:(.+)/is)
-        })
         cy.get('.dataset-about-info .label4').contains(/Award[(]s[)]/i).parent().as('awards')
         cy.get('@awards').then(($content) => {
           expect($content.text().trim(), '"Awards" content should exist').to.match(/Award[(]s[)]:(.+)/is)
@@ -204,49 +201,6 @@ datasetIds.forEach((datasetId) => {
         })
         cy.get('.dataset-about-info .label4').contains(/Dataset DOI/i).parent().should(($content) => {
           expect($content.text().trim(), '"Dataset DOI" content should exist').to.match(/Dataset DOI:(.+)/is)
-        })
-      })
-
-      it('Contact Author', function () {
-        cy.get('.dataset-about-info .label4').contains(/Contact Author/i).parent().as('contact')
-        // Check for author and email href
-        cy.get('@contact', { timeout: 60000 }).then(($content) => {
-          cy.get('.about-section-container a').then(($email) => {
-            cy.get('.el-col-sm-16 > .heading2').then(($title) => {
-              cy.get('.similar-datasets-container > .px-8').then(($similar) => {
-                if ($similar.text().includes('Type:')) {
-                  cy.wrap($similar).contains(/TYPE/i).siblings('.facet-button-container').click()
-                  cy.get('.el-input__inner').clear()
-                  cy.get('.el-input__inner').type(datasetId)
-                  cy.get('.search-text').click()
-                  cy.get(':nth-child(1) > p > .el-dropdown > .filter-dropdown').click()
-                  cy.get('.el-dropdown-menu > .el-dropdown-menu__item:visible').contains('View All').click()
-                  cy.waitForBrowserLoading()
-                  cy.get('.cell').contains($title.text().replace(/\s\s+/g, ' ')).siblings('.property-table').contains(/Contact Author/i).siblings().as('PI')
-                  cy.get('@PI').then(($pi) => {
-                    const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
-                    const names = nameCombination(author).join('|')
-                    const regex = new RegExp('\(' + names + '\)', 'i')
-                    const pi = $pi.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
-                    expect(pi, 'PI should be the contact author').to.match(regex)
-                    cy.backToDetailPage(datasetId)
-                  })
-                }
-              })
-            })
-          })
-        })
-        cy.get('@contact', { timeout: 60000 }).then(($content) => {
-          cy.get('.about-section-container a').then(($email) => {
-            cy.get('.dataset-owners').should(($contributors) => {
-              const author = $content.text().replace($email.text(), '').replace('Contact Author:', '')
-              const names = nameCombination(author).join('|')
-              const regex = new RegExp('\(' + names + '\)', 'i')
-              const contributors = $contributors.text().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/gi, ' ')
-              expect(contributors, 'Contact author should be in contributor list').to.match(regex)
-            })
-            expect($email, 'Email link should exist').to.have.attr('href').to.contain(`mailto:${$email.text()}`)
-          })
         })
       })
 

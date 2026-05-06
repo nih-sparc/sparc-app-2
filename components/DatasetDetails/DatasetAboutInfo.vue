@@ -7,20 +7,6 @@
     <div class="mb-16"><span class="label4">First Published: </span>{{firstPublishedDate}}</div>
     <div class="mb-16"><span class="label4">Last Published: </span>{{latestVersionDate}}</div>
     <hr />
-    <div class="about-section-container">
-      <span class="author-section-name-column label4">Contact Author: </span>
-      <span>
-        <div>{{datasetOwnerName}}</div>
-        <div>
-          <a
-            :href="`mailto:${datasetOwnerEmail}`"
-          >
-            {{ datasetOwnerEmail }}
-          </a>
-        </div>
-      </span>
-    </div>
-    <hr />
     <div class="mb-16">
       <span class="label4">
         Award(s): 
