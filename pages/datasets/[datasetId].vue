@@ -76,6 +76,7 @@
                 <citation-details class="body1" v-show="activeTabId === 'cite'" :doi-value="datasetInfo.doi" />
                 <dataset-files-info class="body1" v-if="hasFiles" v-show="activeTabId === 'files'" />
                 <source-code-info class="body1" v-if="hasSourceCode" v-show="activeTabId === 'source'" :repoLink="sourceCodeLink" :osparcLink="osparcLink" />
+                <images-gallery class="body1" :markdown="markdown.markdownTop" v-show="activeTabId === 'images'" />
                 <div class="body1" v-show="activeTabId === 'metrics'">
                   <div v-if="hasCitations">
                     <dataset-references :primary-publications="primaryPublications" :associated-publications="associatedPublications" :citing-publications="citingPublications" />
@@ -93,7 +94,6 @@
       </div>
       <dataset-version-message v-if="!isLatestVersion" :current-version="datasetInfo.version"
         :dataset-details="datasetInfo" />
-    
   </div>
 </template>
 
@@ -115,6 +115,7 @@ import DatasetAboutInfo from '@/components/DatasetDetails/DatasetAboutInfo.vue'
 import CitationDetails from '@/components/CitationDetails/CitationDetails.vue'
 import DatasetFilesInfo from '@/components/DatasetDetails/DatasetFilesInfo.vue'
 import SourceCodeInfo from '@/components/DatasetDetails/SourceCodeInfo.vue'
+import ImagesGallery from '@/components/ImagesGallery/ImagesGallery.vue'
 import DatasetReferences from '~/components/DatasetDetails/DatasetReferences.vue'
 import DatasetMetrics from '~/components/DatasetDetails/DatasetMetrics.vue'
 import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
@@ -126,7 +127,7 @@ const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveA
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
   var datasetUrl = version ? `${url}/versions/${version}` : url
 
-  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => { 
+  const datasetDetails = await $axios.get(datasetUrl).catch(async (error) => {
     const status = propOr('', 'status', error.response)
     // If not found, then try accessing it directly from Pennsieve in case it has been unpublished
     if (status == 404) {
@@ -221,6 +222,10 @@ const tabs = [
   {
     label: 'Cite',
     id: 'cite'
+  },
+  {
+    label: 'Gallery',
+    id: 'images'
   },
   {
     label: 'Metrics',
