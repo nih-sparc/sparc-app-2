@@ -32,7 +32,6 @@ datasetIds.forEach((datasetId) => {
             ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) ||
             ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) ||
             ('video' in response && response['video'].length) ||
-            ('organs' in response && response['organs'].length) ||
             ('abi-plot' in response && response['abi-plot'].length)
           ) {
             if ('abi-scaffold-metadata-file' in response && response['abi-scaffold-metadata-file'].length) {
@@ -40,9 +39,6 @@ datasetIds.forEach((datasetId) => {
             }
             if ('video' in response && response['video'].length) {
               existGalleryItems.push('Video')
-            }
-            if ('organs' in response && response['organs'].length) {
-              existGalleryItems.push('Flatmap')
             }
             if ('abi-simulation-omex-file' in response && response['abi-simulation-omex-file'].length) {
               existGalleryItems.push('Simulation')
@@ -54,7 +50,7 @@ datasetIds.forEach((datasetId) => {
           }
         } else {
           cy.get('.content > .full-size').should(($message) => {
-            expect($message, 'Gallery items not exist').to.contain('This dataset does not contain gallery items')
+            expect($message, 'Gallery items not exist').to.contain('This dataset does not contain any gallery item.')
           })
         }
       })

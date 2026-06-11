@@ -20,7 +20,7 @@
       </div>
       <gallery class="file-viewer-gallery" galleryItemType="fileViewer" :items="galleryItems" :cardWidth="13.8" />
     </div>
-    <div v-else>This dataset does not contain gallery items</div>
+    <div v-else>This dataset does not contain any gallery item.</div>
   </div>
 </template>
 
