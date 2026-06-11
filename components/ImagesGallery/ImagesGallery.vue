@@ -433,33 +433,6 @@ export default {
                   link: linkUrl
                 })
               }
-            } else {
-              let title = f.uberonid ? f.uberonid : null
-              if (f.organ) {
-                title = `View ${f.organ}`
-              }
-              let linkUrl = `${baseRoute}maps?type=flatmap&dataset_version=${datasetVersion}&dataset_id=${datasetId}&taxo=${f.taxo}`
-              if (f.uberonid) linkUrl = linkUrl + `&uberonid=${f.uberonid}`
-              if (f.species) linkUrl = linkUrl + `&for_species=${f.species}`
-              const item = {
-                id: f.uberonid,
-                title: title,
-                type: `${this.capitalize(
-                  f.species && f.species === flatmaps.speciesMap[f.taxo] ? f.species : 'generic'
-                )} flatmap`,
-                thumbnail: null,
-                link: linkUrl
-              }
-
-              this.scaleThumbnailImage(
-                item,
-                {
-                  mimetype: 'image/png',
-                  data: this.flatmapImg[flatmaps.speciesMap[f.taxo]]
-                },
-                true
-              )
-              items.push(item)
             }
           });
         }
