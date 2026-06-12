@@ -82,7 +82,7 @@
                     <br />
                     <hr />
                   </div>
-                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocol-suffixes="protocolSuffixes"/>
+                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocols="protocols"/>
                 </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
@@ -544,10 +544,8 @@ export default {
       const pubs = this.citationsInfo.filter(citation => citation.relationship?.toLowerCase() == 'cites' && !citation.duplicate && !citation.curie.includes("doi:10.17504/"))
       return pubs?.length > 0 ? pubs : null
     },
-    protocolSuffixes: function () {
-      return this.associatedPublications?.map(item =>
-        item.doi.startsWith("10.17504/") ? item.doi.replace("10.17504/", "") : null
-      )
+    protocols: function () {
+      return this.associatedPublications?.map(item => item.doi) ?? []
     },
     hasCitations: function () {
       return (this.primaryPublications || this.associatedPublications|| this.citingPublications) != null
