@@ -67,17 +67,17 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.18.3":
-  version "1.18.3"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.18.3.tgz#c7998f828d7e6a53edfbf74e475edf147572b46f"
-  integrity sha512-Dacw+urrnmn7GRS8tW2QeaDCfv5otf5QTFIe4xofwzPheE9Q3hCmwPlB6I7Jhs8I+PSG067WSWzl9K4ccNXHtQ==
+"@abi-software/mapintegratedvuer@1.18.4":
+  version "1.18.4"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.18.4.tgz#1e6314f138724d9479780ae85c66b55b58d75b82"
+  integrity sha512-QV3yxyn0EDdAOqASaq301C+X93X229ZG9xA16EEw1/LZ6gqcbvfcX1BLBQRPz9Nt6CZsOAq5tn5t0dN1rAC93w==
   dependencies:
     "@abi-software/flatmapvuer" "1.13.4"
     "@abi-software/map-side-bar" "^2.14.7"
     "@abi-software/map-utilities" "1.8.3"
     "@abi-software/plotvuer" "1.0.7"
     "@abi-software/scaffoldvuer" "1.15.6"
-    "@abi-software/simulationvuer" "3.0.16"
+    "@abi-software/simulationvuer" "3.2.6"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "1.0.4"
     "@element-plus/icons-vue" "^2.3.1"
@@ -145,13 +145,13 @@
     vue-router "^4.2.5"
     zincjs "1.19.0"
 
-"@abi-software/simulationvuer@3.0.16":
-  version "3.0.16"
-  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.0.16.tgz#7e007da0c55c0ebb69cc92d9db32b95fb6851c90"
-  integrity sha512-1bCW5crxxaGnyJgzi1k0Fs5cC97Vo2Q1T2++C2bUJzDxbsGsgYXym5t8hAPKV2Wwoj8o1eGYpF0xmhyivYSLDw==
+"@abi-software/simulationvuer@3.2.6":
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/@abi-software/simulationvuer/-/simulationvuer-3.2.6.tgz#4312a525fd15713efe93717c8f8e0deb1c4e9c81"
+  integrity sha512-PuTvVmJn/MNj8QwM9HBReWm5984gwcrh0kbc++YsbF8CIExRUK+Lkt2lcXdYra6kYZbMAMldrwfaAaILT3V1/A==
   dependencies:
     "@abi-software/plotvuer" "1.0.7"
-    "@opencor/opencor" "^0.20260410.0"
+    "@opencor/opencor" "^0.20260616.0"
     element-plus "2.8.4"
     jsonschema "^1.4.0"
     mathjs "^15.1.0"
@@ -4398,10 +4398,10 @@
     defu "^6.1.2"
     pathe "^1.1.1"
 
-"@opencor/opencor@^0.20260410.0":
-  version "0.20260410.0"
-  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20260410.0.tgz#ea9372b0252de80aee4a18b58275907c72b32b10"
-  integrity sha512-R3McrcEjJmk0j1SKJU6GrGpIMF44+4Gdw7he3LlmNArXXRCtMHQe0ZeUxejzTNwSvJSejIhmklWvjej9vv1slg==
+"@opencor/opencor@^0.20260616.0":
+  version "0.20260616.0"
+  resolved "https://registry.yarnpkg.com/@opencor/opencor/-/opencor-0.20260616.0.tgz#f55c1fe2aa24d8c6981dbc4a9f2b5b9f83f8b75e"
+  integrity sha512-vt4Btc3Pil+LcYp4lLnWCU0mLE+R1L4800EaKE/rXS3u+dshOxBPw89HJNm+o5CSLhuVOw4x50JhC6jGZZfg9w==
   dependencies:
     "@napi-rs/keyring" "^1.2.0"
     "@primeuix/themes" "^2.0.3"
