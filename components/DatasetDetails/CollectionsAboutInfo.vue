@@ -24,7 +24,7 @@
     <h2 class="heading2 mb-8">
       About this version
     </h2>
-    <div class="mb-16"><span class="label4">{{versionRevisionText}}: </span>Publication date: {{publicationDate}} (Last updated: {{lastPublishedDate}})</div>
+    <div class="mb-16"><span class="label4">{{versionRevisionText}}: </span>Publication date: {{publicationDate}} (Lastest publication: {{lastPublishedDate}})</div>
     <div class="mb-16"><span class="label4">Dataset DOI: </span>
       <a
           :href="doiLink"
