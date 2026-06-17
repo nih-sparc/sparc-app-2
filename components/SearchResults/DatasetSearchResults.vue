@@ -183,7 +183,7 @@ export default {
           const firstPublishedAt = pennsieve.firstPublishedAt.timestamp.split(",")[0]
           const versionPublishedAt = pennsieve.versionPublishedAt.timestamp.split(",")[0]
           return this.formatDate(firstPublishedAt) +
-                    ' (Last updated ' +
+                    ' (Latest publication ' +
                     this.formatDate(versionPublishedAt) +
                     ')'
         }
