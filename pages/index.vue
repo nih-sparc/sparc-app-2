@@ -111,6 +111,7 @@ useHead({
   ]
 })
     
+const _consortiaCache = useState('_consortiaCache', () => null)
 const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
   try {
     const { items } = await $contentfulClient.getEntries({
@@ -118,17 +119,22 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
       order: 'fields.displayOrder',
       'fields.displayOnHomepage': true,
     })
+    _consortiaCache.value = items
     return items
   } catch (err) {
     console.error('Could not fetch consortia data from Contentful.', err)
     return []
   }
-})
+}, { getCachedData: () => _consortiaCache.value || undefined })
 
+const _homepageCache = useState('_homepageCache', () => null)
 const { data: homepageData, error: homepageError } = useAsyncData('homepage', async () => {
-  return $contentfulClient.getEntry(config.public.ctf_home_page_id);
-})
+  const result = await $contentfulClient.getEntry(config.public.ctf_home_page_id)
+  _homepageCache.value = result
+  return result
+}, { getCachedData: () => _homepageCache.value || undefined })
 
+const _featuredDataCategoriesCache = useState('_featuredDataCategoriesCache', () => null)
 const { data: featuredDataCategories, error: featuredDataCategoriesError } = useAsyncData('featuredDataCategories', async () => {
   let categories = []
   await $contentfulClient.getContentType('featuredData').then(contentType => {
@@ -138,18 +144,22 @@ const { data: featuredDataCategories, error: featuredDataCategoriesError } = use
       }
     })
   })
+  _featuredDataCategoriesCache.value = categories
   return categories
-})
+}, { getCachedData: () => _featuredDataCategoriesCache.value || undefined })
 
+const _featuredDatasetsCache = useState('_featuredDatasetsCache', () => null)
 const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
   try {
     const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
+    _featuredDatasetsCache.value = response.data?.datasets
     return response.data?.datasets
   } catch {
     const response = await $axios.get(`${config.public.discover_api_host}/datasets/32`)
+    _featuredDatasetsCache.value = [response.data]
     return [response.data]
   }
-});
+}, { getCachedData: () => _featuredDatasetsCache.value || undefined });
 
 const institutionId = computed(() => 
   pathOr(

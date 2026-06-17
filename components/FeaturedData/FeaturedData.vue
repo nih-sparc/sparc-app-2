@@ -40,6 +40,12 @@ watch(
   () => props.featuredData,
   (newVal) => {
     localFeaturedData.splice(0, localFeaturedData.length, ...newVal)
+    if (selectedCategory.value) {
+      localFeaturedData.forEach(({ fields }) => {
+        fields['linkWithFacets'] = getLink(fields, facets.value)
+      })
+      selectedCategoryFeaturedData.value = localFeaturedData.filter(data => data.fields.facetType == selectedCategory.value)
+    }
   }
 )
 watch(
@@ -60,7 +66,7 @@ watch(selectedCategory, async (newCategory) => {
     // Load facets to determine links for the featured data
     const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
     const facetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping)
-    facets.value = facetsData.find(facet => facet.key == categoryKey)?.children || []
+    facets.value = Array.isArray(facetsData) ? (facetsData.find(facet => facet.key == categoryKey)?.children || []) : []
 
     // Update localFeaturedData with the links
     localFeaturedData.forEach(({ fields }) => {
