@@ -213,14 +213,14 @@
                   </template>
                 </sparc-tooltip>
               </div>
-              <div v-if="isNiftiFile(scope.row.name)" class="circle" @click="openViewerFile(scope)">
+              <div v-if="isNiftiFile(scope.row.name) && $config.public.SHOW_ORTHOGONAL_VIEWER == 'true'" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open NIfTI Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
                   </template>
                 </sparc-tooltip>
               </div>
-              <div v-if="isZarrZipFile(scope.row.name)" class="circle" @click="openViewerFile(scope)">
+              <div v-if="isZarrZipFile(scope.row.name) && $config.public.SHOW_ORTHOGONAL_VIEWER == 'true'" class="circle" @click="openViewerFile(scope)">
                 <sparc-tooltip placement="bottom-center" content="Open Zarr Viewer">
                   <template #item>
                     <svgo-icon-view class="action-icon" />
