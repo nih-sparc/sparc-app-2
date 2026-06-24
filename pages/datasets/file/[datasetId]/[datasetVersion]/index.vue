@@ -41,7 +41,7 @@
       <div v-if="hasRelatedDatasets" class="container">
         <div class="subpage">
           <div class="heading3 mb-16">
-            Find related images among other datasets that share the same award id
+            Find related dataset under the same award id
           </div>
           <gallery galleryItemType="relatedDatasets" :items="relatedDatasets" :cardWidth="12" />
         </div>
