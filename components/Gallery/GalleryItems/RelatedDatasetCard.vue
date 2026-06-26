@@ -14,7 +14,7 @@
         {{ datasetTitle }}
       </nuxt-link>-->
       <div class="description-container mb-4">
-        {{ datasetDescription }}
+        {{ datasetTitle }}
       </div>
       <nuxt-link
         :to="{
@@ -22,13 +22,10 @@
           params: {
             datasetId: datasetId
           },
-          query: {
-            datasetDetailsTab: 'images'
-          }
         }"
       >
         <el-button>
-          View Gallery
+          View Dataset
         </el-button>
       </nuxt-link>
     </el-row>
@@ -58,9 +55,6 @@ export default {
     datasetTitle() {
       return propOr('', 'name', this.item)
     },
-    datasetDescription() {
-      return propOr('', 'description', this.item)
-    },
     datasetBanner() {
       return propOr('', 'banner', this.item)
     }
@@ -73,7 +67,10 @@ export default {
   background-color: transparent;
   position: relative;
   cursor: default;
-  text-align: left;
+  text-align: center;
+  .el-row {
+    justify-content: center;
+  }
 }
 .banner-image {
   display: block;
@@ -87,6 +84,7 @@ export default {
 .description-container {
   display: -webkit-box;
   -webkit-box-orient: vertical;
+  align-content: center;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-line-clamp: 6;
