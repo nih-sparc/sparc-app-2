@@ -213,6 +213,20 @@
                   </template>
                 </sparc-tooltip>
               </div>
+              <div v-if="isNiftiFile(scope.row.name) && $config.public.SHOW_ORTHOGONAL_VIEWER == 'true'" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open NIfTI Viewer">
+                  <template #item>
+                    <svgo-icon-view class="action-icon" />
+                  </template>
+                </sparc-tooltip>
+              </div>
+              <div v-if="isZarrZipFile(scope.row.name) && $config.public.SHOW_ORTHOGONAL_VIEWER == 'true'" class="circle" @click="openViewerFile(scope)">
+                <sparc-tooltip placement="bottom-center" content="Open Zarr Viewer">
+                  <template #item>
+                    <svgo-icon-view class="action-icon" />
+                  </template>
+                </sparc-tooltip>
+              </div>
               <div class="circle" @click="setDialogSelectedFile(scope)">
                 <sparc-tooltip placement="bottom-center">
                   <template #data>
@@ -757,6 +771,15 @@ export default {
       if (!fileName) return false
       const lowerName = fileName.toLowerCase()
       return lowerName.endsWith('.ome.tiff') || lowerName.endsWith('.ome.tif')
+    },
+    isNiftiFile: function(fileName) {
+      if (!fileName) return false
+      const lowerName = fileName.toLowerCase()
+      return lowerName.endsWith('.nii') || lowerName.endsWith('.nii.gz')
+    },
+    isZarrZipFile: function(fileName) {
+      if (!fileName) return false
+      return fileName.toLowerCase().endsWith('.zarr.zip')
     },
     openViewerFile(scope) {
       const route = {
