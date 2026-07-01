@@ -349,6 +349,38 @@ export default {
         await navigateTo(doiLink, { external: true, redirectCode: 301 })
       }
 
+      useHead(() => {
+        const info = store.datasetInfo
+        if (!info?.name) return {}
+        const infoDoi = propOr('', 'doi', info)
+        const tags = propOr([], 'tags', info)
+        const licenseKey = propOr('', 'license', info)
+        return {
+          script: [{
+            type: 'application/ld+json',
+            innerHTML: JSON.stringify({
+              '@context': 'http://schema.org/',
+              '@type': 'Dataset',
+              name: info.name,
+              description: info.description || undefined,
+              url: `${config.public.ROOT_URL}/datasets/${info.id}`,
+              image: info.banner || undefined,
+              identifier: infoDoi ? `https://doi.org/${infoDoi}` : undefined,
+              license: getLicenseLink(getLicenseAbbr(licenseKey)) || undefined,
+              version: info.version?.toString(),
+              datePublished: info.firstPublishedAt || undefined,
+              keywords: tags.length ? tags : undefined,
+              creator: creators,
+              publisher: {
+                '@type': 'Organization',
+                name: 'Pennsieve Discover'
+              }
+            }),
+            key: 'schema-org-dataset'
+          }]
+        }
+      })
+
       return {
         tabs: tabsData,
         versions,

@@ -326,6 +326,7 @@ const consortiaStyle = computed(() => {
   }
   li {
     color: var(--button-and-link-color) !important;
+    border-color: var(--button-and-link-color) !important;
     background-color: var(--button-and-link-secondary-color) !important;
   }
   li.is-active {
