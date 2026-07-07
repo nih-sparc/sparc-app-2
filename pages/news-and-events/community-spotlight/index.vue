@@ -154,7 +154,6 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitCommunitySection from '~/components/NewsEventsResourcesPage/SubmitCommunitySection.vue'
 import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
-import { fetchCommunitySpotlightItems } from '../model.js'
 
 
 const searchTypes = [
@@ -170,7 +169,6 @@ const sortOptions = [
 ]
 
 const route = useRoute()
-const { $contentfulClient } = useNuxtApp()
 
 const altSearchResults = ref(null)
 const communitySpotlightFacetMenu = ref(null)
@@ -209,68 +207,53 @@ const curSearchPage = computed(() => {
   return communitySpotlightItems.value?.skip / communitySpotlightItems.value?.limit + 1
 })
 
-const { data: communitySpotlightItems } = useAsyncData('communitySpotlightItems', () => {
-  return fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, 10, 0)
-})
+const fetchItems = (limit = 10, skip = 0, overrideSortOrder = null) =>
+  $fetch('/api/contentful/community-spotlight-items', {
+    params: {
+      search: route.query.search || undefined,
+      spotlightTypes: spotlightTypes.value || undefined,
+      anatomicalStructures: selectedAnatomicalStructures.value?.join(',') || undefined,
+      sortOrder: overrideSortOrder || sortOrder.value,
+      limit,
+      skip
+    }
+  }).catch(() => ({}))
 
-const { data: anatomicalStructures } = useAsyncData('anatomicalStructures', async () => {
-  let anatomicalStructures = {}
-  await $contentfulClient.getContentType('communitySpotlight').then(contentType => {
-    contentType.fields.forEach((field) => {
-      if (field.id === 'anatomicalStructure') {
-        let structures = field.items?.validations[0]['in']
-        let facetData = []
-        structures.forEach(itemLabel => {
-          facetData.push({
-            label: itemLabel,
-            id: itemLabel,
-          })
-        })
-        anatomicalStructures = {
-          label: 'Focus',
-          id: 'spotlightAnatomicalStructure',
-          data: facetData
-        }
-      }
-    })
-  })
-  return anatomicalStructures
-})
+const { data: communitySpotlightItems } = await useAsyncData('communitySpotlightItems', () =>
+  fetchItems()
+)
+
+const { data: anatomicalStructuresRaw } = await useAsyncData('anatomicalStructures', () =>
+  $fetch('/api/contentful/community-spotlight-types').catch(() => ({}))
+)
+const anatomicalStructures = computed(() => anatomicalStructuresRaw.value || {})
 
 watch(
   () => route.query,
   async () => {
-    communitySpotlightItems.value = await fetchCommunitySpotlightItems(
-      $contentfulClient,
-      route.query.search,
-      spotlightTypes.value,
-      selectedAnatomicalStructures.value,
-      sortOrder.value,
-      10,
-      0
-    )
+    communitySpotlightItems.value = await fetchItems()
     altSearchResults.value?.retrieveAltTotals()
-  },
-  { immediate: true }
+  }
 )
 
 const onPaginationPageChange = async (page) => {
-  const { limit } = communitySpotlightItems.value
+  const limit = communitySpotlightItems.value?.limit || 10
   const offset = (page - 1) * limit
-  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, limit, offset)
-  communitySpotlightItems.value = response
+  communitySpotlightItems.value = await fetchItems(limit, offset)
 }
 
 const onPaginationLimitChange = async (limit) => {
   const newLimit = limit === 'View All' ? communitySpotlightItems.value?.total : limit
-  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, newLimit, 0)
-  communitySpotlightItems.value = response
+  communitySpotlightItems.value = await fetchItems(newLimit, 0)
 }
 
 const onSortOptionChange = async (option) => {
   selectedSortOption.value = option
-  const response = await fetchCommunitySpotlightItems($contentfulClient, route.query.search, spotlightTypes.value, selectedAnatomicalStructures.value, sortOrder.value, communitySpotlightItems.value.limit, 0)
-  communitySpotlightItems.value = response
+  communitySpotlightItems.value = await fetchItems(
+    communitySpotlightItems.value?.limit || 10,
+    0,
+    propOr('-fields.publishedDate', 'sortOrder', option)
+  )
 }
 
 const altResultsMounted = () => {

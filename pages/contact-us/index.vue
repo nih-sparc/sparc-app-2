@@ -163,25 +163,17 @@ export default {
   mixins: [MarkedMixin],
 
   setup() {
-    const { $contentfulClient } = useNuxtApp()
-    const config = useRuntimeConfig()
-    //useRecaptchaProvider()
-    return $contentfulClient
-      .getEntries({
-        content_type: config.public.ctf_contact_us_form_type_id,
-      })
-      .then(({items}) => {
+    return $fetch('/api/contentful/contact-us-form-types')
+      .then(items => {
         const extendedFormTypes = formTypes.map(formType => {
-          const entry = items.find(item => item.sys.id === formType.id)
+          const entry = items?.find(item => item.id === formType.id)
           return {
             ...formType,
-            label: entry.fields.title,
-            description: entry.fields.description
+            label: entry?.label || '',
+            description: entry?.description || '',
           }
         })
-        return {
-          formTypes: extendedFormTypes
-        }
+        return { formTypes: extendedFormTypes }
       })
       .catch(console.error)
   },

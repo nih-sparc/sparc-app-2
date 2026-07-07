@@ -143,10 +143,9 @@ const breadcrumb = [
 const title = 'News & Events';
 
 // Fetch initial data
-const { data: pageData } = await useAsyncData(() => {
-  const { $contentfulClient } = useNuxtApp()
-  return fetchData($contentfulClient, '', 2)
-});
+const { data: pageData } = await useAsyncData(() =>
+  $fetch('/api/contentful/news-and-events').catch(() => ({ upcomingEvents: {}, news: {}, page: {}, stories: {} }))
+);
 
 const page = computed(() => pageData.value?.page || {})
 const news = computed(() => pageData.value?.news || {})

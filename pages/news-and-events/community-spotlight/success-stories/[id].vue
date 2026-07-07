@@ -99,24 +99,12 @@ import { parseMarkdown } from '@/utils/formattingUtils.js'
 import { formatDate } from '@/utils/dateUtils.js'
 import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 
-const { $contentfulClient } = useNuxtApp()
 const route = useRoute()
 
 // Fetch data using useAsyncData to avoid rendering on both client and server
-const { data, error } = await useAsyncData('story', async () => {
-  try {
-    const results = await $contentfulClient.getEntries({
-      content_type: 'successStoryDisplay',
-      'fields.storyRoute[match]': route.params.id,
-      include: 1,
-      order: '-fields.publishedDate',
-    })
-    return results.items[0]?.fields || {}
-  } catch (err) {
-    console.error(err)
-    return {}
-  }
-})
+const { data, error } = await useAsyncData('story', () =>
+  $fetch(`/api/contentful/success-story/${route.params.id}`).catch(() => ({}))
+)
 
 // Variables from the fetched data
 const entry = computed(() => data.value || {})

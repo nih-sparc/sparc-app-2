@@ -4,9 +4,10 @@ export default defineEventHandler((event) => {
   const userAgent = req?.headers['user-agent']?.toLowerCase() || ''
   const url = req?.url || ''
 
-  // Skip blocking for sitemap API
-  if (url.startsWith('/api/__sitemap__/urls') || url.startsWith('/__sitemap__/')) {
-    return // allow sitemap requests through
+  // Skip blocking for API routes — includes internal SSR $fetch calls (no user-agent by design)
+  // and sitemap routes. Bot quota protection on API endpoints is handled by Nitro cache TTL.
+  if (url.startsWith('/api/') || url.startsWith('/__sitemap__/')) {
+    return
   }
   
   const botPatterns = [
@@ -23,8 +24,19 @@ export default defineEventHandler((event) => {
     /screaming frog seo spider/i, /adsbot-google/i, /sogou/i
   ]
 
-  if (userAgent == '' || botPatterns.some(pattern => pattern.test(userAgent))) {
-    console.log(`Blocked bot: ${userAgent} from IP: ${getRequestIP(event)}`)
+  const ip = req?.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || req?.socket?.remoteAddress
+    || 'unknown'
+
+  if (userAgent == '') {
+    console.log(`Blocked request with no user-agent from IP: ${ip}`)
+    res.statusCode = 403
+    res.end('Bot detected, serving 403 response.')
+    return
+  }
+
+  if (botPatterns.some(pattern => pattern.test(userAgent))) {
+    console.log(`Blocked bot: ${userAgent} from IP: ${ip}`)
     res.statusCode = 403
     res.end('Bot detected, serving 403 response.')
     return

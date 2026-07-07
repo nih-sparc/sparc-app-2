@@ -52,8 +52,6 @@ import "sparc-dashwidgets/style.css"
 
 const config = useRuntimeConfig()
 
-const { $contentfulClient } = useNuxtApp()
-
 const breadcrumb = [
   {
     label: "Home",
@@ -190,9 +188,7 @@ const dashboardOptions = ref({
 const { data: dashboardData } = await useAsyncData(
   "dashboardPage",
   async () => {
-    const pageData = await $contentfulClient.getEntry(
-      config.public.ctf_sparc_dashboard_entry_id
-    );
+    const pageData = await $fetch('/api/contentful/sparc-dashboard')
     return {
       fields: pageData.fields || {},
     };

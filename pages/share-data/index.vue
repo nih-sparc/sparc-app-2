@@ -51,12 +51,9 @@ const breadcrumb = [
 ]
 const showLoginDialog = ref(false)
 
-const { data: pageData, error } = await useAsyncData('pageData', async () => {
-  const { $contentfulClient } = useNuxtApp()
-  const config = useRuntimeConfig()
-  const pageData = await $contentfulClient.getEntry(config.public.ctf_share_data_page_id)
-  return pageData.fields
-})
+const { data: pageData, error } = await useAsyncData('pageData', () =>
+  $fetch('/api/contentful/share-data-page').catch(() => null)
+)
 
 const title = computed(() => pageData.value?.title || '')
 const summary = computed(() => pageData.value?.summary || '')

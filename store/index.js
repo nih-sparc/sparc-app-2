@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import auth from '@/services/auth.js'
-import { pathOr, propOr } from 'ramda'
+import { pathOr } from 'ramda'
 
 export const useMainStore = defineStore('main', {
   state: () => ({
@@ -26,10 +26,10 @@ export const useMainStore = defineStore('main', {
       return `${firstName} ${abbrvLastName}`
     },
     userToken(state) {
-      return propOr('', 'token', state.userProfile)
+      return state.userProfile?.token ?? ''
     },
     tokenExp(state) {
-      return propOr('', 'tokenExp', state.userProfile)
+      return state.userProfile?.tokenExp ?? ''
     },
     firstName (state) {
       return pathOr('', ['firstName'], state.userProfile)
@@ -62,8 +62,7 @@ export const useMainStore = defineStore('main', {
   actions: {
     async init() {
       const appInitializedCookie = useCookie('appInitialized')
-      if (appInitializedCookie.value === 'true') {
-        console.log('App already initialized')
+      if (!import.meta.server && appInitializedCookie.value === 'true') {
         return
       }
       try {
@@ -100,89 +99,35 @@ export const useMainStore = defineStore('main', {
       this.formOptions = value
     },
     async fetchContactUsFormOptions() {
-      const { data, error } = await useAsyncData(
+      const { data } = await useAsyncData(
         'contact-us-form-options',
-        async () => {
-          try {
-            const response = await useNuxtApp().$contentfulClient.getEntry(
-              useRuntimeConfig().public.ctf_contact_us_form_options_id
-            )
-            const fields = response.fields
-  
-            const formOptions = {
-              userTypes: propOr([], 'typeOfUser', fields),
-              areasOfSparc: propOr([], 'areaOfSparcPortal', fields),
-              services: propOr([], 'services', fields),
-              resourceCategories: propOr([], 'resourceCategories', fields),
-            }
-            return formOptions
-          } catch (e) {
-            console.error(e)
-            return null
-          }
-        },
-        {
-          server: true
-        }
+        () => $fetch('/api/contentful/form-options').catch(() => null),
+        { server: true }
       )
-
-      if (data) {
-        this.setFormOptions(data)
+      if (data.value) {
+        this.setFormOptions(data.value)
       }
     },
 
     async fetchPortalNotification() {
-      const { data, error } = await useAsyncData(
+      const { data } = await useAsyncData(
         'portal-notification',
-        async () => {
-          try {
-            const response = await useNuxtApp().$contentfulClient.getEntry(
-              useRuntimeConfig().public.ctf_portal_notification_entry_id
-            )
-            return response.fields
-          } catch (e) {
-            console.error(e)
-            return null
-          }
-        },
-        {
-          server: true
-        }
+        () => $fetch('/api/contentful/portal-notification').catch(() => null),
+        { server: true }
       )
-
-      if (data) {
-        this.setPortalNotification(data)
+      if (data.value) {
+        this.setPortalNotification(data.value)
       }
     },
 
     async fetchFooterData() {
-      const { data, error } = await useAsyncData(
+      const { data } = await useAsyncData(
         'footer-data',
-        async () => {
-          try {
-            const response = await useNuxtApp().$contentfulClient.getEntry(
-              useRuntimeConfig().public.ctf_home_page_id
-            )
-            const { footerDescription, learnMoreLinks, policiesLinks, helpUsImproveLinks, stayUpdatedLinks } = response.fields
-            return {
-              footerDescription,
-              learnMoreLinks,
-              policiesLinks,
-              helpUsImproveLinks,
-              stayUpdatedLinks,
-            }
-          } catch (e) {
-            console.error(e)
-            return null
-          }
-        },
-        {
-          server: true
-        }
+        () => $fetch('/api/contentful/footer-data').catch(() => null),
+        { server: true }
       )
-
-      if (data) {
-        this.setFooterData(data)
+      if (data.value) {
+        this.setFooterData(data.value)
       }
     },
     setUserProfile(value) {
@@ -197,6 +142,7 @@ export const useMainStore = defineStore('main', {
   },
   persist: {
     storage: persistedState.localStorage,
+    omit: ['footerData', 'portalNotification'],
   }
 })
 

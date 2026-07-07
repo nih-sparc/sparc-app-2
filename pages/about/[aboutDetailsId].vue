@@ -44,28 +44,19 @@ import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
 
 const config = useRuntimeConfig()
-const { $contentfulClient } = useNuxtApp()
 const { params } = useRoute()
 const router = useRouter()
 
 const { data: aboutDetailsItem } = useAsyncData('aboutDetailsItem', async () => {
   try {
-    const entries = await $contentfulClient.getEntries({
-      content_type: config.public.ctf_about_details_content_type_id,
-      'fields.slug': params.aboutDetailsId
-    })
-
-    if (entries.items.length === 0) {
-      const response = await $contentfulClient.getEntry(params.aboutDetailsId)
-      const slug = pathOr('', ['fields', 'slug'], response)
-
+    const result = await $fetch(`/api/contentful/about-details/${params.aboutDetailsId}`)
+    if (!result.foundBySlug) {
+      const slug = pathOr('', ['item', 'fields', 'slug'], result)
       if (!isEmpty(slug)) {
         await router.replace({ path: `/about/${slug}` })
       }
-      return response
-    } else {
-      return entries.items[0]
     }
+    return result.item
   } catch (err) {
     console.error('Error fetching about details item:', err)
     return null

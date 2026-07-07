@@ -481,23 +481,25 @@ export default {
     if (lastChar != '/') {
       options.sparcApi = options.sparcApi + '/'
     }
-    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
-    const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+    const algoliaIndex = import.meta.server ? null : await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
+    const appPage = await $fetch('/api/contentful/apps-page')
     const clientOnly = process.client
 
-    if (route.query.id) {
-      [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(clientOnly, route, $axios, options.sparcApi)
-    } else {
-      //Now check if it should open a specific view based on query
-      [
-        startingMap,
-        organ_name,
-        currentEntry,
-        successMessage,
-        failMessage,
-        facets
-      ] = await openViewWithQuery(router, route, $axios, options.sparcApi, algoliaIndex,
-        config.public.discover_api_host, $pennsieveApiClient)
+    if (!import.meta.server) {
+      if (route.query.id) {
+        [uuid, state, successMessage, failMessage] = await restoreStateWithUUID(clientOnly, route, $axios, options.sparcApi)
+      } else {
+        //Now check if it should open a specific view based on query
+        [
+          startingMap,
+          organ_name,
+          currentEntry,
+          successMessage,
+          failMessage,
+          facets
+        ] = await openViewWithQuery(router, route, $axios, options.sparcApi, algoliaIndex,
+          config.public.discover_api_host, $pennsieveApiClient)
+      }
     }
 
     return {

@@ -52,7 +52,7 @@ import { pathOr } from 'ramda'
 import { useRuntimeConfig, useAsyncData } from '#app'
 
 const config = useRuntimeConfig()
-const { $contentfulClient, $axios } = useNuxtApp()
+const { $axios } = useNuxtApp()
 useHead({
   title: 'SPARC Portal',
   meta: [
@@ -114,11 +114,7 @@ useHead({
 const _consortiaCache = useState('_consortiaCache', () => null)
 const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
   try {
-    const { items } = await $contentfulClient.getEntries({
-      content_type: config.public.ctf_consortia_content_type_id,
-      order: 'fields.displayOrder',
-      'fields.displayOnHomepage': true,
-    })
+    const items = await $fetch('/api/contentful/homepage-consortia')
     _consortiaCache.value = items
     return items
   } catch (err) {
@@ -129,21 +125,14 @@ const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaI
 
 const _homepageCache = useState('_homepageCache', () => null)
 const { data: homepageData, error: homepageError } = useAsyncData('homepage', async () => {
-  const result = await $contentfulClient.getEntry(config.public.ctf_home_page_id)
+  const result = await $fetch('/api/contentful/homepage')
   _homepageCache.value = result
   return result
 }, { getCachedData: () => _homepageCache.value || undefined })
 
 const _featuredDataCategoriesCache = useState('_featuredDataCategoriesCache', () => null)
 const { data: featuredDataCategories, error: featuredDataCategoriesError } = useAsyncData('featuredDataCategories', async () => {
-  let categories = []
-  await $contentfulClient.getContentType('featuredData').then(contentType => {
-    contentType.fields.forEach((field) => {
-      if (field.id === 'facetType') {
-        categories = field.items?.validations[0]['in']
-      }
-    })
-  })
+  const categories = await $fetch('/api/contentful/featured-data-categories').catch(() => [])
   _featuredDataCategoriesCache.value = categories
   return categories
 }, { getCachedData: () => _featuredDataCategoriesCache.value || undefined })
@@ -173,7 +162,7 @@ const { data: institutionData, error: institutionError } = useAsyncData(
   'institution',
   async () => {
     if (!institutionId.value) return null;
-    return $contentfulClient.getEntry(institutionId.value);
+    return $fetch(`/api/contentful/entry/${institutionId.value}`).catch(() => null);
   },
   { watch: [institutionId] }
 );

@@ -99,7 +99,7 @@ export default {
   async setup() {
     const { $contentfulClient } = useNuxtApp()
     const route = useRoute()
-    const resource = await $contentfulClient.getEntry(route.params.resourceId)
+    const resource = await $fetch(`/api/contentful/resource/${route.params.resourceId}`)
     const isTool = pathOr(false, ['fields', 'category'], resource)
     const parentPage = {
       label: isTool ? 'Tools' : 'Resources',

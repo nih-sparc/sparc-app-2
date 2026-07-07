@@ -143,7 +143,6 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
 import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
-import { fetchNews } from '../model'
 
 const searchTypes = [
   { label: 'News', path: 'news' },
@@ -158,7 +157,6 @@ const sortOptions = [
 ]
 
 const route = useRoute()
-const { $contentfulClient } = useNuxtApp()
 
 const altSearchResults = ref(null)
 const newsFacetMenu = ref(null)
@@ -170,66 +168,54 @@ const breadcrumb = [
   { label: 'News & Events', to: { name: 'news-and-events' } }
 ]
 
-const publishedLessThanDate = computed(() => {
-  return newsFacetMenu.value?.getPublishedLessThanDate()
-})
+const publishedLessThanDate = computed(() => newsFacetMenu.value?.getPublishedLessThanDate())
+const publishedGreaterThanOrEqualToDate = computed(() => newsFacetMenu.value?.getPublishedGreaterThanOrEqualToDate())
+const subjects = computed(() => route.query.selectedNewsSubjectIds || undefined)
+const sortOrder = computed(() => propOr('-fields.publishedDate', 'sortOrder', selectedSortOption.value))
 
-const publishedGreaterThanOrEqualToDate = computed(() => {
-  return newsFacetMenu.value?.getPublishedGreaterThanOrEqualToDate()
-})
+const fetchNewsItems = (limit = 10, skip = 0, overrideSortOrder = null) =>
+  $fetch('/api/contentful/news-items', {
+    params: {
+      search: route.query.search || undefined,
+      publishedLessThan: publishedLessThanDate.value || undefined,
+      publishedGte: publishedGreaterThanOrEqualToDate.value || undefined,
+      subjects: subjects.value || undefined,
+      sortOrder: overrideSortOrder || sortOrder.value,
+      limit,
+      skip
+    }
+  }).catch(() => ({}))
 
-const subjects = computed(() => {
-  return route.query.selectedNewsSubjectIds || undefined
-})
+const { data: news } = await useAsyncData('news', () => fetchNewsItems())
 
-const sortOrder = computed(() => {
-  return propOr('-fields.publishedDate', 'sortOrder', selectedSortOption.value)
-})
-
-const { data: news } = useAsyncData('news', () => {
-  return fetchNews($contentfulClient, route.query.search, publishedLessThanDate.value,
-  publishedGreaterThanOrEqualToDate.value, subjects.value, sortOrder.value, 10, 0)
-})
-
-const curSearchPage = computed(() => {
-  return news.value?.skip / news.value?.limit + 1
-})
+const curSearchPage = computed(() => news.value?.skip / news.value?.limit + 1)
 
 watch(
   () => route.query,
   async () => {
-    news.value = await fetchNews(
-      $contentfulClient,
-      route.query.search,
-      publishedLessThanDate.value,
-      publishedGreaterThanOrEqualToDate.value,
-      subjects.value,
-      sortOrder.value,
-      10,
-      0
-    );
+    news.value = await fetchNewsItems()
     altSearchResults.value?.retrieveAltTotals()
-  },
-  { immediate: true }
+  }
 )
 
 const onPaginationPageChange = async (page) => {
-  const { limit } = news.value
+  const limit = news.value?.limit || 10
   const offset = (page - 1) * limit
-  const response = await fetchNews($contentfulClient, route.query.search, publishedLessThanDate.value, publishedGreaterThanOrEqualToDate.value, subjects.value, sortOrder.value, limit, offset)
-  news.value = response
+  news.value = await fetchNewsItems(limit, offset)
 }
 
 const onPaginationLimitChange = async (limit) => {
   const newLimit = limit === 'View All' ? news.value?.total : limit
-  const response = await fetchNews($contentfulClient, route.query.search, publishedLessThanDate.value, publishedGreaterThanOrEqualToDate.value, subjects.value, sortOrder.value, newLimit, 0)
-  news.value = response
+  news.value = await fetchNewsItems(newLimit, 0)
 }
 
 const onSortOptionChange = async (option) => {
   selectedSortOption.value = option
-  const response = await fetchNews($contentfulClient, route.query.search, publishedLessThanDate.value, publishedGreaterThanOrEqualToDate.value, subjects.value, sortOrder.value, news.value.limit, 0)
-  news.value = response
+  news.value = await fetchNewsItems(
+    news.value?.limit || 10,
+    0,
+    propOr('-fields.publishedDate', 'sortOrder', option)
+  )
 }
 
 const altResultsMounted = () => {

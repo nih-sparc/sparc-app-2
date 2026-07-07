@@ -38,19 +38,9 @@ import FormatDate from '@/mixins/format-date'
 import { pathOr, isEmpty } from 'ramda'
 
 const getEventPage = async id => {
-  const { $contentfulClient } = useNuxtApp()
-  const config = useRuntimeConfig()
   try {
-    const isSlug = id.split('-').length > 1
-
-    const item = isSlug
-      ? await $contentfulClient.getEntries({
-          content_type: config.public.ctf_event_id,
-          'fields.slug': id
-        })
-      : await $contentfulClient.getEntry(id)
-    return isSlug ? item.items[0] : item
-  } catch (error) {
+    return await $fetch(`/api/contentful/event/${id}`)
+  } catch {
     return {}
   }
 }
