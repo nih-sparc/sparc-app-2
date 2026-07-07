@@ -20,7 +20,7 @@ export default defineCachedEventHandler(async () => {
   })
   return { projectsAnatomicalFocusFacets, consortiaTypes }
 }, {
-  maxAge: 60 * 60,
+  maxAge: 60 * 60 * 6,
   name: 'contentful-sparc-award-types',
   getKey: () => 'sparc-award-types'
 })

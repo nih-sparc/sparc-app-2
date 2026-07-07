@@ -16,7 +16,7 @@ export default defineCachedEventHandler(async (event) => {
   })
   return items
 }, {
-  maxAge: 60 * 60,
+  maxAge: 60 * 30,
   name: 'contentful-consortia-news',
   getKey: (event) => `consortia-news-${getRouterParam(event, 'id')}`
 })

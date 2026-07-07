@@ -18,7 +18,7 @@ export default defineCachedEventHandler(async (event) => {
   }
   return await client.getEntry(id)
 }, {
-  maxAge: 60 * 60,
+  maxAge: 60 * 30,
   name: 'contentful-event',
   getKey: (event) => `event-${getRouterParam(event, 'id')}`
 })

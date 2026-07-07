@@ -16,7 +16,7 @@ export default defineCachedEventHandler(async (event) => {
   })
   return items[0]?.fields || {}
 }, {
-  maxAge: 60 * 60,
+  maxAge: 60 * 30,
   name: 'contentful-success-story',
   getKey: (event) => `success-story-${getRouterParam(event, 'id')}`
 })

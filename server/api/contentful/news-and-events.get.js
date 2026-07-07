@@ -30,7 +30,7 @@ export default defineCachedEventHandler(async () => {
   ])
   return { upcomingEvents, news, page, stories }
 }, {
-  maxAge: 60 * 60,
+  maxAge: 60 * 15,
   name: 'contentful-news-and-events',
   getKey: () => 'news-and-events'
 })
