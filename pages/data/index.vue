@@ -223,7 +223,7 @@ export default {
         algoliaIndexName: config.public.ALGOLIA_INDEX_ALPHABETICAL_Z_A
       },
     ]
-    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
+    const algoliaIndex = import.meta.server ? null : await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_VERSION_PUBLISHED_TIME_DESC)
 
     const searchType = searchTypes.find(searchType => {
       return searchType.type == route.query.type
@@ -371,6 +371,7 @@ export default {
 
     selectedAlgoliaSortOption: {
       handler: function (option) {
+        if (import.meta.server) return
         this.algoliaIndex = this.$algoliaClient.initIndex(option.algoliaIndexName)
       },
       immediate: true
@@ -433,6 +434,7 @@ export default {
     },
 
     fetchResults: function () {
+      if (import.meta.server) return
       this.isLoadingSearch = true
       this.searchFailed = false
       const query = this.$route.query.search

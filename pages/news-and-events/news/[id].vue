@@ -51,17 +51,10 @@ const breadcrumb = [
 ]
 
 const route = useRoute();
-const { $contentfulClient } = useNuxtApp()
 
 const { data: page, error } = useAsyncData(
   'newsPage',
-  async () => {
-    try {
-      return await $contentfulClient.getEntry(route.params.id);
-    } catch {
-      return { fields: [] };
-    }
-  }
+  () => $fetch(`/api/contentful/entry/${route.params.id}`).catch(() => ({ fields: [] }))
 )
 
 const newsImage = computed(() =>

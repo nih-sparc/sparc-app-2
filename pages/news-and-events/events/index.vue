@@ -144,7 +144,6 @@ import SearchControlsContentful from '@/components/SearchControlsContentful/Sear
 import SortMenu from '@/components/SortMenu/SortMenu.vue'
 import SubmitNewsSection from '~/components/NewsEventsResourcesPage/SubmitNewsSection.vue'
 import AlternativeSearchResultsNews from '~/components/AlternativeSearchResults/AlternativeSearchResultsNews.vue'
-import { fetchEvents } from '../model'
 
 const searchTypes = [
   { label: 'News', path: 'news' },
@@ -160,7 +159,6 @@ const sortOptions = [
 ]
 
 const route = useRoute()
-const { $contentfulClient } = useNuxtApp()
 
 const altSearchResults = ref(null)
 const eventsFacetMenu = ref(null)
@@ -172,10 +170,20 @@ const breadcrumb = [
   { label: 'News & Events', to: { name: 'news-and-events' } }
 ]
 
-// Fetch events data using `useAsyncData` for server-side rendering
-const { data: eventsData } = useAsyncData('eventsData', async () => {
-  return await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, 10, 0)
-})
+const fetchEventsItems = (limit = 10, skip = 0, overrideSortOrder = null) =>
+  $fetch('/api/contentful/events-items', {
+    params: {
+      search: route.query.search || undefined,
+      startLessThan: startLessThanDate.value || undefined,
+      startGte: startGreaterThanOrEqualToDate.value || undefined,
+      eventTypes: eventTypes.value || undefined,
+      sortOrder: overrideSortOrder || sortOrder.value,
+      limit,
+      skip
+    }
+  }).catch(() => ({}))
+
+const { data: eventsData } = await useAsyncData('eventsData', () => fetchEventsItems())
 
 const eventItems = computed(() => {
   return eventsData.value?.items
@@ -226,41 +234,22 @@ const showPastEventsDivider = computed(() => {
 watch(
   () => route.query,
   async () => {
-    // Have to do this anywhere we are setting eventsData.value in order to force reactivity to work since we are relying on nested reactivity causing some Vue reactivity quirkyness with eventsData.items.
     eventsData.value = { ...eventsData.value, items: [] }
     await nextTick()
-    eventsData.value = await fetchEvents(
-      $contentfulClient,
-      route.query.search, 
-      startLessThanDate.value, 
-      startGreaterThanOrEqualToDate.value,
-      eventTypes.value, 
-      sortOrder.value, 
-      10, 
-      0
-    )
+    eventsData.value = await fetchEventsItems()
     altSearchResults.value?.retrieveAltTotals()
   }
 )
 
 onMounted(async () => {
-  eventsData.value = await fetchEvents(
-      $contentfulClient,
-      route.query.search, 
-      startLessThanDate.value, 
-      startGreaterThanOrEqualToDate.value,
-      eventTypes.value, 
-      sortOrder.value, 
-      10, 
-      0
-    )
+  eventsData.value = await fetchEventsItems()
   altSearchResults.value?.retrieveAltTotals()
 })
 
 const onPaginationPageChange = async (page) => {
   const limit = eventsData.value?.limit || 10
   const offset = (page - 1) * limit || 0
-  const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, limit, offset)
+  const response = await fetchEventsItems(limit, offset)
   eventsData.value = { ...eventsData.value, items: [] }
   await nextTick()
   eventsData.value = response
@@ -268,7 +257,7 @@ const onPaginationPageChange = async (page) => {
 
 const onPaginationLimitChange = async (limit) => {
   const newLimit = limit === 'View All' ? eventsData.value?.total : limit
-  const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, newLimit, 0)
+  const response = await fetchEventsItems(newLimit, 0)
   eventsData.value = { ...eventsData.value, items: [] }
   await nextTick()
   eventsData.value = response
@@ -276,7 +265,11 @@ const onPaginationLimitChange = async (limit) => {
 
 const onSortOptionChange = async (option) => {
   selectedSortOption.value = option
-  const response = await fetchEvents($contentfulClient, route.query.search, startLessThanDate.value, startGreaterThanOrEqualToDate.value, eventTypes.value, sortOrder.value, eventsData.value.limit, 0)
+  const response = await fetchEventsItems(
+    eventsData.value?.limit || 10,
+    0,
+    propOr('-fields.startDate', 'sortOrder', option)
+  )
   eventsData.value = { ...eventsData.value, items: [] }
   await nextTick()
   eventsData.value = response

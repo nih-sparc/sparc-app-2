@@ -646,10 +646,8 @@ export default {
     },
     getAssociatedProjects: async function (sparcAwardNumbers) {
       try {
-        const projects = await this.$contentfulClient.getEntries({
-          content_type: this.$config.public.ctf_project_id,
-        })
-        const associatedProjects = projects.items?.filter((project) => {
+        const projects = await $fetch('/api/contentful/projects')
+        const associatedProjects = projects?.filter((project) => {
           const awards = pathOr([], ['fields', 'awards'], project)
           return awards.some(award => sparcAwardNumbers.includes(award.fields.title))
         })

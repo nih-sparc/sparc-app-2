@@ -146,36 +146,8 @@ export default {
 
   async setup() {
     const route = useRoute()
-    const { $contentfulClient } = useNuxtApp()
-
-    let projectsAnatomicalFocusFacets = []
-    let consortiaTypes = []
-    await $contentfulClient.getContentType('sparcAward').then(contentType => {
-      contentType.fields.forEach((field) => {
-        if (field.name === 'Funding') {
-          let fundingItems = field.items?.validations[0]['in']
-          let facetData = []
-          fundingItems.forEach(itemLabel => {
-            facetData.push({
-              label: itemLabel,
-              id: itemLabel,
-            })
-          })
-          consortiaTypes = facetData
-        }
-        if (field.name === 'Focus') {
-          let focusItems = field.items?.validations[0]['in']
-          let facetData = []
-          focusItems.forEach(itemLabel => {
-            facetData.push({
-              label: itemLabel,
-              id: itemLabel,
-            })
-          })
-          projectsAnatomicalFocusFacets = facetData
-        }
-      })
-    })
+    const { projectsAnatomicalFocusFacets, consortiaTypes } = await $fetch('/api/contentful/sparc-award-types')
+      .catch(() => ({ projectsAnatomicalFocusFacets: [], consortiaTypes: [] }))
     return {
       projectsSortOptions,
       selectedProjectsSortOption: ref(projectsSortOptions.find(opt => opt.id === route.query.projectsSort) || projectsSortOptions[0]),

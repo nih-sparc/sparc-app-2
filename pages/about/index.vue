@@ -82,9 +82,7 @@ const months = [
 
 const { data: pageData, error: pageDataError } = useAsyncData('pageData', async () => {
   try {
-    const { $contentfulClient } = useNuxtApp()
-    const cfPage = await $contentfulClient.getEntry(config.public.ctf_about_page_id)
-    return cfPage.fields
+    return await $fetch('/api/contentful/about-page')
   } catch (err) {
     console.error('Could not fetch page data from Contentful.', err)
     return {}
@@ -93,13 +91,7 @@ const { data: pageData, error: pageDataError } = useAsyncData('pageData', async 
 
 const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
   try {
-    const { $contentfulClient } = useNuxtApp()
-    const { items } = await $contentfulClient.getEntries({
-      content_type: config.public.ctf_consortia_content_type_id,
-      order: 'fields.displayOrder',
-      'fields.displayOnAboutPage': true
-    })
-    return items
+    return await $fetch('/api/contentful/about-consortia')
   } catch (err) {
     console.error('Could not fetch consortia data from Contentful.', err)
     return []
@@ -113,7 +105,7 @@ const { data: metricsData, error: metricsError } = useAsyncData('metricsData', a
     const response = await $axios.get(url)
     const algoliaMetricsData = response?.data?.find(item => item.Report === 'algolia') || {}
     return {
-      totalContributors: parseInt(algoliaMetricsData['contributors.name']['countributors_count']) || 0
+      totalContributors: parseInt(algoliaMetricsData?.['contributors.name']?.['countributors_count']) || 0
     }
   } catch (err) {
     console.error(err)
@@ -164,14 +156,7 @@ const { data: totalCitationsData, error: totalCitationsError } = useAsyncData('t
 
 const { data: highlights, error: highlightsError } = useAsyncData('highlightsData', async () => {
   try {
-    const { $contentfulClient } = useNuxtApp()
-    const response = await $contentfulClient.getEntries({
-      'content_type': config.public.ctf_news_id,
-      order: '-fields.publishedDate',
-      limit: 999,
-      'fields.subject': 'Highlight'
-    })
-    return response.items
+    return await $fetch('/api/contentful/highlights')
   } catch (err) {
     console.error('Could not retrieve highlights.', err)
     return []

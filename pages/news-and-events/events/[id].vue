@@ -46,23 +46,12 @@ import { formatDate } from '@/utils/dateUtils.js'
 
 const route = useRoute()
 const router = useRouter()
-const { $contentfulClient } = useNuxtApp()
-const config = useRuntimeConfig()
 
 const { data: page, error } = useAsyncData(
   'eventPage',
   async () => {
     const id = route.params.id;
-    const isSlug = id.split('-').length > 1
-
-    const result = isSlug
-      ? await $contentfulClient.getEntries({
-          content_type: config.public.ctf_event_id,
-          'fields.slug': id
-        })
-      : await $contentfulClient.getEntry(id);
-
-    const eventPage = isSlug ? result.items[0] : result
+    const eventPage = await $fetch(`/api/contentful/event/${id}`).catch(() => null)
 
     // Redirect if the slug doesn't match
     const slug = pathOr(null, ['fields', 'slug'], eventPage)

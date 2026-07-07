@@ -227,7 +227,7 @@ export default {
     const route = useRoute()
     const { $axios, $contentfulClient } = useNuxtApp()
     try {
-      const project = await $contentfulClient.getEntry(route.params.projectId)
+      const project = await $fetch(`/api/contentful/project/${route.params.projectId}`)
       const awards = pathOr(null, ['fields','awards'], project)
 
       let associatedDatasetsResults = await Promise.all(awards.map(async (award) => {

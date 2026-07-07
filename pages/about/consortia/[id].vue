@@ -98,24 +98,13 @@ const config = useRuntimeConfig()
 const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX)
 
 const { data: consortiaItem, error: contentfulError, pending } = useAsyncData(
-  async () => {
-    const response = await $contentfulClient.getEntries({
-      content_type: config.public.ctf_consortia_content_type_id,
-      'fields.slug': route.params.id.toLowerCase(),
-    })
-    return pathOr([], ['items'], response)[0]
-  }
+  'consortia-' + route.params.id,
+  () => $fetch(`/api/contentful/consortia-item/${route.params.id}`)
 )
 
 const highlights = ref([])
-const { items } = await $contentfulClient
-  .getEntries({
-    content_type: config.public.ctf_news_id,
-    order: '-fields.publishedDate',
-    limit: 999,
-    'fields.consortiaHighlight[in]': consortiaItem.value?.fields?.slug,
-  })
-  highlights.value = items
+const highlightItems = await $fetch(`/api/contentful/consortia-news/${route.params.id}`)
+highlights.value = highlightItems || []
 
 const breadcrumb = [
   { to: { name: 'index' }, label: 'Home' },
@@ -221,6 +210,7 @@ const resetListOfAvailableDatasetIds = async (featuredDatasetIds, dateToShowFeat
 }
 
 const initFeaturedDatasets = async (item) => {
+  if (import.meta.server) return
   const fields = item.fields
   const featuredDatasetIds = pathOr('', ['featuredDatasets'], fields)
   const organizationIdFilter = pathOr('', ['organizationIdsForFeaturedDatasets'], fields)

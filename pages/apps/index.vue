@@ -67,8 +67,7 @@ const constructPortalFeatureEntries = (apps) => {
 const config = useRuntimeConfig()
 
 const { data: appData } = await useAsyncData('apps-page-data', async () => {
-  const { $contentfulClient } = useNuxtApp()
-  const appPage = await $contentfulClient.getEntry(config.public.ctf_apps_page_id)
+  const appPage = await $fetch('/api/contentful/apps-page')
   return {
     fields: appPage.fields || {},
     appEntries: constructPortalFeatureEntries(appPage.fields?.apps),

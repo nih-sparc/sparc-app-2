@@ -226,25 +226,35 @@ export default {
     }
   },
 
-  mounted() {
-    const config = useRuntimeConfig()
-    // Reset form fields when showing the form
-    this.$refs.submitForm.resetFields()
-    this.hasError = false
-
-    if (this.bugSourceUrl != undefined) {
-      const fullUrl = config.public.ROOT_URL + this.bugSourceUrl
-      this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
-    }
-
-    const form = loadForm()
-    if (form) {
-      this.form = {
-        ...this.form,
-        ...form
+  watch: {
+    bugSourceUrl(val) {
+      if (val != undefined && !this.form.pageUrl) {
+        const config = useRuntimeConfig()
+        const fullUrl = config.public.ROOT_URL + val
+        this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
       }
     }
-    populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
+  },
+
+  mounted() {
+    this.hasError = false
+    this.$refs.submitForm.resetFields()
+    // resetFields() uses nextTick internally — run our setup after it completes
+    this.$nextTick(() => {
+      if (this.bugSourceUrl != undefined) {
+        const config = useRuntimeConfig()
+        const fullUrl = config.public.ROOT_URL + this.bugSourceUrl
+        this.form.pageUrl = fullUrl.replace(/^https?:\/\//, '')
+      }
+      const form = loadForm()
+      if (form) {
+        this.form = {
+          ...this.form,
+          ...form
+        }
+      }
+      populateFormWithUserData(this.form, this.firstName, this.lastName, this.profileEmail)
+    })
   },
 
   methods: {

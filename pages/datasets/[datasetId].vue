@@ -100,7 +100,6 @@
 <script>
 import Tombstone from '@/components/Tombstone/Tombstone.vue'
 import { clone, isEmpty, propOr, pathOr, head, compose } from 'ramda'
-import { getAlgoliaFacets, facetPropPathMapping } from '../../utils/algolia'
 import { useMainStore } from '../store/index.js'
 import { mapState, mapActions } from 'pinia'
 import DatasetVersionMessage from '@/components/DatasetVersionMessage/DatasetVersionMessage.vue'
@@ -183,32 +182,6 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
-const getOrganizationIds = async (algoliaIndex) => {
-  try {
-    const { facets } = await algoliaIndex.search('', {
-      hitsPerPage: 0,
-      sortFacetValuesBy: 'alpha',
-      facets: 'pennsieve.organization.identifier',
-    })
-    return Object.keys(facets['pennsieve.organization.identifier'])
-  } catch (error) {
-    return [
-      29, //IT'IS Foundation
-      367, // SPARC
-      661, // RE-JOIN
-      666, // PRECISION
-    ]
-  }
-}
-
-const getAlgoliaMetadata = async (algoliaIndex, id) => {
-  try {
-    const response = await algoliaIndex.getObject(id)
-    return response
-  } catch (error) {
-    return null
-  }
-}
 
 const tabs = [
   {
@@ -265,19 +238,18 @@ export default {
     }
     const config = useRuntimeConfig()
     const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
-    const algoliaIndex = await $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
+    const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
     const datasetId = route.params.datasetId
-    const filter = `objectID:${datasetId}`
-    const datasetFacetsData = await getAlgoliaFacets(algoliaIndex, facetPropPathMapping, filter).then(data => {
-      return data
-    })
+    const store = useMainStore()
+    const [datasetFacetsData] = await Promise.all([
+      $fetch(`/api/algolia/dataset-facets?id=${datasetId}`).catch(() => [])
+    ])
     // If the algolia index returns nothing than the dataset has not been indexed and we should not display the details page
     const isDatasetIndexed = !isEmpty(datasetFacetsData)
     const typeFacet = datasetFacetsData.find(child => child.key === 'item.types.name')
     const datasetTypeName = typeFacet !== undefined ? typeFacet.children[0].label : 'dataset'
-    const store = useMainStore()
     try {
       let [datasetDetails, citationsInfo, versions, downloadsSummary, sparcOrganizationIds, algoliaDatasetMetadata] = await Promise.all([
         getDatasetDetails(
@@ -290,8 +262,8 @@ export default {
         getCitationsInfo(config, datasetId, $axios),
         getDatasetVersions(config, datasetId, $axios),
         getDownloadsSummary(config, $axios),
-        getOrganizationIds(algoliaIndex),
-        getAlgoliaMetadata(algoliaIndex, datasetId)
+        $fetch('/api/algolia/organization-ids').catch(() => [29, 367, 661, 666]),
+        $fetch(`/api/algolia/dataset-metadata?id=${datasetId}`).catch(() => null)
       ])
       // get contributors from Algolia and replace the list retrieved from Pennsieve because the Pennsieve list is based off
       // the user's Pennsieve account names instead of the dataset_description.xlsx file which is the point of truth. Refer to
@@ -748,10 +720,8 @@ export default {
     },
     getAssociatedProjects: async function (sparcAwardNumbers) {
       try {
-        const projects = await this.$contentfulClient.getEntries({
-          content_type: this.$config.public.ctf_project_id,
-        })
-        const associatedProjects = projects.items?.filter((project) => {
+        const projects = await $fetch('/api/contentful/projects')
+        const associatedProjects = projects?.filter((project) => {
           const awards = pathOr([], ['fields', 'awards'], project)
           return awards.some(award => sparcAwardNumbers.includes(award.fields.title))
         })

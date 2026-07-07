@@ -1,0 +1,28 @@
+import contentful from 'contentful'
+import { getQuery } from 'h3'
+
+const CTF_COMMUNITY_SPOTLIGHT_ITEM_ID = 'communitySpotlight'
+
+export default defineEventHandler(async (event) => {
+  const { search, spotlightTypes, anatomicalStructures, sortOrder, limit = 10, skip = 0 } = getQuery(event)
+  const config = useRuntimeConfig()
+  const client = contentful.createClient({
+    space: config.public.CTF_SPACE_ID,
+    accessToken: config.public.CTF_CDA_ACCESS_TOKEN,
+    host: config.public.CTF_API_HOST || 'preview.contentful.com'
+  })
+  try {
+    return await client.getEntries({
+      content_type: CTF_COMMUNITY_SPOTLIGHT_ITEM_ID,
+      order: sortOrder || '-fields.publishedDate',
+      query: search || undefined,
+      limit: parseInt(limit),
+      skip: parseInt(skip),
+      'fields.itemType[in]': spotlightTypes || undefined,
+      'fields.anatomicalStructure[in]': anatomicalStructures || undefined
+    })
+  } catch (e) {
+    console.error(e)
+    return {}
+  }
+})
