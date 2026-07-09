@@ -36,10 +36,10 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
 
-"@abi-software/map-side-bar@^2.14.7":
-  version "2.14.7"
-  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.14.7.tgz#f4684e907ffc872d14123534b4f2334eeb667542"
-  integrity sha512-3MWBS0lbf2XvnCQ8IUchShHNpc9GgONKGT6kUYxuRYXpgnz1Hncu4yHvpiXzyiJPrVTGA+iq/R3TgNcqVCJDWA==
+"@abi-software/map-side-bar@^2.15.0":
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/map-side-bar/-/map-side-bar-2.15.0.tgz#6b4ca59bbbe0390ff83d66ce71bd3706bbbbe62f"
+  integrity sha512-ju7Cnzc+oYnoRNwuadsW859Yvf6H8kqxbp14be3Rw/BHm9Kllr4d5g3S8JXKwo0PqV/CW6vfF7R+xU6c/EKdWg==
   dependencies:
     "@abi-software/gallery" "1.3.0"
     "@abi-software/map-utilities" "1.8.3"
@@ -67,16 +67,16 @@
     mitt "^3.0.1"
     vue "^3.4.21"
 
-"@abi-software/mapintegratedvuer@1.18.4":
-  version "1.18.4"
-  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.18.4.tgz#1e6314f138724d9479780ae85c66b55b58d75b82"
-  integrity sha512-QV3yxyn0EDdAOqASaq301C+X93X229ZG9xA16EEw1/LZ6gqcbvfcX1BLBQRPz9Nt6CZsOAq5tn5t0dN1rAC93w==
+"@abi-software/mapintegratedvuer@1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/mapintegratedvuer/-/mapintegratedvuer-1.19.0.tgz#00acc272efb6d8343c32fa968e9210dc27dffe93"
+  integrity sha512-bieOU/Jxi6KQHoXQJiurdxCSx7otmRd5tRtjGIzMk79UGkzRnTndc9lVIZeYQJkglLCpxIE2gNs30Oki+mD/Vg==
   dependencies:
     "@abi-software/flatmapvuer" "1.13.4"
-    "@abi-software/map-side-bar" "^2.14.7"
+    "@abi-software/map-side-bar" "^2.15.0"
     "@abi-software/map-utilities" "1.8.3"
     "@abi-software/plotvuer" "1.0.7"
-    "@abi-software/scaffoldvuer" "1.15.6"
+    "@abi-software/scaffoldvuer" "1.17.0"
     "@abi-software/simulationvuer" "3.2.6"
     "@abi-software/sparc-annotation" "0.3.2"
     "@abi-software/svg-sprite" "1.0.4"
@@ -126,10 +126,10 @@
     vue-draggable-resizable "^2.2.0"
     vue-router "^4.2.5"
 
-"@abi-software/scaffoldvuer@1.15.6":
-  version "1.15.6"
-  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.15.6.tgz#f1332252e286c3fe7d33e288e8f164ba384329bd"
-  integrity sha512-lpI7SZkDF/JBDq6v/cSZnmC2zCW2Y0yUmwnWQHSxyshjRW6T2cH1yXQhxVYtwBvLC19yxzlVS+En3vp0Jx/W8g==
+"@abi-software/scaffoldvuer@1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@abi-software/scaffoldvuer/-/scaffoldvuer-1.17.0.tgz#2da8cc32c47efa11ad6c6ff5a6c2a0be218bb495"
+  integrity sha512-e7m93oz2ajy0dD1pEngFlk4mq2uBQD5EqOCNJK3rQAT/5YZM7F0TgHZYN/IGMoVh76lRmFbtItJUhuKPY/ttzw==
   dependencies:
     "@abi-software/map-utilities" "1.8.3"
     "@abi-software/sparc-annotation" "^0.3.2"
@@ -143,7 +143,7 @@
     unplugin-vue-components "^0.26.0"
     vue "^3.4.21"
     vue-router "^4.2.5"
-    zincjs "1.19.0"
+    zincjs "^2.0.0"
 
 "@abi-software/simulationvuer@3.2.6":
   version "3.2.6"
@@ -5262,11 +5262,6 @@
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-3.0.6.tgz#a04ca19e877687bd449f5ad37d33b104b71fdf95"
   integrity sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==
 
-"@types/json-schema@^7.0.8":
-  version "7.0.15"
-  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
-  integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
-
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
@@ -6147,12 +6142,7 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ajv-keywords@^3.5.2:
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
-  integrity sha512-5p6WTN0DdTGVQk6VjcEju19IgaHudalcfabD7yhDGeA6bcQnmL+CpveLJq/3hvfwd1aof6L386Ougkx6RfyMIQ==
-
-ajv@^6.12.4, ajv@^6.12.5:
+ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
@@ -6636,11 +6626,6 @@ bidi-js@^1.0.3:
   integrity sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==
   dependencies:
     require-from-string "^2.0.2"
-
-big.js@^5.2.2:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
-  integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
 binary-extensions@^2.0.0:
   version "2.2.0"
@@ -8817,11 +8802,6 @@ emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
-
-emojis-list@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
-  integrity sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q==
 
 encodeurl@~1.0.2:
   version "1.0.2"
@@ -11540,7 +11520,7 @@ json5@^1.0.2:
   dependencies:
     minimist "^1.2.0"
 
-json5@^2.1.2, json5@^2.2.3:
+json5@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
@@ -11779,15 +11759,6 @@ load-json-file@^5.2.0:
     pify "^4.0.1"
     strip-bom "^3.0.0"
     type-fest "^0.3.0"
-
-loader-utils@^2.0.0:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-2.0.4.tgz#8b5cb38b5c34a9a018ee1fc0e6a066d1dfcc528c"
-  integrity sha512-xXqpXoINfFhgua9xiqD8fPFHgkoq1mmmpE92WlDbm9rNRd/EbRb+Gqf908T2DMfuHjjJlksiK2RbHVOdD/MqSw==
-  dependencies:
-    big.js "^5.2.2"
-    emojis-list "^3.0.0"
-    json5 "^2.1.2"
 
 loadjs@^4.2.0:
   version "4.2.0"
@@ -12184,7 +12155,7 @@ mime-db@1.52.0:
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12, mime-types@^2.1.27, mime-types@~2.1.19:
+mime-types@^2.1.12, mime-types@~2.1.19:
   version "2.1.35"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
@@ -12469,7 +12440,7 @@ next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-nifti-reader-js@^0.8.0:
+nifti-reader-js@0.8.0, nifti-reader-js@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/nifti-reader-js/-/nifti-reader-js-0.8.0.tgz#3aa2109e0139d89e625fdaba6d9ada1bd59a903a"
   integrity sha512-iO1iIhQDfKniy+l/86HfOPte7So+SxBmBiMSiUB2VXU7z4hSewMTlE3h0fCgfzfXvMUa+ilzLTJ2ZHmtFw6EWw==
@@ -14062,11 +14033,6 @@ promise-inflight@^1.0.1:
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
   integrity sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==
 
-promise-polyfill@^8.1.3:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-8.3.0.tgz#9284810268138d103807b11f4e23d5e945a4db63"
-  integrity sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==
-
 promise-retry@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/promise-retry/-/promise-retry-2.0.1.tgz#ff747a13620ab57ba688f5fc67855410c370da22"
@@ -14777,15 +14743,6 @@ saxes@^6.0.0:
   integrity sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==
   dependencies:
     xmlchars "^2.2.0"
-
-schema-utils@^3.0.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-3.3.0.tgz#f50a88877c3c01652a15b622ae9e9795df7a60fe"
-  integrity sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==
-  dependencies:
-    "@types/json-schema" "^7.0.8"
-    ajv "^6.12.5"
-    ajv-keywords "^3.5.2"
 
 scule@^1.0.0, scule@^1.1.0, scule@^1.1.1, scule@^1.2.0:
   version "1.2.0"
@@ -16389,15 +16346,6 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-url-loader@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/url-loader/-/url-loader-4.1.1.tgz#28505e905cae158cf07c92ca622d7f237e70a4e2"
-  integrity sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA==
-  dependencies:
-    loader-utils "^2.0.0"
-    mime-types "^2.1.27"
-    schema-utils "^3.0.0"
-
 url-parse@^1.5.3:
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
@@ -16406,7 +16354,7 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
-url-polyfill@^1.1.12, url-polyfill@^1.1.7:
+url-polyfill@^1.1.12:
   version "1.1.12"
   resolved "https://registry.yarnpkg.com/url-polyfill/-/url-polyfill-1.1.12.tgz#6cdaa17f6b022841b3aec0bf8dbd87ac0cd33331"
   integrity sha512-mYFmBHCapZjtcNHW0MDq9967t+z4Dmg5CJ0KqysK3+ZbyoNOWQHksGCTWwDhxGXllkWlOc10Xfko6v4a3ucM6A==
@@ -16760,11 +16708,6 @@ webpack-virtual-modules@^0.6.2:
   resolved "https://registry.yarnpkg.com/webpack-virtual-modules/-/webpack-virtual-modules-0.6.2.tgz#057faa9065c8acf48f24cb57ac0e77739ab9a7e8"
   integrity sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==
 
-webworkify-webpack@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/webworkify-webpack/-/webworkify-webpack-2.1.5.tgz#bf4336624c0626cbe85cf1ffde157f7aa90b1d1c"
-  integrity sha512-2akF8FIyUvbiBBdD+RoHpoTbHMQF2HwjcxfDvgztAX5YwbZNyrtfUMgvfgFVsgDhDPVTlkbb5vyasqDHfIDPQw==
-
 wgsl_reflect@^1.2.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/wgsl_reflect/-/wgsl_reflect-1.2.3.tgz#41985a661efdd00047e771ad7aa06ab131926a55"
@@ -17099,20 +17042,16 @@ zhead@^2.2.4:
   resolved "https://registry.yarnpkg.com/zhead/-/zhead-2.2.4.tgz#87cd1e2c3d2f465fa9f43b8db23f9716dfe6bed7"
   integrity sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==
 
-zincjs@1.19.0:
-  version "1.19.0"
-  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-1.19.0.tgz#33b6746330e6075453b1918d8d1ca9765da98096"
-  integrity sha512-NhATEXk2cU3Fj+jxVOjmjcIk8EZnETbkl1F3ypmx0/mvduBm0LZ5SZpL9+mGXCSqrFN84MB8GDOiXD7/hawYxA==
+zincjs@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/zincjs/-/zincjs-2.0.0.tgz#16820c0afcd6d874ffbc26942a4242c8434dfd68"
+  integrity sha512-vVB+bcyyKhnMsMDKDA7ALbSz1WpgM4JD6lQW2BOjIe0imKqQ+pVm7ghdv8x4M+ZX4nWnbzPRRf5TwY48Gi4+1Q==
   dependencies:
     css-element-queries "^1.2.2"
     lodash "^4.17.19"
-    nifti-reader-js "^0.8.0"
-    promise-polyfill "^8.1.3"
+    nifti-reader-js "0.8.0"
     three "^0.130.1"
     three-spritetext "1.6.2"
-    url-loader "^4.1.1"
-    url-polyfill "^1.1.7"
-    webworkify-webpack "^2.1.5"
 
 zip-js-esm@^1.1.1:
   version "1.1.1"
