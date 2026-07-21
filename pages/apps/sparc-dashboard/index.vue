@@ -41,7 +41,7 @@ import { pathOr } from "ramda";
 import { defineAsyncComponent, ref } from "vue"
 import {
   FlatmapWidget,
-  BiolucidaViewer,
+  ZarrViewer,
   SubjectSelector,
   VagusImageSelector,
   QDBGraph,
@@ -69,7 +69,7 @@ const breadcrumb = [
 
 const FlatmapCmp = defineAsyncComponent(FlatmapWidget.loader)
 const availableWidgets = [
-  { name: "BiolucidaViewer", component: markRaw(BiolucidaViewer) },
+  { name: "ZarrViewer", component: markRaw(ZarrViewer) },
   { name: "FlatmapViewer", component: markRaw(FlatmapCmp) },
   { name: "SubjectSelector", component: markRaw(SubjectSelector) },
   { name: "VagusImageSelector", component: markRaw(VagusImageSelector) },
@@ -103,8 +103,8 @@ const defaultLayout = [
         "### Image Selector",
         "Displays a list of image files that are available based off the selected filters and provides the ability to click on one for viewing",
         "",
-        "### Biolucida Viewer",
-        "Displays the image selected via the image selector widget along with its associated subject metadata and provides the ability to peruse images in more detail.",
+        "### Zarr Viewer",
+        "Displays the image selected via the image selector widget along with its associated subject metadata using an orthogonal viewer for zarr assets.",
         "",
         "### QDB Graph",
         "Displays different types of graphs and provides the ability to visualize all of the metrics available across all the different published datasets that comprise the aggregated REVA data. To edit the graph settings, hover over the graph and click the 'open graph settings' icon in the top-right. Note that any filters applied to the dashboard do not affect these results.",
@@ -145,14 +145,14 @@ const defaultLayout = [
     component: SubjectSelector,
   },
   {
-    id: "BiolucidaViewer-4",
+    id: "ZarrViewer-4",
     x: 8,
     y: 0,
     w: 4,
     h: 10,
-    componentKey: "BiolucidaViewer",
-    componentName: "Biolucida Viewer",
-    component: BiolucidaViewer,
+    componentKey: "ZarrViewer",
+    componentName: "Zarr Viewer",
+    component: ZarrViewer,
   },
   {
     id: "QDBGraph-5",
@@ -177,6 +177,7 @@ const defaultLayout = [
 const services = {
   ScicrunchApiKey: config.public.FLI_API_KEY,
   FlatmapAPI: config.public.DASHBOARD_FLATMAP_API,
+  DiscoverAPIv2: config.public.PENNSIEVE_DISCOVER_API_HOST_V2,
 };
 
 const dashboardOptions = ref({
