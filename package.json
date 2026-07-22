@@ -58,7 +58,7 @@
     "postscribe": "^2.0.8",
     "precision-dashwidgets": "1.0.0",
     "ramda": "^0.29.0",
-    "sparc-dashwidgets": "1.1.0",
+    "sparc-dashwidgets": "1.1.1",
     "sparc-design-system-components-2": "1.0.1",
     "striptags": "^3.2.0",
     "uint8array-extras": "^1.0.0",
