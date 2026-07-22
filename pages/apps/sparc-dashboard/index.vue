@@ -178,6 +178,7 @@ const services = {
   ScicrunchApiKey: config.public.FLI_API_KEY,
   FlatmapAPI: config.public.DASHBOARD_FLATMAP_API,
   DiscoverAPIv2: config.public.PENNSIEVE_DISCOVER_API_HOST_V2,
+  OrthogonalViewerURL: config.public.orthogonal_viewer_url,
 };
 
 const dashboardOptions = ref({

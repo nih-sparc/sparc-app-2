@@ -15144,10 +15144,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.2.0.tgz#836f7ce0e1a28ad116ae313e4157046b36f64006"
-  integrity sha512-uIXEFu9MtOMybLRyvGsXKaN937CqgTxYo94X/FvfKPIZSlAjS35Zcrf7ZhTzIQjhWRbcmk8t1Jvbg2ehkTXc9Q==
+sparc-dashwidgets@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.1.1.tgz#901a172438540d7fc9af9bd2a12c74b64634701d"
+  integrity sha512-DYG/nx6Uufug4crvBd9FhdZtLwRYTjO6QTgP7DQ/9PFhm4brBsOsTNwy/F/NztwTVMUkHLvoU7C0mGKjp8kLhw==
   dependencies:
     "@pennsieve-viz/core" "^0.3.2"
     "@pennsieve-viz/micro-ct" "1.0.2"
