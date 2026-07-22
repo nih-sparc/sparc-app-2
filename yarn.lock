@@ -4618,6 +4618,28 @@
     marked "^15.0.7"
     ramda "^0.31.3"
 
+"@pennsieve-viz/core@^0.3.2":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@pennsieve-viz/core/-/core-0.3.3.tgz#af0931821826737d1226cd746b5f67f7c3db4143"
+  integrity sha512-sLOH0J1ZF+eeer8yziE+rj9tBGt4XmliOFowgeDL6+kR0UC6Ni/gOBdUaWcy4dovLXQEEZEW7Ma6a7NlSh4/IQ==
+  dependencies:
+    d3 "^7.9.0"
+    dompurify "^3.2.6"
+    hyparquet "^1.12.1"
+    marked "^15.0.7"
+    ramda "^0.31.3"
+
+"@pennsieve-viz/micro-ct@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@pennsieve-viz/micro-ct/-/micro-ct-1.0.2.tgz#cae1943710bf8bacd36d249c56287fd124c936b3"
+  integrity sha512-G6tB0sY1VRe4pTdxBS7VJK1iAeE+ZFOu4aTwTZ1q/dhq2+ySNtyuBMd3I73vGyVVG30CObb4uLXzyS2vQxQxEw==
+  dependencies:
+    "@vivjs/extensions" "^0.18.0"
+    "@vivjs/layers" "^0.18.0"
+    "@vivjs/loaders" "^0.18.0"
+    "@vivjs/views" "^0.18.0"
+    geotiff "^2.1.0"
+
 "@pennsieve-viz/micro-ct@1.0.71":
   version "1.0.71"
   resolved "https://registry.yarnpkg.com/@pennsieve-viz/micro-ct/-/micro-ct-1.0.71.tgz#d168a1929796e8d108ec1b0ef38bd56e58414899"
@@ -15122,11 +15144,13 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.0.1.tgz#8ba66fd35892e1c457f6ffec55dd5ce361fefe58"
-  integrity sha512-71hvFLpplB9EbwRcpE1ghYr6Dp3nUaJiJrw4yvPqnRCI3KQfXfODD4v+TE5xwG5id3LWuAzGI68rbtHlGrQSyQ==
+sparc-dashwidgets@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.1.0.tgz#cb2e4fd19f5b542324238ee70923e273075ac464"
+  integrity sha512-o/KNSc4K/+sLunLA9/VLpGSHai77MLuwpecc5rV05+bQ+AJo0XdRtVmcj2WQhnQTbUIKD7SvYGJzX0hERE7PFw==
   dependencies:
+    "@pennsieve-viz/core" "^0.3.2"
+    "@pennsieve-viz/micro-ct" "1.0.2"
     axios "^1.6.7"
     epic-spinners "^2.0.0"
     js-base64 "^3.7.7"
@@ -15301,16 +15325,7 @@ string-split-by@^1.0.0:
   dependencies:
     parenthesis "^3.1.5"
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
+"string-width-cjs@npm:string-width@^4.2.0", string-width@4.2.3, "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3, string-width@^5.0.1, string-width@^5.1.2:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -15380,14 +15395,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -16851,7 +16859,7 @@ world-calendars@^1.0.3:
   dependencies:
     object-assign "^4.1.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -16864,15 +16872,6 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"
