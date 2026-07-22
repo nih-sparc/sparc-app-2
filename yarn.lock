@@ -15144,10 +15144,10 @@ source-map@^0.7.4:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.4.tgz#a9bbe705c9d8846f4e08ff6765acf0f1b0898656"
   integrity sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==
 
-sparc-dashwidgets@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.1.0.tgz#cb2e4fd19f5b542324238ee70923e273075ac464"
-  integrity sha512-o/KNSc4K/+sLunLA9/VLpGSHai77MLuwpecc5rV05+bQ+AJo0XdRtVmcj2WQhnQTbUIKD7SvYGJzX0hERE7PFw==
+sparc-dashwidgets@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/sparc-dashwidgets/-/sparc-dashwidgets-1.2.0.tgz#836f7ce0e1a28ad116ae313e4157046b36f64006"
+  integrity sha512-uIXEFu9MtOMybLRyvGsXKaN937CqgTxYo94X/FvfKPIZSlAjS35Zcrf7ZhTzIQjhWRbcmk8t1Jvbg2ehkTXc9Q==
   dependencies:
     "@pennsieve-viz/core" "^0.3.2"
     "@pennsieve-viz/micro-ct" "1.0.2"
@@ -16860,6 +16860,7 @@ world-calendars@^1.0.3:
     object-assign "^4.1.0"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
