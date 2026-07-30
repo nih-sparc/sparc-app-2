@@ -1,0 +1,980 @@
+diff --git a/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.js b/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.js
+index 313a1cc..4567958 100644
+--- a/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.js
++++ b/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.js
+@@ -5,43 +5,43 @@ function be(n) {
+ var we = { exports: {} };
+ /* @license
+ Papa Parse
+-v5.5.2
++v5.5.1
+ https://github.com/mholt/PapaParse
+ License: MIT
+ */
+-(function(n, u) {
+-  ((d, l) => {
+-    n.exports = l();
+-  })(Ee, function d() {
+-    var l = typeof self < "u" ? self : typeof window < "u" ? window : l !== void 0 ? l : {}, A, U = !l.document && !!l.postMessage, K = l.IS_PAPA_WORKER || !1, q = {}, V = 0, o = {};
++(function(n, l) {
++  ((c, h) => {
++    n.exports = h();
++  })(Ee, function c() {
++    var h = typeof self < "u" ? self : typeof window < "u" ? window : h !== void 0 ? h : {}, F, j = !h.document && !!h.postMessage, q = h.IS_PAPA_WORKER || !1, P = {}, Y = 0, o = {};
+     function z(e) {
+       this._handle = null, this._finished = !1, this._completed = !1, this._halted = !1, this._input = null, this._baseIndex = 0, this._partialLine = "", this._rowCount = 0, this._start = 0, this._nextChunk = null, this.isFirstChunk = !0, this._completeResults = { data: [], errors: [], meta: {} }, (function(t) {
+         var r = he(t);
+-        r.chunkSize = parseInt(r.chunkSize), t.step || t.chunk || (r.chunkSize = null), this._handle = new _e(r), (this._handle.streamer = this)._config = r;
++        r.chunkSize = parseInt(r.chunkSize), t.step || t.chunk || (r.chunkSize = null), this._handle = new pe(r), (this._handle.streamer = this)._config = r;
+       }).call(this, e), this.parseChunk = function(t, r) {
+         var s = parseInt(this._config.skipFirstNLines) || 0;
+         if (this.isFirstChunk && 0 < s) {
+-          let _ = this._config.newline;
+-          _ || (i = this._config.quoteChar || '"', _ = this._handle.guessLineEndings(t, i)), t = [...t.split(_).slice(s)].join(_);
++          let p = this._config.newline;
++          p || (i = this._config.quoteChar || '"', p = this._handle.guessLineEndings(t, i)), t = [...t.split(p).slice(s)].join(p);
+         }
+-        this.isFirstChunk && x(this._config.beforeFirstChunk) && (i = this._config.beforeFirstChunk(t)) !== void 0 && (t = i), this.isFirstChunk = !1, this._halted = !1;
++        this.isFirstChunk && E(this._config.beforeFirstChunk) && (i = this._config.beforeFirstChunk(t)) !== void 0 && (t = i), this.isFirstChunk = !1, this._halted = !1;
+         var s = this._partialLine + t, i = (this._partialLine = "", this._handle.parse(s, this._baseIndex, !this._finished));
+         if (!this._handle.paused() && !this._handle.aborted()) {
+-          if (t = i.meta.cursor, s = (this._finished || (this._partialLine = s.substring(t - this._baseIndex), this._baseIndex = t), i && i.data && (this._rowCount += i.data.length), this._finished || this._config.preview && this._rowCount >= this._config.preview), K) l.postMessage({ results: i, workerId: o.WORKER_ID, finished: s });
+-          else if (x(this._config.chunk) && !r) {
++          if (t = i.meta.cursor, s = (this._finished || (this._partialLine = s.substring(t - this._baseIndex), this._baseIndex = t), i && i.data && (this._rowCount += i.data.length), this._finished || this._config.preview && this._rowCount >= this._config.preview), q) h.postMessage({ results: i, workerId: o.WORKER_ID, finished: s });
++          else if (E(this._config.chunk) && !r) {
+             if (this._config.chunk(i, this._handle), this._handle.paused() || this._handle.aborted()) return void (this._halted = !0);
+             this._completeResults = i = void 0;
+           }
+-          return this._config.step || this._config.chunk || (this._completeResults.data = this._completeResults.data.concat(i.data), this._completeResults.errors = this._completeResults.errors.concat(i.errors), this._completeResults.meta = i.meta), this._completed || !s || !x(this._config.complete) || i && i.meta.aborted || (this._config.complete(this._completeResults, this._input), this._completed = !0), s || i && i.meta.paused || this._nextChunk(), i;
++          return this._config.step || this._config.chunk || (this._completeResults.data = this._completeResults.data.concat(i.data), this._completeResults.errors = this._completeResults.errors.concat(i.errors), this._completeResults.meta = i.meta), this._completed || !s || !E(this._config.complete) || i && i.meta.aborted || (this._config.complete(this._completeResults, this._input), this._completed = !0), s || i && i.meta.paused || this._nextChunk(), i;
+         }
+         this._halted = !0;
+       }, this._sendError = function(t) {
+-        x(this._config.error) ? this._config.error(t) : K && this._config.error && l.postMessage({ workerId: o.WORKER_ID, error: t, finished: !1 });
++        E(this._config.error) ? this._config.error(t) : q && this._config.error && h.postMessage({ workerId: o.WORKER_ID, error: t, finished: !1 });
+       };
+     }
+     function b(e) {
+       var t;
+-      (e = e || {}).chunkSize || (e.chunkSize = o.RemoteChunkSize), z.call(this, e), this._nextChunk = U ? function() {
++      (e = e || {}).chunkSize || (e.chunkSize = o.RemoteChunkSize), z.call(this, e), this._nextChunk = j ? function() {
+         this._readChunk(), this._chunkLoaded();
+       } : function() {
+         this._readChunk();
+@@ -50,7 +50,7 @@ License: MIT
+       }, this._readChunk = function() {
+         if (this._finished) this._chunkLoaded();
+         else {
+-          if (t = new XMLHttpRequest(), this._config.withCredentials && (t.withCredentials = this._config.withCredentials), U || (t.onload = ee(this._chunkLoaded, this), t.onerror = ee(this._chunkError, this)), t.open(this._config.downloadRequestBody ? "POST" : "GET", this._input, !U), this._config.downloadRequestHeaders) {
++          if (t = new XMLHttpRequest(), this._config.withCredentials && (t.withCredentials = this._config.withCredentials), j || (t.onload = Z(this._chunkLoaded, this), t.onerror = Z(this._chunkError, this)), t.open(this._config.downloadRequestBody ? "POST" : "GET", this._input, !j), this._config.downloadRequestHeaders) {
+             var r, s = this._config.downloadRequestHeaders;
+             for (r in s) t.setRequestHeader(r, s[r]);
+           }
+@@ -58,10 +58,10 @@ License: MIT
+           this._config.chunkSize && (i = this._start + this._config.chunkSize - 1, t.setRequestHeader("Range", "bytes=" + this._start + "-" + i));
+           try {
+             t.send(this._config.downloadRequestBody);
+-          } catch (_) {
+-            this._chunkError(_.message);
++          } catch (p) {
++            this._chunkError(p.message);
+           }
+-          U && t.status === 0 && this._chunkError();
++          j && t.status === 0 && this._chunkError();
+         }
+       }, this._chunkLoaded = function() {
+         t.readyState === 4 && (t.status < 200 || 400 <= t.status ? this._chunkError() : (this._start += this._config.chunkSize || t.responseText.length, this._finished = !this._config.chunkSize || this._start >= ((r) => (r = r.getResponseHeader("Content-Range")) !== null ? parseInt(r.substring(r.lastIndexOf("/") + 1)) : -1)(t), this.parseChunk(t.responseText)));
+@@ -69,23 +69,23 @@ License: MIT
+         r = t.statusText || r, this._sendError(new Error(r));
+       };
+     }
+-    function W(e) {
++    function $(e) {
+       (e = e || {}).chunkSize || (e.chunkSize = o.LocalChunkSize), z.call(this, e);
+       var t, r, s = typeof FileReader < "u";
+       this.stream = function(i) {
+-        this._input = i, r = i.slice || i.webkitSlice || i.mozSlice, s ? ((t = new FileReader()).onload = ee(this._chunkLoaded, this), t.onerror = ee(this._chunkError, this)) : t = new FileReaderSync(), this._nextChunk();
++        this._input = i, r = i.slice || i.webkitSlice || i.mozSlice, s ? ((t = new FileReader()).onload = Z(this._chunkLoaded, this), t.onerror = Z(this._chunkError, this)) : t = new FileReaderSync(), this._nextChunk();
+       }, this._nextChunk = function() {
+         this._finished || this._config.preview && !(this._rowCount < this._config.preview) || this._readChunk();
+       }, this._readChunk = function() {
+-        var i = this._input, _ = (this._config.chunkSize && (_ = Math.min(this._start + this._config.chunkSize, this._input.size), i = r.call(i, this._start, _)), t.readAsText(i, this._config.encoding));
+-        s || this._chunkLoaded({ target: { result: _ } });
++        var i = this._input, p = (this._config.chunkSize && (p = Math.min(this._start + this._config.chunkSize, this._input.size), i = r.call(i, this._start, p)), t.readAsText(i, this._config.encoding));
++        s || this._chunkLoaded({ target: { result: p } });
+       }, this._chunkLoaded = function(i) {
+         this._start += this._config.chunkSize, this._finished = !this._config.chunkSize || this._start >= this._input.size, this.parseChunk(i.target.result);
+       }, this._chunkError = function() {
+         this._sendError(t.error);
+       };
+     }
+-    function M(e) {
++    function K(e) {
+       var t;
+       z.call(this, e = e || {}), this.stream = function(r) {
+         return t = r, this._nextChunk();
+@@ -94,7 +94,7 @@ License: MIT
+         if (!this._finished) return r = this._config.chunkSize, t = r ? (s = t.substring(0, r), t.substring(r)) : (s = t, ""), this._finished = !t, this.parseChunk(s);
+       };
+     }
+-    function re(e) {
++    function ue(e) {
+       z.call(this, e = e || {});
+       var t = [], r = !0, s = !1;
+       this.pause = function() {
+@@ -107,88 +107,88 @@ License: MIT
+         s && t.length === 1 && (this._finished = !0);
+       }, this._nextChunk = function() {
+         this._checkIsFinished(), t.length ? this.parseChunk(t.shift()) : r = !0;
+-      }, this._streamData = ee(function(i) {
++      }, this._streamData = Z(function(i) {
+         try {
+           t.push(typeof i == "string" ? i : i.toString(this._config.encoding)), r && (r = !1, this._checkIsFinished(), this.parseChunk(t.shift()));
+-        } catch (_) {
+-          this._streamError(_);
++        } catch (p) {
++          this._streamError(p);
+         }
+-      }, this), this._streamError = ee(function(i) {
++      }, this), this._streamError = Z(function(i) {
+         this._streamCleanUp(), this._sendError(i);
+-      }, this), this._streamEnd = ee(function() {
++      }, this), this._streamEnd = Z(function() {
+         this._streamCleanUp(), s = !0, this._streamData("");
+-      }, this), this._streamCleanUp = ee(function() {
++      }, this), this._streamCleanUp = Z(function() {
+         this._input.removeListener("data", this._streamData), this._input.removeListener("end", this._streamEnd), this._input.removeListener("error", this._streamError);
+       }, this);
+     }
+-    function _e(e) {
+-      var t, r, s, i, _ = Math.pow(2, 53), I = -_, H = /^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/, $ = /^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/, g = this, S = 0, h = 0, P = !1, c = !1, y = [], a = { data: [], errors: [], meta: {} };
+-      function D(m) {
+-        return e.skipEmptyLines === "greedy" ? m.join("").trim() === "" : m.length === 1 && m[0].length === 0;
++    function pe(e) {
++      var t, r, s, i, p = Math.pow(2, 53), M = -p, H = /^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/, v = /^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/, x = this, u = 0, W = 0, f = !1, X = !1, _ = [], a = { data: [], errors: [], meta: {} };
++      function L(d) {
++        return e.skipEmptyLines === "greedy" ? d.join("").trim() === "" : d.length === 1 && d[0].length === 0;
+       }
+       function T() {
+-        if (a && s && (Q("Delimiter", "UndetectableDelimiter", "Unable to auto-detect delimiting character; defaulted to '" + o.DefaultDelimiter + "'"), s = !1), e.skipEmptyLines && (a.data = a.data.filter(function(f) {
+-          return !D(f);
+-        })), j()) {
+-          let f = function(C, L) {
+-            x(e.transformHeader) && (C = e.transformHeader(C, L)), y.push(C);
++        if (a && s && (B("Delimiter", "UndetectableDelimiter", "Unable to auto-detect delimiting character; defaulted to '" + o.DefaultDelimiter + "'"), s = !1), e.skipEmptyLines && (a.data = a.data.filter(function(m) {
++          return !L(m);
++        })), N()) {
++          let m = function(S, A) {
++            E(e.transformHeader) && (S = e.transformHeader(S, A)), _.push(S);
+           };
+           if (a) if (Array.isArray(a.data[0])) {
+-            for (var m = 0; j() && m < a.data.length; m++) a.data[m].forEach(f);
++            for (var d = 0; N() && d < a.data.length; d++) a.data[d].forEach(m);
+             a.data.splice(0, 1);
+-          } else a.data.forEach(f);
++          } else a.data.forEach(m);
+         }
+-        function v(f, C) {
+-          for (var L = e.header ? {} : [], w = 0; w < f.length; w++) {
+-            var E = w, k = f[w], k = ((J, p) => ((R) => (e.dynamicTypingFunction && e.dynamicTyping[R] === void 0 && (e.dynamicTyping[R] = e.dynamicTypingFunction(R)), (e.dynamicTyping[R] || e.dynamicTyping) === !0))(J) ? p === "true" || p === "TRUE" || p !== "false" && p !== "FALSE" && (((R) => {
+-              if (H.test(R) && (R = parseFloat(R), I < R && R < _))
++        function R(m, S) {
++          for (var A = e.header ? {} : [], g = 0; g < m.length; g++) {
++            var w = g, O = m[g], O = ((k, C) => ((D) => (e.dynamicTypingFunction && e.dynamicTyping[D] === void 0 && (e.dynamicTyping[D] = e.dynamicTypingFunction(D)), (e.dynamicTyping[D] || e.dynamicTyping) === !0))(k) ? C === "true" || C === "TRUE" || C !== "false" && C !== "FALSE" && (((D) => {
++              if (H.test(D) && (D = parseFloat(D), M < D && D < p))
+                 return 1;
+-            })(p) ? parseFloat(p) : $.test(p) ? new Date(p) : p === "" ? null : p) : p)(E = e.header ? w >= y.length ? "__parsed_extra" : y[w] : E, k = e.transform ? e.transform(k, E) : k);
+-            E === "__parsed_extra" ? (L[E] = L[E] || [], L[E].push(k)) : L[E] = k;
++            })(C) ? parseFloat(C) : v.test(C) ? new Date(C) : C === "" ? null : C) : C)(w = e.header ? g >= _.length ? "__parsed_extra" : _[g] : w, O = e.transform ? e.transform(O, w) : O);
++            w === "__parsed_extra" ? (A[w] = A[w] || [], A[w].push(O)) : A[w] = O;
+           }
+-          return e.header && (w > y.length ? Q("FieldMismatch", "TooManyFields", "Too many fields: expected " + y.length + " fields but parsed " + w, h + C) : w < y.length && Q("FieldMismatch", "TooFewFields", "Too few fields: expected " + y.length + " fields but parsed " + w, h + C)), L;
++          return e.header && (g > _.length ? B("FieldMismatch", "TooManyFields", "Too many fields: expected " + _.length + " fields but parsed " + g, W + S) : g < _.length && B("FieldMismatch", "TooFewFields", "Too few fields: expected " + _.length + " fields but parsed " + g, W + S)), A;
+         }
+-        var O;
+-        a && (e.header || e.dynamicTyping || e.transform) && (O = 1, !a.data.length || Array.isArray(a.data[0]) ? (a.data = a.data.map(v), O = a.data.length) : a.data = v(a.data, 0), e.header && a.meta && (a.meta.fields = y), h += O);
++        var y;
++        a && (e.header || e.dynamicTyping || e.transform) && (y = 1, !a.data.length || Array.isArray(a.data[0]) ? (a.data = a.data.map(R), y = a.data.length) : a.data = R(a.data, 0), e.header && a.meta && (a.meta.fields = _), W += y);
+       }
+-      function j() {
+-        return e.header && y.length === 0;
++      function N() {
++        return e.header && _.length === 0;
+       }
+-      function Q(m, v, O, f) {
+-        m = { type: m, code: v, message: O }, f !== void 0 && (m.row = f), a.errors.push(m);
++      function B(d, R, y, m) {
++        d = { type: d, code: R, message: y }, m !== void 0 && (d.row = m), a.errors.push(d);
+       }
+-      x(e.step) && (i = e.step, e.step = function(m) {
+-        a = m, j() ? T() : (T(), a.data.length !== 0 && (S += m.data.length, e.preview && S > e.preview ? r.abort() : (a.data = a.data[0], i(a, g))));
+-      }), this.parse = function(m, v, O) {
+-        var f = e.quoteChar || '"', f = (e.newline || (e.newline = this.guessLineEndings(m, f)), s = !1, e.delimiter ? x(e.delimiter) && (e.delimiter = e.delimiter(m), a.meta.delimiter = e.delimiter) : ((f = ((C, L, w, E, k) => {
+-          var J, p, R, te;
+-          k = k || [",", "	", "|", ";", o.RECORD_SEP, o.UNIT_SEP];
+-          for (var ie = 0; ie < k.length; ie++) {
+-            for (var Y, oe = k[ie], N = 0, G = 0, F = 0, B = (R = void 0, new le({ comments: E, delimiter: oe, newline: L, preview: 10 }).parse(C)), X = 0; X < B.data.length; X++) w && D(B.data[X]) ? F++ : (Y = B.data[X].length, G += Y, R === void 0 ? R = Y : 0 < Y && (N += Math.abs(Y - R), R = Y));
+-            0 < B.data.length && (G /= B.data.length - F), (p === void 0 || N <= p) && (te === void 0 || te < G) && 1.99 < G && (p = N, J = oe, te = G);
++      E(e.step) && (i = e.step, e.step = function(d) {
++        a = d, N() ? T() : (T(), a.data.length !== 0 && (u += d.data.length, e.preview && u > e.preview ? r.abort() : (a.data = a.data[0], i(a, x))));
++      }), this.parse = function(d, R, y) {
++        var m = e.quoteChar || '"', m = (e.newline || (e.newline = this.guessLineEndings(d, m)), s = !1, e.delimiter ? E(e.delimiter) && (e.delimiter = e.delimiter(d), a.meta.delimiter = e.delimiter) : ((m = ((S, A, g, w, O) => {
++          var k, C, D, ie;
++          O = O || [",", "	", "|", ";", o.RECORD_SEP, o.UNIT_SEP];
++          for (var re = 0; re < O.length; re++) {
++            for (var G, U = O[re], ee = 0, I = 0, Q = 0, V = (D = void 0, new le({ comments: w, delimiter: U, newline: A, preview: 10 }).parse(S)), te = 0; te < V.data.length; te++) g && L(V.data[te]) ? Q++ : (G = V.data[te].length, I += G, D === void 0 ? D = G : 0 < G && (ee += Math.abs(G - D), D = G));
++            0 < V.data.length && (I /= V.data.length - Q), (C === void 0 || ee <= C) && (ie === void 0 || ie < I) && 1.99 < I && (C = ee, k = U, ie = I);
+           }
+-          return { successful: !!(e.delimiter = J), bestDelimiter: J };
+-        })(m, e.newline, e.skipEmptyLines, e.comments, e.delimitersToGuess)).successful ? e.delimiter = f.bestDelimiter : (s = !0, e.delimiter = o.DefaultDelimiter), a.meta.delimiter = e.delimiter), he(e));
+-        return e.preview && e.header && f.preview++, t = m, r = new le(f), a = r.parse(t, v, O), T(), P ? { meta: { paused: !0 } } : a || { meta: { paused: !1 } };
++          return { successful: !!(e.delimiter = k), bestDelimiter: k };
++        })(d, e.newline, e.skipEmptyLines, e.comments, e.delimitersToGuess)).successful ? e.delimiter = m.bestDelimiter : (s = !0, e.delimiter = o.DefaultDelimiter), a.meta.delimiter = e.delimiter), he(e));
++        return e.preview && e.header && m.preview++, t = d, r = new le(m), a = r.parse(t, R, y), T(), f ? { meta: { paused: !0 } } : a || { meta: { paused: !1 } };
+       }, this.paused = function() {
+-        return P;
++        return f;
+       }, this.pause = function() {
+-        P = !0, r.abort(), t = x(e.chunk) ? "" : t.substring(r.getCharIndex());
++        f = !0, r.abort(), t = E(e.chunk) ? "" : t.substring(r.getCharIndex());
+       }, this.resume = function() {
+-        g.streamer._halted ? (P = !1, g.streamer.parseChunk(t, !0)) : setTimeout(g.resume, 3);
++        x.streamer._halted ? (f = !1, x.streamer.parseChunk(t, !0)) : setTimeout(x.resume, 3);
+       }, this.aborted = function() {
+-        return c;
++        return X;
+       }, this.abort = function() {
+-        c = !0, r.abort(), a.meta.aborted = !0, x(e.complete) && e.complete(a), t = "";
+-      }, this.guessLineEndings = function(C, f) {
+-        C = C.substring(0, 1048576);
+-        var f = new RegExp(ae(f) + "([^]*?)" + ae(f), "gm"), O = (C = C.replace(f, "")).split("\r"), f = C.split(`
+-`), C = 1 < f.length && f[0].length < O[0].length;
+-        if (O.length === 1 || C) return `
++        X = !0, r.abort(), a.meta.aborted = !0, E(e.complete) && e.complete(a), t = "";
++      }, this.guessLineEndings = function(S, m) {
++        S = S.substring(0, 1048576);
++        var m = new RegExp(ae(m) + "([^]*?)" + ae(m), "gm"), y = (S = S.replace(m, "")).split("\r"), m = S.split(`
++`), S = 1 < m.length && m[0].length < y[0].length;
++        if (y.length === 1 || S) return `
+ `;
+-        for (var L = 0, w = 0; w < O.length; w++) O[w][0] === `
+-` && L++;
+-        return L >= O.length / 2 ? `\r
++        for (var A = 0, g = 0; g < y.length; g++) y[g][0] === `
++` && A++;
++        return A >= y.length / 2 ? `\r
+ ` : "\r";
+       };
+     }
+@@ -196,117 +196,117 @@ License: MIT
+       return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+     }
+     function le(e) {
+-      var t = (e = e || {}).delimiter, r = e.newline, s = e.comments, i = e.step, _ = e.preview, I = e.fastMode, H = null, $ = !1, g = e.quoteChar == null ? '"' : e.quoteChar, S = g;
+-      if (e.escapeChar !== void 0 && (S = e.escapeChar), (typeof t != "string" || -1 < o.BAD_DELIMITERS.indexOf(t)) && (t = ","), s === t) throw new Error("Comment character same as delimiter");
++      var t = (e = e || {}).delimiter, r = e.newline, s = e.comments, i = e.step, p = e.preview, M = e.fastMode, H = null, v = e.quoteChar == null ? '"' : e.quoteChar, x = v;
++      if (e.escapeChar !== void 0 && (x = e.escapeChar), (typeof t != "string" || -1 < o.BAD_DELIMITERS.indexOf(t)) && (t = ","), s === t) throw new Error("Comment character same as delimiter");
+       s === !0 ? s = "#" : (typeof s != "string" || -1 < o.BAD_DELIMITERS.indexOf(s)) && (s = !1), r !== `
+ ` && r !== "\r" && r !== `\r
+ ` && (r = `
+ `);
+-      var h = 0, P = !1;
+-      this.parse = function(c, y, a) {
+-        if (typeof c != "string") throw new Error("Input must be a string");
+-        var D = c.length, T = t.length, j = r.length, Q = s.length, m = x(i), v = [], O = [], f = [], C = h = 0;
+-        if (!c) return N();
+-        if (I || I !== !1 && c.indexOf(g) === -1) {
+-          for (var L = c.split(r), w = 0; w < L.length; w++) {
+-            if (f = L[w], h += f.length, w !== L.length - 1) h += r.length;
+-            else if (a) return N();
+-            if (!s || f.substring(0, Q) !== s) {
+-              if (m) {
+-                if (v = [], te(f.split(t)), G(), P) return N();
+-              } else te(f.split(t));
+-              if (_ && _ <= w) return v = v.slice(0, _), N(!0);
++      var u = 0, W = !1;
++      this.parse = function(f, X, _) {
++        if (typeof f != "string") throw new Error("Input must be a string");
++        var a = f.length, L = t.length, T = r.length, N = s.length, B = E(i), d = [], R = [], y = [], m = u = 0;
++        if (!f) return U();
++        if (M || M !== !1 && f.indexOf(v) === -1) {
++          for (var S = f.split(r), A = 0; A < S.length; A++) {
++            if (y = S[A], u += y.length, A !== S.length - 1) u += r.length;
++            else if (_) return U();
++            if (!s || y.substring(0, N) !== s) {
++              if (B) {
++                if (d = [], D(y.split(t)), ee(), W) return U();
++              } else D(y.split(t));
++              if (p && p <= A) return d = d.slice(0, p), U(!0);
+             }
+           }
+-          return N();
++          return U();
+         }
+-        for (var E = c.indexOf(t, h), k = c.indexOf(r, h), J = new RegExp(ae(S) + ae(g), "g"), p = c.indexOf(g, h); ; ) if (c[h] === g) for (p = h, h++; ; ) {
+-          if ((p = c.indexOf(g, p + 1)) === -1) return a || O.push({ type: "Quotes", code: "MissingQuotes", message: "Quoted field unterminated", row: v.length, index: h }), Y();
+-          if (p === D - 1) return Y(c.substring(h, p).replace(J, g));
+-          if (g === S && c[p + 1] === S) p++;
+-          else if (g === S || p === 0 || c[p - 1] !== S) {
+-            E !== -1 && E < p + 1 && (E = c.indexOf(t, p + 1));
+-            var R = ie((k = k !== -1 && k < p + 1 ? c.indexOf(r, p + 1) : k) === -1 ? E : Math.min(E, k));
+-            if (c.substr(p + 1 + R, T) === t) {
+-              f.push(c.substring(h, p).replace(J, g)), c[h = p + 1 + R + T] !== g && (p = c.indexOf(g, h)), E = c.indexOf(t, h), k = c.indexOf(r, h);
++        for (var g = f.indexOf(t, u), w = f.indexOf(r, u), O = new RegExp(ae(x) + ae(v), "g"), k = f.indexOf(v, u); ; ) if (f[u] === v) for (k = u, u++; ; ) {
++          if ((k = f.indexOf(v, k + 1)) === -1) return _ || R.push({ type: "Quotes", code: "MissingQuotes", message: "Quoted field unterminated", row: d.length, index: u }), re();
++          if (k === a - 1) return re(f.substring(u, k).replace(O, v));
++          if (v === x && f[k + 1] === x) k++;
++          else if (v === x || k === 0 || f[k - 1] !== x) {
++            g !== -1 && g < k + 1 && (g = f.indexOf(t, k + 1));
++            var C = ie((w = w !== -1 && w < k + 1 ? f.indexOf(r, k + 1) : w) === -1 ? g : Math.min(g, w));
++            if (f.substr(k + 1 + C, L) === t) {
++              y.push(f.substring(u, k).replace(O, v)), f[u = k + 1 + C + L] !== v && (k = f.indexOf(v, u)), g = f.indexOf(t, u), w = f.indexOf(r, u);
+               break;
+             }
+-            if (R = ie(k), c.substring(p + 1 + R, p + 1 + R + j) === r) {
+-              if (f.push(c.substring(h, p).replace(J, g)), oe(p + 1 + R + j), E = c.indexOf(t, h), p = c.indexOf(g, h), m && (G(), P)) return N();
+-              if (_ && v.length >= _) return N(!0);
++            if (C = ie(w), f.substring(k + 1 + C, k + 1 + C + T) === r) {
++              if (y.push(f.substring(u, k).replace(O, v)), G(k + 1 + C + T), g = f.indexOf(t, u), k = f.indexOf(v, u), B && (ee(), W)) return U();
++              if (p && d.length >= p) return U(!0);
+               break;
+             }
+-            O.push({ type: "Quotes", code: "InvalidQuotes", message: "Trailing quote on quoted field is malformed", row: v.length, index: h }), p++;
++            R.push({ type: "Quotes", code: "InvalidQuotes", message: "Trailing quote on quoted field is malformed", row: d.length, index: u }), k++;
+           }
+         }
+-        else if (s && f.length === 0 && c.substring(h, h + Q) === s) {
+-          if (k === -1) return N();
+-          h = k + j, k = c.indexOf(r, h), E = c.indexOf(t, h);
+-        } else if (E !== -1 && (E < k || k === -1)) f.push(c.substring(h, E)), h = E + T, E = c.indexOf(t, h);
++        else if (s && y.length === 0 && f.substring(u, u + N) === s) {
++          if (w === -1) return U();
++          u = w + T, w = f.indexOf(r, u), g = f.indexOf(t, u);
++        } else if (g !== -1 && (g < w || w === -1)) y.push(f.substring(u, g)), u = g + L, g = f.indexOf(t, u);
+         else {
+-          if (k === -1) break;
+-          if (f.push(c.substring(h, k)), oe(k + j), m && (G(), P)) return N();
+-          if (_ && v.length >= _) return N(!0);
++          if (w === -1) break;
++          if (y.push(f.substring(u, w)), G(w + T), B && (ee(), W)) return U();
++          if (p && d.length >= p) return U(!0);
+         }
+-        return Y();
+-        function te(F) {
+-          v.push(F), C = h;
++        return re();
++        function D(I) {
++          d.push(I), m = u;
+         }
+-        function ie(F) {
+-          var B = 0;
+-          return B = F !== -1 && (F = c.substring(p + 1, F)) && F.trim() === "" ? F.length : B;
++        function ie(I) {
++          var Q = 0;
++          return Q = I !== -1 && (I = f.substring(k + 1, I)) && I.trim() === "" ? I.length : Q;
+         }
+-        function Y(F) {
+-          return a || (F === void 0 && (F = c.substring(h)), f.push(F), h = D, te(f), m && G()), N();
++        function re(I) {
++          return _ || (I === void 0 && (I = f.substring(u)), y.push(I), u = a, D(y), B && ee()), U();
+         }
+-        function oe(F) {
+-          h = F, te(f), f = [], k = c.indexOf(r, h);
++        function G(I) {
++          u = I, D(y), y = [], w = f.indexOf(r, u);
+         }
+-        function N(F) {
+-          if (e.header && !y && v.length && !$) {
+-            var B = v[0], X = {}, fe = new Set(B);
+-            let me = !1;
+-            for (let se = 0; se < B.length; se++) {
+-              let Z = B[se];
+-              if (X[Z = x(e.transformHeader) ? e.transformHeader(Z, se) : Z]) {
+-                let ue, ke = X[Z];
+-                for (; ue = Z + "_" + ke, ke++, fe.has(ue); ) ;
+-                fe.add(ue), B[se] = ue, X[Z]++, me = !0, (H = H === null ? {} : H)[ue] = Z;
+-              } else X[Z] = 1, B[se] = Z;
+-              fe.add(Z);
++        function U(I) {
++          if (e.header && !X && d.length) {
++            var Q = d[0], V = {}, te = new Set(Q);
++            let ye = !1;
++            for (let se = 0; se < Q.length; se++) {
++              let J = Q[se];
++              if (V[J = E(e.transformHeader) ? e.transformHeader(J, se) : J]) {
++                let oe, me = V[J];
++                for (; oe = J + "_" + me, me++, te.has(oe); ) ;
++                te.add(oe), Q[se] = oe, V[J]++, ye = !0, (H = H === null ? {} : H)[oe] = J;
++              } else V[J] = 1, Q[se] = J;
++              te.add(J);
+             }
+-            me && console.warn("Duplicate headers found and renamed."), $ = !0;
++            ye && console.warn("Duplicate headers found and renamed.");
+           }
+-          return { data: v, errors: O, meta: { delimiter: t, linebreak: r, aborted: P, truncated: !!F, cursor: C + (y || 0), renamedHeaders: H } };
++          return { data: d, errors: R, meta: { delimiter: t, linebreak: r, aborted: W, truncated: !!I, cursor: m + (X || 0), renamedHeaders: H } };
+         }
+-        function G() {
+-          i(N()), v = [], O = [];
++        function ee() {
++          i(U()), d = [], R = [];
+         }
+       }, this.abort = function() {
+-        P = !0;
++        W = !0;
+       }, this.getCharIndex = function() {
+-        return h;
++        return u;
+       };
+     }
+     function xe(e) {
+-      var t = e.data, r = q[t.workerId], s = !1;
++      var t = e.data, r = P[t.workerId], s = !1;
+       if (t.error) r.userError(t.error, t.file);
+       else if (t.results && t.results.data) {
+         var i = { abort: function() {
+-          s = !0, ge(t.workerId, { data: [], errors: [], meta: { aborted: !0 } });
+-        }, pause: ye, resume: ye };
+-        if (x(r.userStep)) {
+-          for (var _ = 0; _ < t.results.data.length && (r.userStep({ data: t.results.data[_], errors: t.results.errors, meta: t.results.meta }, i), !s); _++) ;
++          s = !0, _e(t.workerId, { data: [], errors: [], meta: { aborted: !0 } });
++        }, pause: ge, resume: ge };
++        if (E(r.userStep)) {
++          for (var p = 0; p < t.results.data.length && (r.userStep({ data: t.results.data[p], errors: t.results.errors, meta: t.results.meta }, i), !s); p++) ;
+           delete t.results;
+-        } else x(r.userChunk) && (r.userChunk(t.results, i, t.file), delete t.results);
++        } else E(r.userChunk) && (r.userChunk(t.results, i, t.file), delete t.results);
+       }
+-      t.finished && !s && ge(t.workerId, t.results);
++      t.finished && !s && _e(t.workerId, t.results);
+     }
+-    function ge(e, t) {
+-      var r = q[e];
+-      x(r.userComplete) && r.userComplete(t), r.terminate(), delete q[e];
++    function _e(e, t) {
++      var r = P[e];
++      E(r.userComplete) && r.userComplete(t), r.terminate(), delete P[e];
+     }
+-    function ye() {
++    function ge() {
+       throw new Error("Not implemented.");
+     }
+     function he(e) {
+@@ -315,112 +315,112 @@ License: MIT
+       for (t in e) r[t] = he(e[t]);
+       return r;
+     }
+-    function ee(e, t) {
++    function Z(e, t) {
+       return function() {
+         e.apply(t, arguments);
+       };
+     }
+-    function x(e) {
++    function E(e) {
+       return typeof e == "function";
+     }
+     return o.parse = function(e, t) {
+       var r = (t = t || {}).dynamicTyping || !1;
+-      if (x(r) && (t.dynamicTypingFunction = r, r = {}), t.dynamicTyping = r, t.transform = !!x(t.transform) && t.transform, !t.worker || !o.WORKERS_SUPPORTED) return r = null, o.NODE_STREAM_INPUT, typeof e == "string" ? (e = ((s) => s.charCodeAt(0) !== 65279 ? s : s.slice(1))(e), r = new (t.download ? b : M)(t)) : e.readable === !0 && x(e.read) && x(e.on) ? r = new re(t) : (l.File && e instanceof File || e instanceof Object) && (r = new W(t)), r.stream(e);
++      if (E(r) && (t.dynamicTypingFunction = r, r = {}), t.dynamicTyping = r, t.transform = !!E(t.transform) && t.transform, !t.worker || !o.WORKERS_SUPPORTED) return r = null, o.NODE_STREAM_INPUT, typeof e == "string" ? (e = ((s) => s.charCodeAt(0) !== 65279 ? s : s.slice(1))(e), r = new (t.download ? b : K)(t)) : e.readable === !0 && E(e.read) && E(e.on) ? r = new ue(t) : (h.File && e instanceof File || e instanceof Object) && (r = new $(t)), r.stream(e);
+       (r = (() => {
+         var s;
+         return !!o.WORKERS_SUPPORTED && (s = (() => {
+-          var i = l.URL || l.webkitURL || null, _ = d.toString();
+-          return o.BLOB_URL || (o.BLOB_URL = i.createObjectURL(new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ", "(", _, ")();"], { type: "text/javascript" })));
+-        })(), (s = new l.Worker(s)).onmessage = xe, s.id = V++, q[s.id] = s);
+-      })()).userStep = t.step, r.userChunk = t.chunk, r.userComplete = t.complete, r.userError = t.error, t.step = x(t.step), t.chunk = x(t.chunk), t.complete = x(t.complete), t.error = x(t.error), delete t.worker, r.postMessage({ input: e, config: t, workerId: r.id });
++          var i = h.URL || h.webkitURL || null, p = c.toString();
++          return o.BLOB_URL || (o.BLOB_URL = i.createObjectURL(new Blob([`var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; `, "(", p, ")();"], { type: "text/javascript" })));
++        })(), (s = new h.Worker(s)).onmessage = xe, s.id = Y++, P[s.id] = s);
++      })()).userStep = t.step, r.userChunk = t.chunk, r.userComplete = t.complete, r.userError = t.error, t.step = E(t.step), t.chunk = E(t.chunk), t.complete = E(t.complete), t.error = E(t.error), delete t.worker, r.postMessage({ input: e, config: t, workerId: r.id });
+     }, o.unparse = function(e, t) {
+-      var r = !1, s = !0, i = ",", _ = `\r
+-`, I = '"', H = I + I, $ = !1, g = null, S = !1, h = ((() => {
++      var r = !1, s = !0, i = ",", p = `\r
++`, M = '"', H = M + M, v = !1, x = null, u = !1, W = ((() => {
+         if (typeof t == "object") {
+-          if (typeof t.delimiter != "string" || o.BAD_DELIMITERS.filter(function(y) {
+-            return t.delimiter.indexOf(y) !== -1;
+-          }).length || (i = t.delimiter), typeof t.quotes != "boolean" && typeof t.quotes != "function" && !Array.isArray(t.quotes) || (r = t.quotes), typeof t.skipEmptyLines != "boolean" && typeof t.skipEmptyLines != "string" || ($ = t.skipEmptyLines), typeof t.newline == "string" && (_ = t.newline), typeof t.quoteChar == "string" && (I = t.quoteChar), typeof t.header == "boolean" && (s = t.header), Array.isArray(t.columns)) {
++          if (typeof t.delimiter != "string" || o.BAD_DELIMITERS.filter(function(_) {
++            return t.delimiter.indexOf(_) !== -1;
++          }).length || (i = t.delimiter), typeof t.quotes != "boolean" && typeof t.quotes != "function" && !Array.isArray(t.quotes) || (r = t.quotes), typeof t.skipEmptyLines != "boolean" && typeof t.skipEmptyLines != "string" || (v = t.skipEmptyLines), typeof t.newline == "string" && (p = t.newline), typeof t.quoteChar == "string" && (M = t.quoteChar), typeof t.header == "boolean" && (s = t.header), Array.isArray(t.columns)) {
+             if (t.columns.length === 0) throw new Error("Option columns is empty");
+-            g = t.columns;
++            x = t.columns;
+           }
+-          t.escapeChar !== void 0 && (H = t.escapeChar + I), t.escapeFormulae instanceof RegExp ? S = t.escapeFormulae : typeof t.escapeFormulae == "boolean" && t.escapeFormulae && (S = /^[=+\-@\t\r].*$/);
++          t.escapeChar !== void 0 && (H = t.escapeChar + M), t.escapeFormulae instanceof RegExp ? u = t.escapeFormulae : typeof t.escapeFormulae == "boolean" && t.escapeFormulae && (u = /^[=+\-@\t\r].*$/);
+         }
+-      })(), new RegExp(ae(I), "g"));
++      })(), new RegExp(ae(M), "g"));
+       if (typeof e == "string" && (e = JSON.parse(e)), Array.isArray(e)) {
+-        if (!e.length || Array.isArray(e[0])) return P(null, e, $);
+-        if (typeof e[0] == "object") return P(g || Object.keys(e[0]), e, $);
+-      } else if (typeof e == "object") return typeof e.data == "string" && (e.data = JSON.parse(e.data)), Array.isArray(e.data) && (e.fields || (e.fields = e.meta && e.meta.fields || g), e.fields || (e.fields = Array.isArray(e.data[0]) ? e.fields : typeof e.data[0] == "object" ? Object.keys(e.data[0]) : []), Array.isArray(e.data[0]) || typeof e.data[0] == "object" || (e.data = [e.data])), P(e.fields || [], e.data || [], $);
++        if (!e.length || Array.isArray(e[0])) return f(null, e, v);
++        if (typeof e[0] == "object") return f(x || Object.keys(e[0]), e, v);
++      } else if (typeof e == "object") return typeof e.data == "string" && (e.data = JSON.parse(e.data)), Array.isArray(e.data) && (e.fields || (e.fields = e.meta && e.meta.fields || x), e.fields || (e.fields = Array.isArray(e.data[0]) ? e.fields : typeof e.data[0] == "object" ? Object.keys(e.data[0]) : []), Array.isArray(e.data[0]) || typeof e.data[0] == "object" || (e.data = [e.data])), f(e.fields || [], e.data || [], v);
+       throw new Error("Unable to serialize unrecognized input");
+-      function P(y, a, D) {
+-        var T = "", j = (typeof y == "string" && (y = JSON.parse(y)), typeof a == "string" && (a = JSON.parse(a)), Array.isArray(y) && 0 < y.length), Q = !Array.isArray(a[0]);
+-        if (j && s) {
+-          for (var m = 0; m < y.length; m++) 0 < m && (T += i), T += c(y[m], m);
+-          0 < a.length && (T += _);
++      function f(_, a, L) {
++        var T = "", N = (typeof _ == "string" && (_ = JSON.parse(_)), typeof a == "string" && (a = JSON.parse(a)), Array.isArray(_) && 0 < _.length), B = !Array.isArray(a[0]);
++        if (N && s) {
++          for (var d = 0; d < _.length; d++) 0 < d && (T += i), T += X(_[d], d);
++          0 < a.length && (T += p);
+         }
+-        for (var v = 0; v < a.length; v++) {
+-          var O = (j ? y : a[v]).length, f = !1, C = j ? Object.keys(a[v]).length === 0 : a[v].length === 0;
+-          if (D && !j && (f = D === "greedy" ? a[v].join("").trim() === "" : a[v].length === 1 && a[v][0].length === 0), D === "greedy" && j) {
+-            for (var L = [], w = 0; w < O; w++) {
+-              var E = Q ? y[w] : w;
+-              L.push(a[v][E]);
++        for (var R = 0; R < a.length; R++) {
++          var y = (N ? _ : a[R]).length, m = !1, S = N ? Object.keys(a[R]).length === 0 : a[R].length === 0;
++          if (L && !N && (m = L === "greedy" ? a[R].join("").trim() === "" : a[R].length === 1 && a[R][0].length === 0), L === "greedy" && N) {
++            for (var A = [], g = 0; g < y; g++) {
++              var w = B ? _[g] : g;
++              A.push(a[R][w]);
+             }
+-            f = L.join("").trim() === "";
++            m = A.join("").trim() === "";
+           }
+-          if (!f) {
+-            for (var k = 0; k < O; k++) {
+-              0 < k && !C && (T += i);
+-              var J = j && Q ? y[k] : k;
+-              T += c(a[v][J], k);
++          if (!m) {
++            for (var O = 0; O < y; O++) {
++              0 < O && !S && (T += i);
++              var k = N && B ? _[O] : O;
++              T += X(a[R][k], O);
+             }
+-            v < a.length - 1 && (!D || 0 < O && !C) && (T += _);
++            R < a.length - 1 && (!L || 0 < y && !S) && (T += p);
+           }
+         }
+         return T;
+       }
+-      function c(y, a) {
+-        var D, T;
+-        return y == null ? "" : y.constructor === Date ? JSON.stringify(y).slice(1, 25) : (T = !1, S && typeof y == "string" && S.test(y) && (y = "'" + y, T = !0), D = y.toString().replace(h, H), (T = T || r === !0 || typeof r == "function" && r(y, a) || Array.isArray(r) && r[a] || ((j, Q) => {
+-          for (var m = 0; m < Q.length; m++) if (-1 < j.indexOf(Q[m])) return !0;
++      function X(_, a) {
++        var L, T;
++        return _ == null ? "" : _.constructor === Date ? JSON.stringify(_).slice(1, 25) : (T = !1, u && typeof _ == "string" && u.test(_) && (_ = "'" + _, T = !0), L = _.toString().replace(W, H), (T = T || r === !0 || typeof r == "function" && r(_, a) || Array.isArray(r) && r[a] || ((N, B) => {
++          for (var d = 0; d < B.length; d++) if (-1 < N.indexOf(B[d])) return !0;
+           return !1;
+-        })(D, o.BAD_DELIMITERS) || -1 < D.indexOf(i) || D.charAt(0) === " " || D.charAt(D.length - 1) === " ") ? I + D + I : D);
++        })(L, o.BAD_DELIMITERS) || -1 < L.indexOf(i) || L.charAt(0) === " " || L.charAt(L.length - 1) === " ") ? M + L + M : L);
+       }
+     }, o.RECORD_SEP = "", o.UNIT_SEP = "", o.BYTE_ORDER_MARK = "\uFEFF", o.BAD_DELIMITERS = ["\r", `
+-`, '"', o.BYTE_ORDER_MARK], o.WORKERS_SUPPORTED = !U && !!l.Worker, o.NODE_STREAM_INPUT = 1, o.LocalChunkSize = 10485760, o.RemoteChunkSize = 5242880, o.DefaultDelimiter = ",", o.Parser = le, o.ParserHandle = _e, o.NetworkStreamer = b, o.FileStreamer = W, o.StringStreamer = M, o.ReadableStreamStreamer = re, l.jQuery && ((A = l.jQuery).fn.parse = function(e) {
++`, '"', o.BYTE_ORDER_MARK], o.WORKERS_SUPPORTED = !j && !!h.Worker, o.NODE_STREAM_INPUT = 1, o.LocalChunkSize = 10485760, o.RemoteChunkSize = 5242880, o.DefaultDelimiter = ",", o.Parser = le, o.ParserHandle = pe, o.NetworkStreamer = b, o.FileStreamer = $, o.StringStreamer = K, o.ReadableStreamStreamer = ue, h.jQuery && ((F = h.jQuery).fn.parse = function(e) {
+       var t = e.config || {}, r = [];
+-      return this.each(function(_) {
+-        if (!(A(this).prop("tagName").toUpperCase() === "INPUT" && A(this).attr("type").toLowerCase() === "file" && l.FileReader) || !this.files || this.files.length === 0) return !0;
+-        for (var I = 0; I < this.files.length; I++) r.push({ file: this.files[I], inputElem: this, instanceConfig: A.extend({}, t) });
++      return this.each(function(p) {
++        if (!(F(this).prop("tagName").toUpperCase() === "INPUT" && F(this).attr("type").toLowerCase() === "file" && h.FileReader) || !this.files || this.files.length === 0) return !0;
++        for (var M = 0; M < this.files.length; M++) r.push({ file: this.files[M], inputElem: this, instanceConfig: F.extend({}, t) });
+       }), s(), this;
+       function s() {
+-        if (r.length === 0) x(e.complete) && e.complete();
++        if (r.length === 0) E(e.complete) && e.complete();
+         else {
+-          var _, I, H, $, g = r[0];
+-          if (x(e.before)) {
+-            var S = e.before(g.file, g.inputElem);
+-            if (typeof S == "object") {
+-              if (S.action === "abort") return _ = "AbortError", I = g.file, H = g.inputElem, $ = S.reason, void (x(e.error) && e.error({ name: _ }, I, H, $));
+-              if (S.action === "skip") return void i();
+-              typeof S.config == "object" && (g.instanceConfig = A.extend(g.instanceConfig, S.config));
+-            } else if (S === "skip") return void i();
++          var p, M, H, v, x = r[0];
++          if (E(e.before)) {
++            var u = e.before(x.file, x.inputElem);
++            if (typeof u == "object") {
++              if (u.action === "abort") return p = "AbortError", M = x.file, H = x.inputElem, v = u.reason, void (E(e.error) && e.error({ name: p }, M, H, v));
++              if (u.action === "skip") return void i();
++              typeof u.config == "object" && (x.instanceConfig = F.extend(x.instanceConfig, u.config));
++            } else if (u === "skip") return void i();
+           }
+-          var h = g.instanceConfig.complete;
+-          g.instanceConfig.complete = function(P) {
+-            x(h) && h(P, g.file, g.inputElem), i();
+-          }, o.parse(g.file, g.instanceConfig);
++          var W = x.instanceConfig.complete;
++          x.instanceConfig.complete = function(f) {
++            E(W) && W(f, x.file, x.inputElem), i();
++          }, o.parse(x.file, x.instanceConfig);
+         }
+       }
+       function i() {
+         r.splice(0, 1), s();
+       }
+-    }), K && (l.onmessage = function(e) {
+-      e = e.data, o.WORKER_ID === void 0 && e && (o.WORKER_ID = e.workerId), typeof e.input == "string" ? l.postMessage({ workerId: o.WORKER_ID, results: o.parse(e.input, e.config), finished: !0 }) : (l.File && e.input instanceof File || e.input instanceof Object) && (e = o.parse(e.input, e.config)) && l.postMessage({ workerId: o.WORKER_ID, results: e, finished: !0 });
+-    }), (b.prototype = Object.create(z.prototype)).constructor = b, (W.prototype = Object.create(z.prototype)).constructor = W, (M.prototype = Object.create(M.prototype)).constructor = M, (re.prototype = Object.create(z.prototype)).constructor = re, o;
++    }), q && (h.onmessage = function(e) {
++      e = e.data, o.WORKER_ID === void 0 && e && (o.WORKER_ID = e.workerId), typeof e.input == "string" ? h.postMessage({ workerId: o.WORKER_ID, results: o.parse(e.input, e.config), finished: !0 }) : (h.File && e.input instanceof File || e.input instanceof Object) && (e = o.parse(e.input, e.config)) && h.postMessage({ workerId: o.WORKER_ID, results: e, finished: !0 });
++    }), (b.prototype = Object.create(z.prototype)).constructor = b, ($.prototype = Object.create(z.prototype)).constructor = $, (K.prototype = Object.create(K.prototype)).constructor = K, (ue.prototype = Object.create(z.prototype)).constructor = ue, o;
+   });
+ })(we);
+-var Re = we.exports;
+-const de = /* @__PURE__ */ be(Re);
+-function ce(n) {
+-  const u = {
++var ve = we.exports;
++const fe = /* @__PURE__ */ be(ve);
++function de(n) {
++  const l = {
+     "x-axis-column": 0,
+     "y-axes-columns": [],
+     "no-header": !1,
+@@ -430,177 +430,173 @@ function ce(n) {
+     "column-header-size": 1,
+     "column-header-index": 0
+   };
+-  return n.attrs = { ...u, ...n.attrs }, n;
++  return n.attrs = { ...l, ...n.attrs }, n;
+ }
+-function Se(n) {
++function Re(n) {
+   return n[0].map(
+-    (u, d) => n.map((l) => l[d])
++    (l, c) => n.map((h) => h[c])
+   );
+ }
+-function Oe(n, u) {
+-  if (u.attrs["y-axes-columns"].length === 0) {
+-    let d = [...Array(n[0].length).keys()];
+-    d.splice(u.attrs["x-axis-column"], 1), u.attrs["y-axes-columns"] = d;
++function Se(n, l) {
++  if (l.attrs["y-axes-columns"].length === 0) {
++    let c = [...Array(n[0].length).keys()];
++    c.splice(l.attrs["x-axis-column"], 1), l.attrs["y-axes-columns"] = c;
+   }
+ }
+-function Ce(n, u, d) {
+-  const l = n[0][u.attrs["x-axis-column"]];
+-  let A = [];
+-  u.attrs["no-header"] ? d && d["header-info"] && (A = d["header-info"][0]) : (A = n[0], n = n.slice(1)), Oe(n, u);
+-  const U = Se(n), K = U[u.attrs["x-axis-column"]], q = u.attrs["trace-colours"];
+-  let V = [], o = 0;
+-  for (let W of u.attrs["y-axes-columns"]) {
+-    const M = q ? q[o] : void 0;
+-    o += 1;
+-    const re = {
+-      x: K,
+-      y: U[W],
+-      name: A[W],
++function Oe(n, l, c) {
++  const h = n[0][l.attrs["x-axis-column"]];
++  let F = [];
++  l.attrs["no-header"] ? c["header-info"] && (F = c["header-info"][0]) : (F = n[0], n = n.slice(1)), Se(n, l);
++  const j = Re(n), q = j[l.attrs["x-axis-column"]];
++  let P = [];
++  for (let z of l.attrs["y-axes-columns"])
++    P.push({
++      x: q,
++      y: j[z],
++      name: F[z],
+       mode: "lines"
+-    };
+-    M && (re.line = { color: M }), V.push(re);
+-  }
+-  return { plotly_data: V, plotly_layout: {
++    });
++  return { plotly_data: P, plotly_layout: {
+     xaxis: {
+       title: {
+-        text: l
++        text: h
+       }
+     }
+   }, plotly_options: {} };
+ }
+-function Te(n, u) {
+-  n.value.forEach((d) => {
+-    d.visible = u.x.length == 0 || u.x.includes(d.name);
++function Ce(n, l) {
++  n.value.forEach((c) => {
++    c.visible = l.x.length == 0 || l.x.includes(c.name);
+   });
+ }
+-function Ae(n, u) {
+-  let d = { x: [], y: [] };
+-  n.value.forEach((l) => {
+-    l.name && d.x.push(l.name);
+-  }), u.value.x = d.x, u.value.y = d.y;
++function Te(n, l) {
++  let c = { x: [], y: [] };
++  n.value.forEach((h) => {
++    h.name && c.x.push(h.name);
++  }), l.value.x = c.x, l.value.y = c.y;
+ }
+-function Ie(n, u, d) {
++function Ae(n, l, c) {
+   var z;
+-  let l = [...n[u.attrs["column-header-index"]]];
+-  const A = l.slice(u.attrs["row-header-size"]);
+-  l = n.map((b) => b[u.attrs["row-header-index"]]);
+-  const U = l.slice(u.attrs["column-header-size"]), K = n.slice(u.attrs["column-header-size"]).map((b) => b.slice(u.attrs["row-header-size"]));
+-  return (z = u == null ? void 0 : u.attrs) != null && z.logScale && K.forEach((b) => {
+-    b.forEach((W, M) => {
+-      b[M] = Math.log10(W);
++  let h = [...n[l.attrs["column-header-index"]]];
++  const F = h.slice(l.attrs["row-header-size"]);
++  h = n.map((b) => b[l.attrs["row-header-index"]]);
++  const j = h.slice(l.attrs["column-header-size"]), q = n.slice(l.attrs["column-header-size"]).map((b) => b.slice(l.attrs["row-header-size"]));
++  return (z = l == null ? void 0 : l.attrs) != null && z.logScale && q.forEach((b) => {
++    b.forEach(($, K) => {
++      b[K] = Math.log10($);
+     });
+   }), { plotly_data: [
+     {
+-      x: A,
+-      y: U,
+-      z: K,
++      x: F,
++      y: j,
++      z: q,
+       type: "heatmap"
+     }
+   ], plotly_layout: {}, plotly_options: {} };
+ }
+-function De(n, u) {
+-  const d = n.value[0];
+-  let l = ve(u.x, d.x), A = ve(u.y, d.y), U = [];
+-  d.z.forEach((q) => {
+-    U.push([...q]);
++function De(n, l) {
++  const c = n.value[0];
++  let h = ke(l.x, c.x), F = ke(l.y, c.y), j = [];
++  c.z.forEach((P) => {
++    j.push([...P]);
+   });
+-  let K = [];
+-  return A.forEach((q) => {
+-    const V = U[q];
++  let q = [];
++  return F.forEach((P) => {
++    const Y = j[P];
+     let o = [];
+-    l.forEach((z) => {
+-      o.push(V[z]);
+-    }), K.push(o);
++    h.forEach((z) => {
++      o.push(Y[z]);
++    }), q.push(o);
+   }), [
+     {
+-      x: u.x.length ? u.x : d.x,
+-      y: u.y.length ? u.y : d.y,
+-      z: K,
++      x: l.x.length ? l.x : c.x,
++      y: l.y.length ? l.y : c.y,
++      z: q,
+       type: "heatmap"
+     }
+   ];
+ }
+-function ve(n, u) {
+-  let d = [];
+-  return n.length > 0 ? n.forEach((l) => {
+-    d.push(u.indexOf(l));
+-  }) : d = [...Array(u.length).keys()], d;
++function ke(n, l) {
++  let c = [];
++  return n.length > 0 ? n.forEach((h) => {
++    c.push(l.indexOf(h));
++  }) : c = [...Array(l.length).keys()], c;
+ }
+-function Le(n, u) {
+-  function d(l) {
+-    return !!l;
++function Ie(n, l) {
++  function c(h) {
++    return !!h;
+   }
+-  u.value.x = n.value[0].x.filter(d), u.value.y = n.value[0].y.filter(d);
++  l.value.x = n.value[0].x.filter(c), l.value.y = n.value[0].y.filter(c);
+ }
+-const Fe = ["1.2.0", "1.1.0"], ne = ["timeseries", "heatmap"];
+-function ze(n) {
+-  return n.version && Fe.includes(n.version);
++const Le = ["1.2.0", "1.1.0"], ne = ["timeseries", "heatmap"];
++function Fe(n) {
++  return n.version && Le.includes(n.version);
+ }
+-function Me(n) {
++function ze(n) {
+   return n.type && n.type === "plot" && n.attrs && ne.includes(n.attrs.style);
+ }
+-function pe(n) {
+-  return ze(n) && Me(n);
++function ce(n) {
++  return Fe(n) && ze(n);
+ }
+-function je(n) {
++function Me(n) {
+   return n.split("\\").pop().split("/").pop().split(".")[0];
+ }
+-function Pe(n, u, d, l, A, U, K = void 0) {
+-  let q = {};
+-  function V(b) {
+-    K ? K(b) : console.log(`Encountered this error => ${b}`);
++function je(n, l, c, h, F, j, q = void 0) {
++  let P = {};
++  function Y(b) {
++    q ? q(b) : console.log(`Encountered this error => ${b}`);
+   }
+   function o(b) {
+-    const W = ce(u);
+-    if (pe(W)) {
+-      let M = {};
+-      switch (W.attrs.style) {
++    const $ = de(l);
++    if (ce($)) {
++      let K = {};
++      switch ($.attrs.style) {
+         case ne[0]:
+-          M = Ce(b.data, W, q);
++          K = Oe(b.data, $, P);
+           break;
+         case ne[1]:
+-          M = Ie(b.data, W);
++          K = Ae(b.data, $);
+           break;
+       }
+-      M && (l.value = M.plotly_data, A.value = { showlegend: !0, title: { text: je(n) }, ...M.plotly_layout }, U.value = M.plotly_options);
++      K && (h.value = K.plotly_data, F.value = { showlegend: !0, title: { text: Me(n) }, ...K.plotly_layout }, j.value = K.plotly_options);
+     }
+   }
+   function z(b) {
+-    q["header-info"] = b.data, de.parse(n, { download: !0, complete: o, error: V });
++    P["header-info"] = b.data, fe.parse(n, { download: !0, complete: o, error: Y });
+   }
+   if (n) {
+-    const b = d;
+-    b && b.length > 0 && b[0].uri ? de.parse(b[0].uri, { download: !0, complete: z, error: V }) : de.parse(n, { download: !0, complete: o, error: V });
++    const b = c;
++    b && b.length > 0 && b[0].uri ? fe.parse(b[0].uri, { download: !0, complete: z, error: Y }) : fe.parse(n, { download: !0, complete: o, error: Y });
+   }
+ }
+-function Ne(n, u, d) {
+-  const l = ce(u);
+-  let A;
+-  if (pe(l))
+-    switch (l.attrs.style) {
++function Pe(n, l, c) {
++  const h = de(l);
++  let F;
++  if (ce(h))
++    switch (h.attrs.style) {
+       case ne[0]:
+-        A = Te(n, d);
++        F = Ce(n, c);
+         break;
+       case ne[1]:
+-        A = De(n, d);
++        F = De(n, c);
+         break;
+     }
+-  return A;
++  return F;
+ }
+-function Ue(n, u, d) {
+-  const l = ce(u);
+-  if (pe(l))
+-    switch (l.attrs.style) {
++function Ne(n, l, c) {
++  const h = de(l);
++  if (ce(h))
++    switch (h.attrs.style) {
+       case ne[0]:
+-        Ae(n, d);
++        Te(n, c);
+         break;
+       case ne[1]:
+-        Le(n, d);
++        Ie(n, c);
+         break;
+     }
+ }
+ export {
+-  Ne as applyFilter,
+-  Pe as convertToPlotlyData,
+-  Ue as extractTitles
++  Pe as applyFilter,
++  je as convertToPlotlyData,
++  Ne as extractTitles
+ };
+diff --git a/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.umd.cjs b/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.umd.cjs
+index 7c29ebf..b5a7ddb 100644
+--- a/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.umd.cjs
++++ b/node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.umd.cjs
+@@ -1,15 +1,15 @@
+-(function(ee,oe){typeof exports=="object"&&typeof module<"u"?oe(exports):typeof define=="function"&&define.amd?define(["exports"],oe):(ee=typeof globalThis<"u"?globalThis:ee||self,oe(ee.PlotDataHelpers={}))})(this,function(ee){"use strict";var oe=typeof globalThis<"u"?globalThis:typeof window<"u"?window:typeof global<"u"?global:typeof self<"u"?self:{};function be(n){return n&&n.__esModule&&Object.prototype.hasOwnProperty.call(n,"default")?n.default:n}var ye={exports:{}};/* @license
++(function(Z,oe){typeof exports=="object"&&typeof module<"u"?oe(exports):typeof define=="function"&&define.amd?define(["exports"],oe):(Z=typeof globalThis<"u"?globalThis:Z||self,oe(Z.PlotDataHelpers={}))})(this,function(Z){"use strict";var oe=typeof globalThis<"u"?globalThis:typeof window<"u"?window:typeof global<"u"?global:typeof self<"u"?self:{};function be(r){return r&&r.__esModule&&Object.prototype.hasOwnProperty.call(r,"default")?r.default:r}var ge={exports:{}};/* @license
+ Papa Parse
+-v5.5.2
++v5.5.1
+ https://github.com/mholt/PapaParse
+ License: MIT
+-*/(function(n,u){((d,l)=>{n.exports=l()})(oe,function d(){var l=typeof self<"u"?self:typeof window<"u"?window:l!==void 0?l:{},A,U=!l.document&&!!l.postMessage,H=l.IS_PAPA_WORKER||!1,q={},V=0,o={};function z(e){this._handle=null,this._finished=!1,this._completed=!1,this._halted=!1,this._input=null,this._baseIndex=0,this._partialLine="",this._rowCount=0,this._start=0,this._nextChunk=null,this.isFirstChunk=!0,this._completeResults={data:[],errors:[],meta:{}},(function(t){var r=_e(t);r.chunkSize=parseInt(r.chunkSize),t.step||t.chunk||(r.chunkSize=null),this._handle=new ke(r),(this._handle.streamer=this)._config=r}).call(this,e),this.parseChunk=function(t,r){var s=parseInt(this._config.skipFirstNLines)||0;if(this.isFirstChunk&&0<s){let _=this._config.newline;_||(i=this._config.quoteChar||'"',_=this._handle.guessLineEndings(t,i)),t=[...t.split(_).slice(s)].join(_)}this.isFirstChunk&&x(this._config.beforeFirstChunk)&&(i=this._config.beforeFirstChunk(t))!==void 0&&(t=i),this.isFirstChunk=!1,this._halted=!1;var s=this._partialLine+t,i=(this._partialLine="",this._handle.parse(s,this._baseIndex,!this._finished));if(!this._handle.paused()&&!this._handle.aborted()){if(t=i.meta.cursor,s=(this._finished||(this._partialLine=s.substring(t-this._baseIndex),this._baseIndex=t),i&&i.data&&(this._rowCount+=i.data.length),this._finished||this._config.preview&&this._rowCount>=this._config.preview),H)l.postMessage({results:i,workerId:o.WORKER_ID,finished:s});else if(x(this._config.chunk)&&!r){if(this._config.chunk(i,this._handle),this._handle.paused()||this._handle.aborted())return void(this._halted=!0);this._completeResults=i=void 0}return this._config.step||this._config.chunk||(this._completeResults.data=this._completeResults.data.concat(i.data),this._completeResults.errors=this._completeResults.errors.concat(i.errors),this._completeResults.meta=i.meta),this._completed||!s||!x(this._config.complete)||i&&i.meta.aborted||(this._config.complete(this._completeResults,this._input),this._completed=!0),s||i&&i.meta.paused||this._nextChunk(),i}this._halted=!0},this._sendError=function(t){x(this._config.error)?this._config.error(t):H&&this._config.error&&l.postMessage({workerId:o.WORKER_ID,error:t,finished:!1})}}function b(e){var t;(e=e||{}).chunkSize||(e.chunkSize=o.RemoteChunkSize),z.call(this,e),this._nextChunk=U?function(){this._readChunk(),this._chunkLoaded()}:function(){this._readChunk()},this.stream=function(r){this._input=r,this._nextChunk()},this._readChunk=function(){if(this._finished)this._chunkLoaded();else{if(t=new XMLHttpRequest,this._config.withCredentials&&(t.withCredentials=this._config.withCredentials),U||(t.onload=te(this._chunkLoaded,this),t.onerror=te(this._chunkError,this)),t.open(this._config.downloadRequestBody?"POST":"GET",this._input,!U),this._config.downloadRequestHeaders){var r,s=this._config.downloadRequestHeaders;for(r in s)t.setRequestHeader(r,s[r])}var i;this._config.chunkSize&&(i=this._start+this._config.chunkSize-1,t.setRequestHeader("Range","bytes="+this._start+"-"+i));try{t.send(this._config.downloadRequestBody)}catch(_){this._chunkError(_.message)}U&&t.status===0&&this._chunkError()}},this._chunkLoaded=function(){t.readyState===4&&(t.status<200||400<=t.status?this._chunkError():(this._start+=this._config.chunkSize||t.responseText.length,this._finished=!this._config.chunkSize||this._start>=(r=>(r=r.getResponseHeader("Content-Range"))!==null?parseInt(r.substring(r.lastIndexOf("/")+1)):-1)(t),this.parseChunk(t.responseText)))},this._chunkError=function(r){r=t.statusText||r,this._sendError(new Error(r))}}function K(e){(e=e||{}).chunkSize||(e.chunkSize=o.LocalChunkSize),z.call(this,e);var t,r,s=typeof FileReader<"u";this.stream=function(i){this._input=i,r=i.slice||i.webkitSlice||i.mozSlice,s?((t=new FileReader).onload=te(this._chunkLoaded,this),t.onerror=te(this._chunkError,this)):t=new FileReaderSync,this._nextChunk()},this._nextChunk=function(){this._finished||this._config.preview&&!(this._rowCount<this._config.preview)||this._readChunk()},this._readChunk=function(){var i=this._input,_=(this._config.chunkSize&&(_=Math.min(this._start+this._config.chunkSize,this._input.size),i=r.call(i,this._start,_)),t.readAsText(i,this._config.encoding));s||this._chunkLoaded({target:{result:_}})},this._chunkLoaded=function(i){this._start+=this._config.chunkSize,this._finished=!this._config.chunkSize||this._start>=this._input.size,this.parseChunk(i.target.result)},this._chunkError=function(){this._sendError(t.error)}}function M(e){var t;z.call(this,e=e||{}),this.stream=function(r){return t=r,this._nextChunk()},this._nextChunk=function(){var r,s;if(!this._finished)return r=this._config.chunkSize,t=r?(s=t.substring(0,r),t.substring(r)):(s=t,""),this._finished=!t,this.parseChunk(s)}}function ie(e){z.call(this,e=e||{});var t=[],r=!0,s=!1;this.pause=function(){z.prototype.pause.apply(this,arguments),this._input.pause()},this.resume=function(){z.prototype.resume.apply(this,arguments),this._input.resume()},this.stream=function(i){this._input=i,this._input.on("data",this._streamData),this._input.on("end",this._streamEnd),this._input.on("error",this._streamError)},this._checkIsFinished=function(){s&&t.length===1&&(this._finished=!0)},this._nextChunk=function(){this._checkIsFinished(),t.length?this.parseChunk(t.shift()):r=!0},this._streamData=te(function(i){try{t.push(typeof i=="string"?i:i.toString(this._config.encoding)),r&&(r=!1,this._checkIsFinished(),this.parseChunk(t.shift()))}catch(_){this._streamError(_)}},this),this._streamError=te(function(i){this._streamCleanUp(),this._sendError(i)},this),this._streamEnd=te(function(){this._streamCleanUp(),s=!0,this._streamData("")},this),this._streamCleanUp=te(function(){this._input.removeListener("data",this._streamData),this._input.removeListener("end",this._streamEnd),this._input.removeListener("error",this._streamError)},this)}function ke(e){var t,r,s,i,_=Math.pow(2,53),D=-_,B=/^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/,$=/^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/,g=this,S=0,h=0,j=!1,c=!1,y=[],a={data:[],errors:[],meta:{}};function I(m){return e.skipEmptyLines==="greedy"?m.join("").trim()==="":m.length===1&&m[0].length===0}function T(){if(a&&s&&(Q("Delimiter","UndetectableDelimiter","Unable to auto-detect delimiting character; defaulted to '"+o.DefaultDelimiter+"'"),s=!1),e.skipEmptyLines&&(a.data=a.data.filter(function(f){return!I(f)})),P()){let f=function(C,L){x(e.transformHeader)&&(C=e.transformHeader(C,L)),y.push(C)};if(a)if(Array.isArray(a.data[0])){for(var m=0;P()&&m<a.data.length;m++)a.data[m].forEach(f);a.data.splice(0,1)}else a.data.forEach(f)}function v(f,C){for(var L=e.header?{}:[],w=0;w<f.length;w++){var E=w,k=f[w],k=((J,p)=>(R=>(e.dynamicTypingFunction&&e.dynamicTyping[R]===void 0&&(e.dynamicTyping[R]=e.dynamicTypingFunction(R)),(e.dynamicTyping[R]||e.dynamicTyping)===!0))(J)?p==="true"||p==="TRUE"||p!=="false"&&p!=="FALSE"&&((R=>{if(B.test(R)&&(R=parseFloat(R),D<R&&R<_))return 1})(p)?parseFloat(p):$.test(p)?new Date(p):p===""?null:p):p)(E=e.header?w>=y.length?"__parsed_extra":y[w]:E,k=e.transform?e.transform(k,E):k);E==="__parsed_extra"?(L[E]=L[E]||[],L[E].push(k)):L[E]=k}return e.header&&(w>y.length?Q("FieldMismatch","TooManyFields","Too many fields: expected "+y.length+" fields but parsed "+w,h+C):w<y.length&&Q("FieldMismatch","TooFewFields","Too few fields: expected "+y.length+" fields but parsed "+w,h+C)),L}var O;a&&(e.header||e.dynamicTyping||e.transform)&&(O=1,!a.data.length||Array.isArray(a.data[0])?(a.data=a.data.map(v),O=a.data.length):a.data=v(a.data,0),e.header&&a.meta&&(a.meta.fields=y),h+=O)}function P(){return e.header&&y.length===0}function Q(m,v,O,f){m={type:m,code:v,message:O},f!==void 0&&(m.row=f),a.errors.push(m)}x(e.step)&&(i=e.step,e.step=function(m){a=m,P()?T():(T(),a.data.length!==0&&(S+=m.data.length,e.preview&&S>e.preview?r.abort():(a.data=a.data[0],i(a,g))))}),this.parse=function(m,v,O){var f=e.quoteChar||'"',f=(e.newline||(e.newline=this.guessLineEndings(m,f)),s=!1,e.delimiter?x(e.delimiter)&&(e.delimiter=e.delimiter(m),a.meta.delimiter=e.delimiter):((f=((C,L,w,E,k)=>{var J,p,R,re;k=k||[",","	","|",";",o.RECORD_SEP,o.UNIT_SEP];for(var se=0;se<k.length;se++){for(var Y,le=k[se],N=0,G=0,F=0,W=(R=void 0,new pe({comments:E,delimiter:le,newline:L,preview:10}).parse(C)),X=0;X<W.data.length;X++)w&&I(W.data[X])?F++:(Y=W.data[X].length,G+=Y,R===void 0?R=Y:0<Y&&(N+=Math.abs(Y-R),R=Y));0<W.data.length&&(G/=W.data.length-F),(p===void 0||N<=p)&&(re===void 0||re<G)&&1.99<G&&(p=N,J=le,re=G)}return{successful:!!(e.delimiter=J),bestDelimiter:J}})(m,e.newline,e.skipEmptyLines,e.comments,e.delimitersToGuess)).successful?e.delimiter=f.bestDelimiter:(s=!0,e.delimiter=o.DefaultDelimiter),a.meta.delimiter=e.delimiter),_e(e));return e.preview&&e.header&&f.preview++,t=m,r=new pe(f),a=r.parse(t,v,O),T(),j?{meta:{paused:!0}}:a||{meta:{paused:!1}}},this.paused=function(){return j},this.pause=function(){j=!0,r.abort(),t=x(e.chunk)?"":t.substring(r.getCharIndex())},this.resume=function(){g.streamer._halted?(j=!1,g.streamer.parseChunk(t,!0)):setTimeout(g.resume,3)},this.aborted=function(){return c},this.abort=function(){c=!0,r.abort(),a.meta.aborted=!0,x(e.complete)&&e.complete(a),t=""},this.guessLineEndings=function(C,f){C=C.substring(0,1048576);var f=new RegExp(ue(f)+"([^]*?)"+ue(f),"gm"),O=(C=C.replace(f,"")).split("\r"),f=C.split(`
+-`),C=1<f.length&&f[0].length<O[0].length;if(O.length===1||C)return`
+-`;for(var L=0,w=0;w<O.length;w++)O[w][0]===`
+-`&&L++;return L>=O.length/2?`\r
+-`:"\r"}}function ue(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function pe(e){var t=(e=e||{}).delimiter,r=e.newline,s=e.comments,i=e.step,_=e.preview,D=e.fastMode,B=null,$=!1,g=e.quoteChar==null?'"':e.quoteChar,S=g;if(e.escapeChar!==void 0&&(S=e.escapeChar),(typeof t!="string"||-1<o.BAD_DELIMITERS.indexOf(t))&&(t=","),s===t)throw new Error("Comment character same as delimiter");s===!0?s="#":(typeof s!="string"||-1<o.BAD_DELIMITERS.indexOf(s))&&(s=!1),r!==`
+-`&&r!=="\r"&&r!==`\r
+-`&&(r=`
+-`);var h=0,j=!1;this.parse=function(c,y,a){if(typeof c!="string")throw new Error("Input must be a string");var I=c.length,T=t.length,P=r.length,Q=s.length,m=x(i),v=[],O=[],f=[],C=h=0;if(!c)return N();if(D||D!==!1&&c.indexOf(g)===-1){for(var L=c.split(r),w=0;w<L.length;w++){if(f=L[w],h+=f.length,w!==L.length-1)h+=r.length;else if(a)return N();if(!s||f.substring(0,Q)!==s){if(m){if(v=[],re(f.split(t)),G(),j)return N()}else re(f.split(t));if(_&&_<=w)return v=v.slice(0,_),N(!0)}}return N()}for(var E=c.indexOf(t,h),k=c.indexOf(r,h),J=new RegExp(ue(S)+ue(g),"g"),p=c.indexOf(g,h);;)if(c[h]===g)for(p=h,h++;;){if((p=c.indexOf(g,p+1))===-1)return a||O.push({type:"Quotes",code:"MissingQuotes",message:"Quoted field unterminated",row:v.length,index:h}),Y();if(p===I-1)return Y(c.substring(h,p).replace(J,g));if(g===S&&c[p+1]===S)p++;else if(g===S||p===0||c[p-1]!==S){E!==-1&&E<p+1&&(E=c.indexOf(t,p+1));var R=se((k=k!==-1&&k<p+1?c.indexOf(r,p+1):k)===-1?E:Math.min(E,k));if(c.substr(p+1+R,T)===t){f.push(c.substring(h,p).replace(J,g)),c[h=p+1+R+T]!==g&&(p=c.indexOf(g,h)),E=c.indexOf(t,h),k=c.indexOf(r,h);break}if(R=se(k),c.substring(p+1+R,p+1+R+P)===r){if(f.push(c.substring(h,p).replace(J,g)),le(p+1+R+P),E=c.indexOf(t,h),p=c.indexOf(g,h),m&&(G(),j))return N();if(_&&v.length>=_)return N(!0);break}O.push({type:"Quotes",code:"InvalidQuotes",message:"Trailing quote on quoted field is malformed",row:v.length,index:h}),p++}}else if(s&&f.length===0&&c.substring(h,h+Q)===s){if(k===-1)return N();h=k+P,k=c.indexOf(r,h),E=c.indexOf(t,h)}else if(E!==-1&&(E<k||k===-1))f.push(c.substring(h,E)),h=E+T,E=c.indexOf(t,h);else{if(k===-1)break;if(f.push(c.substring(h,k)),le(k+P),m&&(G(),j))return N();if(_&&v.length>=_)return N(!0)}return Y();function re(F){v.push(F),C=h}function se(F){var W=0;return W=F!==-1&&(F=c.substring(p+1,F))&&F.trim()===""?F.length:W}function Y(F){return a||(F===void 0&&(F=c.substring(h)),f.push(F),h=I,re(f),m&&G()),N()}function le(F){h=F,re(f),f=[],k=c.indexOf(r,h)}function N(F){if(e.header&&!y&&v.length&&!$){var W=v[0],X={},ge=new Set(W);let xe=!1;for(let ae=0;ae<W.length;ae++){let Z=W[ae];if(X[Z=x(e.transformHeader)?e.transformHeader(Z,ae):Z]){let he,Ee=X[Z];for(;he=Z+"_"+Ee,Ee++,ge.has(he););ge.add(he),W[ae]=he,X[Z]++,xe=!0,(B=B===null?{}:B)[he]=Z}else X[Z]=1,W[ae]=Z;ge.add(Z)}xe&&console.warn("Duplicate headers found and renamed."),$=!0}return{data:v,errors:O,meta:{delimiter:t,linebreak:r,aborted:j,truncated:!!F,cursor:C+(y||0),renamedHeaders:B}}}function G(){i(N()),v=[],O=[]}},this.abort=function(){j=!0},this.getCharIndex=function(){return h}}function qe(e){var t=e.data,r=q[t.workerId],s=!1;if(t.error)r.userError(t.error,t.file);else if(t.results&&t.results.data){var i={abort:function(){s=!0,ve(t.workerId,{data:[],errors:[],meta:{aborted:!0}})},pause:we,resume:we};if(x(r.userStep)){for(var _=0;_<t.results.data.length&&(r.userStep({data:t.results.data[_],errors:t.results.errors,meta:t.results.meta},i),!s);_++);delete t.results}else x(r.userChunk)&&(r.userChunk(t.results,i,t.file),delete t.results)}t.finished&&!s&&ve(t.workerId,t.results)}function ve(e,t){var r=q[e];x(r.userComplete)&&r.userComplete(t),r.terminate(),delete q[e]}function we(){throw new Error("Not implemented.")}function _e(e){if(typeof e!="object"||e===null)return e;var t,r=Array.isArray(e)?[]:{};for(t in e)r[t]=_e(e[t]);return r}function te(e,t){return function(){e.apply(t,arguments)}}function x(e){return typeof e=="function"}return o.parse=function(e,t){var r=(t=t||{}).dynamicTyping||!1;if(x(r)&&(t.dynamicTypingFunction=r,r={}),t.dynamicTyping=r,t.transform=!!x(t.transform)&&t.transform,!t.worker||!o.WORKERS_SUPPORTED)return r=null,o.NODE_STREAM_INPUT,typeof e=="string"?(e=(s=>s.charCodeAt(0)!==65279?s:s.slice(1))(e),r=new(t.download?b:M)(t)):e.readable===!0&&x(e.read)&&x(e.on)?r=new ie(t):(l.File&&e instanceof File||e instanceof Object)&&(r=new K(t)),r.stream(e);(r=(()=>{var s;return!!o.WORKERS_SUPPORTED&&(s=(()=>{var i=l.URL||l.webkitURL||null,_=d.toString();return o.BLOB_URL||(o.BLOB_URL=i.createObjectURL(new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ","(",_,")();"],{type:"text/javascript"})))})(),(s=new l.Worker(s)).onmessage=qe,s.id=V++,q[s.id]=s)})()).userStep=t.step,r.userChunk=t.chunk,r.userComplete=t.complete,r.userError=t.error,t.step=x(t.step),t.chunk=x(t.chunk),t.complete=x(t.complete),t.error=x(t.error),delete t.worker,r.postMessage({input:e,config:t,workerId:r.id})},o.unparse=function(e,t){var r=!1,s=!0,i=",",_=`\r
+-`,D='"',B=D+D,$=!1,g=null,S=!1,h=((()=>{if(typeof t=="object"){if(typeof t.delimiter!="string"||o.BAD_DELIMITERS.filter(function(y){return t.delimiter.indexOf(y)!==-1}).length||(i=t.delimiter),typeof t.quotes!="boolean"&&typeof t.quotes!="function"&&!Array.isArray(t.quotes)||(r=t.quotes),typeof t.skipEmptyLines!="boolean"&&typeof t.skipEmptyLines!="string"||($=t.skipEmptyLines),typeof t.newline=="string"&&(_=t.newline),typeof t.quoteChar=="string"&&(D=t.quoteChar),typeof t.header=="boolean"&&(s=t.header),Array.isArray(t.columns)){if(t.columns.length===0)throw new Error("Option columns is empty");g=t.columns}t.escapeChar!==void 0&&(B=t.escapeChar+D),t.escapeFormulae instanceof RegExp?S=t.escapeFormulae:typeof t.escapeFormulae=="boolean"&&t.escapeFormulae&&(S=/^[=+\-@\t\r].*$/)}})(),new RegExp(ue(D),"g"));if(typeof e=="string"&&(e=JSON.parse(e)),Array.isArray(e)){if(!e.length||Array.isArray(e[0]))return j(null,e,$);if(typeof e[0]=="object")return j(g||Object.keys(e[0]),e,$)}else if(typeof e=="object")return typeof e.data=="string"&&(e.data=JSON.parse(e.data)),Array.isArray(e.data)&&(e.fields||(e.fields=e.meta&&e.meta.fields||g),e.fields||(e.fields=Array.isArray(e.data[0])?e.fields:typeof e.data[0]=="object"?Object.keys(e.data[0]):[]),Array.isArray(e.data[0])||typeof e.data[0]=="object"||(e.data=[e.data])),j(e.fields||[],e.data||[],$);throw new Error("Unable to serialize unrecognized input");function j(y,a,I){var T="",P=(typeof y=="string"&&(y=JSON.parse(y)),typeof a=="string"&&(a=JSON.parse(a)),Array.isArray(y)&&0<y.length),Q=!Array.isArray(a[0]);if(P&&s){for(var m=0;m<y.length;m++)0<m&&(T+=i),T+=c(y[m],m);0<a.length&&(T+=_)}for(var v=0;v<a.length;v++){var O=(P?y:a[v]).length,f=!1,C=P?Object.keys(a[v]).length===0:a[v].length===0;if(I&&!P&&(f=I==="greedy"?a[v].join("").trim()==="":a[v].length===1&&a[v][0].length===0),I==="greedy"&&P){for(var L=[],w=0;w<O;w++){var E=Q?y[w]:w;L.push(a[v][E])}f=L.join("").trim()===""}if(!f){for(var k=0;k<O;k++){0<k&&!C&&(T+=i);var J=P&&Q?y[k]:k;T+=c(a[v][J],k)}v<a.length-1&&(!I||0<O&&!C)&&(T+=_)}}return T}function c(y,a){var I,T;return y==null?"":y.constructor===Date?JSON.stringify(y).slice(1,25):(T=!1,S&&typeof y=="string"&&S.test(y)&&(y="'"+y,T=!0),I=y.toString().replace(h,B),(T=T||r===!0||typeof r=="function"&&r(y,a)||Array.isArray(r)&&r[a]||((P,Q)=>{for(var m=0;m<Q.length;m++)if(-1<P.indexOf(Q[m]))return!0;return!1})(I,o.BAD_DELIMITERS)||-1<I.indexOf(i)||I.charAt(0)===" "||I.charAt(I.length-1)===" ")?D+I+D:I)}},o.RECORD_SEP="",o.UNIT_SEP="",o.BYTE_ORDER_MARK="\uFEFF",o.BAD_DELIMITERS=["\r",`
+-`,'"',o.BYTE_ORDER_MARK],o.WORKERS_SUPPORTED=!U&&!!l.Worker,o.NODE_STREAM_INPUT=1,o.LocalChunkSize=10485760,o.RemoteChunkSize=5242880,o.DefaultDelimiter=",",o.Parser=pe,o.ParserHandle=ke,o.NetworkStreamer=b,o.FileStreamer=K,o.StringStreamer=M,o.ReadableStreamStreamer=ie,l.jQuery&&((A=l.jQuery).fn.parse=function(e){var t=e.config||{},r=[];return this.each(function(_){if(!(A(this).prop("tagName").toUpperCase()==="INPUT"&&A(this).attr("type").toLowerCase()==="file"&&l.FileReader)||!this.files||this.files.length===0)return!0;for(var D=0;D<this.files.length;D++)r.push({file:this.files[D],inputElem:this,instanceConfig:A.extend({},t)})}),s(),this;function s(){if(r.length===0)x(e.complete)&&e.complete();else{var _,D,B,$,g=r[0];if(x(e.before)){var S=e.before(g.file,g.inputElem);if(typeof S=="object"){if(S.action==="abort")return _="AbortError",D=g.file,B=g.inputElem,$=S.reason,void(x(e.error)&&e.error({name:_},D,B,$));if(S.action==="skip")return void i();typeof S.config=="object"&&(g.instanceConfig=A.extend(g.instanceConfig,S.config))}else if(S==="skip")return void i()}var h=g.instanceConfig.complete;g.instanceConfig.complete=function(j){x(h)&&h(j,g.file,g.inputElem),i()},o.parse(g.file,g.instanceConfig)}}function i(){r.splice(0,1),s()}}),H&&(l.onmessage=function(e){e=e.data,o.WORKER_ID===void 0&&e&&(o.WORKER_ID=e.workerId),typeof e.input=="string"?l.postMessage({workerId:o.WORKER_ID,results:o.parse(e.input,e.config),finished:!0}):(l.File&&e.input instanceof File||e.input instanceof Object)&&(e=o.parse(e.input,e.config))&&l.postMessage({workerId:o.WORKER_ID,results:e,finished:!0})}),(b.prototype=Object.create(z.prototype)).constructor=b,(K.prototype=Object.create(z.prototype)).constructor=K,(M.prototype=Object.create(M.prototype)).constructor=M,(ie.prototype=Object.create(z.prototype)).constructor=ie,o})})(ye);var Re=ye.exports;const fe=be(Re);function de(n){const u={"x-axis-column":0,"y-axes-columns":[],"no-header":!1,"row-major":!1,"row-header-size":1,"row-header-index":0,"column-header-size":1,"column-header-index":0};return n.attrs={...u,...n.attrs},n}function Se(n){return n[0].map((u,d)=>n.map(l=>l[d]))}function Oe(n,u){if(u.attrs["y-axes-columns"].length===0){let d=[...Array(n[0].length).keys()];d.splice(u.attrs["x-axis-column"],1),u.attrs["y-axes-columns"]=d}}function Ce(n,u,d){const l=n[0][u.attrs["x-axis-column"]];let A=[];u.attrs["no-header"]?d&&d["header-info"]&&(A=d["header-info"][0]):(A=n[0],n=n.slice(1)),Oe(n,u);const U=Se(n),H=U[u.attrs["x-axis-column"]],q=u.attrs["trace-colours"];let V=[],o=0;for(let K of u.attrs["y-axes-columns"]){const M=q?q[o]:void 0;o+=1;const ie={x:H,y:U[K],name:A[K],mode:"lines"};M&&(ie.line={color:M}),V.push(ie)}return{plotly_data:V,plotly_layout:{xaxis:{title:{text:l}}},plotly_options:{}}}function Te(n,u){n.value.forEach(d=>{d.visible=u.x.length==0||u.x.includes(d.name)})}function Ae(n,u){let d={x:[],y:[]};n.value.forEach(l=>{l.name&&d.x.push(l.name)}),u.value.x=d.x,u.value.y=d.y}function De(n,u,d){var z;let l=[...n[u.attrs["column-header-index"]]];const A=l.slice(u.attrs["row-header-size"]);l=n.map(b=>b[u.attrs["row-header-index"]]);const U=l.slice(u.attrs["column-header-size"]),H=n.slice(u.attrs["column-header-size"]).map(b=>b.slice(u.attrs["row-header-size"]));return(z=u==null?void 0:u.attrs)!=null&&z.logScale&&H.forEach(b=>{b.forEach((K,M)=>{b[M]=Math.log10(K)})}),{plotly_data:[{x:A,y:U,z:H,type:"heatmap"}],plotly_layout:{},plotly_options:{}}}function Ie(n,u){const d=n.value[0];let l=me(u.x,d.x),A=me(u.y,d.y),U=[];d.z.forEach(q=>{U.push([...q])});let H=[];return A.forEach(q=>{const V=U[q];let o=[];l.forEach(z=>{o.push(V[z])}),H.push(o)}),[{x:u.x.length?u.x:d.x,y:u.y.length?u.y:d.y,z:H,type:"heatmap"}]}function me(n,u){let d=[];return n.length>0?n.forEach(l=>{d.push(u.indexOf(l))}):d=[...Array(u.length).keys()],d}function Le(n,u){function d(l){return!!l}u.value.x=n.value[0].x.filter(d),u.value.y=n.value[0].y.filter(d)}const Fe=["1.2.0","1.1.0"],ne=["timeseries","heatmap"];function ze(n){return n.version&&Fe.includes(n.version)}function Me(n){return n.type&&n.type==="plot"&&n.attrs&&ne.includes(n.attrs.style)}function ce(n){return ze(n)&&Me(n)}function Pe(n){return n.split("\\").pop().split("/").pop().split(".")[0]}function je(n,u,d,l,A,U,H=void 0){let q={};function V(b){H?H(b):console.log(`Encountered this error => ${b}`)}function o(b){const K=de(u);if(ce(K)){let M={};switch(K.attrs.style){case ne[0]:M=Ce(b.data,K,q);break;case ne[1]:M=De(b.data,K);break}M&&(l.value=M.plotly_data,A.value={showlegend:!0,title:{text:Pe(n)},...M.plotly_layout},U.value=M.plotly_options)}}function z(b){q["header-info"]=b.data,fe.parse(n,{download:!0,complete:o,error:V})}if(n){const b=d;b&&b.length>0&&b[0].uri?fe.parse(b[0].uri,{download:!0,complete:z,error:V}):fe.parse(n,{download:!0,complete:o,error:V})}}function Ne(n,u,d){const l=de(u);let A;if(ce(l))switch(l.attrs.style){case ne[0]:A=Te(n,d);break;case ne[1]:A=Ie(n,d);break}return A}function Ue(n,u,d){const l=de(u);if(ce(l))switch(l.attrs.style){case ne[0]:Ae(n,d);break;case ne[1]:Le(n,d);break}}ee.applyFilter=Ne,ee.convertToPlotlyData=je,ee.extractTitles=Ue,Object.defineProperty(ee,Symbol.toStringTag,{value:"Module"})});
++*/(function(r,l){((c,h)=>{r.exports=h()})(oe,function c(){var h=typeof self<"u"?self:typeof window<"u"?window:h!==void 0?h:{},F,P=!h.document&&!!h.postMessage,q=h.IS_PAPA_WORKER||!1,j={},Y=0,o={};function z(e){this._handle=null,this._finished=!1,this._completed=!1,this._halted=!1,this._input=null,this._baseIndex=0,this._partialLine="",this._rowCount=0,this._start=0,this._nextChunk=null,this.isFirstChunk=!0,this._completeResults={data:[],errors:[],meta:{}},(function(t){var n=_e(t);n.chunkSize=parseInt(n.chunkSize),t.step||t.chunk||(n.chunkSize=null),this._handle=new me(n),(this._handle.streamer=this)._config=n}).call(this,e),this.parseChunk=function(t,n){var s=parseInt(this._config.skipFirstNLines)||0;if(this.isFirstChunk&&0<s){let p=this._config.newline;p||(i=this._config.quoteChar||'"',p=this._handle.guessLineEndings(t,i)),t=[...t.split(p).slice(s)].join(p)}this.isFirstChunk&&E(this._config.beforeFirstChunk)&&(i=this._config.beforeFirstChunk(t))!==void 0&&(t=i),this.isFirstChunk=!1,this._halted=!1;var s=this._partialLine+t,i=(this._partialLine="",this._handle.parse(s,this._baseIndex,!this._finished));if(!this._handle.paused()&&!this._handle.aborted()){if(t=i.meta.cursor,s=(this._finished||(this._partialLine=s.substring(t-this._baseIndex),this._baseIndex=t),i&&i.data&&(this._rowCount+=i.data.length),this._finished||this._config.preview&&this._rowCount>=this._config.preview),q)h.postMessage({results:i,workerId:o.WORKER_ID,finished:s});else if(E(this._config.chunk)&&!n){if(this._config.chunk(i,this._handle),this._handle.paused()||this._handle.aborted())return void(this._halted=!0);this._completeResults=i=void 0}return this._config.step||this._config.chunk||(this._completeResults.data=this._completeResults.data.concat(i.data),this._completeResults.errors=this._completeResults.errors.concat(i.errors),this._completeResults.meta=i.meta),this._completed||!s||!E(this._config.complete)||i&&i.meta.aborted||(this._config.complete(this._completeResults,this._input),this._completed=!0),s||i&&i.meta.paused||this._nextChunk(),i}this._halted=!0},this._sendError=function(t){E(this._config.error)?this._config.error(t):q&&this._config.error&&h.postMessage({workerId:o.WORKER_ID,error:t,finished:!1})}}function b(e){var t;(e=e||{}).chunkSize||(e.chunkSize=o.RemoteChunkSize),z.call(this,e),this._nextChunk=P?function(){this._readChunk(),this._chunkLoaded()}:function(){this._readChunk()},this.stream=function(n){this._input=n,this._nextChunk()},this._readChunk=function(){if(this._finished)this._chunkLoaded();else{if(t=new XMLHttpRequest,this._config.withCredentials&&(t.withCredentials=this._config.withCredentials),P||(t.onload=X(this._chunkLoaded,this),t.onerror=X(this._chunkError,this)),t.open(this._config.downloadRequestBody?"POST":"GET",this._input,!P),this._config.downloadRequestHeaders){var n,s=this._config.downloadRequestHeaders;for(n in s)t.setRequestHeader(n,s[n])}var i;this._config.chunkSize&&(i=this._start+this._config.chunkSize-1,t.setRequestHeader("Range","bytes="+this._start+"-"+i));try{t.send(this._config.downloadRequestBody)}catch(p){this._chunkError(p.message)}P&&t.status===0&&this._chunkError()}},this._chunkLoaded=function(){t.readyState===4&&(t.status<200||400<=t.status?this._chunkError():(this._start+=this._config.chunkSize||t.responseText.length,this._finished=!this._config.chunkSize||this._start>=(n=>(n=n.getResponseHeader("Content-Range"))!==null?parseInt(n.substring(n.lastIndexOf("/")+1)):-1)(t),this.parseChunk(t.responseText)))},this._chunkError=function(n){n=t.statusText||n,this._sendError(new Error(n))}}function $(e){(e=e||{}).chunkSize||(e.chunkSize=o.LocalChunkSize),z.call(this,e);var t,n,s=typeof FileReader<"u";this.stream=function(i){this._input=i,n=i.slice||i.webkitSlice||i.mozSlice,s?((t=new FileReader).onload=X(this._chunkLoaded,this),t.onerror=X(this._chunkError,this)):t=new FileReaderSync,this._nextChunk()},this._nextChunk=function(){this._finished||this._config.preview&&!(this._rowCount<this._config.preview)||this._readChunk()},this._readChunk=function(){var i=this._input,p=(this._config.chunkSize&&(p=Math.min(this._start+this._config.chunkSize,this._input.size),i=n.call(i,this._start,p)),t.readAsText(i,this._config.encoding));s||this._chunkLoaded({target:{result:p}})},this._chunkLoaded=function(i){this._start+=this._config.chunkSize,this._finished=!this._config.chunkSize||this._start>=this._input.size,this.parseChunk(i.target.result)},this._chunkError=function(){this._sendError(t.error)}}function H(e){var t;z.call(this,e=e||{}),this.stream=function(n){return t=n,this._nextChunk()},this._nextChunk=function(){var n,s;if(!this._finished)return n=this._config.chunkSize,t=n?(s=t.substring(0,n),t.substring(n)):(s=t,""),this._finished=!t,this.parseChunk(s)}}function he(e){z.call(this,e=e||{});var t=[],n=!0,s=!1;this.pause=function(){z.prototype.pause.apply(this,arguments),this._input.pause()},this.resume=function(){z.prototype.resume.apply(this,arguments),this._input.resume()},this.stream=function(i){this._input=i,this._input.on("data",this._streamData),this._input.on("end",this._streamEnd),this._input.on("error",this._streamError)},this._checkIsFinished=function(){s&&t.length===1&&(this._finished=!0)},this._nextChunk=function(){this._checkIsFinished(),t.length?this.parseChunk(t.shift()):n=!0},this._streamData=X(function(i){try{t.push(typeof i=="string"?i:i.toString(this._config.encoding)),n&&(n=!1,this._checkIsFinished(),this.parseChunk(t.shift()))}catch(p){this._streamError(p)}},this),this._streamError=X(function(i){this._streamCleanUp(),this._sendError(i)},this),this._streamEnd=X(function(){this._streamCleanUp(),s=!0,this._streamData("")},this),this._streamCleanUp=X(function(){this._input.removeListener("data",this._streamData),this._input.removeListener("end",this._streamEnd),this._input.removeListener("error",this._streamError)},this)}function me(e){var t,n,s,i,p=Math.pow(2,53),M=-p,B=/^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/,v=/^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/,x=this,u=0,K=0,f=!1,ee=!1,_=[],a={data:[],errors:[],meta:{}};function L(d){return e.skipEmptyLines==="greedy"?d.join("").trim()==="":d.length===1&&d[0].length===0}function T(){if(a&&s&&(W("Delimiter","UndetectableDelimiter","Unable to auto-detect delimiting character; defaulted to '"+o.DefaultDelimiter+"'"),s=!1),e.skipEmptyLines&&(a.data=a.data.filter(function(m){return!L(m)})),N()){let m=function(S,A){E(e.transformHeader)&&(S=e.transformHeader(S,A)),_.push(S)};if(a)if(Array.isArray(a.data[0])){for(var d=0;N()&&d<a.data.length;d++)a.data[d].forEach(m);a.data.splice(0,1)}else a.data.forEach(m)}function R(m,S){for(var A=e.header?{}:[],g=0;g<m.length;g++){var w=g,O=m[g],O=((k,C)=>(D=>(e.dynamicTypingFunction&&e.dynamicTyping[D]===void 0&&(e.dynamicTyping[D]=e.dynamicTypingFunction(D)),(e.dynamicTyping[D]||e.dynamicTyping)===!0))(k)?C==="true"||C==="TRUE"||C!=="false"&&C!=="FALSE"&&((D=>{if(B.test(D)&&(D=parseFloat(D),M<D&&D<p))return 1})(C)?parseFloat(C):v.test(C)?new Date(C):C===""?null:C):C)(w=e.header?g>=_.length?"__parsed_extra":_[g]:w,O=e.transform?e.transform(O,w):O);w==="__parsed_extra"?(A[w]=A[w]||[],A[w].push(O)):A[w]=O}return e.header&&(g>_.length?W("FieldMismatch","TooManyFields","Too many fields: expected "+_.length+" fields but parsed "+g,K+S):g<_.length&&W("FieldMismatch","TooFewFields","Too few fields: expected "+_.length+" fields but parsed "+g,K+S)),A}var y;a&&(e.header||e.dynamicTyping||e.transform)&&(y=1,!a.data.length||Array.isArray(a.data[0])?(a.data=a.data.map(R),y=a.data.length):a.data=R(a.data,0),e.header&&a.meta&&(a.meta.fields=_),K+=y)}function N(){return e.header&&_.length===0}function W(d,R,y,m){d={type:d,code:R,message:y},m!==void 0&&(d.row=m),a.errors.push(d)}E(e.step)&&(i=e.step,e.step=function(d){a=d,N()?T():(T(),a.data.length!==0&&(u+=d.data.length,e.preview&&u>e.preview?n.abort():(a.data=a.data[0],i(a,x))))}),this.parse=function(d,R,y){var m=e.quoteChar||'"',m=(e.newline||(e.newline=this.guessLineEndings(d,m)),s=!1,e.delimiter?E(e.delimiter)&&(e.delimiter=e.delimiter(d),a.meta.delimiter=e.delimiter):((m=((S,A,g,w,O)=>{var k,C,D,se;O=O||[",","	","|",";",o.RECORD_SEP,o.UNIT_SEP];for(var ie=0;ie<O.length;ie++){for(var G,U=O[ie],te=0,I=0,Q=0,V=(D=void 0,new pe({comments:w,delimiter:U,newline:A,preview:10}).parse(S)),ne=0;ne<V.data.length;ne++)g&&L(V.data[ne])?Q++:(G=V.data[ne].length,I+=G,D===void 0?D=G:0<G&&(te+=Math.abs(G-D),D=G));0<V.data.length&&(I/=V.data.length-Q),(C===void 0||te<=C)&&(se===void 0||se<I)&&1.99<I&&(C=te,k=U,se=I)}return{successful:!!(e.delimiter=k),bestDelimiter:k}})(d,e.newline,e.skipEmptyLines,e.comments,e.delimitersToGuess)).successful?e.delimiter=m.bestDelimiter:(s=!0,e.delimiter=o.DefaultDelimiter),a.meta.delimiter=e.delimiter),_e(e));return e.preview&&e.header&&m.preview++,t=d,n=new pe(m),a=n.parse(t,R,y),T(),f?{meta:{paused:!0}}:a||{meta:{paused:!1}}},this.paused=function(){return f},this.pause=function(){f=!0,n.abort(),t=E(e.chunk)?"":t.substring(n.getCharIndex())},this.resume=function(){x.streamer._halted?(f=!1,x.streamer.parseChunk(t,!0)):setTimeout(x.resume,3)},this.aborted=function(){return ee},this.abort=function(){ee=!0,n.abort(),a.meta.aborted=!0,E(e.complete)&&e.complete(a),t=""},this.guessLineEndings=function(S,m){S=S.substring(0,1048576);var m=new RegExp(ue(m)+"([^]*?)"+ue(m),"gm"),y=(S=S.replace(m,"")).split("\r"),m=S.split(`
++`),S=1<m.length&&m[0].length<y[0].length;if(y.length===1||S)return`
++`;for(var A=0,g=0;g<y.length;g++)y[g][0]===`
++`&&A++;return A>=y.length/2?`\r
++`:"\r"}}function ue(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function pe(e){var t=(e=e||{}).delimiter,n=e.newline,s=e.comments,i=e.step,p=e.preview,M=e.fastMode,B=null,v=e.quoteChar==null?'"':e.quoteChar,x=v;if(e.escapeChar!==void 0&&(x=e.escapeChar),(typeof t!="string"||-1<o.BAD_DELIMITERS.indexOf(t))&&(t=","),s===t)throw new Error("Comment character same as delimiter");s===!0?s="#":(typeof s!="string"||-1<o.BAD_DELIMITERS.indexOf(s))&&(s=!1),n!==`
++`&&n!=="\r"&&n!==`\r
++`&&(n=`
++`);var u=0,K=!1;this.parse=function(f,ee,_){if(typeof f!="string")throw new Error("Input must be a string");var a=f.length,L=t.length,T=n.length,N=s.length,W=E(i),d=[],R=[],y=[],m=u=0;if(!f)return U();if(M||M!==!1&&f.indexOf(v)===-1){for(var S=f.split(n),A=0;A<S.length;A++){if(y=S[A],u+=y.length,A!==S.length-1)u+=n.length;else if(_)return U();if(!s||y.substring(0,N)!==s){if(W){if(d=[],D(y.split(t)),te(),K)return U()}else D(y.split(t));if(p&&p<=A)return d=d.slice(0,p),U(!0)}}return U()}for(var g=f.indexOf(t,u),w=f.indexOf(n,u),O=new RegExp(ue(x)+ue(v),"g"),k=f.indexOf(v,u);;)if(f[u]===v)for(k=u,u++;;){if((k=f.indexOf(v,k+1))===-1)return _||R.push({type:"Quotes",code:"MissingQuotes",message:"Quoted field unterminated",row:d.length,index:u}),ie();if(k===a-1)return ie(f.substring(u,k).replace(O,v));if(v===x&&f[k+1]===x)k++;else if(v===x||k===0||f[k-1]!==x){g!==-1&&g<k+1&&(g=f.indexOf(t,k+1));var C=se((w=w!==-1&&w<k+1?f.indexOf(n,k+1):w)===-1?g:Math.min(g,w));if(f.substr(k+1+C,L)===t){y.push(f.substring(u,k).replace(O,v)),f[u=k+1+C+L]!==v&&(k=f.indexOf(v,u)),g=f.indexOf(t,u),w=f.indexOf(n,u);break}if(C=se(w),f.substring(k+1+C,k+1+C+T)===n){if(y.push(f.substring(u,k).replace(O,v)),G(k+1+C+T),g=f.indexOf(t,u),k=f.indexOf(v,u),W&&(te(),K))return U();if(p&&d.length>=p)return U(!0);break}R.push({type:"Quotes",code:"InvalidQuotes",message:"Trailing quote on quoted field is malformed",row:d.length,index:u}),k++}}else if(s&&y.length===0&&f.substring(u,u+N)===s){if(w===-1)return U();u=w+T,w=f.indexOf(n,u),g=f.indexOf(t,u)}else if(g!==-1&&(g<w||w===-1))y.push(f.substring(u,g)),u=g+L,g=f.indexOf(t,u);else{if(w===-1)break;if(y.push(f.substring(u,w)),G(w+T),W&&(te(),K))return U();if(p&&d.length>=p)return U(!0)}return ie();function D(I){d.push(I),m=u}function se(I){var Q=0;return Q=I!==-1&&(I=f.substring(k+1,I))&&I.trim()===""?I.length:Q}function ie(I){return _||(I===void 0&&(I=f.substring(u)),y.push(I),u=a,D(y),W&&te()),U()}function G(I){u=I,D(y),y=[],w=f.indexOf(n,u)}function U(I){if(e.header&&!ee&&d.length){var Q=d[0],V={},ne=new Set(Q);let xe=!1;for(let ae=0;ae<Q.length;ae++){let J=Q[ae];if(V[J=E(e.transformHeader)?e.transformHeader(J,ae):J]){let le,Ee=V[J];for(;le=J+"_"+Ee,Ee++,ne.has(le););ne.add(le),Q[ae]=le,V[J]++,xe=!0,(B=B===null?{}:B)[le]=J}else V[J]=1,Q[ae]=J;ne.add(J)}xe&&console.warn("Duplicate headers found and renamed.")}return{data:d,errors:R,meta:{delimiter:t,linebreak:n,aborted:K,truncated:!!I,cursor:m+(ee||0),renamedHeaders:B}}}function te(){i(U()),d=[],R=[]}},this.abort=function(){K=!0},this.getCharIndex=function(){return u}}function Ue(e){var t=e.data,n=j[t.workerId],s=!1;if(t.error)n.userError(t.error,t.file);else if(t.results&&t.results.data){var i={abort:function(){s=!0,ke(t.workerId,{data:[],errors:[],meta:{aborted:!0}})},pause:we,resume:we};if(E(n.userStep)){for(var p=0;p<t.results.data.length&&(n.userStep({data:t.results.data[p],errors:t.results.errors,meta:t.results.meta},i),!s);p++);delete t.results}else E(n.userChunk)&&(n.userChunk(t.results,i,t.file),delete t.results)}t.finished&&!s&&ke(t.workerId,t.results)}function ke(e,t){var n=j[e];E(n.userComplete)&&n.userComplete(t),n.terminate(),delete j[e]}function we(){throw new Error("Not implemented.")}function _e(e){if(typeof e!="object"||e===null)return e;var t,n=Array.isArray(e)?[]:{};for(t in e)n[t]=_e(e[t]);return n}function X(e,t){return function(){e.apply(t,arguments)}}function E(e){return typeof e=="function"}return o.parse=function(e,t){var n=(t=t||{}).dynamicTyping||!1;if(E(n)&&(t.dynamicTypingFunction=n,n={}),t.dynamicTyping=n,t.transform=!!E(t.transform)&&t.transform,!t.worker||!o.WORKERS_SUPPORTED)return n=null,o.NODE_STREAM_INPUT,typeof e=="string"?(e=(s=>s.charCodeAt(0)!==65279?s:s.slice(1))(e),n=new(t.download?b:H)(t)):e.readable===!0&&E(e.read)&&E(e.on)?n=new he(t):(h.File&&e instanceof File||e instanceof Object)&&(n=new $(t)),n.stream(e);(n=(()=>{var s;return!!o.WORKERS_SUPPORTED&&(s=(()=>{var i=h.URL||h.webkitURL||null,p=c.toString();return o.BLOB_URL||(o.BLOB_URL=i.createObjectURL(new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ","(",p,")();"],{type:"text/javascript"})))})(),(s=new h.Worker(s)).onmessage=Ue,s.id=Y++,j[s.id]=s)})()).userStep=t.step,n.userChunk=t.chunk,n.userComplete=t.complete,n.userError=t.error,t.step=E(t.step),t.chunk=E(t.chunk),t.complete=E(t.complete),t.error=E(t.error),delete t.worker,n.postMessage({input:e,config:t,workerId:n.id})},o.unparse=function(e,t){var n=!1,s=!0,i=",",p=`\r
++`,M='"',B=M+M,v=!1,x=null,u=!1,K=((()=>{if(typeof t=="object"){if(typeof t.delimiter!="string"||o.BAD_DELIMITERS.filter(function(_){return t.delimiter.indexOf(_)!==-1}).length||(i=t.delimiter),typeof t.quotes!="boolean"&&typeof t.quotes!="function"&&!Array.isArray(t.quotes)||(n=t.quotes),typeof t.skipEmptyLines!="boolean"&&typeof t.skipEmptyLines!="string"||(v=t.skipEmptyLines),typeof t.newline=="string"&&(p=t.newline),typeof t.quoteChar=="string"&&(M=t.quoteChar),typeof t.header=="boolean"&&(s=t.header),Array.isArray(t.columns)){if(t.columns.length===0)throw new Error("Option columns is empty");x=t.columns}t.escapeChar!==void 0&&(B=t.escapeChar+M),t.escapeFormulae instanceof RegExp?u=t.escapeFormulae:typeof t.escapeFormulae=="boolean"&&t.escapeFormulae&&(u=/^[=+\-@\t\r].*$/)}})(),new RegExp(ue(M),"g"));if(typeof e=="string"&&(e=JSON.parse(e)),Array.isArray(e)){if(!e.length||Array.isArray(e[0]))return f(null,e,v);if(typeof e[0]=="object")return f(x||Object.keys(e[0]),e,v)}else if(typeof e=="object")return typeof e.data=="string"&&(e.data=JSON.parse(e.data)),Array.isArray(e.data)&&(e.fields||(e.fields=e.meta&&e.meta.fields||x),e.fields||(e.fields=Array.isArray(e.data[0])?e.fields:typeof e.data[0]=="object"?Object.keys(e.data[0]):[]),Array.isArray(e.data[0])||typeof e.data[0]=="object"||(e.data=[e.data])),f(e.fields||[],e.data||[],v);throw new Error("Unable to serialize unrecognized input");function f(_,a,L){var T="",N=(typeof _=="string"&&(_=JSON.parse(_)),typeof a=="string"&&(a=JSON.parse(a)),Array.isArray(_)&&0<_.length),W=!Array.isArray(a[0]);if(N&&s){for(var d=0;d<_.length;d++)0<d&&(T+=i),T+=ee(_[d],d);0<a.length&&(T+=p)}for(var R=0;R<a.length;R++){var y=(N?_:a[R]).length,m=!1,S=N?Object.keys(a[R]).length===0:a[R].length===0;if(L&&!N&&(m=L==="greedy"?a[R].join("").trim()==="":a[R].length===1&&a[R][0].length===0),L==="greedy"&&N){for(var A=[],g=0;g<y;g++){var w=W?_[g]:g;A.push(a[R][w])}m=A.join("").trim()===""}if(!m){for(var O=0;O<y;O++){0<O&&!S&&(T+=i);var k=N&&W?_[O]:O;T+=ee(a[R][k],O)}R<a.length-1&&(!L||0<y&&!S)&&(T+=p)}}return T}function ee(_,a){var L,T;return _==null?"":_.constructor===Date?JSON.stringify(_).slice(1,25):(T=!1,u&&typeof _=="string"&&u.test(_)&&(_="'"+_,T=!0),L=_.toString().replace(K,B),(T=T||n===!0||typeof n=="function"&&n(_,a)||Array.isArray(n)&&n[a]||((N,W)=>{for(var d=0;d<W.length;d++)if(-1<N.indexOf(W[d]))return!0;return!1})(L,o.BAD_DELIMITERS)||-1<L.indexOf(i)||L.charAt(0)===" "||L.charAt(L.length-1)===" ")?M+L+M:L)}},o.RECORD_SEP="",o.UNIT_SEP="",o.BYTE_ORDER_MARK="\uFEFF",o.BAD_DELIMITERS=["\r",`
++`,'"',o.BYTE_ORDER_MARK],o.WORKERS_SUPPORTED=!P&&!!h.Worker,o.NODE_STREAM_INPUT=1,o.LocalChunkSize=10485760,o.RemoteChunkSize=5242880,o.DefaultDelimiter=",",o.Parser=pe,o.ParserHandle=me,o.NetworkStreamer=b,o.FileStreamer=$,o.StringStreamer=H,o.ReadableStreamStreamer=he,h.jQuery&&((F=h.jQuery).fn.parse=function(e){var t=e.config||{},n=[];return this.each(function(p){if(!(F(this).prop("tagName").toUpperCase()==="INPUT"&&F(this).attr("type").toLowerCase()==="file"&&h.FileReader)||!this.files||this.files.length===0)return!0;for(var M=0;M<this.files.length;M++)n.push({file:this.files[M],inputElem:this,instanceConfig:F.extend({},t)})}),s(),this;function s(){if(n.length===0)E(e.complete)&&e.complete();else{var p,M,B,v,x=n[0];if(E(e.before)){var u=e.before(x.file,x.inputElem);if(typeof u=="object"){if(u.action==="abort")return p="AbortError",M=x.file,B=x.inputElem,v=u.reason,void(E(e.error)&&e.error({name:p},M,B,v));if(u.action==="skip")return void i();typeof u.config=="object"&&(x.instanceConfig=F.extend(x.instanceConfig,u.config))}else if(u==="skip")return void i()}var K=x.instanceConfig.complete;x.instanceConfig.complete=function(f){E(K)&&K(f,x.file,x.inputElem),i()},o.parse(x.file,x.instanceConfig)}}function i(){n.splice(0,1),s()}}),q&&(h.onmessage=function(e){e=e.data,o.WORKER_ID===void 0&&e&&(o.WORKER_ID=e.workerId),typeof e.input=="string"?h.postMessage({workerId:o.WORKER_ID,results:o.parse(e.input,e.config),finished:!0}):(h.File&&e.input instanceof File||e.input instanceof Object)&&(e=o.parse(e.input,e.config))&&h.postMessage({workerId:o.WORKER_ID,results:e,finished:!0})}),(b.prototype=Object.create(z.prototype)).constructor=b,($.prototype=Object.create(z.prototype)).constructor=$,(H.prototype=Object.create(H.prototype)).constructor=H,(he.prototype=Object.create(z.prototype)).constructor=he,o})})(ge);var ve=ge.exports;const fe=be(ve);function de(r){const l={"x-axis-column":0,"y-axes-columns":[],"no-header":!1,"row-major":!1,"row-header-size":1,"row-header-index":0,"column-header-size":1,"column-header-index":0};return r.attrs={...l,...r.attrs},r}function Re(r){return r[0].map((l,c)=>r.map(h=>h[c]))}function Se(r,l){if(l.attrs["y-axes-columns"].length===0){let c=[...Array(r[0].length).keys()];c.splice(l.attrs["x-axis-column"],1),l.attrs["y-axes-columns"]=c}}function Oe(r,l,c){const h=r[0][l.attrs["x-axis-column"]];let F=[];l.attrs["no-header"]?c["header-info"]&&(F=c["header-info"][0]):(F=r[0],r=r.slice(1)),Se(r,l);const P=Re(r),q=P[l.attrs["x-axis-column"]];let j=[];for(let z of l.attrs["y-axes-columns"])j.push({x:q,y:P[z],name:F[z],mode:"lines"});return{plotly_data:j,plotly_layout:{xaxis:{title:{text:h}}},plotly_options:{}}}function Ce(r,l){r.value.forEach(c=>{c.visible=l.x.length==0||l.x.includes(c.name)})}function Te(r,l){let c={x:[],y:[]};r.value.forEach(h=>{h.name&&c.x.push(h.name)}),l.value.x=c.x,l.value.y=c.y}function Ae(r,l,c){var z;let h=[...r[l.attrs["column-header-index"]]];const F=h.slice(l.attrs["row-header-size"]);h=r.map(b=>b[l.attrs["row-header-index"]]);const P=h.slice(l.attrs["column-header-size"]),q=r.slice(l.attrs["column-header-size"]).map(b=>b.slice(l.attrs["row-header-size"]));return(z=l==null?void 0:l.attrs)!=null&&z.logScale&&q.forEach(b=>{b.forEach(($,H)=>{b[H]=Math.log10($)})}),{plotly_data:[{x:F,y:P,z:q,type:"heatmap"}],plotly_layout:{},plotly_options:{}}}function De(r,l){const c=r.value[0];let h=ye(l.x,c.x),F=ye(l.y,c.y),P=[];c.z.forEach(j=>{P.push([...j])});let q=[];return F.forEach(j=>{const Y=P[j];let o=[];h.forEach(z=>{o.push(Y[z])}),q.push(o)}),[{x:l.x.length?l.x:c.x,y:l.y.length?l.y:c.y,z:q,type:"heatmap"}]}function ye(r,l){let c=[];return r.length>0?r.forEach(h=>{c.push(l.indexOf(h))}):c=[...Array(l.length).keys()],c}function Ie(r,l){function c(h){return!!h}l.value.x=r.value[0].x.filter(c),l.value.y=r.value[0].y.filter(c)}const Le=["1.2.0","1.1.0"],re=["timeseries","heatmap"];function Fe(r){return r.version&&Le.includes(r.version)}function ze(r){return r.type&&r.type==="plot"&&r.attrs&&re.includes(r.attrs.style)}function ce(r){return Fe(r)&&ze(r)}function Me(r){return r.split("\\").pop().split("/").pop().split(".")[0]}function Pe(r,l,c,h,F,P,q=void 0){let j={};function Y(b){q?q(b):console.log(`Encountered this error => ${b}`)}function o(b){const $=de(l);if(ce($)){let H={};switch($.attrs.style){case re[0]:H=Oe(b.data,$,j);break;case re[1]:H=Ae(b.data,$);break}H&&(h.value=H.plotly_data,F.value={showlegend:!0,title:{text:Me(r)},...H.plotly_layout},P.value=H.plotly_options)}}function z(b){j["header-info"]=b.data,fe.parse(r,{download:!0,complete:o,error:Y})}if(r){const b=c;b&&b.length>0&&b[0].uri?fe.parse(b[0].uri,{download:!0,complete:z,error:Y}):fe.parse(r,{download:!0,complete:o,error:Y})}}function je(r,l,c){const h=de(l);let F;if(ce(h))switch(h.attrs.style){case re[0]:F=Ce(r,c);break;case re[1]:F=De(r,c);break}return F}function Ne(r,l,c){const h=de(l);if(ce(h))switch(h.attrs.style){case re[0]:Te(r,c);break;case re[1]:Ie(r,c);break}}Z.applyFilter=je,Z.convertToPlotlyData=Pe,Z.extractTitles=Ne,Object.defineProperty(Z,Symbol.toStringTag,{value:"Module"})});
+diff --git a/node_modules/@abi-software/plotdatahelpers/src/js/timeseries.js b/node_modules/@abi-software/plotdatahelpers/src/js/timeseries.js
+index 900a06e..9ce9262 100644
+--- a/node_modules/@abi-software/plotdatahelpers/src/js/timeseries.js
++++ b/node_modules/@abi-software/plotdatahelpers/src/js/timeseries.js
+@@ -32,22 +32,14 @@ export function toPlotly(data, metadata, supplementalData) {
+   // console.log(data)
+   // console.log(traceNames)
+   // console.log(metadata['attrs']['y-axes-columns'])
+-  const traceColours = metadata['attrs']['trace-colours']
+   let plotly_data = []
+-  let index = 0
+   for (let col of metadata['attrs']['y-axes-columns']) {
+-    const colour = traceColours ? traceColours[index] : undefined;
+-    index += 1
+-    const trace = {
++    plotly_data.push({
+       x: xAxis,
+       y: transposedData[col],
+       name: traceNames[col],
+       mode: 'lines'
+-    }
+-    if (colour) {
+-      trace.line = { color: colour }
+-    }
+-    plotly_data.push(trace)
++    })
+   }
+ 
+   const plotly_layout = {

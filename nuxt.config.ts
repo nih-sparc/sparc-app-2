@@ -91,6 +91,11 @@ export default defineNuxtConfig({
       },
     },*/
   },
+  nitro: {
+    commonJS: {
+      ignore: (id) => id.endsWith('maplibre-gl/dist/maplibre-gl.css')
+    }
+  },
   routeRules: {
     '/resources': { redirect: '/tools-and-resources/tools' },
     '/tools-and-resources': { redirect: '/tools-and-resources/tools' },
