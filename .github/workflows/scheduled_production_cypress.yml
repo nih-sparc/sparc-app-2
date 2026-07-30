@@ -90,12 +90,16 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - name: Schedule Run Testing against Production
         id: cypress
         uses: cypress-io/github-action@v6
         env:
           ROOT_URL: "https://sparc.science"
         with:
+          install: false
           wait-on: ${{ env.ROOT_URL }}
           record: true
           tag: Scheduled-Production

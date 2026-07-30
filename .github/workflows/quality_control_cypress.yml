@@ -98,12 +98,16 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Install dependencies
+        run: yarn install --immutable
+
       - name: Manual Run QC Testing against Production
         id: cypress
         env:
           ROOT_URL: "https://sparc.science"
         uses: cypress-io/github-action@v6
         with:
+          install: false
           wait-on: ${{ env.ROOT_URL }}
           record: true
           spec: tests/cypress/e2e/datasets/*.cy.js,tests/cypress/e2e/databrowser.cy.js,tests/cypress/e2e/mapsviewer.cy.js,tests/cypress/e2e/portallogin.cy.js
