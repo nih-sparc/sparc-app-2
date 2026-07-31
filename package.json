@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
-    "postinstall": "patch-package && node ./fix-plotdatahelpers.js && nuxt prepare && node ./verify-resolutions.js",
+    "postinstall": "patch-package && node ./fix-plotdatahelpers.js && node ./fix-bare-relative-imports.js && nuxt prepare && node ./verify-resolutions.js",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
