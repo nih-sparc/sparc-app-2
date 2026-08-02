@@ -6,9 +6,9 @@ export default {
      * Workaround to using pennsieve endpoint https://docs.pennsieve.io/reference/getfile-1 to get the file
      * we can replace this once the discrepencies between the getFile and browseFiles pennsieve endpoint responses are figured out
      * for files containing multiple extensions.
-     * 
+     *
      * errorReporting is the nuxt error callable object which will be called when the method encounter an error
-     * or no file can be found and cause the error page to render 
+     * or no file can be found and cause the error page to render
      */
     fetchPennsieveFile: async function(filePath, datasetId, datasetVersion, errorReporting) {
       try {
@@ -17,8 +17,25 @@ export default {
         const fileLocationEndIndex = filePath.lastIndexOf('/')
         const filesLocation = filePath.substring(0, fileLocationEndIndex)
         const filesUrl = `${config.public.discover_api_host}/datasets/${datasetId}/versions/${datasetVersion}/files/browse`
-        const filesResponse = await $pennsieveApiClient.value.get(filesUrl, { params: { path: filesLocation } })
-        const files = filesResponse.data.files
+        const limit = 200
+        let offset = 0
+        let files = []
+        let totalCount = Infinity
+
+        while (files.length < totalCount) {
+          const pageResponse = await $pennsieveApiClient.value.get(filesUrl, {
+            params: { path: filesLocation, limit, offset }
+          })
+          const page = pageResponse.data
+          const pageFiles = page?.files || []
+          totalCount = page?.totalCount ?? files.length
+          files = files.concat(pageFiles)
+
+          // Safety: if the API ever returns an empty page, stop to avoid an infinite loop
+          if (pageFiles.length === 0) break
+          offset += limit
+        }
+
         if (files.length === 0) {
           console.warn(`
           WARNING! the file "${filePath}" was just attempted to download from ${filesUrl} , This will likely crash the page using this file`)
@@ -46,7 +63,7 @@ export default {
           }
           return keepLooking
         })
-        
+
         if (errorReporting && (Object.keys(foundFile).length === 0)) {
           throw "File cannot be found"
         }
