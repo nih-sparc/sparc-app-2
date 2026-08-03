@@ -94,6 +94,9 @@ export default defineNuxtConfig({
   nitro: {
     commonJS: {
       ignore: (id) => id.endsWith('maplibre-gl/dist/maplibre-gl.css')
+    },
+    externals: {
+      inline: ['@aws-amplify/core', '@aws-amplify/auth', 'amazon-cognito-identity-js']
     }
   },
   routeRules: {
