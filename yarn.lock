@@ -23527,10 +23527,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wgsl_reflect@npm:^1.2.0":
-  version: 1.5.0
-  resolution: "wgsl_reflect@npm:1.5.0"
-  checksum: 10c0/b1893690a9f8fe89aa231b0a06cadf2f98a5f134767d710cd1e80ffb80dd673737023081479600eaf145a6f0c7eaf7630e54de59fb7f56a22e7f2bb776177bd9
+"wgsl_reflect@npm:1.2.3":
+  version: 1.2.3
+  resolution: "wgsl_reflect@npm:1.2.3"
+  checksum: 10c0/0ac66a98607a606ea0d9c419de9be63137ab0cbe05a9024f65fe3d606de1ab40d5b6a50a8fc30b8ad5b06dc7d676e7e5f6c4218ce0061f2b4a17d3722ca363b4
   languageName: node
   linkType: hard
 
