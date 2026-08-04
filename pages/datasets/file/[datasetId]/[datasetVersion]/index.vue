@@ -1,6 +1,7 @@
 <template>
   <client-only>
-    <div class="pb-32 page-data">
+    <error400 v-if="!hasFile" />
+    <div class="pb-32 page-data" v-else>
       <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
       <div class="container">
         <h1 hidden>File viewer for {{ file.path }}</h1>
@@ -62,6 +63,7 @@ import FormatDate from '@/mixins/format-date'
 import FetchPennsieveFile from '@/mixins/fetch-pennsieve-file'
 import FileDetails from '@/mixins/file-details'
 import Gallery from '@/components/Gallery/Gallery.vue'
+import error400 from '@/components/Error/400.vue'
 
 import { extractS3BucketName } from '@/utils/common'
 
@@ -279,6 +281,10 @@ export default {
   },
 
   computed: {
+    hasFile: function() {
+      // `file` is an object; it is an empty object `{}` when no file was found.
+      return !isEmpty(this.file)
+    },
     hasViewer: function() {
       return this.hasSimulationViewer ||
         this.hasPlotViewer || this.hasVideoViewer || this.hasOmeViewer ||
