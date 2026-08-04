@@ -12,16 +12,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/flatmapvuer@npm:1.13.4":
-  version: 1.13.4
-  resolution: "@abi-software/flatmapvuer@npm:1.13.4"
+"@abi-software/flatmapvuer@npm:1.14.0":
+  version: 1.14.0
+  resolution: "@abi-software/flatmapvuer@npm:1.14.0"
   dependencies:
-    "@abi-software/map-utilities": "npm:1.8.3"
+    "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
-    "@abi-software/svg-sprite": "npm:1.0.3"
+    "@abi-software/svg-sprite": "npm:1.1.0"
     "@element-plus/icons-vue": "npm:^2.3.1"
     "@esbuild/linux-x64": "npm:0.25.3"
-    "@rollup/rollup-linux-x64-gnu": "npm:4.23.0"
+    "@rollup/rollup-darwin-arm64": "npm:4.59.0"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.59.0"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.59.0"
     css-element-queries: "npm:^1.2.2"
     element-plus: "npm:2.8.4"
     mitt: "npm:^3.0.1"
@@ -31,9 +33,13 @@ __metadata:
   dependenciesMeta:
     "@esbuild/linux-x64":
       optional: true
+    "@rollup/rollup-darwin-arm64":
+      optional: true
     "@rollup/rollup-linux-x64-gnu":
       optional: true
-  checksum: 10c0/005e576a85cda18474a797b4bd15cc27f6d3fe70653596f7f050f9531b3ae6d8688b142a431cbf1811d81a41abca301ef2657d3c32733b08ccc5949bea144a89
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/6022fd517992e0d8fb7f36babc2815f6580f08b754c0519d4fd37b0212b8011facbae09940995ff8d727417d28f12b7ef246c4439799f8e6d2a374f91ad2edb6
   languageName: node
   linkType: hard
 
@@ -49,14 +55,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/map-side-bar@npm:^2.15.1":
-  version: 2.15.1
-  resolution: "@abi-software/map-side-bar@npm:2.15.1"
+"@abi-software/map-side-bar@npm:2.16.0":
+  version: 2.16.0
+  resolution: "@abi-software/map-side-bar@npm:2.16.0"
   dependencies:
     "@abi-software/gallery": "npm:1.3.0"
-    "@abi-software/map-utilities": "npm:1.8.3"
-    "@abi-software/svg-sprite": "npm:^1.0.2"
+    "@abi-software/map-utilities": "npm:1.9.0"
+    "@abi-software/svg-sprite": "npm:^1.1.0"
     "@element-plus/icons-vue": "npm:^2.3.1"
+    "@rollup/rollup-darwin-arm64": "npm:4.59.0"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.59.0"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.59.0"
     algoliasearch: "npm:^4.10.5"
     element-plus: "npm:2.8.4"
     js-base64: "npm:^3.7.7"
@@ -65,39 +74,59 @@ __metadata:
     unplugin-vue-components: "npm:^0.26.0"
     vue: "npm:^3.4.21"
     xss: "npm:^1.0.14"
-  checksum: 10c0/d6dd112d96f9d6e0bbe7abdacc1ef3cd90c453d9854c4ed9330ed254cb62bf0c1c3d4f84a7cb05fed9de6b6e5b873bc6ef79138ba0b24bee4dfbc79804312257
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/80dd7ab8b91f9e5da9fc7343587452f7f11dd0816d7e751a8e0691c4f265f41dd192dc70bed87a4c18009654a12964d9bdcd4cc602747d6398b8a8ada45dcb3e
   languageName: node
   linkType: hard
 
-"@abi-software/map-utilities@npm:1.8.3":
-  version: 1.8.3
-  resolution: "@abi-software/map-utilities@npm:1.8.3"
+"@abi-software/map-utilities@npm:1.9.0":
+  version: 1.9.0
+  resolution: "@abi-software/map-utilities@npm:1.9.0"
   dependencies:
     "@abi-software/svg-sprite": "npm:^1.0.1"
     "@element-plus/icons-vue": "npm:^2.3.1"
+    "@rollup/rollup-darwin-arm64": "npm:4.59.0"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.59.0"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.59.0"
     cytoscape: "npm:^3.30.2"
     cytoscape-dagre: "npm:^2.5.0"
     element-plus: "npm:2.8.4"
     mitt: "npm:^3.0.1"
     vue: "npm:^3.4.21"
-  checksum: 10c0/de58c6e4dbaea644170ef148e63396d9984a33b4ccfe9efa9e3604d9286a90ed4968f5417e364267f2cf40d7f65e6efc824ebd4df0e9755e991a8802d4d296ff
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/6fb13faadc2381d56f2e2c792eaa1432ef8b71dded83b2a266418f0b87ad12baa5c99ec0a71cec37e70b2bd9679466468135a74b3e0e37217b27817063420d29
   languageName: node
   linkType: hard
 
-"@abi-software/mapintegratedvuer@npm:1.19.1":
-  version: 1.19.1
-  resolution: "@abi-software/mapintegratedvuer@npm:1.19.1"
+"@abi-software/mapintegratedvuer@npm:1.20.0":
+  version: 1.20.0
+  resolution: "@abi-software/mapintegratedvuer@npm:1.20.0"
   dependencies:
-    "@abi-software/flatmapvuer": "npm:1.13.4"
-    "@abi-software/map-side-bar": "npm:^2.15.1"
-    "@abi-software/map-utilities": "npm:1.8.3"
-    "@abi-software/plotvuer": "npm:1.0.7"
-    "@abi-software/scaffoldvuer": "npm:1.17.0"
-    "@abi-software/simulationvuer": "npm:3.2.6"
+    "@abi-software/flatmapvuer": "npm:1.14.0"
+    "@abi-software/map-side-bar": "npm:2.16.0"
+    "@abi-software/map-utilities": "npm:1.9.0"
+    "@abi-software/plotvuer": "npm:1.1.0"
+    "@abi-software/scaffoldvuer": "npm:1.18.0"
+    "@abi-software/simulationvuer": "npm:3.3.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
-    "@abi-software/svg-sprite": "npm:1.0.4"
+    "@abi-software/svg-sprite": "npm:1.1.0"
     "@element-plus/icons-vue": "npm:^2.3.1"
     "@esbuild/darwin-arm64": "npm:^0.25.3"
+    "@rollup/rollup-darwin-arm64": "npm:4.62.3"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.62.3"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.62.3"
     "@vitejs/plugin-vue": "npm:^4.6.2"
     css-element-queries: "npm:^1.2.3"
     element-plus: "npm:2.8.4"
@@ -111,7 +140,13 @@ __metadata:
   dependenciesMeta:
     "@esbuild/darwin-arm64":
       optional: true
-  checksum: 10c0/ac4f76c5e63e84e9e25f63f59998d408821edd3d0ef8bb0324dafa0ef1927624a973e191c079fc6f9e31156ad375fa535eee46284df6b3985f5fa34d81406f19
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/b6eae4e23581ef739a53af71e93b3f582d4a83c7f84726dcd99d1696d6a5ad5601c7514de7711d71d36d706b936093ccb51a19abe07b2106b619736b7f97ea1d
   languageName: node
   linkType: hard
 
@@ -135,11 +170,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/plotvuer@npm:1.0.7":
-  version: 1.0.7
-  resolution: "@abi-software/plotvuer@npm:1.0.7"
+"@abi-software/plotvuer@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@abi-software/plotvuer@npm:1.1.0"
   dependencies:
-    "@abi-software/svg-sprite": "npm:^1.0.3"
+    "@abi-software/svg-sprite": "npm:^1.1.0"
+    "@rollup/rollup-darwin-arm64": "npm:4.22.5"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.22.5"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.22.5"
     css-element-queries: "npm:^1.2.3"
     element-plus: "npm:2.8.4"
     papaparse: "npm:^5.5.2"
@@ -149,18 +187,28 @@ __metadata:
     vue: "npm:^3.4.21"
     vue-draggable-resizable: "npm:^2.2.0"
     vue-router: "npm:^4.2.5"
-  checksum: 10c0/35117f6ea3a253192cc7850c8b2110f6236865c0835675bd4886dba0f50453aa5436d5ef96ac76afc184f2da1f6c48df827ffd4510ec70ecdb0e6599a5f88b1f
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/867676fa47cfe03c9e124e2c01ce7ac08e8098c513da8f7440efb26d2fb610aa793234a174118bb7b80a404fd68db4f814bd0946375b08a778b29cfbeaa29121
   languageName: node
   linkType: hard
 
-"@abi-software/scaffoldvuer@npm:1.17.0":
-  version: 1.17.0
-  resolution: "@abi-software/scaffoldvuer@npm:1.17.0"
+"@abi-software/scaffoldvuer@npm:1.18.0":
+  version: 1.18.0
+  resolution: "@abi-software/scaffoldvuer@npm:1.18.0"
   dependencies:
-    "@abi-software/map-utilities": "npm:1.8.3"
+    "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/sparc-annotation": "npm:^0.3.2"
-    "@abi-software/svg-sprite": "npm:1.0.3"
+    "@abi-software/svg-sprite": "npm:1.1.0"
     "@element-plus/icons-vue": "npm:^2.3.1"
+    "@rollup/rollup-darwin-arm64": "npm:4.62.3"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.62.3"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.62.3"
     core-js: "npm:^3.22.5"
     element-plus: "npm:2.8.4"
     minisearch: "npm:^6.0.1"
@@ -169,23 +217,40 @@ __metadata:
     unplugin-vue-components: "npm:^0.26.0"
     vue: "npm:^3.4.21"
     vue-router: "npm:^4.2.5"
-    zincjs: "npm:^2.0.0"
-  checksum: 10c0/668619a6e25fd2b9cf03e7decafbe3d8cdf80de1d8f2de80809e878b779501cd7f503f4ff2d6ead292825ad8c30a5e7119caebf804b3782e886c317a7c3ff14b
+    zincjs: "npm:^2.0.1"
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/b79af329924b5775d1f17200710515361d9af98dada0fd50f685fef386241058e78640bd0523637cfea616c17f6766a551a9c5252939c4275f8a4d221643d012
   languageName: node
   linkType: hard
 
-"@abi-software/simulationvuer@npm:3.2.6":
-  version: 3.2.6
-  resolution: "@abi-software/simulationvuer@npm:3.2.6"
+"@abi-software/simulationvuer@npm:3.3.0":
+  version: 3.3.0
+  resolution: "@abi-software/simulationvuer@npm:3.3.0"
   dependencies:
-    "@abi-software/plotvuer": "npm:1.0.7"
+    "@abi-software/plotvuer": "npm:1.1.0"
     "@opencor/opencor": "npm:^0.20260616.0"
+    "@rollup/rollup-darwin-arm64": "npm:4.62.3"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.62.3"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.62.3"
     element-plus: "npm:2.8.4"
     jsonschema: "npm:^1.4.0"
     mathjs: "npm:^15.1.0"
     unplugin-vue-components: "npm:^0.26.0"
     vue: "npm:^3.4.21"
-  checksum: 10c0/1f1472a678d170d7d8dcd150688a6d21d954fba7ab7771dc007c59d886906eeeb6eb3002678e5e98d86a1ade120ec6d7cfacc4dfeff47a685ec8220bbf2abd1f
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/913921df8343ad579baf36331844923585cc142077f96ad6d4c300b9bd6d09f201850139742bdd903e42863d2ddcc41168bc6cd16dc8a203ed9baf1d0afc1fe6
   languageName: node
   linkType: hard
 
@@ -200,21 +265,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/svg-sprite@npm:1.0.3, @abi-software/svg-sprite@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@abi-software/svg-sprite@npm:1.0.3"
+"@abi-software/svg-sprite@npm:1.1.0, @abi-software/svg-sprite@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@abi-software/svg-sprite@npm:1.1.0"
   dependencies:
+    "@rollup/rollup-darwin-arm64": "npm:4.22.5"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.22.5"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.22.5"
     vue: "npm:^3.4.21"
-  checksum: 10c0/a7dca9416d1ee4804554e16ae25598ceda972fa34b3fb07f7fbf956c802d1438c7de392cbbdde44a8c2ac300508d444869c87d7f32a4cc991314f5553c2d6b56
-  languageName: node
-  linkType: hard
-
-"@abi-software/svg-sprite@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@abi-software/svg-sprite@npm:1.0.4"
-  dependencies:
-    vue: "npm:^3.4.21"
-  checksum: 10c0/a27f815f6614d310b334b5091ad2dca0ea93515b88a247a03779eb595bc3d2916190a2407d384a12171d0ae56c84b456419580b7e78bf92ff6c2c844dc2ffce5
+  dependenciesMeta:
+    "@rollup/rollup-darwin-arm64":
+      optional: true
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+    "@rollup/rollup-win32-x64-msvc":
+      optional: true
+  checksum: 10c0/f8bade0c1e8919720cb6e37f0ee36b4c0c7224bf4c80c4ef39583d0302994dc5369932562327be98417daa61c1b7be348611c1f396f58e87e280e46af806dc47
   languageName: node
   linkType: hard
 
@@ -224,15 +290,6 @@ __metadata:
   dependencies:
     vue: "npm:^3.3.13"
   checksum: 10c0/ff72405bfd30ab805d3136b99a9735ce5ab6847148bdc27c27a02d9c6dc644568ae9e8b8bda90178d738acb1e38bf64e7a475ccc672391b80bbe1f7711672f1f
-  languageName: node
-  linkType: hard
-
-"@abi-software/svg-sprite@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@abi-software/svg-sprite@npm:1.0.2"
-  dependencies:
-    vue: "npm:^3.4.21"
-  checksum: 10c0/399933d983f7d36936ead6bb6780b21d8aeba145d46ee887ea0b6b5d36de7e12bc179905b100b60d947efba0f2f43d072e319cea6c264f570d9a64340a81b07d
   languageName: node
   linkType: hard
 
@@ -6583,6 +6640,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rollup/rollup-darwin-arm64@npm:4.22.5":
+  version: 4.22.5
+  resolution: "@rollup/rollup-darwin-arm64@npm:4.22.5"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-darwin-arm64@npm:4.59.0":
+  version: 4.59.0
+  resolution: "@rollup/rollup-darwin-arm64@npm:4.59.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-darwin-arm64@npm:4.62.3":
+  version: 4.62.3
+  resolution: "@rollup/rollup-darwin-arm64@npm:4.62.3"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rollup/rollup-darwin-arm64@npm:4.9.6":
   version: 4.9.6
   resolution: "@rollup/rollup-darwin-arm64@npm:4.9.6"
@@ -6625,9 +6703,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-x64-gnu@npm:4.23.0":
-  version: 4.23.0
-  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.23.0"
+"@rollup/rollup-linux-x64-gnu@npm:4.22.5":
+  version: 4.22.5
+  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.22.5"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-linux-x64-gnu@npm:4.59.0":
+  version: 4.59.0
+  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.59.0"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-linux-x64-gnu@npm:4.62.3":
+  version: 4.62.3
+  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.62.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
@@ -6664,6 +6756,27 @@ __metadata:
   version: 4.9.6
   resolution: "@rollup/rollup-win32-ia32-msvc@npm:4.9.6"
   conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-win32-x64-msvc@npm:4.22.5":
+  version: 4.22.5
+  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.22.5"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-win32-x64-msvc@npm:4.59.0":
+  version: 4.59.0
+  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.59.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-win32-x64-msvc@npm:4.62.3":
+  version: 4.62.3
+  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.62.3"
+  conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
@@ -17636,10 +17749,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@abi-software/mapintegratedvuer": "npm:1.19.1"
+    "@abi-software/mapintegratedvuer": "npm:1.20.0"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.2"
-    "@abi-software/simulationvuer": "npm:3.2.6"
+    "@abi-software/simulationvuer": "npm:3.3.0"
     "@deck.gl/core": "npm:9.1.15"
     "@deck.gl/extensions": "npm:9.1.15"
     "@deck.gl/geo-layers": "npm:9.1.15"
@@ -24023,16 +24136,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zincjs@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "zincjs@npm:2.0.0"
+"zincjs@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "zincjs@npm:2.0.1"
   dependencies:
     css-element-queries: "npm:^1.2.2"
     lodash: "npm:^4.17.19"
     nifti-reader-js: "npm:0.8.0"
     three: "npm:^0.130.1"
     three-spritetext: "npm:1.6.2"
-  checksum: 10c0/2f598aec720883be62f2e459dc81ca80f6c340d3b8d63b864d1190e729810f81b3011704e096641d4e3778cff05eee56be8c2f3702c4e9af61b3b668559a2de3
+  checksum: 10c0/f0719151d36df4a7758bbf14190810f0130c7d83dadfb185e1dd7147917ca5cf48139740ff6b813576bb711c3ce44180bf70e0661d9f27b65d377b2bff7a0595
   languageName: node
   linkType: hard
 
