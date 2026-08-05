@@ -78,18 +78,39 @@ export default defineNuxtConfig({
   },
   vite: {
     define: {
-      'window.global': {},
+      'window.global': 'globalThis',
     },
     resolve: {
-      dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
-    }
-    /*css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@use "sparc-design-system-components-2/dist/style.css" as *;',
-        },
-      },
-    },*/
+      dedupe:[
+        'vue',
+        'pinia',
+        'element-plus',
+        '@deck.gl/core',
+        '@deck.gl/layers',
+        '@deck.gl/extensions',
+        '@deck.gl/geo-layers',
+        '@deck.gl/mesh-layers',
+        '@luma.gl/core',
+        '@luma.gl/engine',
+        '@luma.gl/constants',
+        '@luma.gl/shadertools',
+        '@luma.gl/webgl',
+      ]
+    },
+    optimizeDeps: {
+      include: [
+        '@deck.gl/core',
+        '@deck.gl/layers',
+        '@deck.gl/extensions',
+        '@deck.gl/geo-layers',
+        '@deck.gl/mesh-layers',
+        '@luma.gl/core',
+        '@luma.gl/engine',
+        '@luma.gl/constants',
+        '@luma.gl/shadertools',
+        '@luma.gl/webgl',
+      ]
+    },
   },
   nitro: {
     commonJS: {
@@ -109,7 +130,8 @@ export default defineNuxtConfig({
     '/resources/software': { redirect: '/tools-and-resources/tools?resourceType=Software' },
     '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
     '/resources/submit': { redirect: '/contact-us?type=tool' },
-    '/apps/precision-dashboard': { ssr:false }
+    '/apps/precision-dashboard': { ssr:false },
+    '/apps/sparc-dashboard': { ssr:false }
   },
   hooks: {
     'pages:extend'(pages) {
