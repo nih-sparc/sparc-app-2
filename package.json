@@ -1,14 +1,14 @@
 {
   "name": "nuxt-app",
-  "private": false,
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@4.18.0+sha512.fcb8716fe7cd0eece141ffc18b92193a9df9204c1ba83189c288835223fc0bbe64af473bab0d5e9927a7daeb5caf2bb07eb2787cc9338ca040ea125f2a1f2f7e",
   "scripts": {
     "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
-    "postinstall": "patch-package && nuxt prepare && node ./verify-resolutions.js",
+    "prepare": "patch-package && node ./fix-plotdatahelpers.js && nuxt prepare && node ./verify-resolutions.js",
+    "heroku-postbuild": "patch-package && node ./fix-plotdatahelpers.js && nuxt prepare && node ./verify-resolutions.js && NODE_OPTIONS=\"--max-old-space-size=4096\" nuxt build",
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
@@ -29,11 +29,21 @@
     "semver": "^7.7.3"
   },
   "dependencies": {
-    "@abi-software/mapintegratedvuer": "1.19.1",
+    "@abi-software/mapintegratedvuer": "1.20.0",
     "@abi-software/plotcomponents": "^0.2.4",
     "@abi-software/plotdatahelpers": "^0.1.2",
-    "@abi-software/simulationvuer": "3.2.6",
+    "@abi-software/simulationvuer": "3.3.0",
+    "@deck.gl/core": "9.1.15",
+    "@deck.gl/extensions": "9.1.15",
+    "@deck.gl/geo-layers": "9.1.15",
+    "@deck.gl/layers": "9.1.15",
+    "@deck.gl/mesh-layers": "9.1.15",
     "@element-plus/nuxt": "^1.0.10",
+    "@luma.gl/constants": "9.1.10",
+    "@luma.gl/core": "9.1.10",
+    "@luma.gl/engine": "9.1.10",
+    "@luma.gl/shadertools": "9.1.10",
+    "@luma.gl/webgl": "9.1.10",
     "@nuxtjs/sitemap": "^5.1.4",
     "@pennsieve-viz/core": "0.3.2",
     "@pennsieve-viz/micro-ct": "1.0.71",
@@ -67,22 +77,23 @@
   },
   "resolutions": {
     "string-width": "4.2.3",
-    "mlly": "1.4.0",
+    "mlly": "1.8.2",
     "vue": "3.4.21",
-    "@abi-software/flatmapvuer": "1.13.4",
-    "@deck.gl/core": "9.1.8",
-    "@deck.gl/extensions": "9.1.8",
-    "@deck.gl/geo-layers": "9.1.8",
-    "@deck.gl/layers": "9.1.8",
-    "@deck.gl/mesh-layers": "9.1.8",
-    "@luma.gl/constants": "9.1.7",
-    "@luma.gl/core": "9.1.7",
-    "@luma.gl/engine": "9.1.7",
-    "@luma.gl/shadertools": "9.1.7",
-    "@luma.gl/webgl": "9.1.7"
+    "@abi-software/flatmapvuer": "1.14.0",
+    "@deck.gl/core": "9.1.15",
+    "@deck.gl/extensions": "9.1.15",
+    "@deck.gl/geo-layers": "9.1.15",
+    "@deck.gl/layers": "9.1.15",
+    "@deck.gl/mesh-layers": "9.1.15",
+    "@luma.gl/constants": "9.1.10",
+    "@luma.gl/core": "9.1.10",
+    "@luma.gl/engine": "9.1.10",
+    "@luma.gl/shadertools": "9.1.10",
+    "@luma.gl/webgl": "9.1.10",
+    "wgsl_reflect": "1.2.3"
   },
   "engines": {
-    "node": "18.17.1"
+    "node": "^20.19.0"
   },
   "type": "module"
 }

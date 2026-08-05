@@ -85,7 +85,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.17.1
+          node-version: 20.19.0
+
+      - name: Enable Corepack
+        if: steps.checkUser.outputs.require-result == 'true'
+        run: corepack enable
+
+      - name: Install dependencies
+        if: steps.checkUser.outputs.require-result == 'true'
+        run: yarn install --immutable
 
       - name: Automated Run Testing when Pull Request
         if: steps.checkUser.outputs.require-result == 'true'
@@ -94,6 +102,7 @@ jobs:
         env:
           ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
         with:
+          install: false
           build: yarn build
           start: yarn preview
           wait-on: ${{ secrets.ROOT_URL }}

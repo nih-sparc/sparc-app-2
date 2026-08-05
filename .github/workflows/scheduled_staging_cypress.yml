@@ -85,7 +85,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18.17.1
+          node-version: 20.19.0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
 
       - name: Schedule Run Testing against Staging
         id: cypress
@@ -93,6 +99,7 @@ jobs:
         env:
           ROOT_URL: "https://staging.sparc.science"
         with:
+          install: false
           wait-on: ${{ env.ROOT_URL }}
           record: true
           tag: Scheduled-Staging
