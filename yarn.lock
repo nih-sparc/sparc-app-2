@@ -12,9 +12,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/flatmapvuer@npm:1.14.0":
-  version: 1.14.0
-  resolution: "@abi-software/flatmapvuer@npm:1.14.0"
+"@abi-software/flatmapvuer@npm:1.14.1":
+  version: 1.14.1
+  resolution: "@abi-software/flatmapvuer@npm:1.14.1"
   dependencies:
     "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
@@ -39,7 +39,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/6022fd517992e0d8fb7f36babc2815f6580f08b754c0519d4fd37b0212b8011facbae09940995ff8d727417d28f12b7ef246c4439799f8e6d2a374f91ad2edb6
+  checksum: 10c0/19f7d792f8e5212ac907815240393e7690237a5f3d1b8c5d31dde6d7354a837e71ffdeb7a476406f6111741cf55aa16916460536fbf570e3a7edf57bbd320d68
   languageName: node
   linkType: hard
 
@@ -110,11 +110,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/mapintegratedvuer@npm:1.20.0":
-  version: 1.20.0
-  resolution: "@abi-software/mapintegratedvuer@npm:1.20.0"
+"@abi-software/mapintegratedvuer@npm:1.20.1":
+  version: 1.20.1
+  resolution: "@abi-software/mapintegratedvuer@npm:1.20.1"
   dependencies:
-    "@abi-software/flatmapvuer": "npm:1.14.0"
+    "@abi-software/flatmapvuer": "npm:^1.14.1"
     "@abi-software/map-side-bar": "npm:2.16.0"
     "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/plotvuer": "npm:1.1.0"
@@ -146,7 +146,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/b6eae4e23581ef739a53af71e93b3f582d4a83c7f84726dcd99d1696d6a5ad5601c7514de7711d71d36d706b936093ccb51a19abe07b2106b619736b7f97ea1d
+  checksum: 10c0/f7a23c90e0ae228edb6e9b94f41abbf546f61ed41e14210013918b2aec103515e9306eec0f21efc2a3abfe641bdfdd49f9a3358b2ff076a2daca4c9fc8b90613
   languageName: node
   linkType: hard
 
@@ -17749,7 +17749,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@abi-software/mapintegratedvuer": "npm:1.20.0"
+    "@abi-software/mapintegratedvuer": "npm:1.20.1"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.2"
     "@abi-software/simulationvuer": "npm:3.3.0"
@@ -17796,11 +17796,11 @@ __metadata:
     plyr: "npm:^3.7.8"
     postinstall-postinstall: "npm:^2.1.0"
     postscribe: "npm:^2.0.8"
-    precision-dashwidgets: "npm:1.0.0"
+    precision-dashwidgets: "npm:1.0.1"
     ramda: "npm:^0.29.0"
     sass: "npm:^1.66.1"
     semver: "npm:^7.7.3"
-    sparc-dashwidgets: "npm:1.2.2"
+    sparc-dashwidgets: "npm:1.3.1"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.0.0"
@@ -19501,9 +19501,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"precision-dashwidgets@npm:1.0.0":
-  version: 1.0.0
-  resolution: "precision-dashwidgets@npm:1.0.0"
+"precision-dashwidgets@npm:1.0.1":
+  version: 1.0.1
+  resolution: "precision-dashwidgets@npm:1.0.1"
   dependencies:
     "@duckdb/duckdb-wasm": "npm:^1.30.0"
     "@pennsieve-viz/core": "npm:0.1.6"
@@ -19512,10 +19512,20 @@ __metadata:
     regl: "npm:^2.1.1"
     vue: "npm:^3.5.18"
   peerDependencies:
+    "@deck.gl/core": ">=9.1.0"
+    "@deck.gl/extensions": ">=9.1.0"
+    "@deck.gl/geo-layers": ">=9.1.0"
+    "@deck.gl/layers": ">=9.1.0"
+    "@deck.gl/mesh-layers": ">=9.1.0"
     "@element-plus/icons-vue": ^2.3.1
+    "@luma.gl/constants": ">=9.1.0"
+    "@luma.gl/core": ">=9.1.0"
+    "@luma.gl/engine": ">=9.1.0"
+    "@luma.gl/shadertools": ">=9.1.0"
+    "@luma.gl/webgl": ">=9.1.0"
     element-plus: ^2.11.0
     pinia: ^3.0.3
-  checksum: 10c0/fde050dc03fde4d91e5cb545b56466ac2e11196b29d885b698c32c508cbfba10d1c373f60842fe2aa346f0ffb1c33522c7b56043d9240425e887f3ae4c9be559
+  checksum: 10c0/c4762f444a4ae974d647ed08e33fffbf7ca216d4523ec7a2895f65c365420c1599251abdec271a90293feaf7d173b92d89ee1640afadc9908e60c1a72360dacc
   languageName: node
   linkType: hard
 
@@ -21177,9 +21187,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.2.2":
-  version: 1.2.2
-  resolution: "sparc-dashwidgets@npm:1.2.2"
+"sparc-dashwidgets@npm:1.3.1":
+  version: 1.3.1
+  resolution: "sparc-dashwidgets@npm:1.3.1"
   dependencies:
     "@pennsieve-viz/core": "npm:^0.3.2"
     "@pennsieve-viz/micro-ct": "npm:1.0.2"
@@ -21190,10 +21200,20 @@ __metadata:
     vue: "npm:^3.5.18"
   peerDependencies:
     "@abi-software/flatmapvuer": 1.12.2
+    "@deck.gl/core": ">=9.1.0"
+    "@deck.gl/extensions": ">=9.1.0"
+    "@deck.gl/geo-layers": ">=9.1.0"
+    "@deck.gl/layers": ">=9.1.0"
+    "@deck.gl/mesh-layers": ">=9.1.0"
     "@element-plus/icons-vue": ^2.3.1
+    "@luma.gl/constants": ">=9.1.0"
+    "@luma.gl/core": ">=9.1.0"
+    "@luma.gl/engine": ">=9.1.0"
+    "@luma.gl/shadertools": ">=9.1.0"
+    "@luma.gl/webgl": ">=9.1.0"
     element-plus: ^2.11.0
     pinia: ^3.0.3
-  checksum: 10c0/75c6338a8698697dca3e2b7b5b25ac85b6ffc48db7b10c0fad6b8090c87dcda22222bf08b82d60dee5c5fc36ae4fa9c51ba1989df19bae05e1b244141724a4b8
+  checksum: 10c0/6243581ca8cf7a83b77d4ed3f92066f1b216ecd79606902ae4aa8760168cc757f3df850ae086bb5be40cb5e491315088df6ae8ebff3f905660e0e98502ea3555
   languageName: node
   linkType: hard
 
