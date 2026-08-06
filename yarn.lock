@@ -12,9 +12,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/flatmapvuer@npm:1.14.0":
-  version: 1.14.0
-  resolution: "@abi-software/flatmapvuer@npm:1.14.0"
+"@abi-software/flatmapvuer@npm:1.14.1":
+  version: 1.14.1
+  resolution: "@abi-software/flatmapvuer@npm:1.14.1"
   dependencies:
     "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
@@ -39,7 +39,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/6022fd517992e0d8fb7f36babc2815f6580f08b754c0519d4fd37b0212b8011facbae09940995ff8d727417d28f12b7ef246c4439799f8e6d2a374f91ad2edb6
+  checksum: 10c0/19f7d792f8e5212ac907815240393e7690237a5f3d1b8c5d31dde6d7354a837e71ffdeb7a476406f6111741cf55aa16916460536fbf570e3a7edf57bbd320d68
   languageName: node
   linkType: hard
 
@@ -110,11 +110,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/mapintegratedvuer@npm:1.20.0":
-  version: 1.20.0
-  resolution: "@abi-software/mapintegratedvuer@npm:1.20.0"
+"@abi-software/mapintegratedvuer@npm:1.20.1":
+  version: 1.20.1
+  resolution: "@abi-software/mapintegratedvuer@npm:1.20.1"
   dependencies:
-    "@abi-software/flatmapvuer": "npm:1.14.0"
+    "@abi-software/flatmapvuer": "npm:^1.14.1"
     "@abi-software/map-side-bar": "npm:2.16.0"
     "@abi-software/map-utilities": "npm:1.9.0"
     "@abi-software/plotvuer": "npm:1.1.0"
@@ -146,7 +146,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/b6eae4e23581ef739a53af71e93b3f582d4a83c7f84726dcd99d1696d6a5ad5601c7514de7711d71d36d706b936093ccb51a19abe07b2106b619736b7f97ea1d
+  checksum: 10c0/f7a23c90e0ae228edb6e9b94f41abbf546f61ed41e14210013918b2aec103515e9306eec0f21efc2a3abfe641bdfdd49f9a3358b2ff076a2daca4c9fc8b90613
   languageName: node
   linkType: hard
 
@@ -17749,7 +17749,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@abi-software/mapintegratedvuer": "npm:1.20.0"
+    "@abi-software/mapintegratedvuer": "npm:1.20.1"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.2"
     "@abi-software/simulationvuer": "npm:3.3.0"
