@@ -1,28 +1,15 @@
 <template>
   <NuxtLayout>
-    <div class="loading-container" v-if="loading">
-      <img class="logo" :src="logo" />
-    </div>
     <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script>
-import { ref } from 'vue'
-import sparcLogoFast from '@/assets/sparcLogoFast.gif'
 import { Amplify } from '@aws-amplify/core'
 import { successMessage } from './utils/notification-messages'
 
 export default {
   async setup() {
-    const nuxtApp = useNuxtApp()
-    const loading = ref(true)
-    const loaded = ref(false)
-    const logo = sparcLogoFast
-    nuxtApp.hook("page:finish", () => {
-      loading.value = false
-      loaded.value = true
-    })
     const config = useRuntimeConfig()
     const awsConfig = {
       Auth: {
@@ -41,10 +28,7 @@ export default {
     }
     // https://aws.amazon.com/blogs/mobile/ssr-support-for-aws-amplify-javascript-libraries/
     Amplify.configure(awsConfig)
-    return {
-      logo,
-      loading
-    }
+    return {}
   },
   mounted() {
     const internalTrafficCookie = useCookie(this.$config.public.INTERNAL_TRAFFIC_KEY, { default: () => 'false' })
@@ -61,22 +45,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.loading-container {
-  position: fixed;
-  top: 0;
-  z-index: 101;
-  background-color: white;
-  opacity: .5;
-  width: 100vw;
-  height: 100vh;
-}
-
-.logo {
-  position: absolute;
-  height: 5rem;
-  z-index: 2;
-  left: calc(50vw - 5rem);
-  top: calc(50vh - 5rem);
-}
-</style>

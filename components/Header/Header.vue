@@ -1,598 +1,743 @@
 <template>
-  <div class="header">
-    <div class="header__nav">
-      <div class="header__nav--parent">
-        <svgo-icon-contact class="tab3 mr-4 mt-4" />
-        <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
-          Contact Us
-        </nuxt-link>
-        <svgo-icon-help class="tab3 mr-4 mt-4" />
-        <a href="https://docs.sparc.science/" target="_blank">
-          Help
-        </a>
-        <client-only>
-          <svgo-icon-sign-in class="tab3 mt-4" />
-          <a class="sign-in-link" v-if="!userProfile" @click="showLoginDialog = true">
-            Sign in
-          </a>
-          <el-menu ref="userMenu" class="mr-16 user-menu" v-else :ellipsis="false" background-color="#24245b"
-            @select="handleUserMenuSelect" @mouseleave="closeMenu" @mouseenter="openMenu">
-            <el-sub-menu index="user" class="submenu">
-              <template #title>{{username}}</template>
-              <el-menu-item class="user-submenu" index="profile">Profile</el-menu-item>
-              <el-menu-item class="user-submenu" index="logout">Logout</el-menu-item>
-            </el-sub-menu>
-          </el-menu>
-        </client-only>
-      </div>
-      <div class="header__nav--main">
-        <div class="nav-main-container">
-          <button class="nav-main-container__mobile-menu" @click="openMobileNav">
-            <svgo-icon-hamburger height="25" width="25" />
-          </button>
-          <div class="logo">
-            <nuxt-link :to="{ name: 'index' }">
-              <client-only><sparc-logo /></client-only>
-            </nuxt-link>
-          </div>
+  <div class="sparc-header">
+    <nav class="nav" :class="{ 'nav--scrolled': scrolled }">
+      <!-- Logo -->
+      <nuxt-link :to="{ name: 'index' }" class="nav-logo" aria-label="SPARC">
+        <img src="/sparc-logo-primary.svg" alt="SPARC" height="auto" />
+      </nuxt-link>
 
-          <div :class="[menuOpen ? 'overlay' : '']">
-            <div class="mobile-navigation" :class="[menuOpen ? 'open' : '']">
-              <ul>
-                <li v-for="link in links" :key="link.href" style="z-index: 100;">
-                  <nuxt-link :to="link.href" :class="{ active: activeLink(link.href) }" exact-active-class="active">
-                    {{ link.displayTitle }}
-                  </nuxt-link>
-                </li>
-                <hr class="divider" />
-              </ul>
-              <ul class="mobile-navigation__links">
-                <li>
-                  <svgo-icon-contact class="tab2" />
-                  <nuxt-link :to="`/contact-us?source_url=${currentUrl}`" target="_blank">
-                    Contact Us
-                  </nuxt-link>
-                </li>
-                <li>
-                  <svgo-icon-help class="tab2" />
-                  <a href="https://docs.sparc.science/" target="_blank">
-                    Help
-                  </a>
-                </li>
-                <li>
-                  <client-only>
-                    <svgo-icon-sign-in class="tab2" />
-                    <a v-if="!userProfile" class="sign-in-link" @click="showLoginDialog = true">
-                      Sign in
-                    </a>
-                    <span v-else>
-                      <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile'])">
-                        Profile
-                      </a>
-                      <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout'])">
-                        Logout
-                      </a>
-                    </span>
-                  </client-only>
-                </li>
-              </ul>
-              <div class="mobile-navigation__links--social">
-                <a href="https://bsky.app/profile/sparc.science" target="_blank">
-                  <svgo-icon-bluesky class="social-media-icon pr-16"/>
+      <!-- Desktop nav -->
+      <div class="nav-links">
+        <div
+          v-for="item in navItems"
+          :key="item.id"
+          class="nav-item"
+          :class="{ open: activeDropdown === item.id }"
+          @mouseenter="openDropdown(item.id)"
+          @mouseleave="closeDropdown(item.id)"
+        >
+          <button class="nav-btn" @click="toggleDropdown(item.id)">
+            {{ item.label }}
+            <svg class="nav-chevron" viewBox="0 0 10 6" width="10" height="6" fill="none">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="dropdown">
+            <div class="dd-aside">
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <span class="dd-aside-icon" v-html="item.iconHtml" />
+              <div class="dd-aside-lbl">{{ item.iconLabel }}</div>
+            </div>
+            <div class="dd-links">
+              <template v-for="(link, i) in item.links" :key="i">
+                <div v-if="link.divider" class="dd-divider" />
+                <a
+                  v-else-if="link.external"
+                  class="dd-link"
+                  :href="link.href"
+                  target="_blank"
+                  @click="closeAll"
+                >
+                  <div class="dd-link-title">{{ link.title }}</div>
+                  <div class="dd-link-sub">{{ link.sub }}</div>
                 </a>
-                <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
-                  <svgo-icon-youtube class="social-media-icon" />
-                </a>
-              </div>
+                <nuxt-link
+                  v-else
+                  class="dd-link"
+                  :to="link.href"
+                  @click="closeAll"
+                >
+                  <div class="dd-link-title">{{ link.title }}</div>
+                  <div class="dd-link-sub">{{ link.sub }}</div>
+                </nuxt-link>
+              </template>
             </div>
           </div>
         </div>
       </div>
-      <div class="announcement">This repository is under review for potential modification in compliance with Administration directives.
-        <a href="https://docs.sparc.science/docs/notice-regarding-repository-review-in-response-to-executive-order-14168" target="_blank"><svgo-icon-help class="help-icon"/></a>
+
+      <!-- Right actions -->
+      <div class="nav-right">
+        <client-only>
+          <button v-if="!userProfile" class="nav-signin-btn" @click="showLoginDialog = true">Sign in</button>
+          <div
+            v-else
+            class="nav-user"
+            :class="{ open: activeDropdown === 'user' }"
+            @mouseenter="openDropdown('user')"
+            @mouseleave="closeDropdown('user')"
+          >
+            <button class="nav-btn" @click="toggleDropdown('user')">{{ username }}</button>
+            <div class="user-dropdown">
+              <button class="user-dd-item" @click="handleUserMenuSelect('profile', ['user','profile'])">Profile</button>
+              <button class="user-dd-item" @click="handleUserMenuSelect('logout', ['user','logout'])">Logout</button>
+            </div>
+          </div>
+        </client-only>
+        <button class="mobile-menu-btn" @click="openMobileNav" aria-label="Open menu">
+          <svgo-icon-hamburger height="30" width="30" />
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Announcement banner -->
+  <div class="announcement">
+    This repository is under review for potential modification in compliance with Administration directives.
+    <a href="https://docs.sparc.science/docs/notice-regarding-repository-review-in-response-to-executive-order-14168" target="_blank"><svgo-icon-help class="help-icon"/></a>
+  </div>
+
+  <!-- Mobile overlay -->
+    <div v-if="menuOpen" class="mobile-overlay" @click="closeMobileNav">
+      <div class="mobile-nav" @click.stop>
+        <ul class="mobile-nav-links">
+          <li
+            v-for="item in navItems"
+            :key="item.id"
+            class="mobile-nav-item"
+            :class="{ open: mobileOpenSection === item.id }"
+          >
+            <button class="mobile-nav-btn" @click="toggleMobileSection(item.id)">
+              {{ item.label }}
+              <svg class="nav-chevron" viewBox="0 0 10 6" width="10" height="6" fill="none">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul v-show="mobileOpenSection === item.id" class="mobile-sub-links">
+              <template v-for="(link, i) in item.links" :key="i">
+                <li v-if="!link.divider">
+                  <a
+                    v-if="link.external"
+                    :href="link.href"
+                    target="_blank"
+                    @click="closeMobileNav"
+                  >{{ link.title }}</a>
+                  <nuxt-link
+                    v-else
+                    :to="link.href"
+                    :class="{ active: activeLink(link.href) }"
+                    @click="closeMobileNav"
+                  >{{ link.title }}</nuxt-link>
+                </li>
+              </template>
+            </ul>
+          </li>
+        </ul>
+        <ul class="mobile-util-links">
+          <li>
+            <client-only>
+              <button v-if="!userProfile" class="mobile-signin-btn" @click="showLoginDialog = true; closeMobileNav()">Sign in</button>
+              <span v-else>
+                <a class="sign-in-link" @click="handleUserMenuSelect('profile', ['user','profile']); closeMobileNav()">Profile</a>
+                <a class="sign-in-link" @click="handleUserMenuSelect('logout', ['user','logout']); closeMobileNav()">Logout</a>
+              </span>
+            </client-only>
+          </li>
+        </ul>
+        <div class="mobile-social">
+          <a href="https://bsky.app/profile/sparc.science" target="_blank">
+            <svgo-icon-bluesky class="social-icon" />
+          </a>
+          <a href="https://www.youtube.com/results?search_query=sparc+nih" target="_blank">
+            <svgo-icon-youtube class="social-icon" />
+          </a>
+        </div>
       </div>
     </div>
-    <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
-  </div>
+
+  <login-modal :show-dialog="showLoginDialog" @dialog-closed="showLoginDialog = false" />
 </template>
 
 <script>
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import { useMainStore } from '../../store/index.js'
 import { mapActions, mapState } from 'pinia'
-import SparcLogo from 'sparc-design-system-components-2/src/components/SparcLogo'
 
-const links = [
+const DB_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>`
+const UPLOAD_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M12 3v12m0-12l-4 4m4-4l4 4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>`
+const USERS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>`
+const TOOLS_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`
+
+const MOBILE_BREAKPOINT = 680
+
+const navItems = [
   {
-    title: 'data',
-    displayTitle: 'Data & Models',
-    href: '/data?type=dataset'
+    id: 'access',
+    label: 'Access',
+    iconLabel: '400+ open resources\nFree, no account required',
+    iconHtml: DB_ICON,
+    links: [
+      { title: 'Datasets & models', sub: 'Search across all resources', href: '/data?type=dataset' },
+      { title: 'Flatmap', sub: 'Navigate by anatomy', href: '/apps/maps?type=ac' },
+      { title: 'Projects', sub: 'Browse projects from supported consortia', href: '/about/projects' },
+      { title: 'News', sub: 'Updates from the community', href: '/news-and-events' },
+      { divider: true },
+      { title: 'Documentation', sub: 'Guides, tutorials, and help', href: 'https://docs.sparc.science/', external: true },
+      { title: 'Support', sub: 'Contact us with questions or feedback', href: '/contact-us' },
+    ]
   },
   {
-    title: 'apps',
-    displayTitle: 'SPARC Apps',
-    href: '/apps'
+    id: 'contribute',
+    label: 'Contribute',
+    iconLabel: 'Share your research',
+    iconHtml: UPLOAD_ICON,
+    links: [
+      { title: 'Submit data', sub: 'Deposit datasets and protocols', href: '/share-data' },
+      { title: 'Join a consortium', sub: 'Collaborative research groups', href: '/about/what-we-offer' },
+      { divider: true },
+      { title: 'Feedback', sub: 'Help us improve', href: '/contact-us?type=feedback' },
+    ]
   },
   {
-    title: 'tools-and-resources',
-    displayTitle: 'Tools & Resources',
-    href: `/tools-and-resources`
+    id: 'community',
+    label: 'Community',
+    iconLabel: 'Research communities',
+    iconHtml: USERS_ICON,
+    links: [
+      { title: 'NIH PRECISION Human Pain', sub: 'Peripheral pain pathways · human focus', href: '/about/consortia/precision' },
+      { title: 'HEAL RE-JOIN', sub: 'Regenerative peripheral nerve interfaces', href: '/about/consortia/re-join' },
+      { title: 'SPARC Program', sub: 'Autonomic nervous system mapping', href: '/about/consortia/sparc' },
+      { title: 'VITAL', sub: 'Visceral pain and interoception', href: '/about/consortia/vital' },
+      { divider: true },
+      { title: 'About the DRC', sub: 'The SPARC Data and Resource Center', href: '/about' },
+      { title: 'Share', sub: 'Share a news, event, or story that you would like to highlight', href: '/news-and-events' },
+    ]
   },
   {
-    title: 'news-and-events',
-    displayTitle: 'News & Events',
-    href: '/news-and-events'
-  },
-  {
-    title: 'about',
-    displayTitle: 'About',
-    href: '/about'
-  },
-  {
-    title: 'share-data',
-    displayTitle: 'Submit to SPARC',
-    href: '/share-data'
+    id: 'tools',
+    label: 'Tools',
+    iconLabel: 'Tools & Resources',
+    iconHtml: TOOLS_ICON,
+    links: [    
+      { title: 'Apps', sub: 'Tools to help you Find, Use, and Share', href: '/apps' },
+      { title: 'Explore', sub: 'Browse all tools & resources', href: '/tools-and-resources' },
+      { divider: true },
+      { title: 'Share a tool', sub: 'Register software or models', href: '/contact-us?type=tool' },
+    ]
   }
 ]
 
 export default {
   name: 'SparcHeader',
-  components: {
-    LoginModal,
-    SparcLogo
-  },
-  data: () => {
-    return {
-      links,
-      menuOpen: false,
-      showLoginDialog: false,
-    }
-  },
+  components: { LoginModal },
+  data: () => ({
+    navItems,
+    menuOpen: false,
+    showLoginDialog: false,
+    activeDropdown: null,
+    mobileOpenSection: null,
+    scrolled: false,
+  }),
   computed: {
     ...mapState(useMainStore, ['userProfile', 'profileComplete', 'userToken', 'username']),
-    firstPath: function() {
+    firstPath() {
       const path = this.$route.path
-      // ignore the first backslash
       const endIndex = path.indexOf('/', 1)
-      if (endIndex == -1) {
-        return path.substring(0)
-      }
-      return path.substring(0, endIndex)
-    },
-    currentUrl: function () {
-      const config = useRuntimeConfig()
-      const url = new URL(this.$route.fullPath, config.public.ROOT_URL)
-      url.searchParams.delete('source_url') // Remove existing source_url in order to prevent indexing recursion
-      return encodeURIComponent(url.pathname + url.search)
+      return endIndex === -1 ? path.substring(0) : path.substring(0, endIndex)
     },
   },
-
+  mounted() {
+    document.addEventListener('click', this.handleDocumentClick)
+    window.addEventListener('scroll', this.onScroll, { passive: true })
+    window.addEventListener('resize', this.onResize)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleDocumentClick)
+    window.removeEventListener('scroll', this.onScroll)
+    window.removeEventListener('resize', this.onResize)
+  },
   watch: {
     profileComplete: {
-      handler: function() {
-        this.verifyProfileComplete()
-      },
+      handler() { this.verifyProfileComplete() },
       immediate: true
     },
-    /**
-     * Watches for the route path to hide
-     * mobile nav on menu click
-     **/
     '$route.path': {
-      handler: function(val) {
-        if (val) {
-          this.menuOpen = false
-        }
+      handler(val) {
+        if (val) this.menuOpen = false
         this.verifyProfileComplete()
       },
       immediate: true
     },
-
-    /**
-     * Watches menuOpen to check if it's false
-     * to enable scrolling
-     */
     menuOpen: {
-      handler: function(val) {
-        if (!val) {
-          this.updateDisabledScrolling(false)
-        }
+      handler(val) {
+        if (!val) this.updateDisabledScrolling(false)
       },
       immediate: true
     }
   },
-
   methods: {
     ...mapActions(useMainStore, ['updateDisabledScrolling', 'logout']),
-    verifyProfileComplete() {
+    onScroll() {
+      this.scrolled = window.scrollY > 0
+    },
+    onResize() {
+      if (this.menuOpen && window.innerWidth > MOBILE_BREAKPOINT) this.closeMobileNav()
+    },
+    handleDocumentClick(e) {
+      if (!e.target.closest('.nav-item') && !e.target.closest('.nav-user')) {
+        this.activeDropdown = null
+      }
+    },
+    toggleDropdown(id) {
+      this.activeDropdown = this.activeDropdown === id ? null : id
+    },
+    openDropdown(id) {
+      this.activeDropdown = id
+    },
+    closeDropdown(id) {
+      if (this.activeDropdown === id) this.activeDropdown = null
+    },
+    toggleMobileSection(id) {
+      this.mobileOpenSection = this.mobileOpenSection === id ? null : id
+    },
+    closeAll() {
+      this.activeDropdown = null
+    },
+verifyProfileComplete() {
       if (this.userProfile) {
-        // If the user is logged in and their profile is incomplete then make sure they complete it. Otherwise, do not allow them to visit the welcome page again
         if (!this.profileComplete) {
-          if (this.$route.name !== 'welcome') {
-            this.$router.push("/welcome")
-          }
-        }
-        else if (this.$route.name == 'welcome') {
-          this.$router.push("/")
+          if (this.$route.name !== 'welcome') this.$router.push('/welcome')
+        } else if (this.$route.name === 'welcome') {
+          this.$router.push('/')
         }
       }
     },
     handleUserMenuSelect(menuId, menuIdPath) {
-      if (menuId === 'logout') {
-        this.logout()
-      }
-      if (menuId === 'profile') {
-        this.$router.push('/user/profile')
-      }
+      this.activeDropdown = null
+      if (menuId === 'logout') this.logout()
+      if (menuId === 'profile') this.$router.push('/user/profile')
     },
-    /**
-     * Sets a link to active based on current page
-     * @param {String} query
-     */
-    activeLink: function(query) {
-      if (this.firstPath.includes(query)) {
-        return true
-      } else if (
-        query.split('?')[0].replace('/', '') === 'data' &&
-        this.firstPath.replace('/', '') === 'datasets'
-      ) {
-        return true
-      } else {
-        return false
-      }
+    activeLink(query) {
+      if (this.firstPath.includes(query.split('?')[0])) return true
+      if (query.split('?')[0].replace('/', '') === 'data' && this.firstPath.replace('/', '') === 'datasets') return true
+      return false
     },
-    /**
-     * Opens the mobile version of the navigation
-     */
-    openMobileNav: function() {
+    openMobileNav() {
       if (!this.menuOpen) {
         this.updateDisabledScrolling(true)
         this.menuOpen = true
       } else {
-        this.menuOpen = false
-        this.updateDisabledScrolling(false)
+        this.closeMobileNav()
       }
     },
-    openMenu() {
-      this.$refs.userMenu.open('user')
+    closeMobileNav() {
+      this.menuOpen = false
+      this.mobileOpenSection = null
+      this.updateDisabledScrolling(false)
     },
-    closeMenu() {
-      this.$refs.userMenu.close('user')
-    }
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import 'sparc-design-system-components-2/src/assets/_variables.scss';
-.social-media-icon {
-  color: #606266;
-  font-size: 2rem;
+
+.sparc-header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
+/* ── Main nav bar ── */
 .nav {
-  height: 4em;
-  padding: 0;
-  padding-top: 1rem;
-}
-
-.header {
-  width: 100%;
+  background: #fff;
+  height: 80px;
+  padding: 0 1.5rem;
   display: flex;
-  flex-direction: row;
-  @media (max-width: 1120px) {
-    align-items: center;
-  }
-}
-@media (max-width: 1120px) {
-  .overlay {
-    position: absolute;
-    top: 56px;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+  &.nav--scrolled {
+    border-bottom-color: #E4E7ED;
   }
 }
 
-.divider {
-  display: none;
-  @media screen and (max-width: 1120px) {
-    border: 0;
-    clear: both;
-    display: block;
-    width: 89%;
-    background-color: lightgrey;
-    height: 1px;
-    margin-left: 0;
-    margin-top: 11px;
-  }
-}
-
-.header__nav {
-  background-color: $darkBlue;
-  width: 100%;
-}
-
-.header__nav--parent {
+.nav-logo {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  .svg-icon {
-    align-self: center;
-    color: white;
-  }
-  img {
-    margin-right: 5px;
-  }
-  a {
-    font-size: 13px;
-    font-weight: 400;
-    line-height: 24px;
-    color: white;
-    margin-right: 18px;
-    text-decoration: none;
-  }
-  @media (max-width: 1120px) {
-    & {
-      display: none;
-    }
-  }
-}
-
-.header__nav--main {
-  height: 82px;
-  background-color: white;
-  padding-top: 30px;
-  padding-left: 33px;
-  display: flex;
-  flex-direction: row;
-  @media (max-width: 1120px) {
-    height: 41px;
-    padding-left: 0;
-    padding-top: 13px;
-    .nav-main-container__mobile-menu {
-      padding-left: 2px;
-    }
-  }
-
-  .mobile-navigation__links {
-    display: none;
-    &--social {
-      display: none;
-    }
-    @media (max-width: 1120px) {
-      display: flex;
-      flex-direction: column;
-      a {
-        font-size: 14px;
-        font-weight: 300;
-        line-height: 32px;
-        margin-left: 0.5rem;
-      }
-
-      &--social {
-        display: flex;
-        flex-direction: row;
-        margin-top: 15rem;
-        .svg-icon {
-          margin-right: 1rem;
-        }
-      }
-    }
-  }
-
-  a {
-    color: black;
-    font-size: 16px;
-    line-height: 32px;
-    font-weight: 500;
-    padding-top: 5px;
-    text-decoration: none;
-  }
-}
-
-.nav-main-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  @media (max-width: 1120px) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: 0;
-    width: 100%;
-  }
-}
-
-.logo {
-  height: 62px;
-  width: 127px;
-  white-space: nowrap;
-  margin-right: 48px;
-  @media (max-width: 1120px) {
-    height: 2rem;
-    width: 100%;
-    margin-right: 0;
-    padding-top: 0.1rem;
-  }
-}
-
-::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #909399;
-  opacity: 1; /* Firefox */
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 32px;
-  padding-left: 7px;
-}
-
-:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
-  color: lightgrey;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 32px;
-  padding-left: 7px;
-}
-
-.nav-main-container__mobile-menu {
-  background: none;
-  border: none;
-  color: #000;
-  display: none;
-  font-size: 24px;
-  margin: 0;
-  outline: none;
-  padding: 10px;
-  transform: translate(12px, -8px);
-  -webkit-appearance: none;
-
-  &:hover:not(:active) {
-    color: #1a1489;
-  }
-
-  @media screen and (max-width: 1120px) {
-    & {
-      display: block;
-    }
-  }
-}
-
-.mobile-navigation {
-  padding: 0px;
-  height: 100%;
-  margin-left: 1rem;
-  width: 120%;
-  ul {
-    padding-left: 0;
-    margin-top: 0.5rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    li {
-      display: inline;
-      padding-right: 5rem;
-      @media screen and (min-width: 1120px) {
-        padding-right: 0.5rem;
-      }
-
-      a {
-        text-decoration: none;
-        color: $darkBlue;
-        padding-bottom: 0.2rem;
-        font-weight: 500;
-
-        &.active,
-        &:hover {
-          border-bottom: 2px solid $purple;
-          color: $purple;
-        }
-      }
-    }
-  }
-
-  @media (max-width: 1120px) {
-    & {
-      background: #f5f7fa;
-      bottom: 0;
-      display: none;
-      flex-direction: column;
-      left: 0;
-      padding: 1em;
-      position: fixed;
-      right: 6rem;
-      top: 3.4rem;
-      z-index: 9999;
-      &.open {
-        display: flex;
-        margin-left: 0;
-        margin-right: 1rem;
-        width: 70%;
-        overflow: scroll;
-      }
-    }
-    ul {
-      display: flex;
-      flex-direction: column;
-      margin: 0;
-      padding: 0;
-      li {
-        margin: 0.25rem 0;
-      }
-    }
-  }
-}
-
-.click-outside-mobile-search-catch {
-  height: calc(100% - 8rem);
-  top: 8rem;
-  position: fixed;
-  width: 100%;
-}
-
-.data-portal-title {
-  font-size: 14px;
-  color: #303133;
-  line-height: 14px;
-  position: relative;
-  bottom: 5px;
-  margin-left: 5px;
-  user-select: none;
-}
-
-.sign-in-link:hover {
-  cursor: pointer;
-}
-:deep(.el-sub-menu__title) {
-  line-height: inherit !important;
-  height: fit-content !important;
-  color: white !important;
-  border: none !important;
-  padding-left: 0 !important;
-  i {
-    color: white;
-  }
-}
-
-.user-menu {
-  border: none !important;
-}
-.user-submenu {
-  color: #303133 !important;
-  background-color: white !important;
-  font-size: 14px !important;
-  line-height: 32px !important;
-  font-weight: medium !important;
-  height: fit-content !important;
-}
-.user-submenu:hover {
-  color: #8300bf !important;
-}
-:deep(.submenu > ul.el-menu) {
-  position: absolute;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+  width: 100px;
   margin-top: .5rem;
-  margin-left: .5rem;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
 }
-:deep(.user-submenu) {
-  padding-left: .5rem !important;
-  padding-right: .5rem !important;
-}
+
+/* ── Announcement banner ── */
 .announcement {
   background-color: #f9f2fc;
   text-align: center;
   border-top: 1px solid $purple;
   border-bottom: 1px solid $purple;
   padding: .5rem;
+  font-size: 14px;
+  color: #24245b;
+
+  a {
+    color: $purple;
+    font-weight: 500;
+  }
 }
+
 .help-icon {
   color: $purple;
   height: 1.5rem;
   width: 1.5rem;
+  vertical-align: middle;
 }
+
+/* ── Desktop nav links ── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: auto;
+  @media (max-width: 680px) { display: none; }
+}
+
+.nav-item {
+  position: relative;
+  &:last-child .dropdown,
+  &:nth-last-child(2) .dropdown {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+}
+
+
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  color: #24245b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 10px;
+  height: 80px;
+  font-family: inherit;
+  letter-spacing: 0.02em;
+  transition: color 0.15s;
+  white-space: nowrap;
+  &:hover,
+  .nav-item.open & {
+    color: #8300bf;
+  }
+}
+
+.nav-chevron {
+  opacity: 0.5;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  .nav-item.open & {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+}
+
+/* ── Dropdown ── */
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: calc(100vw);
+  background: #fff;
+  border: 1px solid #e4e7ed;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  .nav-item.open & {
+    display: flex;
+  }
+}
+
+.dd-aside {
+  width: 140px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 1.5rem 1rem;
+  background: #F9F2FC;
+}
+
+.dd-aside-icon {
+  color: $purple;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dd-aside-lbl {
+  font-size: 10px;
+  color: $purple;
+  text-align: center;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.dd-links {
+  flex: 1;
+  padding: 12px;
+}
+
+.dd-divider {
+  height: 1px;
+  background: #e4e7ed;
+  margin: 7px 0;
+}
+
+.dd-link {
+  display: block;
+  padding: 7px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.12s;
+  &:hover {
+    .dd-link-title{
+      color: #8300bf;
+    }
+    background: #f9f2fc;
+  }
+}
+
+.dd-link-title {
+  font-size: 12px;
+  color: #24245b;
+  font-weight: 500;
+}
+
+.dd-link-sub {
+  font-size: 11px;
+  color: #909399;
+  margin-top: 1px;
+}
+
+/* ── Right actions ── */
+.nav-right {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  @media (max-width: 680px) { margin-left: auto; }
+}
+
+
+.nav-signin-btn {
+  font-size: 16px;
+  color: #24245b;
+  background: none;
+  border: 1px solid #24245b;
+  border-radius: 7px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  &:hover {
+    color: #8300bf;
+    background: #f9f2fc;
+    border-color: #8300bf;
+  }
+  @media (max-width: 680px) { display: none; }
+}
+
+/* Authenticated user dropdown */
+.nav-user {
+  position: relative;
+  .user-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e4e7ed;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+  }
+  &.open .user-dropdown {
+    display: block;
+  }
+}
+
+.user-dd-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: #24245b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s, color 0.12s;
+  &:hover {
+    background: #f5f7fa;
+    color: #8300bf;
+  }
+}
+
+/* ── Mobile hamburger ── */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #24245b;
+  cursor: pointer;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  @media (max-width: 680px) { display: flex; }
+
+  svg {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+/* ── Mobile overlay & nav ── */
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  top: 80px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.mobile-nav {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  bottom: 0;
+  width: 70%;
+  max-width: 320px;
+  background: #f5f7fa;
+  border-right: 1px solid #e4e7ed;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+
+.mobile-nav-item {
+  margin: 0;
+}
+
+.mobile-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #24245b;
+  background: none;
+  border: none;
+  cursor: pointer;
+  .nav-chevron {
+    opacity: 0.5;
+    transition: transform 0.2s;
+  }
+  .mobile-nav-item.open & .nav-chevron {
+    transform: rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.mobile-sub-links {
+  list-style: none;
+  padding: 0 0 8px 12px;
+  margin: 0;
+  li {
+    margin: 0;
+  }
+  a {
+    display: block;
+    padding: 8px 4px;
+    font-size: 14px;
+    color: #24245b;
+    text-decoration: none;
+    transition: color 0.15s;
+    &:hover {
+      color: #8300bf;
+    }
+    &.active {
+      color: #8300bf;
+    }
+  }
+}
+
+.mobile-util-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    margin: 0;
+  }
+  a {
+    display: block;
+    padding: 8px 4px;
+    font-size: 13px;
+    color: #606266;
+    text-decoration: none;
+    &:hover { color: #24245b; }
+  }
+  .sign-in-link {
+    cursor: pointer;
+  }
+}
+
+.mobile-signin-btn {
+  font-size: 16px;
+  color: #24245b;
+  background: none;
+  border: 1px solid #24245b;
+  border-radius: 7px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  &:hover {
+    color: #8300bf;
+    background: #f9f2fc;
+    border-color: #8300bf;
+  }
+}
+
+.mobile-social {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.social-icon {
+  color: #606266;
+  font-size: 1.5rem;
+  &:hover { color: #24245b; }
+}
+
 </style>

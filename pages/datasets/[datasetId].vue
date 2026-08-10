@@ -83,7 +83,7 @@
                     <br />
                     <hr />
                   </div>
-                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocols="protocols"/>
+                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocols="protocols" :dataset-doi="datasetInfo.doi"/>
                 </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />

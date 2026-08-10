@@ -62,7 +62,7 @@ export default defineNuxtConfig({
       ...(process.env.NODE_ENV === 'production' ? ['dayjs'] : [])
     ]
   },
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: [
     '@element-plus/nuxt',
     'nuxt-svgo',
