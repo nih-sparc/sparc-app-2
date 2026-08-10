@@ -77,7 +77,6 @@ export default {
   },
 
   setup() {
-    const config = useRuntimeConfig()
     const visibleDatasetsFacetCategories =
       [
         'anatomy.organ.category.name',

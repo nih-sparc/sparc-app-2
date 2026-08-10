@@ -41,7 +41,7 @@
         </template>
       </div>
     </div>
-    <template v-if="scholarData">
+    <template v-if="showScholarData && scholarData">
       <div class="heading2 mb-8 mt-16 scholar-data-heading">
         Scholar Data Metrics
         <sparc-tooltip placement="left-center">
@@ -104,6 +104,8 @@ const { protocols, datasetDoi } = toRefs(props)
 const config = useRuntimeConfig()
 const { $axios } = useNuxtApp()
 
+const showScholarData = config.public.SHOW_SCHOLAR_DATA_METRICS == 'true'
+
 const isProtocolsIo = (doi) => doi?.startsWith(PROTOCOLS_IO_PREFIX)
 
 const toSuffix = (doi) => doi.slice(PROTOCOLS_IO_PREFIX.length)
@@ -147,7 +149,7 @@ async function fetchProtocolsWithLimit(dois, concurrency = 5) {
 }
 
 async function fetchScholarData(doi) {
-  if (!doi) return null
+  if (!showScholarData || !doi) return null
   try {
     const { data } = await $axios.get(
       `/api/scholardata?doi=${encodeURIComponent(doi)}`
