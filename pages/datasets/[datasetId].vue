@@ -21,7 +21,7 @@
     <Meta name="DC.identifier" :content="doiLink" scheme="DCTERMS.URI" />
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
-    <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
+    <Meta name="DC.version" :content="datasetInfo?.version?.toString()" />
     <Link rel="canonical" :href="canonicalLink" />
   </Head>
   <div class="dataset-details pb-16">
