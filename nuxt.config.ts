@@ -2,9 +2,6 @@
 import { resolve } from 'pathe'
 
 export default defineNuxtConfig({
-  experimental: {
-    asyncContext: true
-  },
   app: {
     head: {
       title: 'SPARC Portal',
@@ -65,7 +62,7 @@ export default defineNuxtConfig({
       ...(process.env.NODE_ENV === 'production' ? ['dayjs'] : [])
     ]
   },
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   modules: [
     '@element-plus/nuxt',
     'nuxt-svgo',
@@ -82,13 +79,6 @@ export default defineNuxtConfig({
   vite: {
     define: {
       'window.global': {},
-    },
-    optimizeDeps: {
-      esbuildOptions: {
-        define: {
-          global: 'globalThis'
-        }
-      }
     },
     resolve: {
       dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']

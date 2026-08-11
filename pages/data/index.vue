@@ -745,6 +745,13 @@ export default {
   margin-top: 2em;
 }
 
+.search-heading {
+  :deep(.btn-prev:disabled),
+  :deep(.btn-next:disabled) {
+    background: transparent;
+  }
+}
+
 :deep(.el-table td) {
   vertical-align: top;
 }
