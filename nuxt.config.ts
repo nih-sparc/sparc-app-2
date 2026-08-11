@@ -2,6 +2,9 @@
 import { resolve } from 'pathe'
 
 export default defineNuxtConfig({
+  experimental: {
+    asyncContext: true
+  },
   app: {
     head: {
       title: 'SPARC Portal',
@@ -79,6 +82,13 @@ export default defineNuxtConfig({
   vite: {
     define: {
       'window.global': {},
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        define: {
+          global: 'globalThis'
+        }
+      }
     },
     resolve: {
       dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
