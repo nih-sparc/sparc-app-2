@@ -21,7 +21,7 @@
     <Meta name="DC.identifier" :content="doiLink" scheme="DCTERMS.URI" />
     <Meta name="DC.publisher" content="Pennsieve Discover" />
     <Meta name="DC.date" :content="originallyPublishedDate" scheme="DCTERMS.W3CDTF" />
-    <Meta name="DC.version" :content="datasetInfo?.version.toString()" />
+    <Meta name="DC.version" :content="datasetInfo?.version?.toString()" />
     <Link rel="canonical" :href="canonicalLink" />
   </Head>
   <div class="dataset-details pb-16">
@@ -83,7 +83,7 @@
                     <br />
                     <hr />
                   </div>
-                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocols="protocols"/>
+                  <dataset-metrics :full-downloads="numDownloads" :citations="citingPublications == null ? 0 : citingPublications.length" :protocols="protocols" :dataset-doi="datasetInfo.doi"/>
                 </div>
                 <version-history v-if="canViewVersions" class="body1" v-show="activeTabId === 'versions'"
                   :versions="versions" />
@@ -237,7 +237,8 @@ export default {
       router.replace({ query: {'datasetDetailsTab': 'metrics'}})
     }
     const config = useRuntimeConfig()
-    const { $algoliaClient, $axios, $pennsieveApiClient } = useNuxtApp()
+    const nuxtApp = useNuxtApp()
+    const { $algoliaClient, $axios, $pennsieveApiClient } = nuxtApp
     const algoliaIndex = $algoliaClient.initIndex(config.public.ALGOLIA_INDEX_PUBLISHED_TIME_DESC)
 
     let tabsData = clone(tabs)
@@ -318,10 +319,10 @@ export default {
       // Redirect them to doi if user tries to navigate directly to a dataset ID that is not a part of SPARC
       if (!sparcOrganizationIds.includes(`${propOr('', 'organizationId', datasetDetails)}`) && !isEmpty(doiLink) && !showTombstone)
       {
-        await navigateTo(doiLink, { external: true, redirectCode: 301 })
+        await nuxtApp.runWithContext(() => navigateTo(doiLink, { external: true, redirectCode: 301 }))
       }
 
-      useHead(() => {
+      nuxtApp.runWithContext(() => useHead(() => {
         const info = store.datasetInfo
         if (!info?.name) return {}
         const infoDoi = propOr('', 'doi', info)
@@ -351,7 +352,7 @@ export default {
             key: 'schema-org-dataset'
           }]
         }
-      })
+      }))
 
       return {
         tabs: tabsData,

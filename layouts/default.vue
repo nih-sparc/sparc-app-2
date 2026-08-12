@@ -24,23 +24,28 @@ export default {
     SparcFooter
   },
   data() {
-    const userAgent = process.client ? navigator.userAgent : ''
     const botPatterns = [
-        /semrush/i, /msnbot/i, /yandex/i, /applebot/i, /wowrack/i, /lifeera/i,
-        /petalbot/i, /nettle/i, /xforce-security/i, /neevabot/i, /seekport crawler/i,
-        /exabot/i, /gigabot/i, /iccrawler/i, /snappy/i, /mb2345browser/i, /qqbrowser/i,
-        /liebaofast/i, /micromessenger/i, /kinza/i, /theworld/i, /youdaobot/i,
-        /qwantify/i, /bleriot/i, /wikiapiary/i, /megaindex/i, /mojeekbot/i,
-        /blexbot/i, /coccocbot/i, /seokicks/i, /seznambot/i, /yandeximages/i,
-        /tweetmemebot/i, /yeti/i, /ahrefsbot/i, /bytespider/i, /mj12bot/i,
-        /turnitinbot/i, /ccbot/i, /linguee bot/i, /dotbot/i, /openlinkprofiler/i,
-        /ltx71/i, /rogerbot/i, /baiduspider/i, /facebot/i, /pinterestbot/i, /slackbot/i,
-        /embedly/i, /whatsapp/i, /telegrambot/i, /headlesschrome/i, /puppeteer/i, /phantomjs/i,
-        /screaming frog seo spider/i, /adsbot-google/i, /sogou/i
-      ]
+      /semrush/i, /msnbot/i, /yandex/i, /applebot/i, /wowrack/i, /lifeera/i,
+      /petalbot/i, /nettle/i, /xforce-security/i, /neevabot/i, /seekport crawler/i,
+      /exabot/i, /gigabot/i, /iccrawler/i, /snappy/i, /mb2345browser/i, /qqbrowser/i,
+      /liebaofast/i, /micromessenger/i, /kinza/i, /theworld/i, /youdaobot/i,
+      /qwantify/i, /bleriot/i, /wikiapiary/i, /megaindex/i, /mojeekbot/i,
+      /blexbot/i, /coccocbot/i, /seokicks/i, /seznambot/i, /yandeximages/i,
+      /tweetmemebot/i, /yeti/i, /ahrefsbot/i, /bytespider/i, /mj12bot/i,
+      /turnitinbot/i, /ccbot/i, /linguee bot/i, /dotbot/i, /openlinkprofiler/i,
+      /ltx71/i, /rogerbot/i, /baiduspider/i, /facebot/i, /pinterestbot/i, /slackbot/i,
+      /embedly/i, /whatsapp/i, /telegrambot/i, /headlesschrome/i, /puppeteer/i, /phantomjs/i,
+      /screaming frog seo spider/i, /adsbot-google/i, /sogou/i
+    ]
+    // SSR: read the actual User-Agent from the request so bots are blocked
+    // before any data fetching runs. Real users have a non-bot UA so they
+    // get isBot=false on both server and client — no hydration mismatch.
+    const headers = process.server ? useRequestHeaders(['user-agent']) : {}
+    const ua = headers['user-agent'] || ''
     return {
       store: useMainStore(),
-      isBot: userAgent == '' || botPatterns.some(pattern => pattern.test(userAgent))
+      botPatterns,
+      isBot: botPatterns.some(p => p.test(ua))
     }
   },
   computed: {
@@ -50,6 +55,7 @@ export default {
     }
   },
   mounted() {
+    this.isBot = this.botPatterns.some(p => p.test(navigator.userAgent))
     if (!this.isBot) {
       this.showPortalNotification()
     }

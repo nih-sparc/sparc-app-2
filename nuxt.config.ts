@@ -199,6 +199,7 @@ export default defineNuxtConfig({
       orthogonal_viewer_url: process.env.PENNSIEVE_ORTHOGONAL_VIEWER_URL || 'https://orthogonal-viewer.pennsieve.net',
       SHOW_TIMESERIES_VIEWER: process.env.SHOW_TIMESERIES_VIEWER || 'false',
       SHOW_DATASET_SUBMISSION_FEATURE: process.env.SHOW_DATASET_SUBMISSION_FEATURE || 'false',
+      SHOW_SCHOLAR_DATA_METRICS: process.env.SHOW_SCHOLAR_DATA_METRICS || 'false',
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
       crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.doi.org',

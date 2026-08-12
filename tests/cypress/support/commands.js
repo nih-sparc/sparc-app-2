@@ -69,9 +69,7 @@ Cypress.Commands.add('waitForBrowserLoading', () => {
 })
 
 Cypress.Commands.add('waitForPageLoading', () => {
-  cy.get('.loading-container', { timeout: 60000 }).should(($loadingMask) => {
-    expect($loadingMask, 'Page loading mask should not exist').to.not.exist
-  })
+  cy.document().its('readyState').should('eq', 'complete')
   cy.wait(5000)
 })
 

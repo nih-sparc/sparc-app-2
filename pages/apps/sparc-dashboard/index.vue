@@ -33,7 +33,9 @@
         </template>
       </el-tooltip>
     </div>
-    <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
+    <ClientOnly>
+      <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
+    </ClientOnly>
   </div>
 </template>
 <script setup>
@@ -85,7 +87,7 @@ const defaultLayout = [
     h: 15,
     componentKey: "MarkdownWidget",
     componentName: "Markdown Widget",
-    component: MarkdownWidget,
+    component: markRaw(MarkdownWidget),
     Props: {
       markdownText: [
         "# SPARC Dashboard",
@@ -122,7 +124,7 @@ const defaultLayout = [
     h: 7,
     componentKey: "FlatmapViewer",
     componentName: "Flatmap Viewer",
-    component: FlatmapCmp,
+    component: markRaw(FlatmapCmp),
   },
   {
     id: "VagusImageSelector-2",
@@ -132,7 +134,7 @@ const defaultLayout = [
     h: 7,
     componentKey: "VagusImageSelector",
     componentName: "Image Selector",
-    component: VagusImageSelector,
+    component: markRaw(VagusImageSelector),
   },
   {
     id: "SubjectSelector-3",
@@ -142,7 +144,7 @@ const defaultLayout = [
     h: 3,
     componentKey: "SubjectSelector",
     componentName: "Subject Selector",
-    component: SubjectSelector,
+    component: markRaw(SubjectSelector),
   },
   {
     id: "ZarrViewer-4",
@@ -152,7 +154,7 @@ const defaultLayout = [
     h: 10,
     componentKey: "ZarrViewer",
     componentName: "Zarr Viewer",
-    component: ZarrViewer,
+    component: markRaw(ZarrViewer),
   },
   {
     id: "QDBGraph-5",
@@ -162,7 +164,7 @@ const defaultLayout = [
     h: 5,
     componentKey: "QDBGraph",
     componentName: "QDB Graph",
-    component: QDBGraph,
+    component: markRaw(QDBGraph),
     Props: {
       defaultMetric: "fascicle-cross-section",
       defaultXAspect: "distance",

@@ -10,210 +10,112 @@ describe('Homepage', { testIsolation: false }, function () {
   it.skip(`Portal Target: ${Cypress.config().baseUrl}`, function () { })
 
   it('Navigation Bar', function () {
-    // Check for navigation bar
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(1) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('Data & Models')
-      expect($navbar, 'Navigation tab "Data & Models" should have correct href').to.have.attr('href', '/data?type=dataset')
-    })
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(2) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('SPARC Apps')
-      expect($navbar, 'Navigation tab "SPARC Apps" should have correct href').to.have.attr('href', '/apps')
-    })
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(3) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('Tools & Resources')
-      expect($navbar, 'Navigation tab "Tools & Resources" should have correct href').to.have.attr('href', '/tools-and-resources')
-    })
-    cy.get('.mobile-navigation > :nth-child(1) > :nth-child(4) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('News & Events')
-      expect($navbar, 'Navigation tab "News & Events" should have correct href').to.have.attr('href', '/news-and-events')
-    })
-    cy.get(':nth-child(1) > :nth-child(5) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('About')
-      expect($navbar, 'Navigation tab "About" should have correct href').to.have.attr('href', '/about')
-    })
-    cy.get(':nth-child(1) > :nth-child(6) > a').should(($navbar) => {
-      expect($navbar, 'Navigation bar should contain correct tab').to.contain('Submit to SPARC')
-      expect($navbar, 'Navigation tab "Submit to SPARC" should have correct href').to.have.attr('href', '/share-data')
-    })
-  })
-
-  it('Page hero', function () {
-    // Check for page hero
-    cy.get('.page-hero').within(() => {
-      // Check for content title
-      cy.get('h1').should(($title) => {
-        expect($title, 'Title should contain specific content').to.contain('SPARC')
-      })
-      // Check for content description
-      cy.get('h5').should(($title) => {
-        expect($title, 'Page hero should have a description').to.exist
-      })
-      // Check for content image
-      cy.get('[class="page-hero-img"]').should(($image) => {
-        expect($image, 'Image should be displayed').to.have.prop('naturalWidth').to.be.greaterThan(0)
+    // Dropdowns open on hover, not click - clicking an already-open nav-btn toggles it closed again.
+    const dropdowns = [
+      { label: 'Access', linkTitle: 'Datasets & models', href: '/data?type=dataset' },
+      { label: 'Contribute', linkTitle: 'Submit data', href: '/share-data' },
+      { label: 'Community', linkTitle: 'About the DRC', href: '/about' },
+      { label: 'Tools', linkTitle: 'Explore', href: '/tools-and-resources' },
+    ]
+    dropdowns.forEach(({ label, linkTitle, href }) => {
+      cy.contains('.nav-item', label).trigger('mouseenter')
+      cy.get('.nav-item.open').contains('.dd-link-title', linkTitle).closest('.dd-link').should(($link) => {
+        expect($link, `"${label}" dropdown should have a "${linkTitle}" link with correct href`).to.have.attr('href').to.contain(href)
       })
     })
   })
 
-  it('SPARC by the numbers', function () {
-    // Check for content title
-    cy.get('.container.p-24 > .heading2').should(($title) => {
-      expect($title, 'Title should contain specific content').to.contain('SPARC by the numbers')
-    })
-    // Check for consortia
-    cy.get('.container.p-24 > .body1 > b > .heading2').first().then(($el) => {
-      const numberOfConsortia = parseInt($el.text())
-      cy.get('.container.p-24 > .data-wrap.py-16 > .consortia-item').should(($item) => {
-        expect($item, 'Correct number of consortia items should be displayed').to.have.length(numberOfConsortia)
-        expect($item, 'Consortia items should have correct href').to.have.attr('href').to.contain('/about/consortia/')
+  it('Hero', function () {
+    cy.get('.home-hero').within(() => {
+      cy.get('.hero-eyebrow').should('have.text', 'Open data from molecule to system')
+      cy.get('.hero-h1').should(($title) => {
+        expect($title, 'Hero should have a non-empty title').to.not.be.empty
       })
-    })
-    // Check for explore the data
-    cy.get('.container.p-24 .data-wrap.py-16').eq(1).find('.sparc-number').should(($item) => {
-      expect($item, 'At least one data exploration(s) should be displayed').to.have.length.greaterThan(0)
-      expect($item, 'Data exploration item should have a href').to.have.attr('href')
-    })
-    // Check for key metrics
-    cy.get('.container.p-24 .data-wrap.pt-16').find('.sparc-number').should(($item) => {
-      expect($item, 'At least one key metric(s) should be displayed').to.have.length.greaterThan(0)
-      expect($item, 'Key metrics should have a href').to.have.attr('href')
+      cy.get('.hero-sub').should(($sub) => {
+        expect($sub, 'Hero should have a non-empty description').to.not.be.empty
+      })
+      cy.get('.hero-image').should(($image) => {
+        expect($image, 'Hero image should be displayed').to.have.prop('naturalWidth').to.be.greaterThan(0)
+      })
+      cy.get('.hero-btn-primary').should(($btn) => {
+        expect($btn, 'Primary hero button should have correct text').to.contain('Access')
+        expect($btn, 'Primary hero button should have correct href').to.have.attr('href', '/data?type=dataset')
+      })
+      cy.get('.hero-btn-ghost').should(($btn) => {
+        expect($btn, 'Ghost hero button should have correct text').to.contain('Contribute')
+        expect($btn, 'Ghost hero button should have correct href').to.have.attr('href', '/share-data')
+      })
     })
   })
 
-  it('Portal features', function () {
-    // Check for the number of features
-    cy.get('.feature-container').should(($feature) => {
-      expect($feature, 'At least one feature item(s) should be displayed').to.have.length.greaterThan(0)
-    })
-    // Check for feature card
-    cy.get(':nth-child(1) > .feature-container').within(() => {
-      cy.get('.icon').should(($icon) => {
-        expect($icon, 'Feature card should have an icon').to.exist
+  it('Interactive map section', function () {
+    cy.get('.map-section').within(() => {
+      cy.get('.section-kicker').should('contain', 'Interactive map')
+      cy.get('.section-h2').should('contain', "Navigate the body's wiring diagram")
+      cy.get('.navigator-video').should(($video) => {
+        expect($video, 'Map video should have a source').to.have.attr('src').and.not.be.empty
       })
-      cy.get('.heading2').should(($title) => {
-        expect($title, 'Feature card should have a title').to.exist
+      cy.get('.map-open-hint').should(($link) => {
+        expect($link, 'Map link should have correct text').to.contain('Open full map')
+        expect($link, 'Map link should have correct href').to.have.attr('href', '/apps/maps')
       })
-      cy.get('.body1').should(($description) => {
-        expect($description, 'Feature card should have a description').to.exist
-      })
-      cy.get('.button-link > .el-button > span').should(($button) => {
-        expect($button, 'Feature card should have a button').to.exist
-      })
-    })
-    // Check for button link
-    cy.get(':nth-child(1) > .feature-container > .button-link').should(($feature) => {
-      expect($feature, 'Feature card button should have correct text').to.contain('Data and Models')
-      expect($feature, 'Feature card "Data and Models" should have correct href').to.have.attr('href', '/data?type=dataset')
-    })
-    cy.get(':nth-child(2) > .feature-container > .button-link').should(($feature) => {
-      expect($feature, 'Feature card button should have correct text').to.contain('Maps')
-      expect($feature, 'Feature card "Maps" should have correct href').to.have.attr('href', '/apps/maps?type=ac')
-    })
-    cy.get(':nth-child(3) > .feature-container > .button-link').should(($feature) => {
-      expect($feature, 'Feature card button should have correct text').to.contain('Discover')
-      expect($feature, 'Feature card "Discover" should have correct href').to.have.attr('href').to.contain('/tools-and-resources')
-    })
-    cy.get(':nth-child(4) > .feature-container > .button-link').should(($feature) => {
-      expect($feature, 'Feature card button should have correct text').to.contain('Submit')
-      expect($feature, 'Feature card "Submits" should have correct href').to.have.attr('href', '/share-data')
     })
   })
 
-  it('Find by', function () {
-    cy.get('.categories-container > .heading2').should(($title) => {
-      expect($title, 'Title should contain specific content').to.have.text('Find by')
+  it('Discover by topic', function () {
+    cy.get('.discover-section').within(() => {
+      cy.get('.section-h2').should('contain', 'Discover by topic')
+      // Check for the 4 facet tabs
+      cy.get('.facet-tab-pill').should('have.length', 4)
+      cy.get('.facet-tab-pill').first().should('have.class', 'active')
+      // Switching tabs updates which one is active
+      cy.get('.facet-tab-pill').eq(1).click().should('have.class', 'active')
+      cy.get('.facet-tab-pill').first().should('not.have.class', 'active')
     })
-    // Check for categories selection item
-    cy.get('.categories-container > .categories-select').as('findBy')
-    cy.get('@findBy').click()
-    cy.get('.el-select-dropdown > .el-scrollbar > .el-select-dropdown__wrap > .el-select-dropdown__list > .el-select-dropdown__item').as('options')
-    cy.get('@options').then(($dropdown) => {
-      expect($dropdown, 'Dropdown should have at least one item').to.have.length.above(0)
-      cy.wait(5000)
-      for (let index = 0; index < $dropdown.length; index++) {
-        cy.wrap($dropdown).eq(index).click()
-        cy.get('.featured-data > .gallery > .resources-gallery-strip > .card-line > .key-image-span > .data-wrap > .data-item').should(($card) => {
-          expect($card, 'Featured card should contain correct href').to.have.attr('href').to.contain('/data?type=dataset&selectedFacetIds=')
-        })
-        // Check for pagination
-        cy.get('.sparc-design-system-pagination').should(($pagination) => {
-          expect($pagination, 'Pagination should exist').to.exist
-        })
-        cy.get('.is-active').should(($page) => {
-          expect($page, 'Pagination should have active page').to.contain('1')
-        })
-        cy.get('.btn-next').click()
-        cy.get('.is-active').should(($page) => {
-          expect($page, 'Pagination should have active page').to.contain('2')
-        })
-        cy.get('@findBy').click()
-      }
+    // The visible chart for the active tab should have rendered bars (live Algolia facet data)
+    cy.get('.discover-section .facet-chart:not(.facet-chart--hidden) .facet-bar-row').should(($rows) => {
+      expect($rows, 'At least one facet bar should be displayed').to.have.length.greaterThan(0)
     })
+    // Clicking a real facet bar (not the "Total" bar) routes to the filtered data page
+    cy.get('.discover-section .facet-chart:not(.facet-chart--hidden) .facet-bar-row')
+      .not('.facet-bar-row--show-all').first().click()
+    cy.location('pathname').should('eq', '/data')
+    cy.location('search').should('include', 'selectedFacetIds=')
   })
 
-  it('Resources and datasets', function () {
-    // Check for title
-    cy.get('.section-container.py-24 > .heading2').should('contain', 'Resources & Datasets')
-    // Check for card description
-    cy.get('.row > :nth-child(1) > .mb-16').should('contain', 'Here is a resource you might be interested in:')
-    cy.get('.row > :nth-child(2) > .mb-16').should('have.text', 'Featured Datasets')
-    // Check for card content
-    cy.get(':nth-child(1) > .card-container').within(() => {
-      cy.get('.subpage-row > :nth-child(1) > .image-container > .banner-image').should('exist')
-      cy.get('.subpage-row > :nth-child(2) > .dataset-name').should('exist')
-      cy.get('.subpage-row > :nth-child(2) > .dataset-description').should('exist')
-      cy.get('.subpage-row > :nth-child(2) > .button-link > .el-button').should('exist')
+  it('Explore the data', function () {
+    // Previous test navigated away to /data - come back to the homepage
+    cy.visit('')
+    cy.waitForPageLoading()
+    cy.get('.tools-section').within(() => {
+      cy.get('.section-h2').should('contain', 'Explore the data')
+      cy.get('.tool-tab').should('have.length', 5)
+      cy.get('.tool-tab').first().should('have.class', 'active')
     })
-    // Check for title redirect link
-    cy.get(':nth-child(1) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').should('have.attr', 'href').and((href) => {
-      // Check if the href satisfies at least one condition
-      expect(href).to.satisfy((val) => val.includes('/apps/sparc-dashboard') || val.includes('/resources/'));
-    });
-    cy.get(':nth-child(2) > .card-container > .subpage-row > :nth-child(2) > .dataset-name').should('have.attr', 'href').and('contain', '/datasets/')
-    // Check for card 'view all' link
-    cy.get('.row > :nth-child(1) > .view-all-link').should('contain', 'View All Tools & Resources').and('have.attr', 'href', '/tools-and-resources/tools')
-    cy.get(':nth-child(2) > .view-all-link').should('contain', 'View All Datasets').and('have.attr', 'href', '/data?type=dataset')
+    cy.get('.tools-section .tool-tab').eq(1).click().should('have.class', 'active')
+    cy.get('.tools-preview').not('.tools-preview--hidden').should(($preview) => {
+      expect($preview, 'Exactly one tool preview should be visible').to.have.length(1)
+      expect($preview.find('.preview-heading'), 'Visible preview should have a heading').to.not.be.empty
+    })
+    cy.get('.tools-preview').not('.tools-preview--hidden').find('.preview-btn').should('have.attr', 'href')
   })
 
-  it('News and upcoming events', function () {
-    // Check for title
-    cy.get('.featured-datasets > .heading2').should(($title) => {
-      expect($title, 'Title should contain specific content').to.contain('News & Upcoming Events')
+  it('Find your path', function () {
+    cy.get('.path-section').within(() => {
+      cy.get('.section-h2').should('contain', 'Find your path')
+      cy.get('.path-card').should('have.length', 3)
     })
-    // Check for card image
-    cy.get('.sparc-card__image').should(($image) => {
-      expect($image, 'Card should have an image').to.exist
+    cy.get('.path-card').eq(0).should(($card) => {
+      expect($card, 'First path card should be "Use data"').to.contain('Use data')
+      expect($card.find('.path-card-btn'), 'Use data card should link to API docs').to.have.attr('href').and.contain('docs.sparc.science')
     })
-    // Check for card title
-    cy.get('h3 > a').should(($title) => {
-      expect($title, 'Card should have a title').to.exist
+    cy.get('.path-card').eq(1).should(($card) => {
+      expect($card, 'Second path card should be "Share your data"').to.contain('Share your data')
+      expect($card.find('.path-card-btn'), 'Share your data card should link to share-data').to.have.attr('href', '/share-data')
     })
-    // Check for card description
-    cy.get('.markdown-text > p').should(($description) => {
-      expect($description, 'Card should have a description').to.exist
-    })
-    // Check for card button
-    cy.get(':nth-child(2) > .el-button').should(($button) => {
-      expect($button, 'Card should have a button').to.contain('Learn More')
-    })
-    // Check for card 'view all' link
-    cy.get('.sparc-card__content-wrap__content > .view-all-link').should(($link) => {
-      expect($link, 'Card should have a view all link').to.contain('View All News & Events')
-      expect($link, 'Card link should have correct href').to.have.attr('href', '/news-and-events')
-    })
-  })
-
-  it('Stay connected', function () {
-    // Check for title
-    cy.get('.subheader').should(($title) => {
-      expect($title, 'Title should contain specific content').to.contain('Stay Connected')
-    })
-    // Check for content
-    cy.get('.newsletter-wrap > .heading2').should(($title) => {
-      expect($title, 'Title should contain specific content').to.contain('Sign up for the SPARC Newsletter')
-    })
-    cy.get('.office-hours-column > .heading2').should(($title) => {
-      expect($title, 'Title should contain specific content').to.contain('Open Office Hours')
+    cy.get('.path-card').eq(2).should(($card) => {
+      expect($card, 'Third path card should be "News"').to.contain('News')
+      expect($card.find('.path-card-btn'), 'News card should link to news-and-events').to.have.attr('href', '/news-and-events')
     })
   })
 

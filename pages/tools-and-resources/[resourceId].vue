@@ -14,13 +14,13 @@
         <div class="image-button-container">
           <div class="image-container mr-16 mb-8">
             <img v-if="resourceLogoUrl" class="resource-image" :src="resourceLogoUrl" :alt="resourceLogoAlt" />
-            <div class="osparc-buttons-container" v-if="showOsparcServices">
-              <a :href="fullResourceUrl" target="_blank">
+            <div class="osparc-buttons-container" >
+              <a :href="fullResourceUrl" target="_blank" v-if="resource.fields.buttonText">
                 <el-button :style="'width: 100%'" class="mb-8">
-                  Launch o²S²PARC
+                  {{ resource.fields.buttonText }}
                 </el-button>
               </a>
-              <el-button class="secondary mb-8" @click="scrollToServices()">
+              <el-button class="secondary mb-8" @click="scrollToServices()" v-if="showOsparcServices">
                 View o²S²PARC services
               </el-button>
             </div>
