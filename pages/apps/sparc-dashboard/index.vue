@@ -33,7 +33,9 @@
         </template>
       </el-tooltip>
     </div>
-    <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
+    <ClientOnly>
+      <PennsieveDashboard class="dashboard-app" :options="dashboardOptions" />
+    </ClientOnly>
   </div>
 </template>
 <script setup>
