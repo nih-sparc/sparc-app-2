@@ -16481,7 +16481,7 @@ __metadata:
     nuxt-simple-robots: "npm:^4.0.1"
     nuxt-svgo: "npm:^3.5.6"
     patch-package: "npm:^8.0.1"
-    pennsieve-dashboard: "npm:1.1.0"
+    pennsieve-dashboard: "npm:1.0.0"
     plotly.js: "npm:2.35.3"
     plyr: "npm:^3.8.4"
     postinstall-postinstall: "npm:^2.1.0"
@@ -17547,19 +17547,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pennsieve-dashboard@npm:1.1.0":
-  version: 1.1.0
-  resolution: "pennsieve-dashboard@npm:1.1.0"
+"pennsieve-dashboard@npm:1.0.0":
+  version: 1.0.0
+  resolution: "pennsieve-dashboard@npm:1.0.0"
   dependencies:
     "@element-plus/icons-vue": "npm:^2.3.2"
     dompurify: "npm:^3.2.6"
     gridstack: "npm:^12.3.3"
     marked: "npm:^15.0.7"
+    sass: "npm:^1.90.0"
+    vue: "npm:^3.5.18"
   peerDependencies:
     element-plus: ^2.11.0
     pinia: ^3.0.3
-    vue: ^3.5.18
-  checksum: 10c0/f79d77976709d3ca9a5a07dff75b104664bff58b027d365a96b5aa0bd1cc0e683f26d498036d66653209d8db5f2b62a13ddc64b556466f02b199fdda5e183353
+  checksum: 10c0/17da199b601041df99f4342b99a32eafefc3ba117be9d43034b1c9f362542638753f7f3ca5d03ccca18fdaac28389a1a90b4e8a885d60abc37578a7b81465340
   languageName: node
   linkType: hard
 
