@@ -12,8 +12,8 @@ import { readFileSync, writeFileSync } from 'fs';
 
 const path = 'node_modules/@abi-software/plotdatahelpers/dist/plotdatahelpers.js';
 
-const oldStr = `new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ", "(", p, ")();"], { type: "text/javascript" })));`;
-const newStr = `new Blob([\`var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; \`, "(", p, ")();"], { type: "text/javascript" })));`;
+const oldStr = `new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ", "(", _, ")();"], { type: "text/javascript" })));`;
+const newStr = `new Blob([\`var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; \`, "(", _, ")();"], { type: "text/javascript" })));`;
 
 const content = readFileSync(path, 'utf8');
 
