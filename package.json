@@ -56,7 +56,6 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "contentful": "^10.15.1",
     "date-fns": "^2.30.0",
-    "gridstack": "^10.3.1",
     "isomorphic-dompurify": "^1.9.0",
     "js-base64": "^3.9.2",
     "js-file-download": "^0.4.12",
