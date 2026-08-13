@@ -558,7 +558,7 @@ verifyProfileComplete() {
   .user-dropdown {
     display: none;
     position: absolute;
-    top: calc(100% + 8px);
+    top: 100%;
     right: 0;
     background: #fff;
     border: 1px solid #e4e7ed;

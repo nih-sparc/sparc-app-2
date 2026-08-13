@@ -18,7 +18,6 @@
 </template>
 
 <script>
-import Plyr from 'plyr'
 import GenericViewerMetadata from "@/components/ViewersMetadata/GenericViewerMetadata.vue"
 import FileDetails from '@/mixins/file-details'
 import { failMessage } from '@/utils/notification-messages'
@@ -71,7 +70,11 @@ export default {
   },
 
   async fetch() {
+    if (!process.client) {
+      return
+    }
     try {
+      const { default: Plyr } = await import('plyr')
       this.player = new Plyr(this.$refs.vid)
     } catch(e) {
       console.log(e)
