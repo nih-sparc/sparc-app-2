@@ -312,8 +312,8 @@ const institutionId = computed(() =>
 const { data: institutionData, error: institutionError } = useAsyncData(
   'institution',
   async () => {
-    if (!institutionId.value) return null;
-    return $fetch(`/api/contentful/entry/${institutionId.value}`).catch(() => null);
+    if (!institutionId.value) return false;
+    return $fetch(`/api/contentful/entry/${institutionId.value}`).catch(() => false);
   },
   { watch: [institutionId] }
 );
