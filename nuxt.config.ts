@@ -82,6 +82,13 @@ export default defineNuxtConfig({
     },
     resolve: {
       dedupe:['element-plus','deck.gl', '@deck.gl/core', '@deck.gl/layers']
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'legacy-js-api']
+        }
+      }
     }
     /*css: {
       preprocessorOptions: {
