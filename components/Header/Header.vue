@@ -81,12 +81,6 @@
     </nav>
   </div>
 
-  <!-- Announcement banner -->
-  <div class="announcement">
-    This repository is under review for potential modification in compliance with Administration directives.
-    <a href="https://docs.sparc.science/docs/notice-regarding-repository-review-in-response-to-executive-order-14168" target="_blank"><svgo-icon-help class="help-icon"/></a>
-  </div>
-
   <!-- Mobile overlay -->
     <div v-if="menuOpen" class="mobile-overlay" @click="closeMobileNav">
       <div class="mobile-nav" @click.stop>
@@ -361,29 +355,6 @@ verifyProfileComplete() {
   flex-shrink: 0;
   width: 100px;
   margin-top: .5rem;
-}
-
-/* ── Announcement banner ── */
-.announcement {
-  background-color: #f9f2fc;
-  text-align: center;
-  border-top: 1px solid $purple;
-  border-bottom: 1px solid $purple;
-  padding: .5rem;
-  font-size: 14px;
-  color: #24245b;
-
-  a {
-    color: $purple;
-    font-weight: 500;
-  }
-}
-
-.help-icon {
-  color: $purple;
-  height: 1.5rem;
-  width: 1.5rem;
-  vertical-align: middle;
 }
 
 /* ── Desktop nav links ── */

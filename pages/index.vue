@@ -38,7 +38,7 @@
       <div class="map-header">
         <div class="section-kicker">Interactive map</div>
         <h2 class="section-h2">Navigate the body's wiring diagram</h2>
-        <p class="section-sub">Explore the body's neural pathways and anatomical connections, grounded in published science.</p>
+        <p class="section-sub">Explore the body's neural pathways and anatomical connections, grounded in published science</p>
       </div>
       <div class="map-card">
         <div class="homepage-navigator-video">
@@ -66,7 +66,7 @@
       <div class="discover-header">
         <div class="section-kicker">Explore the catalog</div>
         <h2 class="section-h2">Discover by topic</h2>
-        <p class="section-sub">Browse datasets and models by experimental approach, anatomical structure, species, or contributing consortia.</p>
+        <p class="section-sub">Browse datasets and models by experimental approach, anatomical structure, species, or contributing consortia</p>
       </div>
       <div class="facet-tabs">
         <button
@@ -121,9 +121,9 @@
     <!-- Explore the data section -->
     <div class="tools-section">
       <div class="tools-header">
-        <div class="section-kicker">Platform overview</div>
-        <h2 class="section-h2">Explore the data</h2>
-        <p class="section-sub">From research images to connectivity queries to running simulations — all grounded in SPARC's unified metadata.</p>
+        <div class="section-kicker">Platform Tools</div>
+        <h2 class="section-h2">From Data to Discovery</h2>
+        <p class="section-sub">Applications to visualize, simulate, and discover SPARC data, models, and knowledge</p>
       </div>
       <div class="tools-left">
         <div class="tools-nav">
@@ -176,9 +176,9 @@
     <!-- Find your path section -->
     <div class="path-section">
     <div class="path-header">
-      <div class="section-kicker">Get started</div>
-      <h2 class="section-h2">Find your path</h2>
-      <p class="section-sub">Whether you're searching for data, building on it, or contributing your own — find the right entry point into the SPARC ecosystem.</p>
+      <div class="section-kicker">A living resource, not an archive</div>
+      <h2 class="section-h2">Join the exchange</h2>
+      <p class="section-sub"> SPARC is where you find data to build on, contribute your own, and connect with the people advancing PNS and systems physiology research</p>
     </div>
     <div class="path-cards">
 
@@ -561,7 +561,7 @@ onBeforeMount(() => {
 /* ── Hero ── */
 .home-hero {
   background: $background;
-  padding: 4rem max(2rem, calc((100% - 1280px) / 2)) 1rem;
+  padding: 4rem max(2rem, calc((100% - 1280px) / 2));
   display: flex;
   align-items: center;
   justify-content: space-between;
