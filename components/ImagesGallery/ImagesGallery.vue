@@ -250,7 +250,7 @@ export default {
                   link: linkUrl
                 })
               })
-              return timeseriesData
+              return timeseriesData.sort((a, b) => a.title.localeCompare(b.title))
             })
             .catch(() => {
               return []
@@ -323,7 +323,7 @@ export default {
                 thumbnail: this.defaultScaffoldImg,
                 link: linkUrl
               }
-            })
+            }).sort((a, b) => a.title.localeCompare(b.title))
           )
         }
 
@@ -358,7 +358,7 @@ export default {
                   thumbnail: this.defaulSimulationImg,
                   link: linkUrl
                 }
-              })
+              }).sort((a, b) => a.title.localeCompare(b.title))
             )
           } else {
             items.push({
@@ -371,6 +371,7 @@ export default {
           }
         }
         if ('video' in scicrunchData) {
+          const videosList = []
           const thumbnailPaths = {}
           if (scicrunchData['abi-thumbnail']) {
             scicrunchData['abi-thumbnail'].forEach(thumbnail => {
@@ -393,16 +394,18 @@ export default {
               }
             }
             const linkUrl = `${baseRoute}datasets/file/${datasetId}/${datasetVersion}?path=files/${videoFile.dataset.path}`
-            items.push({
+            videosList.push({
               title: videoFile.name,
               type: 'Video',
               thumbnail,
               link: linkUrl
             })
           })
+          items.push(...videosList.sort((a, b) => a.title.localeCompare(b.title)))
         }
 
         if ('abi-flatmap-file' in scicrunchData) {
+          const flatmapsList = []
           scicrunchData['abi-flatmap-file'].forEach( f => {
             if (('dataset' in f)) {
               const flatmap_uuid = f.associated_flatmap?.identifier
@@ -425,7 +428,7 @@ export default {
                   )
                 }
                 const linkUrl = `${baseRoute}maps?type=fc&dataset_version=${datasetVersion}&dataset_id=${datasetId}&fid=${flatmap_uuid}`
-                items.push({
+                flatmapsList.push({
                   id,
                   title: baseName(file_path),
                   type: 'FC Map',
@@ -435,6 +438,7 @@ export default {
               }
             }
           });
+          items.push(...flatmapsList.sort((a, b) => a.title.localeCompare(b.title)))
         }
 
         if ('abi-plot' in scicrunchData) {
@@ -465,7 +469,7 @@ export default {
                 thumbnail: this.defaultPlotImg,
                 link: linkUrl
               }
-            })
+            }).sort((a, b) => a.title.localeCompare(b.title))
           )
         }
 
@@ -482,7 +486,7 @@ export default {
                 thumbnail: this.defaultImg,
                 link: linkUrl
               }
-            })
+            }).sort((a, b) => a.title.localeCompare(b.title))
           )
         }
         this.scicrunchItems = items
