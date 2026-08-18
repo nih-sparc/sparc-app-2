@@ -83,12 +83,12 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.location('search').should('include', 'selectedFacetIds=')
   })
 
-  it('Explore the data', function () {
+  it('From Data to Discovery', function () {
     // Previous test navigated away to /data - come back to the homepage
     cy.visit('')
     cy.waitForPageLoading()
     cy.get('.tools-section').within(() => {
-      cy.get('.section-h2').should('contain', 'Explore the data')
+      cy.get('.section-h2').should('contain', 'From Data to Discovery')
       cy.get('.tool-tab').should('have.length', 5)
       cy.get('.tool-tab').first().should('have.class', 'active')
     })
@@ -100,9 +100,9 @@ describe('Homepage', { testIsolation: false }, function () {
     cy.get('.tools-preview').not('.tools-preview--hidden').find('.preview-btn').should('have.attr', 'href')
   })
 
-  it('Find your path', function () {
+  it('Join the exchange', function () {
     cy.get('.path-section').within(() => {
-      cy.get('.section-h2').should('contain', 'Find your path')
+      cy.get('.section-h2').should('contain', 'Join the exchange')
       cy.get('.path-card').should('have.length', 3)
     })
     cy.get('.path-card').eq(0).should(($card) => {
