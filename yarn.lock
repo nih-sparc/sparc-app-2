@@ -16579,6 +16579,7 @@ __metadata:
     "@deck.gl/geo-layers": "npm:9.1.15"
     "@deck.gl/layers": "npm:9.1.15"
     "@deck.gl/mesh-layers": "npm:9.1.15"
+    "@element-plus/icons-vue": "npm:^2.3.1"
     "@element-plus/nuxt": "npm:^1.1.5"
     "@luma.gl/constants": "npm:9.1.10"
     "@luma.gl/core": "npm:9.1.10"

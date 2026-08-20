@@ -35,6 +35,7 @@ describe("SPARC Dashboard", { testIsolation: false }, function () {
   });
 
   it("Dashboard container is rendered", function () {
+    cy.wait(10000); // Allow time for client-side hydration
     // Check for the dashboard container
     cy.get(".dashboard-app", { timeout: 60000 }).should(($dashboard) => {
       expect($dashboard, "Dashboard container should exist").to.exist;

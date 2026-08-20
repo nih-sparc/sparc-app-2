@@ -38,6 +38,7 @@
     "@deck.gl/geo-layers": "9.1.15",
     "@deck.gl/layers": "9.1.15",
     "@deck.gl/mesh-layers": "9.1.15",
+    "@element-plus/icons-vue": "^2.3.1",
     "@element-plus/nuxt": "^1.1.5",
     "@luma.gl/constants": "9.1.10",
     "@luma.gl/core": "9.1.10",
