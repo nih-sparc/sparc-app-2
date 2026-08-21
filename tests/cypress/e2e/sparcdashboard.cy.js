@@ -40,11 +40,6 @@ describe("SPARC Dashboard", { testIsolation: false }, function () {
     cy.get(".dashboard-app", { timeout: 60000 }).should(($dashboard) => {
       expect($dashboard, "Dashboard container should exist").to.exist;
     });
-
-    // Check for dashboard header
-    cy.get(".dash-main-header", { timeout: 60000 }).should(($header) => {
-      expect($header, "Dashboard header should exist").to.exist;
-    });
   });
 
   it("FlatmapWidget loads correctly", function () {

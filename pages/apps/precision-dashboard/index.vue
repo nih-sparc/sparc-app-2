@@ -204,7 +204,7 @@ const dashboardOptions = ref([
 }
 :deep(.grid-stack-item) {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
 }
 :deep(.pp-field button) {
   height: 2rem;

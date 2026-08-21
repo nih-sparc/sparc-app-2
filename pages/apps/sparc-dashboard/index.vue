@@ -233,7 +233,7 @@ const description = computed(() =>
 :deep(svg > path) {
   fill: $purple;
 }
-:deep(.dash-main-header) {
+:deep(.dash-header) {
   background-color: $darkBlue;
 }
 :deep(.beta-icon svg > path) {
