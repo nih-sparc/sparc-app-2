@@ -42,7 +42,7 @@ describe("SPARC Dashboard", { testIsolation: false }, function () {
     });
 
     // Check for dashboard header
-    cy.get(".dash-header", { timeout: 60000 }).should(($header) => {
+    cy.get(".dash-main-header", { timeout: 60000 }).should(($header) => {
       expect($header, "Dashboard header should exist").to.exist;
     });
   });
