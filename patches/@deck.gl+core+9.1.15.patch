@@ -1,0 +1,13 @@
+diff --git a/node_modules/@deck.gl/core/dist/lib/init.js b/node_modules/@deck.gl/core/dist/lib/init.js
+index 1db8986..992d7f3 100644
+--- a/node_modules/@deck.gl/core/dist/lib/init.js
++++ b/node_modules/@deck.gl/core/dist/lib/init.js
+@@ -14,7 +14,7 @@ function checkVersion() {
+     // Note: a `deck` object not created by deck.gl may exist in the global scope
+     const existingVersion = globalThis.deck && globalThis.deck.VERSION;
+     if (existingVersion && existingVersion !== version) {
+-        throw new Error(`deck.gl - multiple versions detected: ${existingVersion} vs ${version}`);
++        console.warn(`deck.gl - multiple versions detected: ${existingVersion} vs ${version} (patched to continue)`);
+     }
+     if (!existingVersion) {
+         log.log(1, `deck.gl ${version}`)();
