@@ -244,7 +244,7 @@ const fetchMetrics = async (config, month, year) => {
         total: totalDownloads
       },
       datasetContributorsData: {
-        total: parseInt(algoliaData['contributors.name']['countributors_count']) || 0
+        total: parseInt(algoliaData['contributors.name']['contributors_count']) || 0
       },
     },
     scientificContribution: {
@@ -263,7 +263,7 @@ const fetchMetrics = async (config, month, year) => {
         totalTB: (parseInt(pennsieveMetricsData['total_org_size_in_bytes']) || 0) / 1000000000000.0
       },
       contributors: {
-        total: parseInt(algoliaData['contributors.name']?.['countributors_count']) || 0
+        total: parseInt(algoliaData['contributors.name']?.['contributors_count']) || 0
       }
     }
   }
