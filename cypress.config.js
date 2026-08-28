@@ -23,12 +23,14 @@ export default defineConfig({
       configureVisualRegression(on)
       return dynamicConfig(config)
     },
-    env: {
+    expose: {
       visualRegressionType: 'regression',
       visualRegressionBaseDirectory: 'tests/cypress/screenshots/mapsviewer.cy.js/base',
       visualRegressionDiffDirectory: 'tests/cypress/screenshots/diff',
       visualRegressionGenerateDiff: 'always',
       visualRegressionFailSilently: true,
+    },
+    env: {
       PORTAL_API: process.env.PORTAL_API_HOST ? process.env.PORTAL_API_HOST : 'https://sparc-api.herokuapp.com',
       // databrowser.js
       PAGE_LIMIT: process.env.PAGE_LIMIT ? process.env.PAGE_LIMIT : '20',
