@@ -224,8 +224,19 @@ datasetIds.forEach((datasetId) => {
                   cy.get('span.label4').parent().contains(/INSTITUTION[(]S[)]/i).should(($institution) => {
                     expect($institution, 'Institution should be the same').to.contain(institutions[index])
                   })
-                  cy.get('.link1').should(($award) => {
-                    expect(awards[index], 'Award should be the same').to.include($award.text().trim())
+                  cy.get('.link1').should(($awardLinks) => {
+                    // Only compare the award label's own text nodes - .text() would also
+                    // pick up the accessible <title> of the adjacent open-in-new-tab icon
+                    // (e.g. "Open"), which isn't part of the award label itself.
+                    const awardText = $awardLinks.toArray()
+                      .map((el) => Array.from(el.childNodes)
+                        .filter((node) => node.nodeType === Node.TEXT_NODE)
+                        .map((node) => node.textContent.trim())
+                        .filter(Boolean)
+                        .join(' ')
+                      )
+                      .join(', ')
+                    expect(awards[index], 'Award should be the same').to.include(awardText)
                   })
                   cy.backToDetailPage(datasetId)
                 })

@@ -51,7 +51,7 @@ const breadcrumb = [
 ]
 const showLoginDialog = ref(false)
 
-const { data: pageData, error } = await useAsyncData('pageData', () =>
+const { data: pageData, error } = await useAsyncData('shareDataPage', () =>
   $fetch('/api/contentful/share-data-page').catch(() => null)
 )
 

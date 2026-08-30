@@ -80,7 +80,7 @@ const months = [
   'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
-const { data: pageData, error: pageDataError } = useAsyncData('pageData', async () => {
+const { data: pageData, error: pageDataError } = useAsyncData('aboutPage', async () => {
   try {
     return await $fetch('/api/contentful/about-page')
   } catch (err) {
@@ -89,7 +89,7 @@ const { data: pageData, error: pageDataError } = useAsyncData('pageData', async 
   }
 })
 
-const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
+const { data: consortiaItems, error: consortiaError } = useAsyncData('aboutConsortiaItems', async () => {
   try {
     return await $fetch('/api/contentful/about-consortia')
   } catch (err) {

@@ -47,7 +47,7 @@ const config = useRuntimeConfig()
 const { params } = useRoute()
 const router = useRouter()
 
-const { data: aboutDetailsItem } = useAsyncData('aboutDetailsItem', async () => {
+const { data: aboutDetailsItem } = useAsyncData(`aboutDetailsItem-${params.aboutDetailsId}`, async () => {
   try {
     const result = await $fetch(`/api/contentful/about-details/${params.aboutDetailsId}`)
     if (!result.foundBySlug) {

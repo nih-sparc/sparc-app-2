@@ -53,7 +53,7 @@ const breadcrumb = [
 const route = useRoute();
 
 const { data: page, error } = useAsyncData(
-  'newsPage',
+  `newsPage-${route.params.id}`,
   () => $fetch(`/api/contentful/entry/${route.params.id}`).catch(() => ({ fields: [] }))
 )
 

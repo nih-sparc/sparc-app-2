@@ -1,6 +1,7 @@
 import { defineNuxtPlugin } from '#app'
-import DesignSystemComponentsPlugin from 'sparc-design-system-components-2'
+import * as DesignSystemComponentsModule from 'sparc-design-system-components-2'
+import { resolveVuePlugin } from '@/utils/vuePluginInterop.js'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  nuxtApp.vueApp.use(DesignSystemComponentsPlugin)
+  nuxtApp.vueApp.use(resolveVuePlugin(DesignSystemComponentsModule))
 })
