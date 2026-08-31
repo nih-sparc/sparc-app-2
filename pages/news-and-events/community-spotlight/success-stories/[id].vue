@@ -102,7 +102,7 @@ import ShareLinks from '~/components/ShareLinks/ShareLinks.vue'
 const route = useRoute()
 
 // Fetch data using useAsyncData to avoid rendering on both client and server
-const { data, error } = await useAsyncData('story', () =>
+const { data, error } = await useAsyncData(`story-${route.params.id}`, () =>
   $fetch(`/api/contentful/success-story/${route.params.id}`).catch(() => ({}))
 )
 

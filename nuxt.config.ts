@@ -2,6 +2,8 @@
 import { resolve } from 'pathe'
 
 export default defineNuxtConfig({
+  // Keep the pre-v4 flat directory layout instead of moving everything under app/.
+  srcDir: '.',
   app: {
     head: {
       title: 'SPARC Portal',
@@ -9,28 +11,26 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
-          hid: 'description',
           name: 'description',
           content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.',
         },
         {
-          hid: 'keywords',
           name: 'keywords',
           content: 'nih sparc, sparc program, stimulating peripheral activity to relieve conditions, common fund sparc, sparc, sparc initiative, sparc neuro, sparc science'
         },
         // default social cards information for site sharing url's
-        { hid: 'og:type', property: 'og:type', content: 'website' },
-        { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
-        { hid: 'og:description', property: 'og:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' },
-        { hid: 'og:image', property: 'og:image',
+        { property: 'og:type', content: 'website' },
+        { property: 'og:title', content: 'SPARC Portal' },
+        { property: 'og:description', content: 'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.' },
+        { property: 'og:image',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
-        { hid: 'og:image:secure_url', property: 'og:image:secure_url',
+        { property: 'og:image:secure_url',
           content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png'
         },
-        { hid: 'robots', name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
-        { hid: 'og:url', property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
-        { hid: 't-type', name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'robots', content: 'max-snippet:-1, max-image-preview:large, max-video-preview:-1' },
+        { property: 'og:url', content: process.env.ROOT_URL || 'sparc.science' },
+        { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:site', content: '@sparc_science' },
         { name: 'twitter:title', content: 'SPARC Portal' },
         { name: 'twitter:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
@@ -68,7 +68,6 @@ export default defineNuxtConfig({
     'nuxt-svgo',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    '@zadigetvoltaire/nuxt-gtm',
     '@nuxtjs/turnstile',
     '@nuxtjs/sitemap',
     "nuxt-simple-robots"
@@ -295,6 +294,9 @@ export default defineNuxtConfig({
     sitemap: `${process.env.ROOT_URL}/sitemap.xml`
   },
   vue: {
+    // Many components still use Options API `mixins:` - keep the runtime enabled
+    // until those are converted to composables.
+    optionsApi: true,
     compilerOptions: {
       isCustomElement: (tag: string) => [
         'bsky-embed'

@@ -48,7 +48,7 @@ const route = useRoute()
 const router = useRouter()
 
 const { data: page, error } = useAsyncData(
-  'eventPage',
+  `eventPage-${route.params.id}`,
   async () => {
     const id = route.params.id;
     const eventPage = await $fetch(`/api/contentful/event/${id}`).catch(() => null)

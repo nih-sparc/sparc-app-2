@@ -247,16 +247,15 @@ useHead({
   bodyAttrs: { style: 'background: #F5F7FA' },
   meta: [
     {
-      hid: 'description',
       name: 'description',
       content:
         'The open community platform for bridging the body and the brain through neuroscience and systems physiology data, computational and spatial modeling, and device design.'
     },
     { name: 'og:type', content: 'website' },
-    { hid: 'og:title', property: 'og:title', content: 'SPARC Portal' },
+    { property: 'og:title', content: 'SPARC Portal' },
     { name: "google-site-verification", content: `${config.public.GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID}` },
-    { hid: 'og:image', property: 'og:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
-    { hid: 'og:image:secure_url', property: 'og:image:secure_url', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
+    { property: 'og:image', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
+    { property: 'og:image:secure_url', content: 'https://images.ctfassets.net/6bya4tyw8399/7r5WTb92QnHkub8RsExuc1/2ac134de2ddfd65eb6316421df7578f9/sparc-logo-primary.png' },
     { name: 'og:site_name', content: 'SPARC Portal' },
     { name: 'twitter:card', content: 'summary' },
     { name: 'twitter:site', content: '@sparc_science' },
