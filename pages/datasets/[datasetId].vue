@@ -8,7 +8,9 @@
     <Meta name="twitter:description" :content="datasetDescription" />
     <Meta name="DC.type" content="Dataset" />
     <Meta name="DC.description" :content="datasetDescription" />
+    <Meta v-if="datasetTags?.length" name="keywords" :content="datasetTags.join(', ')" />
     <Meta name="DCTERMS.license" :content="licenseLink" />
+    <Meta v-if="!showTombstone" name="DC.accessRights" content="public" />
     <Meta name="og:type" content="website" />
     <Meta name="og:title" :content="datasetTitle" />
     <Meta name="og:image" :content="datasetInfo?.banner" />
@@ -328,6 +330,32 @@ export default {
         const infoDoi = propOr('', 'doi', info)
         const tags = propOr([], 'tags', info)
         const licenseKey = propOr('', 'license', info)
+
+        // Related publications (IsDescribedBy / IsReferencedBy / IsSupplementedBy) surfaced as citations,
+        // and the latest version's revision date, so FAIR assessors (e.g. F-UJI) can resolve
+        // FsF-I3-01M's related-resource check.
+        const infoExternalPublications = propOr([], 'externalPublications', info)
+        const relatedPublicationDois = infoExternalPublications
+          .filter(pub => ['IsDescribedBy', 'IsReferencedBy', 'IsSupplementedBy'].includes(pub.relationshipType))
+          .map(pub => pub.doi && `https://doi.org/${pub.doi}`)
+          .filter(Boolean)
+        const latestVersionInfo = compose(head)(versions || [])
+        const dateModified = latestVersionInfo?.revisedAt || latestVersionInfo?.versionPublishedAt || undefined
+
+        // All datasets reaching this point are published on Pennsieve Discover, which is open access.
+        // Surfacing that explicitly resolves FsF-A1-01M's access-level check.
+        const isAccessibleForFree = info.isUnpublished ? undefined : true
+        const conditionsOfAccess = info.isUnpublished ? undefined : 'public'
+
+        // Distribution info (contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
+        // FsF-F3-01M, FsF-R1-01M, FsF-R1.3-01M, and FsF-R1.3-02D's dataset-distribution checks.
+        const distribution = info.size ? {
+          '@type': 'DataDownload',
+          contentUrl: `${config.public.discover_api_host}/datasets/${info.id}/versions/${info.version}/download?downloadOrigin=SPARC`,
+          encodingFormat: 'application/zip',
+          contentSize: `${info.size} bytes`
+        } : undefined
+
         return {
           script: [{
             type: 'application/ld+json',
@@ -342,8 +370,13 @@ export default {
               license: getLicenseLink(getLicenseAbbr(licenseKey)) || undefined,
               version: info.version?.toString(),
               datePublished: info.firstPublishedAt || undefined,
+              dateModified,
               keywords: tags.length ? tags : undefined,
               creator: creators,
+              citation: relatedPublicationDois.length ? relatedPublicationDois : undefined,
+              distribution,
+              isAccessibleForFree,
+              conditionsOfAccess,
               publisher: {
                 '@type': 'Organization',
                 name: 'Pennsieve Discover'
