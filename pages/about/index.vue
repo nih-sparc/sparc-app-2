@@ -105,7 +105,7 @@ const { data: metricsData, error: metricsError } = useAsyncData('metricsData', a
     const response = await $axios.get(url)
     const algoliaMetricsData = response?.data?.find(item => item.Report === 'algolia') || {}
     return {
-      totalContributors: parseInt(algoliaMetricsData?.['contributors.name']?.['countributors_count']) || 0
+      totalContributors: parseInt(algoliaMetricsData?.['contributors.name']?.['contributors_count']) || 0
     }
   } catch (err) {
     console.error(err)
