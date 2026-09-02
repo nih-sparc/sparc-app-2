@@ -16225,7 +16225,7 @@ __metadata:
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
-    sparc-dashwidgets: "npm:1.4.2"
+    sparc-dashwidgets: "npm:1.4.3"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.5.0"
@@ -19473,9 +19473,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.4.2":
-  version: 1.4.2
-  resolution: "sparc-dashwidgets@npm:1.4.2"
+"sparc-dashwidgets@npm:1.4.3":
+  version: 1.4.3
+  resolution: "sparc-dashwidgets@npm:1.4.3"
   dependencies:
     "@pennsieve-viz/core": "npm:^0.3.4"
     "@pennsieve-viz/micro-ct": "npm:^1.0.72"
@@ -19498,7 +19498,7 @@ __metadata:
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/1da5034f702f4c8d8cbe09fcdfbf7b512169662579febfcb5d3709d2412aacd8bf60965374fd237b55fdf6fd95213c4092e3a31c09aa3467f9e472d94280ea29
+  checksum: 10c0/67b449c54c65e87eb1f1b3af81cf43b7cc1a9bcf2fe6dd96a204d00627a9972ce5a838295c673fab4bdf3536814f9517f0d5954acb66744af97ef64e27866c4b
   languageName: node
   linkType: hard
 
