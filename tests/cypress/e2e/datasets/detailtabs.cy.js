@@ -137,7 +137,7 @@ datasetIds.forEach((datasetId) => {
                       cy.wrap($link).invoke('attr', 'href').then((href) => {
                         cy.request({ url: href, failOnStatusCode: false }).then((resp) => {
                           expect(resp.redirects, 'Redirect should exist').to.have.length.greaterThan(0)
-                          expect(resp.body.includes("challenges.cloudflare.com"), 'Redirect should exist').to.have.length.greaterThan(0)
+                          expect(resp.body.includes("challenges.cloudflare.com"), 'Redirect should exist').to.be.true
                         })
                       })
                     })
