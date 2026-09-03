@@ -115,7 +115,19 @@ export default defineNuxtConfig({
     '/resources/software': { redirect: '/tools-and-resources/tools?resourceType=Software' },
     '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
     '/resources/submit': { redirect: '/contact-us?type=tool' },
-    '/apps/precision-dashboard': { ssr:false }
+    '/apps/precision-dashboard': { ssr:false },
+    '/apps/maps': {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'credentialless',
+      },
+    },
+    '/datasets/file/**': {
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'credentialless',
+      },
+    }
   },
   hooks: {
     'pages:extend'(pages) {
@@ -254,7 +266,7 @@ export default defineNuxtConfig({
     [
       '/api/__sitemap__/urls'
     ] : [],
-    exclude: process.env.DEPLOY_ENV === 'production' ? 
+    exclude: process.env.DEPLOY_ENV === 'production' ?
     [
       '/datasets/plotviewer',
       '/datasets/simulationviewer',
@@ -263,7 +275,7 @@ export default defineNuxtConfig({
       '/datasets/flatmapviewer',
       '/datasets/imageviewer',
       '/datasets/scaffoldviewer',
-    ] : ['/'],  
+    ] : ['/'],
     xslColumns: [
       { label: 'URL', width: '100%' }
     ],
@@ -271,17 +283,17 @@ export default defineNuxtConfig({
   robots: {
     // provide simple disallow rules for all robots `user-agent: *`
     // disallowing certain pages that are either redirects, authenticated routes, or causing bots to recursively crawl
-    disallow: process.env.DEPLOY_ENV === 'production' ? 
+    disallow: process.env.DEPLOY_ENV === 'production' ?
     [
       '/datasets/file',
       '/datasets/*/version/',
       '/file',
-      '/welcome', 
-      '/user', 
-      '/contact-us', 
+      '/welcome',
+      '/user',
+      '/contact-us',
       '/contact-us/*?*',
-      '/help', 
-      '/signup', 
+      '/help',
+      '/signup',
       '/maps',
       '/news-and-events/submit',
       '/news-and-events/community-spotlight/submit',
