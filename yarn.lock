@@ -170,6 +170,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@abi-software/plotvuer@npm:1.0.7":
+  version: 1.0.7
+  resolution: "@abi-software/plotvuer@npm:1.0.7"
+  dependencies:
+    "@abi-software/svg-sprite": "npm:^1.0.3"
+    css-element-queries: "npm:^1.2.3"
+    element-plus: "npm:2.8.4"
+    papaparse: "npm:^5.5.2"
+    plotly.js: "npm:2.35.3"
+    unplugin-vue-components: "npm:^0.26.0"
+    vite-plugin-node-polyfills: "npm:^0.19.0"
+    vue: "npm:^3.4.21"
+    vue-draggable-resizable: "npm:^2.2.0"
+    vue-router: "npm:^4.2.5"
+  checksum: 10c0/35117f6ea3a253192cc7850c8b2110f6236865c0835675bd4886dba0f50453aa5436d5ef96ac76afc184f2da1f6c48df827ffd4510ec70ecdb0e6599a5f88b1f
+  languageName: node
+  linkType: hard
+
 "@abi-software/plotvuer@npm:1.1.0":
   version: 1.1.0
   resolution: "@abi-software/plotvuer@npm:1.1.0"
@@ -229,28 +247,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/simulationvuer@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@abi-software/simulationvuer@npm:3.3.0"
+"@abi-software/simulationvuer@npm:4.0.5":
+  version: 4.0.5
+  resolution: "@abi-software/simulationvuer@npm:4.0.5"
   dependencies:
-    "@abi-software/plotvuer": "npm:1.1.0"
-    "@opencor/opencor": "npm:^0.20260616.0"
-    "@rollup/rollup-darwin-arm64": "npm:4.62.3"
-    "@rollup/rollup-linux-x64-gnu": "npm:4.62.3"
-    "@rollup/rollup-win32-x64-msvc": "npm:4.62.3"
+    "@abi-software/plotvuer": "npm:1.0.7"
+    "@opencor/opencor": "npm:^0.20260804.0"
     element-plus: "npm:2.8.4"
-    jsonschema: "npm:^1.4.0"
-    mathjs: "npm:^15.1.0"
+    jsonschema: "npm:^1.5.0"
+    mathjs: "npm:^15.2.0"
     unplugin-vue-components: "npm:^0.26.0"
-    vue: "npm:^3.4.21"
-  dependenciesMeta:
-    "@rollup/rollup-darwin-arm64":
-      optional: true
-    "@rollup/rollup-linux-x64-gnu":
-      optional: true
-    "@rollup/rollup-win32-x64-msvc":
-      optional: true
-  checksum: 10c0/913921df8343ad579baf36331844923585cc142077f96ad6d4c300b9bd6d09f201850139742bdd903e42863d2ddcc41168bc6cd16dc8a203ed9baf1d0afc1fe6
+    vue: "npm:3.4.21"
+  checksum: 10c0/a574e395fa3e5dfb167db2780c516b9bed795cc76113166ffcd3722294e3277c130ecee53fbac9e6797b4ccb59e7877a40a78fe3456ad93e2b643f3584e94043
   languageName: node
   linkType: hard
 
@@ -265,7 +273,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/svg-sprite@npm:1.1.0, @abi-software/svg-sprite@npm:^1.1.0":
+"@abi-software/svg-sprite@npm:1.1.0, @abi-software/svg-sprite@npm:^1.0.3, @abi-software/svg-sprite@npm:^1.1.0":
   version: 1.1.0
   resolution: "@abi-software/svg-sprite@npm:1.1.0"
   dependencies:
@@ -3906,106 +3914,106 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-darwin-arm64@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-darwin-arm64@npm:1.2.0"
+"@napi-rs/keyring-darwin-arm64@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-darwin-arm64@npm:1.3.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-darwin-x64@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-darwin-x64@npm:1.2.0"
+"@napi-rs/keyring-darwin-x64@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-darwin-x64@npm:1.3.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-freebsd-x64@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-freebsd-x64@npm:1.2.0"
+"@napi-rs/keyring-freebsd-x64@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-freebsd-x64@npm:1.3.0"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-arm-gnueabihf@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-arm-gnueabihf@npm:1.2.0"
+"@napi-rs/keyring-linux-arm-gnueabihf@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-arm-gnueabihf@npm:1.3.0"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-arm64-gnu@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-arm64-gnu@npm:1.2.0"
+"@napi-rs/keyring-linux-arm64-gnu@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-arm64-gnu@npm:1.3.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-arm64-musl@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-arm64-musl@npm:1.2.0"
+"@napi-rs/keyring-linux-arm64-musl@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-arm64-musl@npm:1.3.0"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-riscv64-gnu@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-riscv64-gnu@npm:1.2.0"
+"@napi-rs/keyring-linux-riscv64-gnu@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-riscv64-gnu@npm:1.3.0"
   conditions: os=linux & cpu=riscv64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-x64-gnu@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-x64-gnu@npm:1.2.0"
+"@napi-rs/keyring-linux-x64-gnu@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-x64-gnu@npm:1.3.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-linux-x64-musl@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-linux-x64-musl@npm:1.2.0"
+"@napi-rs/keyring-linux-x64-musl@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-linux-x64-musl@npm:1.3.0"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-win32-arm64-msvc@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-win32-arm64-msvc@npm:1.2.0"
+"@napi-rs/keyring-win32-arm64-msvc@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-win32-arm64-msvc@npm:1.3.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-win32-ia32-msvc@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-win32-ia32-msvc@npm:1.2.0"
+"@napi-rs/keyring-win32-ia32-msvc@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-win32-ia32-msvc@npm:1.3.0"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring-win32-x64-msvc@npm:1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring-win32-x64-msvc@npm:1.2.0"
+"@napi-rs/keyring-win32-x64-msvc@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring-win32-x64-msvc@npm:1.3.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@napi-rs/keyring@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@napi-rs/keyring@npm:1.2.0"
+"@napi-rs/keyring@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@napi-rs/keyring@npm:1.3.0"
   dependencies:
-    "@napi-rs/keyring-darwin-arm64": "npm:1.2.0"
-    "@napi-rs/keyring-darwin-x64": "npm:1.2.0"
-    "@napi-rs/keyring-freebsd-x64": "npm:1.2.0"
-    "@napi-rs/keyring-linux-arm-gnueabihf": "npm:1.2.0"
-    "@napi-rs/keyring-linux-arm64-gnu": "npm:1.2.0"
-    "@napi-rs/keyring-linux-arm64-musl": "npm:1.2.0"
-    "@napi-rs/keyring-linux-riscv64-gnu": "npm:1.2.0"
-    "@napi-rs/keyring-linux-x64-gnu": "npm:1.2.0"
-    "@napi-rs/keyring-linux-x64-musl": "npm:1.2.0"
-    "@napi-rs/keyring-win32-arm64-msvc": "npm:1.2.0"
-    "@napi-rs/keyring-win32-ia32-msvc": "npm:1.2.0"
-    "@napi-rs/keyring-win32-x64-msvc": "npm:1.2.0"
+    "@napi-rs/keyring-darwin-arm64": "npm:1.3.0"
+    "@napi-rs/keyring-darwin-x64": "npm:1.3.0"
+    "@napi-rs/keyring-freebsd-x64": "npm:1.3.0"
+    "@napi-rs/keyring-linux-arm-gnueabihf": "npm:1.3.0"
+    "@napi-rs/keyring-linux-arm64-gnu": "npm:1.3.0"
+    "@napi-rs/keyring-linux-arm64-musl": "npm:1.3.0"
+    "@napi-rs/keyring-linux-riscv64-gnu": "npm:1.3.0"
+    "@napi-rs/keyring-linux-x64-gnu": "npm:1.3.0"
+    "@napi-rs/keyring-linux-x64-musl": "npm:1.3.0"
+    "@napi-rs/keyring-win32-arm64-msvc": "npm:1.3.0"
+    "@napi-rs/keyring-win32-ia32-msvc": "npm:1.3.0"
+    "@napi-rs/keyring-win32-x64-msvc": "npm:1.3.0"
   dependenciesMeta:
     "@napi-rs/keyring-darwin-arm64":
       optional: true
@@ -4031,7 +4039,7 @@ __metadata:
       optional: true
     "@napi-rs/keyring-win32-x64-msvc":
       optional: true
-  checksum: 10c0/3170d7e3f9cf2468eb535378187a3c5b4ec8e1d61eba0e11cda87f6764c6e1ce7fa53ece91d903462f101894958b9478a4c2e0c43bf267d73964c2b5e65e4b7b
+  checksum: 10c0/1fdfcd04ab530e00354381a030a74f48a813fbcabcbbfb8ad5bcc49c2ff7990f76ebcdc2b3665aa1a1d12e32d9e14a420521540b037989d51037f9403d751c65
   languageName: node
   linkType: hard
 
@@ -4625,21 +4633,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@opencor/opencor@npm:^0.20260616.0":
-  version: 0.20260616.0
-  resolution: "@opencor/opencor@npm:0.20260616.0"
+"@opencor/libopencor-types@npm:^1.20260803.0":
+  version: 1.20260803.0
+  resolution: "@opencor/libopencor-types@npm:1.20260803.0"
+  checksum: 10c0/4a66fed0de3ca7a140b00184f7eb5dab181e25a9d3699e0dea3ed369acb22e005787c338bad53ae2b9d3ec79d15fc625ec60aa67ab8768b3472ee85a2958754b
+  languageName: node
+  linkType: hard
+
+"@opencor/opencor@npm:^0.20260804.0":
+  version: 0.20260804.0
+  resolution: "@opencor/opencor@npm:0.20260804.0"
   dependencies:
-    "@napi-rs/keyring": "npm:^1.2.0"
-    "@primeuix/themes": "npm:^2.0.3"
+    "@napi-rs/keyring": "npm:^1.3.0"
+    "@opencor/libopencor-types": "npm:^1.20260803.0"
+    "@primeuix/themes": "npm:2.0.3"
     "@primevue/auto-import-resolver": "npm:4.2.5"
-    "@vueuse/core": "npm:^14.2.1"
-    primeicons: "npm:^7.0.0"
+    "@vueuse/core": "npm:12.8.2"
+    primeicons: "npm:7.0.0"
     primevue: "npm:4.2.5"
     vue: "npm:3.4.21"
     xxhash-wasm: "npm:^1.1.0"
   peerDependencies:
     vue: 3.4.21
-  checksum: 10c0/a6f8c3e070112561055bceff3c1490657ce00cf8336412c6d4d6499339ea3a5371b646f229beab0486fbecb51d5c3f9889d522968059bc10cf9ff627cfad088e
+  checksum: 10c0/4272581135e46ea8ca38e3fd72b16f7604fb85fee765df8c1a92fa5427d3b34c31492e4e444e82d9a303b59e70ed35f475a8eb77619db7a51a1a5f1dd63d4d17
   languageName: node
   linkType: hard
 
@@ -5092,7 +5108,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@primeuix/themes@npm:^2.0.3":
+"@primeuix/themes@npm:2.0.3":
   version: 2.0.3
   resolution: "@primeuix/themes@npm:2.0.3"
   dependencies:
@@ -6971,6 +6987,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vueuse/core@npm:12.8.2":
+  version: 12.8.2
+  resolution: "@vueuse/core@npm:12.8.2"
+  dependencies:
+    "@types/web-bluetooth": "npm:^0.0.21"
+    "@vueuse/metadata": "npm:12.8.2"
+    "@vueuse/shared": "npm:12.8.2"
+    vue: "npm:^3.5.13"
+  checksum: 10c0/79c74c7daa471bbf6d51bf83d3750105074d83f6628fcdf41828e9f87977de4a4744968f48ad2d13597e758baf1a0aa5fe4f348dbecf093c9437bd8fd9937b73
+  languageName: node
+  linkType: hard
+
 "@vueuse/core@npm:^10.11.0":
   version: 10.11.1
   resolution: "@vueuse/core@npm:10.11.1"
@@ -6980,19 +7008,6 @@ __metadata:
     "@vueuse/shared": "npm:10.11.1"
     vue-demi: "npm:>=0.14.8"
   checksum: 10c0/6a974c1510ce84e652e3d180a4f4373e37e59a5ec025a7a8cec7f144a4ccff25dbdd82e3143ffb057323f467a1076b39da30953981e822c4bd41a7841121afee
-  languageName: node
-  linkType: hard
-
-"@vueuse/core@npm:^14.2.1":
-  version: 14.2.1
-  resolution: "@vueuse/core@npm:14.2.1"
-  dependencies:
-    "@types/web-bluetooth": "npm:^0.0.21"
-    "@vueuse/metadata": "npm:14.2.1"
-    "@vueuse/shared": "npm:14.2.1"
-  peerDependencies:
-    vue: ^3.5.0
-  checksum: 10c0/cd6f01fb074d423bdab324d8f262ff2597d6ce397d6fd139f3fe741e3e4f636b3481456e12b265021bf3626026410df1c3635981c1912648d80581cf066a3bf4
   languageName: node
   linkType: hard
 
@@ -7015,10 +7030,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/metadata@npm:14.2.1":
-  version: 14.2.1
-  resolution: "@vueuse/metadata@npm:14.2.1"
-  checksum: 10c0/f36571b6898876242dd20a621d343caa1804fabeb14cacd89571fedd0d56885066587aa6b0c6f98108d3d26e1876e61913629cbc70e3776949326f312e6ad769
+"@vueuse/metadata@npm:12.8.2":
+  version: 12.8.2
+  resolution: "@vueuse/metadata@npm:12.8.2"
+  checksum: 10c0/95d352506608d5f8ae9c99ce494e7e55d864707d903f20401fecf378b08c8ed96631d0b8b38f6cd1d04dda69d9c8d3e4fa37e33caae10692805a9566e316e39c
   languageName: node
   linkType: hard
 
@@ -7038,12 +7053,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/shared@npm:14.2.1":
-  version: 14.2.1
-  resolution: "@vueuse/shared@npm:14.2.1"
-  peerDependencies:
-    vue: ^3.5.0
-  checksum: 10c0/c646b6313ba1092f858dfda13aa84750844661919632346202a2ed9e640febd0898953d2cdaa3e42ea174bea95ad0ba61295ce5bc32a49502f1583f1f3471bd7
+"@vueuse/shared@npm:12.8.2":
+  version: 12.8.2
+  resolution: "@vueuse/shared@npm:12.8.2"
+  dependencies:
+    vue: "npm:^3.5.13"
+  checksum: 10c0/43a04cf44e3377ee7666787e597d45ddf83880d3e1835000201b0c471198ce83ad45e4f4a0182d68781c0a23c84a904aab253e4c6279400a235e0246b613bad2
   languageName: node
   linkType: hard
 
@@ -14482,10 +14497,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonschema@npm:^1.4.0":
-  version: 1.4.1
-  resolution: "jsonschema@npm:1.4.1"
-  checksum: 10c0/c3422d3fc7d33ff7234a806ffa909bb6fb5d1cd664bea229c64a1785dc04cbccd5fc76cf547c6ab6dd7881dbcaf3540a6a9f925a5956c61a9cd3e23a3c1796ef
+"jsonschema@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "jsonschema@npm:1.5.0"
+  checksum: 10c0/c24ddb8d741f02efc0da3ad9b597a275f6b595062903d3edbfaa535c3f9c4c98613df68da5cb6635ed9aeab30d658986fea61d7662fc5b2b92840d5a1e21235e
   languageName: node
   linkType: hard
 
@@ -15281,9 +15296,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mathjs@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "mathjs@npm:15.1.0"
+"mathjs@npm:^15.2.0":
+  version: 15.2.0
+  resolution: "mathjs@npm:15.2.0"
   dependencies:
     "@babel/runtime": "npm:^7.26.10"
     complex.js: "npm:^2.2.5"
@@ -15296,7 +15311,7 @@ __metadata:
     typed-function: "npm:^4.2.1"
   bin:
     mathjs: bin/cli.js
-  checksum: 10c0/119de0d6f3ecb9b053e49ae5082f949982ecd2418a50f98d6f5f960a4d0b20311dacdad95e79d33be4baf38b9a441ebde80bb0653fd5f5137228e5199ce8e316
+  checksum: 10c0/78913fc64501166185a6118975ef475bddf23151adcfce5ecac10085b0fa1df880c3d191d54f1184289dc646823eda4807bf73a46286760247230997694697d3
   languageName: node
   linkType: hard
 
@@ -16178,7 +16193,7 @@ __metadata:
     "@abi-software/mapintegratedvuer": "npm:1.20.1"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.3"
-    "@abi-software/simulationvuer": "npm:3.3.0"
+    "@abi-software/simulationvuer": "npm:4.0.5"
     "@deck.gl/core": "npm:9.1.15"
     "@deck.gl/extensions": "npm:9.1.15"
     "@deck.gl/geo-layers": "npm:9.1.15"
@@ -17887,7 +17902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"primeicons@npm:^7.0.0":
+"primeicons@npm:7.0.0":
   version: 7.0.0
   resolution: "primeicons@npm:7.0.0"
   checksum: 10c0/a7f6344d6db49e785d2040b35f8cae761d15bb8f8ee70ade8981d45438245414e913fe7235921122aade2b0a11a032c98b44dc527be2da11aa791ff145099c06
