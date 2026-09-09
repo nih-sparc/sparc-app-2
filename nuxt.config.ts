@@ -2,6 +2,7 @@
 import { resolve } from 'pathe'
 
 export default defineNuxtConfig({
+  compatibilityDate: '2026-09-09',
   // Keep the pre-v4 flat directory layout instead of moving everything under app/.
   srcDir: '.',
   app: {
