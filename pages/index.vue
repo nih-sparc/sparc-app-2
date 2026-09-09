@@ -143,7 +143,7 @@
             v-for="tab in toolTabs"
             :key="tab.id"
             class="tools-preview"
-            :class="{ 'tools-preview--hidden': activeToolTab !== tab.id }"
+            :class="[`tools-preview--${tab.id}`, { 'tools-preview--hidden': activeToolTab !== tab.id }]"
           >
             <div class="preview-media">
               <a v-if="tab.external" :href="tab.href" target="_blank" rel="noopener">
@@ -447,7 +447,7 @@ function navigateToFacet(item) {
 
 const toolTabs = [
     {
-    id: 'precision', label: 'Precision Atlas',
+    id: 'precision', label: 'NIH PRECISION Pain Atlas',
     icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 11.5 Q3 9 5 10 T8 7 T11 5 T15 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M1 13 Q4 11.5 6 12 T10 10 T15 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.5"/></svg>`,
     video: 'https://videos.ctfassets.net/6bya4tyw8399/4hG99G3CdVfjzNUaK2Uiwt/c29b44c400dbe21121a73be751a39211/precision-explore-data-callouts.mp4',
     kicker: 'Gene expression',
@@ -455,7 +455,7 @@ const toolTabs = [
     desc: 'Search any gene to see expression profiles across DRG neuron subtypes — UMAP projections and violin plots sourced directly from SPARC datasets.',
     href: '/apps/precision-dashboard',
     external: false,
-    btnLabel: 'Open Precision Atlas',
+    btnLabel: 'Open NIH PRECISION Pain Atlas',
   },
   {
     id: 'nervosensus', label: 'NervoSensus',
@@ -1024,6 +1024,12 @@ onBeforeMount(() => {
   .section-kicker { margin-bottom: 0.3rem; }
 }
 
+/* Wider text column so the longer "NIH PRECISION Pain Atlas" button has breathing room */
+.tools-preview--precision .preview-text {
+  width: 280px;
+  @media (max-width: 768px) { width: 100%; }
+}
+
 .preview-heading {
   font-size: 20px;
   font-weight: 500;
@@ -1043,6 +1049,7 @@ onBeforeMount(() => {
   display: inline-flex;
   align-items: center;
   width: fit-content;
+  white-space: nowrap;
   margin-top: auto;
   font-size: 1rem;
   font-weight: 500;
