@@ -339,6 +339,16 @@ export default {
           .filter(pub => ['IsDescribedBy', 'IsReferencedBy', 'IsSupplementedBy'].includes(pub.relationshipType))
           .map(pub => pub.doi && `https://doi.org/${pub.doi}`)
           .filter(Boolean)
+
+        // Protocols used to generate the dataset, surfaced as isBasedOn so FAIR assessors can resolve
+        // FsF-R1.2-01M's provenance check and FsF-I3-01M's related-resource check. Mirrors the same
+        // relationshipType filter (IsReferencedBy / IsSupplementedBy) that powers the "protocols"
+        // computed property and the protocol count shown in dataset-metrics elsewhere on this page.
+        const protocolDois = infoExternalPublications
+          .filter(pub => ['IsReferencedBy', 'IsSupplementedBy'].includes(pub.relationshipType))
+          .map(pub => pub.doi && `https://doi.org/${pub.doi}`)
+          .filter(Boolean)
+
         const latestVersionInfo = compose(head)(versions || [])
         const dateModified = latestVersionInfo?.revisedAt || latestVersionInfo?.versionPublishedAt || undefined
 
@@ -347,10 +357,12 @@ export default {
         const isAccessibleForFree = info.isUnpublished ? undefined : true
         const conditionsOfAccess = info.isUnpublished ? undefined : 'public'
 
-        // Distribution info (contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
-        // FsF-F3-01M, FsF-R1-01M, FsF-R1.3-01M, and FsF-R1.3-02D's dataset-distribution checks.
+        // Distribution info (name/contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
+        // FsF-F3-01M (which requires name + type + size together), FsF-R1-01M, FsF-R1.3-01M, and
+        // FsF-R1.3-02D's dataset-distribution checks.
         const distribution = info.size ? {
           '@type': 'DataDownload',
+          name: `${info.name} (version ${info.version})`,
           contentUrl: `${config.public.discover_api_host}/datasets/${info.id}/versions/${info.version}/download?downloadOrigin=SPARC`,
           encodingFormat: 'application/zip',
           contentSize: `${info.size} bytes`
@@ -360,8 +372,13 @@ export default {
           script: [{
             type: 'application/ld+json',
             innerHTML: JSON.stringify({
-              '@context': 'http://schema.org/',
+              '@context': 'https://schema.org/',
               '@type': 'Dataset',
+              // Declares conformance to the Bioschemas Dataset profile, a life-science-specific
+              // specialization of schema.org recognized as a community-endorsed metadata standard
+              // (listed in FAIRsharing/the RDA Metadata Standards Catalog), so FAIR assessors can
+              // resolve FsF-R1.3-01M beyond generic schema.org.
+              conformsTo: 'https://bioschemas.org/profiles/Dataset/1.0-RELEASE',
               name: info.name,
               description: info.description || undefined,
               url: `${config.public.ROOT_URL}/datasets/${info.id}`,
@@ -374,6 +391,7 @@ export default {
               keywords: tags.length ? tags : undefined,
               creator: creators,
               citation: relatedPublicationDois.length ? relatedPublicationDois : undefined,
+              isBasedOn: protocolDois.length ? protocolDois : undefined,
               distribution,
               isAccessibleForFree,
               conditionsOfAccess,
