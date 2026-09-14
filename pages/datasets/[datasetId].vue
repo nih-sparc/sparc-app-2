@@ -123,6 +123,7 @@ import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
+import { extractS3BucketName } from '@/utils/common'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
@@ -184,6 +185,34 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
+// SPARC's bulk dataset zip download (used as the primary `distribution` entry) is blocked by
+// Pennsieve for large datasets ("Dataset is too large to download directly"), which prevents FAIR
+// assessors (e.g. F-UJI) from ever verifying a file format for those datasets (FsF-R1.3-02D). Every
+// SDS dataset publishes a dataset_description.xlsx (the same file already treated as the point of
+// truth for contributors above) at a predictable path, so sign a direct, individually-fetchable
+// download link for it and expose it as a second, always-small `distribution` entry with its real
+// encodingFormat declared explicitly (S3 objects here are otherwise served as generic
+// application/octet-stream, which FAIR assessors can't classify). If the dataset has no such file,
+// or the request fails, this just resolves to undefined and no entry is added.
+const getOpenDataFileDistribution = async (config, datasetId, s3Bucket, axios) => {
+  if (!s3Bucket) return undefined
+  const key = `${datasetId}/files/dataset_description.xlsx`
+  const contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  try {
+    const { data: signedUrl } = await axios.get(`${config.public.portal_api}/download`, {
+      params: { key, s3BucketName: s3Bucket, contentType }
+    })
+    if (!signedUrl) return undefined
+    return {
+      '@type': 'DataDownload',
+      name: 'dataset_description.xlsx',
+      contentUrl: signedUrl,
+      encodingFormat: contentType
+    }
+  } catch (error) {
+    return undefined
+  }
+}
 
 const tabs = [
   {
@@ -284,6 +313,12 @@ export default {
       })
       datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
       datasetDetails.contributors = datasetDetailsContributors
+      const openDataFileDistribution = await getOpenDataFileDistribution(
+        config,
+        propOr(datasetId, 'id', datasetDetails),
+        extractS3BucketName(propOr('', 'uri', datasetDetails)),
+        $axios
+      )
       const algoliaDatasetVersion = algoliaDatasetMetadata?.pennsieve?.version?.identifier
       const pennsieveDatasetVersion = datasetDetails?.version
       const isOlderVersionIndexed = pennsieveDatasetVersion > algoliaDatasetVersion
@@ -360,25 +395,30 @@ export default {
         // Distribution info (name/contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
         // FsF-F3-01M (which requires name + type + size together), FsF-R1-01M, FsF-R1.3-01M, and
         // FsF-R1.3-02D's dataset-distribution checks.
-        const distribution = info.size ? {
+        const fullPackageDistribution = info.size ? {
           '@type': 'DataDownload',
           name: `${info.name} (version ${info.version})`,
           contentUrl: `${config.public.discover_api_host}/datasets/${info.id}/versions/${info.version}/download?downloadOrigin=SPARC`,
           encodingFormat: 'application/zip',
           contentSize: `${info.size} bytes`
         } : undefined
+        const distribution = [fullPackageDistribution, openDataFileDistribution].filter(Boolean)
 
         return {
           script: [{
             type: 'application/ld+json',
             innerHTML: JSON.stringify({
-              '@context': 'https://schema.org/',
+              '@context': {
+                '@vocab': 'https://schema.org/',
+                dcterms: 'http://purl.org/dc/terms/'
+              },
               '@type': 'Dataset',
               // Declares conformance to the Bioschemas Dataset profile, a life-science-specific
               // specialization of schema.org recognized as a community-endorsed metadata standard
-              // (listed in FAIRsharing/the RDA Metadata Standards Catalog), so FAIR assessors can
-              // resolve FsF-R1.3-01M beyond generic schema.org.
-              conformsTo: 'https://bioschemas.org/profiles/Dataset/1.0-RELEASE',
+              // (listed in FAIRsharing/the RDA Metadata Standards Catalog). Must be expressed as
+              // dcterms:conformsTo (not schema:conformsTo) since FAIR assessors (e.g. F-UJI) only
+              // look for the Dublin Core Terms predicate when resolving FsF-R1.3-01M.
+              'dcterms:conformsTo': 'https://bioschemas.org/profiles/Dataset/1.0-RELEASE',
               name: info.name,
               description: info.description || undefined,
               url: `${config.public.ROOT_URL}/datasets/${info.id}`,
@@ -392,7 +432,7 @@ export default {
               creator: creators,
               citation: relatedPublicationDois.length ? relatedPublicationDois : undefined,
               isBasedOn: protocolDois.length ? protocolDois : undefined,
-              distribution,
+              distribution: distribution.length ? distribution : undefined,
               isAccessibleForFree,
               conditionsOfAccess,
               publisher: {
