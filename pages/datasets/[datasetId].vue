@@ -203,11 +203,25 @@ const getOpenDataFileDistribution = async (config, datasetId, s3Bucket, axios) =
       params: { key, s3BucketName: s3Bucket, contentType }
     })
     if (!signedUrl) return undefined
+    // FsF-R1-01M also wants file size alongside type ("manner and form" of data delivery). The
+    // signed URL is only valid for GET (a HEAD request fails signature validation), so request a
+    // single byte via Range and read the real size back from Content-Range instead of downloading
+    // the whole file. Best-effort: omitted if the request fails.
+    let contentSize
+    try {
+      const rangeResponse = await axios.get(signedUrl, { headers: { Range: 'bytes=0-0' } })
+      const contentRange = rangeResponse.headers?.['content-range']
+      const totalSize = contentRange?.split('/')?.[1]
+      contentSize = totalSize ? `${totalSize} bytes` : undefined
+    } catch (rangeError) {
+      contentSize = undefined
+    }
     return {
       '@type': 'DataDownload',
       name: 'dataset_description.xlsx',
       contentUrl: signedUrl,
-      encodingFormat: contentType
+      encodingFormat: contentType,
+      contentSize
     }
   } catch (error) {
     return undefined
@@ -392,6 +406,16 @@ export default {
         const isAccessibleForFree = info.isUnpublished ? undefined : true
         const conditionsOfAccess = info.isUnpublished ? undefined : 'public'
 
+        // Anatomical structures and experimental approaches (already fetched as Algolia facets for
+        // this dataset) surfaced as variableMeasured so FAIR assessors (e.g. F-UJI) can resolve
+        // FsF-R1-01M-3's measured-variable/observation-type check.
+        const anatomyFacet = datasetFacetsData.find(facet => facet.key === 'anatomy.organ.name')
+        const modalityFacet = datasetFacetsData.find(facet => facet.key === 'item.modalities.keyword')
+        const variableMeasured = [
+          ...(anatomyFacet?.children?.map(child => child.label) || []),
+          ...(modalityFacet?.children?.map(child => child.label) || [])
+        ]
+
         // Distribution info (name/contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
         // FsF-F3-01M (which requires name + type + size together), FsF-R1-01M, FsF-R1.3-01M, and
         // FsF-R1.3-02D's dataset-distribution checks.
@@ -410,7 +434,12 @@ export default {
             innerHTML: JSON.stringify({
               '@context': {
                 '@vocab': 'https://schema.org/',
-                dcterms: 'http://purl.org/dc/terms/'
+                dcterms: 'http://purl.org/dc/terms/',
+                // Declaring the PROV-O namespace (even though schema.org's own datePublished/creator
+                // already cover the same facts) lets FAIR assessors (e.g. F-UJI) detect use of a
+                // formal provenance ontology and resolve FsF-R1.2-01M-2, on top of the PROV-DC-style
+                // mapping they already infer heuristically from the schema.org properties below.
+                prov: 'http://www.w3.org/ns/prov#'
               },
               '@type': 'Dataset',
               // Declares conformance to the Bioschemas Dataset profile, a life-science-specific
@@ -427,9 +456,12 @@ export default {
               license: getLicenseLink(getLicenseAbbr(licenseKey)) || undefined,
               version: info.version?.toString(),
               datePublished: info.firstPublishedAt || undefined,
+              'prov:generatedAtTime': info.firstPublishedAt || undefined,
               dateModified,
               keywords: tags.length ? tags : undefined,
+              variableMeasured: variableMeasured.length ? variableMeasured : undefined,
               creator: creators,
+              'prov:wasAttributedTo': creators,
               citation: relatedPublicationDois.length ? relatedPublicationDois : undefined,
               isBasedOn: protocolDois.length ? protocolDois : undefined,
               distribution: distribution.length ? distribution : undefined,
