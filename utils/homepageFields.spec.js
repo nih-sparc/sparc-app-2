@@ -3,12 +3,7 @@ import getHomepageFields from './homepageFields'
 const defaultData = {
   heroHeading: '',
   heroCopy: '',
-  heroButtonLabel: '',
-  heroImage: {},
-  heroButtonLink: '',
-  featuredData: [],
-  newsAndEvents: [],
-  title: ''
+  heroImage: {}
 }
 
 describe('homepageFields', () => {

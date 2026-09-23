@@ -26,7 +26,7 @@
       </div>
       <div class="hero-image-wrap">
         <img
-          src="https://images.ctfassets.net/6bya4tyw8399/1vTvDLvi5CPAy9vqI7UjrB/7fa18b8c0fe2dc2f4a739b24e9dfb884/transparent-hero.png"
+          :src="heroImage?.fields?.file?.url || 'https://images.ctfassets.net/6bya4tyw8399/1vTvDLvi5CPAy9vqI7UjrB/7fa18b8c0fe2dc2f4a739b24e9dfb884/transparent-hero.png'"
           alt="SPARC nervous system infographic"
           class="hero-image"
         />
@@ -237,11 +237,10 @@ import { failMessage } from '@/utils/notification-messages'
 import { parseMarkdown } from '@/utils/formattingUtils.js'
 import getHomepageFields from '@/utils/homepageFields'
 import { useMainStore } from '../store/index.js'
-import { pathOr } from 'ramda'
 import { useRuntimeConfig, useAsyncData } from '#app'
 
 const config = useRuntimeConfig()
-const { $contentfulClient, $axios, $algoliaClient } = useNuxtApp()
+const { $algoliaClient } = useNuxtApp()
 useHead({
   title: 'SPARC Portal',
   bodyAttrs: { style: 'background: #F5F7FA' },
@@ -265,18 +264,6 @@ useHead({
   ]
 })
     
-const _consortiaCache = useState('_consortiaCache', () => null)
-const { data: consortiaItems, error: consortiaError } = useAsyncData('consortiaItems', async () => {
-  try {
-    const items = await $fetch('/api/contentful/homepage-consortia')
-    _consortiaCache.value = items
-    return items
-  } catch (err) {
-    console.error('Could not fetch consortia data from Contentful.', err)
-    return []
-  }
-}, { getCachedData: () => _consortiaCache.value || undefined })
-
 const _homepageCache = useState('_homepageCache', () => null)
 const { data: homepageData, error: homepageError } = useAsyncData('homepage', async () => {
   const result = await $fetch('/api/contentful/homepage')
@@ -284,56 +271,9 @@ const { data: homepageData, error: homepageError } = useAsyncData('homepage', as
   return result
 }, { getCachedData: () => _homepageCache.value || undefined })
 
-const _featuredDataCategoriesCache = useState('_featuredDataCategoriesCache', () => null)
-const { data: featuredDataCategories, error: featuredDataCategoriesError } = useAsyncData('featuredDataCategories', async () => {
-  const categories = await $fetch('/api/contentful/featured-data-categories').catch(() => [])
-  _featuredDataCategoriesCache.value = categories
-  return categories
-}, { getCachedData: () => _featuredDataCategoriesCache.value || undefined })
-
-const _featuredDatasetsCache = useState('_featuredDatasetsCache', () => null)
-const { data: featuredDatasets, error: featuredDatasetsError } = useAsyncData('featuredDatasets', async () => {
-  try {
-    const response = await $axios.get(`${config.public.portal_api}/get_featured_dataset`)
-    _featuredDatasetsCache.value = response.data?.datasets
-    return response.data?.datasets
-  } catch {
-    const response = await $axios.get(`${config.public.discover_api_host}/datasets/32`)
-    _featuredDatasetsCache.value = [response.data]
-    return [response.data]
-  }
-}, { getCachedData: () => _featuredDatasetsCache.value || undefined });
-
-const institutionId = computed(() =>
-  pathOr(undefined, ['featuredProject', 'fields', 'institutions', 0, 'sys', 'id'], homepageData?.value?.fields)
-);
-
-const { data: institutionData, error: institutionError } = useAsyncData(
-  'institution',
-  async () => {
-    if (!institutionId.value) return false;
-    return $fetch(`/api/contentful/entry/${institutionId.value}`).catch(() => false);
-  },
-  { watch: [institutionId] }
-);
-
 const fields = computed(() => {
   if (!homepageData.value) return null;
-  let fields = getHomepageFields(homepageData.value?.fields);
-  const datasetSectionTitle = homepageData.value?.fields.datasetSectionTitle;
-  if (featuredDatasets.value?.length > 0) {
-    const featuredDataset = {
-      title: featuredDatasets.value[0].name,
-      description: featuredDatasets.value[0].description,
-      banner: featuredDatasets.value[0].banner,
-      id: featuredDatasets.value[0].id,
-    }
-    fields = { ...fields, featuredDataset, datasetSectionTitle }
-  }
-  if (institutionData.value) {
-    fields.featuredProject.fields.banner = institutionData.value?.fields.logo.fields.file.url;
-  }
-  return fields;
+  return getHomepageFields(homepageData.value?.fields);
 })
 
 const heroHeading = computed(() => fields.value?.heroHeading)
