@@ -2,18 +2,18 @@
   <div class="page-data">
     <div class="home-hero">
       <div class="hero-inner">
-        <div class="hero-eyebrow">Open data from molecule to system</div>
+        <div class="hero-eyebrow">{{ heroEyebrow }}</div>
         <!-- eslint-disable vue/no-v-html -->
         <h1 class="hero-h1" v-if="heroHeading">{{ heroHeading }}</h1>
         <div class="hero-sub" v-html="parseMarkdown(heroCopy)" />
         <div class="hero-btns">
-          <nuxt-link to="/data?type=dataset" class="hero-btn-primary">
+          <nuxt-link :to="heroButtonLink || '/data?type=dataset'" class="hero-btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
               <ellipse cx="12" cy="6" rx="8" ry="3"/>
               <path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/>
               <path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/>
             </svg>
-            Access
+            {{ heroButtonLabel || 'Access' }}
           </nuxt-link>
           <nuxt-link to="/share-data" class="hero-btn-ghost">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
@@ -36,15 +36,15 @@
     <!-- Interactive Map Section -->
     <div class="map-section">
       <div class="map-header">
-        <div class="section-kicker">Interactive map</div>
-        <h2 class="section-h2">Navigate the body's wiring diagram</h2>
-        <p class="section-sub">Explore the body's neural pathways and anatomical connections, grounded in published science</p>
+        <div class="section-kicker">{{ mapEyebrow }}</div>
+        <h2 class="section-h2">{{ mapHeading }}</h2>
+        <p class="section-sub">{{ mapKicker }}</p>
       </div>
       <div class="map-card">
         <div class="homepage-navigator-video">
           <video
             class="navigator-video"
-            src="https://videos.ctfassets.net/6bya4tyw8399/3JK9DMGUPaGb9pbK6fPAzq/fba88d1f7ac369b72caf2218957787c0/sparc-hero-species-nocta-even.mp4"
+            :src="mapVideoUrl"
             autoplay
             loop
             muted
@@ -64,9 +64,9 @@
     <!-- Discover by topic section -->
     <div class="discover-section" ref="discoverSectionRef">
       <div class="discover-header">
-        <div class="section-kicker">Explore the catalog</div>
-        <h2 class="section-h2">Discover by topic</h2>
-        <p class="section-sub">Browse datasets and models by experimental approach, anatomical structure, species, or contributing consortia</p>
+        <div class="section-kicker">{{ exploreEyebrow }}</div>
+        <h2 class="section-h2">{{ exploreHeading }}</h2>
+        <p class="section-sub">{{ exploreKicker }}</p>
       </div>
       <div class="facet-tabs">
         <button
@@ -121,9 +121,9 @@
     <!-- Explore the data section -->
     <div class="tools-section">
       <div class="tools-header">
-        <div class="section-kicker">Platform Tools</div>
-        <h2 class="section-h2">From Data to Discovery</h2>
-        <p class="section-sub">Applications to visualize, simulate, and discover SPARC data, models, and knowledge</p>
+        <div class="section-kicker">{{ toolsEyebrow }}</div>
+        <h2 class="section-h2">{{ toolsHeading }}</h2>
+        <p class="section-sub">{{ toolsKicker }}</p>
       </div>
       <div class="tools-left">
         <div class="tools-nav">
@@ -134,7 +134,7 @@
             :class="{ active: activeToolTab === tab.id }"
             @click="selectToolTab(tab.id)"
           >
-            <span class="tool-tab-icon" v-html="tab.icon" aria-hidden="true"></span>
+            <img v-if="tab.iconUrl" class="tool-tab-icon" :src="tab.iconUrl" alt="" aria-hidden="true" />
             <span class="tool-tab-label">{{ tab.label }}</span>
           </button>
         </div>
@@ -176,53 +176,29 @@
     <!-- Find your path section -->
     <div class="path-section">
     <div class="path-header">
-      <div class="section-kicker">A living resource, not an archive</div>
-      <h2 class="section-h2">Join the exchange</h2>
-      <p class="section-sub"> SPARC is where you find data to build on, contribute your own, and connect with the people advancing PNS and systems physiology research</p>
+      <div class="section-kicker">{{ pathEyebrow }}</div>
+      <h2 class="section-h2">{{ pathHeading }}</h2>
+      <p class="section-sub">{{ pathKicker }}</p>
     </div>
     <div class="path-cards">
 
-      <div class="path-card">
+      <div v-for="card in pathCards" :key="card.id" class="path-card">
         <div class="path-card-kicker-group">
-          <div class="path-card-kicker">Researchers</div>
+          <div class="path-card-kicker">{{ card.kicker }}</div>
           <div class="path-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
-              <circle cx="12" cy="8" r="3.5"/>
-              <path d="M5 20c0-3.314 3.134-6 7-6s7 2.686 7 6"/>
-            </svg>
+            <img v-if="card.iconUrl" :src="card.iconUrl" alt="" class="path-card-icon-img" />
           </div>
         </div>
-        <h3 class="path-card-heading">Use data</h3>
-        <p class="path-card-desc">Programmatic access to datasets, models, metadata, and connectivity knowledge via APIs.</p>
-        <a href="https://docs.sparc.science/docs/sparc-apis-and-open-access-code" target="_blank" rel="noopener" class="path-card-btn">Explore Docs <svg viewBox="0 0 12 12" width="11" height="11" fill="none" style="margin-left:6px;flex-shrink:0"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      </div>
-
-      <div class="path-card">
-        <div class="path-card-kicker-group">
-          <div class="path-card-kicker">Contributors</div>
-          <div class="path-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
-              <path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5"/>
-            </svg>
-          </div>
-        </div>
-        <h3 class="path-card-heading">Share your data</h3>
-        <p class="path-card-desc">Submit datasets, protocols, and tools to the SPARC repository. Reach a global community of researchers bridging the body and brain and maximize the impact of your science.</p>
-        <nuxt-link to="/share-data" class="path-card-btn">Submit to SPARC <svg viewBox="0 0 12 12" width="11" height="11" fill="none" style="margin-left:6px;flex-shrink:0"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></nuxt-link>
-      </div>
-
-      <div class="path-card">
-        <div class="path-card-kicker-group">
-          <div class="path-card-kicker">Community</div>
-          <div class="path-card-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28">
-              <path d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6V7.5Z"/>
-            </svg>
-          </div>
-        </div>
-        <h3 class="path-card-heading">News</h3>
-        <p class="path-card-desc">Stay up-to-date with the latest from the community, including new datasets, tool launches, consortium updates, and events.</p>
-        <nuxt-link to="/news-and-events" class="path-card-btn">All News <svg viewBox="0 0 12 12" width="11" height="11" fill="none" style="margin-left:6px;flex-shrink:0"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></nuxt-link>
+        <h3 class="path-card-heading">{{ card.heading }}</h3>
+        <p class="path-card-desc">{{ card.desc }}</p>
+        <a v-if="card.external" :href="card.href" target="_blank" rel="noopener" class="path-card-btn">
+          {{ card.btnLabel }}
+          <svg viewBox="0 0 12 12" width="11" height="11" fill="none" style="margin-left:6px;flex-shrink:0"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <nuxt-link v-else :to="card.href" class="path-card-btn">
+          {{ card.btnLabel }}
+          <svg viewBox="0 0 12 12" width="11" height="11" fill="none" style="margin-left:6px;flex-shrink:0"><path d="M2 10L10 2M10 2H4M10 2v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </nuxt-link>
       </div>
 
     </div>
@@ -276,9 +252,44 @@ const fields = computed(() => {
   return getHomepageFields(homepageData.value?.fields);
 })
 
+const heroEyebrow = computed(() => fields.value?.heroEyebrow)
 const heroHeading = computed(() => fields.value?.heroHeading)
 const heroImage = computed(() => fields.value?.heroImage)
 const heroCopy = computed(() => fields.value?.heroCopy)
+const heroButtonLabel = computed(() => fields.value?.heroButtonLabel)
+const heroButtonLink = computed(() => fields.value?.heroButtonLink)
+
+const mapEyebrow = computed(() => fields.value?.mapEyebrow)
+const mapHeading = computed(() => fields.value?.mapHeading)
+const mapKicker = computed(() => fields.value?.mapKicker)
+const mapVideoUrl = computed(() => fields.value?.mapVideo?.fields?.file?.url)
+
+const exploreEyebrow = computed(() => fields.value?.exploreEyebrow)
+const exploreHeading = computed(() => fields.value?.exploreHeading)
+const exploreKicker = computed(() => fields.value?.exploreKicker)
+
+const toolsEyebrow = computed(() => fields.value?.toolsEyebrow)
+const toolsHeading = computed(() => fields.value?.toolsHeading)
+const toolsKicker = computed(() => fields.value?.toolsKicker)
+
+const pathEyebrow = computed(() => fields.value?.pathEyebrow)
+const pathHeading = computed(() => fields.value?.pathHeading)
+const pathKicker = computed(() => fields.value?.pathKicker)
+
+const isExternalLink = (href) => /^https?:\/\//.test(href || '')
+
+const pathCards = computed(() => {
+  return (fields.value?.paths || []).map(path => ({
+    id: path.sys.id,
+    kicker: path.fields?.eyebrow || '',
+    iconUrl: path.fields?.icon?.fields?.file?.url,
+    heading: path.fields?.title || '',
+    desc: path.fields?.description || '',
+    btnLabel: path.fields?.buttonText || '',
+    href: path.fields?.buttonLink || '',
+    external: isExternalLink(path.fields?.buttonLink),
+  }))
+})
 
 const router = useRouter()
 
@@ -385,64 +396,23 @@ function navigateToFacet(item) {
   }
 }
 
-const toolTabs = [
-    {
-    id: 'precision', label: 'NIH PRECISION Pain Atlas',
-    icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 11.5 Q3 9 5 10 T8 7 T11 5 T15 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/><path d="M1 13 Q4 11.5 6 12 T10 10 T15 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.5"/></svg>`,
-    video: 'https://videos.ctfassets.net/6bya4tyw8399/4hG99G3CdVfjzNUaK2Uiwt/c29b44c400dbe21121a73be751a39211/precision-explore-data-callouts.mp4',
-    kicker: 'Gene expression',
-    heading: 'Query gene expression across cell types',
-    desc: 'Search any gene to see expression profiles across DRG neuron subtypes — UMAP projections and violin plots sourced directly from SPARC datasets.',
-    href: '/apps/precision-dashboard',
-    external: false,
-    btnLabel: 'Open NIH PRECISION Pain Atlas',
-  },
-  {
-    id: 'nervosensus', label: 'NervoSensus',
-    icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="4" cy="11" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="9" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="8" r="1" stroke="currentColor" stroke-width="1.2"/><circle cx="10" cy="12" r="1" stroke="currentColor" stroke-width="1.2"/><circle cx="3" cy="5" r="1" stroke="currentColor" stroke-width="1.2"/></svg>`,
-    video: 'https://videos.ctfassets.net/6bya4tyw8399/4g2MwniDKFfBU6xLfs9mw0/f48d73e5582c6ba848e31f920e7792da/nervosensus-explore-data-callouts_1.mp4',
-    kicker: 'Cell explorer',
-    heading: 'Navigate cell types interactively',
-    desc: 'Click any neuron bubble to surface its proposed relationships, marker genes, gene expression distribution, and axon phenotype.',
-    href: 'https://devservosensus.netlify.app/',
-    external: false,
-    btnLabel: 'Open NervoSensus',
-  },
-  {
-    id: 'osparc', label: 'o²S²PARC',
-    icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/><rect x="6.5" y="2" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/><rect x="11" y="4" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/><rect x="6.5" y="9" width="3" height="3" rx="0.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 5.5H6.5M9.5 3.5H11M9.5 5.5H11M8 5V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-    video: 'https://videos.ctfassets.net/6bya4tyw8399/7s6GTmypEzkDhytZYniK9S/1e05fdc8c8b83e25e74165e7f0b7fb7b/osparc__978_x_504_px_.mp4',
-    kicker: 'Computational platform',
-    heading: 'Build and run computational workflows',
-    desc: 'Connect services and models into reproducible pipelines. o²S²PARC lets you run simulations, share notebooks, and collaborate on computational studies — no local setup required.',
-    href: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH',
-    external: true,
-    btnLabel: 'Open o²S²PARC',
-  },
-  {
-    id: 'sckan-nli', label: 'SCKAN NLI',
-    icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="13" cy="11" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M14.5 12.5l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-    video: 'https://videos.ctfassets.net/6bya4tyw8399/4Q60crr4xcaqfDdhcr9hcb/56ad456f5c0af7f3c9b9259cadeaac81/SCKAN_NLIv2__978_x_504_px_.mp4',
-    kicker: 'Natural language interface',
-    heading: 'Query SCKAN in plain English',
-    desc: 'Ask questions about neural connectivity in natural language. SCKAN NLI translates your query into structured SPARQL and returns grounded answers from the SCKAN knowledge base.',
-    href: '/tools-and-resources/Fvi4qS2bwKTXPIdoYzelB',
-    external: false,
-    btnLabel: 'Open SCKAN NLI',
-  },
-  {
-    id: 'sckanner', label: 'SCKANNER',
-    icon: `<svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>`,
-    video: 'https://videos.ctfassets.net/6bya4tyw8399/4DT325nAYvgQ5m36fQ3YE8/5d3d6bcef61e9b15a2521fcc8a6e2685/sckanner-explore-data-callouts_1.mp4',
-    kicker: 'Knowledge browser',
-    heading: 'Explore SCKAN connectivity knowledge',
-    desc: 'Browse the full SCKAN connectivity graph — filter by species, organ, and pathway type to surface the anatomical evidence behind every nerve connection.',
-    href: '/tools-and-resources/3Ad4kbyYnXsUtzRFzUguwg',
-    external: false,
-    btnLabel: 'Open SCKANNER',
-  },
-]
-const activeToolTab = ref('precision')
+const toolTabs = computed(() => {
+  return (fields.value?.tools || []).map(tool => ({
+    id: tool.sys.id,
+    label: tool.fields?.title || '',
+    iconUrl: tool.fields?.icon?.fields?.file?.url,
+    video: tool.fields?.video?.fields?.file?.url,
+    image: tool.fields?.placeholderImage?.fields?.file?.url,
+    kicker: tool.fields?.eyebrow || '',
+    heading: tool.fields?.header || '',
+    desc: tool.fields?.description || '',
+    href: tool.fields?.href || '',
+    external: tool.fields?.external || false,
+    btnLabel: tool.fields?.buttonLabel || '',
+  }))
+})
+const selectedToolTab = ref(null)
+const activeToolTab = computed(() => selectedToolTab.value || toolTabs.value[0]?.id || null)
 
 let toolTabCycleTimer = null
 const stopToolTabCycle = () => {
@@ -452,16 +422,50 @@ const stopToolTabCycle = () => {
 const startToolTabCycle = () => {
   clearInterval(toolTabCycleTimer)
   toolTabCycleTimer = setInterval(() => {
-    const index = toolTabs.findIndex(tab => tab.id === activeToolTab.value)
-    activeToolTab.value = toolTabs[(index + 1) % toolTabs.length].id
+    const tabs = toolTabs.value
+    if (!tabs.length) return
+    const index = tabs.findIndex(tab => tab.id === activeToolTab.value)
+    selectedToolTab.value = tabs[(index + 1) % tabs.length].id
   }, 10000)
 }
 const selectToolTab = (id) => {
-  activeToolTab.value = id
+  selectedToolTab.value = id
   startToolTabCycle()
 }
 onMounted(startToolTabCycle)
 onBeforeUnmount(() => clearInterval(toolTabCycleTimer))
+
+// Preview button labels come from Contentful and vary in length — rather than
+// wrapping or overflowing the fixed-width preview column, shrink the font
+// size just enough for each label to fit on one line.
+const MIN_PREVIEW_BTN_FONT_SIZE = 12
+const shrinkPreviewButtonText = async () => {
+  await nextTick()
+  const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+  document.querySelectorAll('.tools-section .preview-btn').forEach(btn => {
+    btn.style.fontSize = ''
+    const parentStyle = getComputedStyle(btn.parentElement)
+    const available = btn.parentElement.clientWidth - parseFloat(parentStyle.paddingLeft) - parseFloat(parentStyle.paddingRight)
+    let fontSize = rootFontSize
+    while (btn.scrollWidth > available && fontSize > MIN_PREVIEW_BTN_FONT_SIZE) {
+      fontSize -= 1
+      btn.style.fontSize = `${fontSize}px`
+    }
+  })
+}
+watch(toolTabs, shrinkPreviewButtonText)
+onMounted(shrinkPreviewButtonText)
+
+let previewBtnResizeTimer = null
+const handlePreviewBtnResize = () => {
+  clearTimeout(previewBtnResizeTimer)
+  previewBtnResizeTimer = setTimeout(shrinkPreviewButtonText, 150)
+}
+onMounted(() => window.addEventListener('resize', handlePreviewBtnResize))
+onBeforeUnmount(() => {
+  clearTimeout(previewBtnResizeTimer)
+  window.removeEventListener('resize', handlePreviewBtnResize)
+})
 
 
 if (homepageError.value) {
@@ -897,7 +901,7 @@ onBeforeMount(() => {
   width: 16px;
   height: 16px;
   flex-shrink: 0;
-  svg { width: 16px; height: 16px; }
+  object-fit: contain;
 }
 
 .tool-tab-label { line-height: 1; }
@@ -964,12 +968,6 @@ onBeforeMount(() => {
   .section-kicker { margin-bottom: 0.3rem; }
 }
 
-/* Wider text column so the longer "NIH PRECISION Pain Atlas" button has breathing room */
-.tools-preview--precision .preview-text {
-  width: 280px;
-  @media (max-width: 768px) { width: 100%; }
-}
-
 .preview-heading {
   font-size: 20px;
   font-weight: 500;
@@ -988,6 +986,7 @@ onBeforeMount(() => {
 .preview-btn {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   width: fit-content;
   white-space: nowrap;
   margin-top: auto;
@@ -1034,6 +1033,12 @@ onBeforeMount(() => {
 
 .path-card-icon {
   color: $purple;
+}
+
+.path-card-icon-img {
+  display: block;
+  width: 28px;
+  height: 28px;
 }
 
 .path-card-kicker-group {

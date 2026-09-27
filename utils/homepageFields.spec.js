@@ -1,9 +1,27 @@
 import getHomepageFields from './homepageFields'
 
 const defaultData = {
+  heroEyebrow: '',
   heroHeading: '',
   heroCopy: '',
-  heroImage: {}
+  heroButtonLabel: '',
+  heroButtonLink: '',
+  heroImage: {},
+  mapEyebrow: '',
+  mapHeading: '',
+  mapKicker: '',
+  mapVideo: {},
+  exploreEyebrow: '',
+  exploreHeading: '',
+  exploreKicker: '',
+  toolsEyebrow: '',
+  toolsHeading: '',
+  toolsKicker: '',
+  tools: [],
+  pathEyebrow: '',
+  pathHeading: '',
+  pathKicker: '',
+  paths: []
 }
 
 describe('homepageFields', () => {
