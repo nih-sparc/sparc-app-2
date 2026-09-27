@@ -7,7 +7,7 @@ export default defineCachedEventHandler(async () => {
     accessToken: config.public.CTF_CDA_ACCESS_TOKEN,
     host: config.public.CTF_API_HOST || 'preview.contentful.com'
   })
-  return await client.getEntry(config.public.ctf_home_page_id)
+  return await client.getEntry(config.public.ctf_home_page_id, { include: 2 })
 }, {
   maxAge: 60 * 60,
   name: 'contentful-homepage',
