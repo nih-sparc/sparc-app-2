@@ -32,9 +32,14 @@ export function usePublicArchive() {
   const error = ref('')
   const starting = ref(false)
   const signedIn = ref(false)
+  // A signed-in archive opened from a link while signed out.
+  const needsSignIn = ref(false)
   let timer = null
   // Download once when an archive started here becomes ready.
   let downloadWhenReady = false
+  // Say so when an archive someone followed a link to is gone, rather than
+  // forgetting it quietly as a remembered one is.
+  let linked = false
 
   // A signed-in archive is reached on api2 with the token, an anonymous one
   // on the public API without it.
@@ -58,6 +63,8 @@ export function usePublicArchive() {
   async function start({ datasetId, version, paths, rootPath, archiveName }) {
     stop()
     error.value = ''
+    linked = false
+    needsSignIn.value = false
     starting.value = true
     try {
       signedIn.value = Boolean(await useGetToken())
@@ -82,14 +89,19 @@ export function usePublicArchive() {
     }
   }
 
-  // Follows an archive this browser started earlier: { id, signedIn }.
-  async function resume(entry) {
+  // Follows an archive started earlier: { id, signedIn }. linked: it came
+  // from a link (the "ready" email), not this browser's memory.
+  async function resume(entry, options = {}) {
     stop()
     error.value = ''
     signedIn.value = Boolean(entry.signedIn)
+    linked = Boolean(options.linked)
     downloadWhenReady = false
+    needsSignIn.value = false
     if (signedIn.value && !(await useGetToken())) {
       archive.value = null
+      needsSignIn.value = linked
+      if (linked) error.value = 'Sign in to download this archive.'
       return
     }
     archive.value = { id: entry.id, status: 'QUEUED', archiveName: entry.archiveName }
@@ -115,6 +127,7 @@ export function usePublicArchive() {
         // Expired, deleted, or another browser's session.
         forgetArchive(current.id)
         archive.value = null
+        if (linked) error.value = 'This download has expired or was removed. Download the files again.'
         return
       }
       error.value = sentence(e.message)
@@ -158,7 +171,15 @@ export function usePublicArchive() {
     error.value = ''
   }
 
+  // Forgets the archive here, without deleting it.
+  function reset() {
+    stop()
+    archive.value = null
+    error.value = ''
+    needsSignIn.value = false
+  }
+
   onBeforeUnmount(stop)
 
-  return { archive, error, starting, signedIn, start, resume, download, remove }
+  return { archive, error, starting, signedIn, needsSignIn, start, resume, download, remove, reset }
 }

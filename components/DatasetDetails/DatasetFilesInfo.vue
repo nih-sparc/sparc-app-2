@@ -1,5 +1,26 @@
 <template>
   <div>
+    <!-- The archive the "ready" email links to (?archive=), whatever the
+         dataset's size or embargo: the visitor came for it. -->
+    <div v-if="linkedArchiveId" class="linked-archive mb-24 p-16">
+      <div class="heading3 mb-8">Your download</div>
+      <template v-if="linkedNeedsSignIn">
+        <p class="mb-8">Sign in to download this archive.</p>
+        <el-button @click="showLoginDialog = true">Sign in</el-button>
+      </template>
+      <public-archive-status
+        v-else
+        prominent
+        :archive="linkedArchive"
+        :error="linkedError"
+        :signed-in="linkedSignedIn"
+        @download="downloadLinkedArchive"
+        @remove="removeLinkedArchive"
+      />
+      <div class="mt-16">
+        <a href="#" @click.prevent="leaveLinkedArchive">Close</a>
+      </div>
+    </div>
     <div class="heading2 mb-8">Download Dataset</div>
     <div v-if="embargoed && !userToken">
       This dataset is currently <a href="https://docs.sparc.science/docs/embargoed-data" target="_blank">embargoed</a>.
@@ -274,7 +295,8 @@ const mainStore = useMainStore()
 const config = useRuntimeConfig()
 const { $axios } = useNuxtApp()
 const route = useRoute()
-const { datasetInfo } = storeToRefs(mainStore)
+const router = useRouter()
+const { datasetInfo, userToken } = storeToRefs(mainStore)
 
 // The zip of the whole version, built by download-service. As the visitor
 // when signed in, so embargoed datasets they may access download too.
@@ -300,10 +322,48 @@ function downloadFullDataset() {
   startArchive({ datasetId: id, version, archiveName: `sparc-portal-dataset-${id}-version-${version}` })
 }
 
-// Show the last zip of the whole version this browser asked for.
+// The archive a "ready" email links to: the signed-in visitor's own (only
+// they are emailed), shown on its own at the top of the tab.
+const linkedArchiveId = computed(() => route.query.archive || '')
+const {
+  archive: linkedArchive,
+  error: linkedError,
+  signedIn: linkedSignedIn,
+  needsSignIn: linkedNeedsSignIn,
+  resume: resumeLinkedArchive,
+  download: downloadLinkedArchive,
+  remove: removeLinked,
+  reset: resetLinkedArchive,
+} = usePublicArchive()
+
+function showLinkedArchive() {
+  if (linkedArchiveId.value) resumeLinkedArchive({ id: linkedArchiveId.value, signedIn: true }, { linked: true })
+}
+
+// Done with the emailed archive: forget it here and drop ?archive=, so it
+// doesn't come back.
+function leaveLinkedArchive() {
+  resetLinkedArchive()
+  const { archive: _linked, ...query } = route.query
+  router.replace({ query })
+}
+
+async function removeLinkedArchive() {
+  await removeLinked()
+  if (!linkedError.value) leaveLinkedArchive()
+}
+
+// Signing in (or the sign-in finishing after the page loaded) shows it.
+watch(userToken, (token) => {
+  if (token && linkedNeedsSignIn.value) showLinkedArchive()
+})
+
+// Show the emailed archive, and the last zip of the whole version this
+// browser asked for (unless it's the emailed one).
 onMounted(() => {
+  showLinkedArchive()
   const { id, version } = datasetInfo.value
-  const remembered = rememberedArchives({ datasetId: id, version }).filter((a) => a.whole)
+  const remembered = rememberedArchives({ datasetId: id, version }).filter((a) => a.whole && a.id !== linkedArchiveId.value)
   if (remembered.length) resumeArchive(remembered[remembered.length - 1])
 })
 const doi = datasetInfo.value.doi
@@ -609,6 +669,11 @@ hr {
 
 .sign-in-link:hover {
   cursor: pointer;
+}
+
+.linked-archive {
+  border: 1px solid $purple;
+  border-radius: 4px;
 }
 
 .citation-details {

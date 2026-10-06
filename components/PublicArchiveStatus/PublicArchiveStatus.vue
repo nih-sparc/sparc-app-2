@@ -9,6 +9,9 @@ const props = defineProps({
   error: { type: String, default: '' },
   starting: { type: Boolean, default: false },
   signedIn: { type: Boolean, default: false },
+  // The archive is the point of the panel (the "ready" email's link):
+  // Download is a button.
+  prominent: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['download', 'remove'])
@@ -31,7 +34,7 @@ const expires = computed(() => {
 </script>
 
 <template>
-  <div v-if="(status && status !== 'CANCELLED') || error" class="public-archive-status">
+  <div v-if="(status && status !== 'CANCELLED') || error" class="public-archive-status" :class="{ prominent }">
     <template v-if="status === 'STARTING'">
       <div class="label4">Starting your download…</div>
     </template>
@@ -44,8 +47,8 @@ const expires = computed(() => {
       <el-progress :percentage="percent" :show-text="false" :stroke-width="6" color="#8300BF" />
       <div class="mt-8">
         <template v-if="signedIn">
-          If you close this window, we'll email you when it's ready. You can
-          also come back to this page, in this browser, until {{ expires }}.
+          You can close this window: we'll email you a link back to this page
+          when it's ready. It's available until {{ expires }}.
         </template>
         <template v-else>
           You can close this window and come back to this page, in this
@@ -61,7 +64,14 @@ const expires = computed(() => {
         {{ archive.skippedCount }} {{ archive.skippedCount === 1 ? "file couldn't" : "files couldn't" }}
         be included; they're listed in FILES_NOT_INCLUDED.txt in the archive.
       </div>
-      <div class="mt-8">
+      <template v-if="prominent">
+        <el-button class="mt-8" @click="emit('download')">Download</el-button>
+        <div class="mt-8">
+          Available until {{ expires }} ·
+          <a href="#" @click.prevent="emit('remove')">Remove</a>
+        </div>
+      </template>
+      <div v-else class="mt-8">
         <a href="#" @click.prevent="emit('download')">Download</a>
         · available until {{ expires }} ·
         <a href="#" @click.prevent="emit('remove')">Remove</a>
@@ -96,6 +106,12 @@ const expires = computed(() => {
 
   .error {
     color: $danger;
+  }
+
+  // In a panel of its own.
+  &.prominent {
+    border: none;
+    padding: 0;
   }
 }
 </style>

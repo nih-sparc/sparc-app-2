@@ -60,9 +60,10 @@ const user = async() => {
 
 const login = async (providerName) => {
   const signInCookie = useCookie('sign-in-redirect-url', { default: () => null })
-  await Auth.federatedSignIn({ customProvider: providerName }).then(() => {
-    signInCookie.value = useRoute().fullPath
-  }).catch((err) => {
+  // The page to come back to, query and all (an emailed archive's ?archive=),
+  // saved before the browser leaves for the sign-in page
+  signInCookie.value = useRoute().fullPath
+  await Auth.federatedSignIn({ customProvider: providerName }).catch((err) => {
     signInCookie.value = null
     console.log("Error signing in: ", err)
   })

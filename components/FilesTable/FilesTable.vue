@@ -461,8 +461,9 @@ export default {
   },
 
   mounted() {
-    // A selection's zip this browser asked for and may come back to.
-    const remembered = rememberedArchives({ datasetId: this.datasetInfo.id, version: this.datasetVersion }).filter(a => !a.whole)
+    // A selection's zip this browser asked for and may come back to; an emailed one (?archive=) shows above the tab.
+    const remembered = rememberedArchives({ datasetId: this.datasetInfo.id, version: this.datasetVersion })
+      .filter(a => !a.whole && a.id !== this.$route.query.archive)
     if (remembered.length) this.resumeArchive(remembered[remembered.length - 1])
   },
 
