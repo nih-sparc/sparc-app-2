@@ -111,7 +111,8 @@ export default {
     }
   },
   methods: {
-    // oSPARC copies the file into its platform to run the viewer: a download
+    // oSPARC copies the file into its platform to run the viewer, maybe after
+    // its own sign-in: a handoff link is a download that lasts 3 hours
     openFile() {
       const fileSize = this.selectedFile.size
       const datasetInfo = useMainStore().datasetInfo
@@ -121,7 +122,8 @@ export default {
       usePublicFileLink({
         datasetId: datasetInfo.id,
         version: datasetInfo.version,
-        path: this.selectedFile.path
+        path: this.selectedFile.path,
+        purpose: 'handoff'
       })
         .then(({ url }) => {
           const redirectionUrl = new URL(this.selectedViewer['view_url'])
