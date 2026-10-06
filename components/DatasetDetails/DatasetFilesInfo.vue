@@ -71,25 +71,40 @@
               metadata directly to your computer, free of charge. <span class="label4">Note:</span> Files will be compressed prior to downloading the archive.
             </div>
             <div class="mt-24">If you only need certain files or folders, select and download them from the <span class="label4">Dataset Files</span> listing.</div>
-            <a :href="downloadUrl">
-              <el-button @click="sendGtmEvent" class="my-16">Download Full Dataset</el-button>
-            </a>
+            <el-button :disabled="archiveBusy" @click="sendGtmEvent(); downloadFullDataset()" class="my-16">Download Full Dataset</el-button>
+            <public-archive-status
+              class="mb-16"
+              :archive="archive"
+              :error="archiveError"
+              :starting="starting"
+              :signed-in="signedIn"
+              @download="downloadArchive"
+              @remove="removeArchive"
+            />
           </div>
           <div v-else>
             <div><span class="label4">Option 1 - Direct download: </span>Direct downloads are only available free of
-              charge for datasets that are 5GB or smaller. Datasets bigger than 5GB will need to be downloaded via AWS.
+              charge for datasets that are {{ maxDownloadSize }} or smaller. Datasets bigger than {{ maxDownloadSize }} will need to be
+              downloaded with the Pennsieve agent or via AWS.
             </div>
             <div class="mt-24">If you only need certain files or folders, select and download them from the <span class="label4">Dataset Files</span> listing.</div>
             <sparc-tooltip placement="left-center">
               <template #data>
                 <div>
-                  Dataset size is over 5GB. To download, use <b>Option 2 - AWS Open Data</b>
+                  Dataset size is over {{ maxDownloadSize }}. To download, use the Pennsieve agent below or <b>Option 2 - AWS</b>
                 </div>
               </template>
               <template #item>
                 <el-button disabled class="my-16">Download Full Dataset</el-button>
               </template>
             </sparc-tooltip>
+            <div class="mb-8"><span class="label4">Download with the Pennsieve agent:</span></div>
+            <agent-download-command
+              class="mb-16"
+              :dataset-id="datasetId"
+              :version="versionId"
+              :folder-name="`sparc-portal-dataset-${datasetId}-version-${versionId}`"
+            />
           </div>
           <a v-show="sdsViewer" :href="sdsViewer" target="_blank">
             <el-button class="secondary" @click="onSdsButtonClick">
@@ -186,7 +201,7 @@
           </div>
           <div>
             * See our <a href="https://docs.sparc.science/docs/accessing-public-datasets" target="blank">Help page</a> for information on
-            AWS S3 and links to tutorials. AWS required for 5GB and over.
+            AWS S3 and links to tutorials. AWS or the Pennsieve agent required over {{ maxDownloadSize }}.
           </div>
         </el-col>
       </el-row>
@@ -252,12 +267,45 @@
 import { useMainStore } from '../../store'
 import { storeToRefs } from 'pinia'
 import ErrorMessages from '@/mixins/error-messages'
+import { usePublicArchive } from '@/composables/usePublicArchive'
+import { isActive, rememberedArchives } from '@/utils/publicDownloads'
 
 const mainStore = useMainStore()
 const config = useRuntimeConfig()
 const { $axios } = useNuxtApp()
 const route = useRoute()
 const { datasetInfo } = storeToRefs(mainStore)
+
+// The zip of the whole version, built by download-service. As the visitor
+// when signed in, so embargoed datasets they may access download too.
+const {
+  archive,
+  error: archiveError,
+  starting,
+  signedIn,
+  start: startArchive,
+  resume: resumeArchive,
+  download: downloadArchive,
+  remove: removeArchive,
+} = usePublicArchive()
+
+const archiveBusy = computed(() => starting.value || isActive(archive.value))
+
+/**
+ * Starts a zip of the version; it downloads when it's ready
+ */
+function downloadFullDataset() {
+  if (archiveBusy.value) return
+  const { id, version } = datasetInfo.value
+  startArchive({ datasetId: id, version, archiveName: `sparc-portal-dataset-${id}-version-${version}` })
+}
+
+// Show the last zip of the whole version this browser asked for.
+onMounted(() => {
+  const { id, version } = datasetInfo.value
+  const remembered = rememberedArchives({ datasetId: id, version }).filter((a) => a.whole)
+  if (remembered.length) resumeArchive(remembered[remembered.length - 1])
+})
 const doi = datasetInfo.value.doi
 const osparcViewers = ref({})
 const hasCitationError = ref(false)
@@ -305,6 +353,8 @@ import { propOr } from 'ramda'
 import LoginModal from '@/components/LoginModal/LoginModal.vue'
 import DataUseAgreementPopup from '@/components/DataUseAgreementPopup/DataUseAgreementPopup.vue'
 import FilesTable from '@/components/FilesTable/FilesTable.vue'
+import AgentDownloadCommand from '@/components/AgentDownloadCommand/AgentDownloadCommand.vue'
+import PublicArchiveStatus from '@/components/PublicArchiveStatus/PublicArchiveStatus.vue'
 import FormatMetric from '@/mixins/bf-storage-metrics'
 import DateUtils from '@/mixins/format-date'
 import { EMBARGO_ACCESS } from '@/utils/constants'
@@ -314,9 +364,11 @@ export default {
   name: 'DatasetFilesInfo',
 
   components: {
+    AgentDownloadCommand,
     DataUseAgreementPopup,
     FilesTable,
-    LoginModal
+    LoginModal,
+    PublicArchiveStatus
   },
 
   mixins: [DateUtils, FormatMetric],
@@ -348,12 +400,15 @@ export default {
       return embargoReleaseDate != '' ? embargoReleaseDate : `1 year after ${embargoPublishDate}`
     },
     /**
-     * Checks whether the dataset download size is larger or smaller than 5GB
+     * Checks whether the dataset is larger than download-service zips
      * @returns {Boolean}
      */
     isDatasetSizeLarge: function() {
       const datasetSize = propOr(0, 'size', this.datasetInfo)
       return datasetSize > this.$config.public.max_download_size
+    },
+    maxDownloadSize: function() {
+      return this.formatMetric(this.$config.public.max_download_size)
     },
     /**
      * Checks whether the dataset is opendata on AWS
@@ -399,17 +454,6 @@ export default {
     },
     isLatestVersion() {
       return this.versionId == this.datasetInfo.latestVersion
-    },
-    /**
-     * Computes the API url for downloading a dataset
-     * @returns {String}
-     */
-    downloadUrl: function() {
-      var url = `${this.$config.public.discover_api_host}/datasets/${this.datasetId}/versions/${this.versionId}/download?downloadOrigin=SPARC`
-      if (this.userToken) {
-        url += `&api_key=${this.userToken}`
-      }
-      return url
     },
     sdsViewer: function() {
       if (this.datasetInfo.doi) {

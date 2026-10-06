@@ -1,8 +1,5 @@
 <template>
   <div class="version-history-container">
-    <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
-      <input v-model="zipData" type="hidden" name="data" />
-    </form>
     <large-modal
       :visible="dialogVisible"
       @close-download-dialog="dialogVisible = false"
@@ -137,6 +134,7 @@ import { propOr } from 'ramda'
 import RequestDownloadFile from '@/mixins/request-download-file'
 import FormatDate from '@/mixins/format-date'
 import marked from '@/mixins/marked/index'
+import { failMessage } from '@/utils/notification-messages'
 
 export default {
   name: 'VersionHistory',
@@ -155,7 +153,6 @@ export default {
       dialogVisible: false,
       changeLogFileInfo: {},
       changelogFiles: [],
-      zipData: '',
     }
   },
   async created() {
@@ -213,13 +210,6 @@ export default {
       }
       return ''
     },
-    /**
-     * Compute URL for zipit service
-     * @returns {String}
-     */
-    zipitUrl: function() {
-      return this.$config.public.zipit_api_host
-    },
     isCollection: function () {
       return propOr('', 'datasetType', this.datasetInfo) == 'collection'
     }
@@ -240,30 +230,17 @@ export default {
     viewChangeLogFile(versionInfo) {
       // Note that requestFileContent is a mixin
       const changelogFile = this.getChangelogFile(versionInfo.version)
-      this.requestFileContent(changelogFile).then(content => {
+      this.requestFileContent({ ...changelogFile, version: versionInfo.version }).then(content => {
         this.markdown = content
         this.dialogVisible = true
         this.changeLogFileInfo = versionInfo // Set the version metadata for the currently stored markdown
+      }).catch(() => {
+        failMessage("Couldn't open the changelog. Try again.")
       })
     },
+    // Note that requestDownloadFile is a mixin
     executeDownload(version) {
-      const downloadInfo = this.getChangelogFile(version)
-      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
-      let params = downloadInfo.uri.replace('s3://', '')
-      let firstIndex = params.indexOf('/') + 1
-      params = params.substr(firstIndex)
-      const matches = params.match(datasetVersionRegexp)
-
-      const payload = {
-        paths: [matches.groups.filePath],
-        datasetId: matches.groups.datasetId,
-        version: version,
-      }
-
-      this.zipData = JSON.stringify(payload, undefined)
-      this.$nextTick(() => {
-        this.$refs.zipForm.submit() // eslint-disable-line no-undef
-      })
+      this.requestDownloadFile({ ...this.getChangelogFile(version), version })
     },
   }
 }
