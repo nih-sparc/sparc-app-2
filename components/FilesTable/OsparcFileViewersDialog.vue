@@ -111,7 +111,7 @@ export default {
     }
   },
   methods: {
-    // oSPARC opens the file from a download-service view link
+    // oSPARC copies the file into its platform to run the viewer: a download
     openFile() {
       const fileSize = this.selectedFile.size
       const datasetInfo = useMainStore().datasetInfo
@@ -121,8 +121,7 @@ export default {
       usePublicFileLink({
         datasetId: datasetInfo.id,
         version: datasetInfo.version,
-        path: this.selectedFile.path,
-        purpose: 'view'
+        path: this.selectedFile.path
       })
         .then(({ url }) => {
           const redirectionUrl = new URL(this.selectedViewer['view_url'])
