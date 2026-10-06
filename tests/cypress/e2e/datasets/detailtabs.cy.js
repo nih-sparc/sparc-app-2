@@ -343,7 +343,8 @@ datasetIds.forEach((datasetId) => {
               expect($command.text(), 'Pennsieve agent command should download the dataset').to.contain(`pennsieve download public ${datasetId}`)
             })
           } else {
-            cy.get('.left-column .el-button').contains('Download Full Dataset').as('downloadDataset')
+            // The button itself: .contains on a found element would yield its inner <span>
+            cy.contains('.left-column .el-button', 'Download Full Dataset').as('downloadDataset')
             cy.get('@downloadDataset').should(($button) => {
               expect($button, 'Download button should be enabled when size is less than 10GB').to.be.enabled
             })
