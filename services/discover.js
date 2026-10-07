@@ -1,3 +1,5 @@
+import { usePublicFileLink } from '@/composables/usePublicFileLink'
+
 const browse = async (id, version, path = undefined) => {
   const { $portalApiClient } = useNuxtApp()
 
@@ -58,18 +60,10 @@ const getSegmentationInfo = async (id, path, s3Bucket) => {
   return $portalApiClient.get('/segmentation_info', config)
 }
 
-const downloadLink = async (file_path, s3Bucket) => {
-  const { $portalApiClient } = useNuxtApp()
-
-  const config = {
-    params: {
-      key: file_path
-    }
-  }
-  if (s3Bucket) {
-    config.params.s3BucketName = s3Bucket
-  }
-  return await $portalApiClient.get('/download', config)
+// A download-service view link to a file of a published version, for a viewer to read it
+const viewLink = async (id, version, path) => {
+  const { url } = await usePublicFileLink({ datasetId: id, version, path, purpose: 'view' })
+  return url
 }
 
 const getDiscoverPath = (source_identifier) => {
@@ -86,7 +80,7 @@ const getDiscoverPath = (source_identifier) => {
 
 export default {
   browse,
-  downloadLink,
+  viewLink,
   fetch,
   fetchEmbeddedThumbnail,
   getDiscoverPath,

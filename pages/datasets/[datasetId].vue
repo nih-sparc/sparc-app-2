@@ -123,7 +123,7 @@ import VersionHistory from '@/components/VersionHistory/VersionHistory.vue'
 import error404 from '@/components/Error/404.vue'
 import error400 from '@/components/Error/400.vue'
 import { getLicenseLink, getLicenseAbbr } from '@/static/js/license-util'
-import { extractS3BucketName } from '@/utils/common'
+import { awsAccess } from '@/utils/agentDownload'
 
 const getDatasetDetails = async (config, datasetId, version, $axios, $pennsieveApiClient) => {
   const url = `${config.public.portal_api}/sim/dataset/${datasetId}`
@@ -185,43 +185,37 @@ const getDownloadsSummary = async (config, axios) => {
   }
 }
 
-// SPARC's bulk dataset zip download (used as the primary `distribution` entry) is blocked by
-// Pennsieve for large datasets ("Dataset is too large to download directly"), which prevents FAIR
-// assessors (e.g. F-UJI) from ever verifying a file format for those datasets (FsF-R1.3-02D). Every
-// SDS dataset publishes a dataset_description.xlsx (the same file already treated as the point of
-// truth for contributors above) at a predictable path, so sign a direct, individually-fetchable
-// download link for it and expose it as a second, always-small `distribution` entry with its real
-// encodingFormat declared explicitly (S3 objects here are otherwise served as generic
-// application/octet-stream, which FAIR assessors can't classify). If the dataset has no such file,
-// or the request fails, this just resolves to undefined and no entry is added.
-const getOpenDataFileDistribution = async (config, datasetId, s3Bucket, axios) => {
-  if (!s3Bucket) return undefined
-  const key = `${datasetId}/files/dataset_description.xlsx`
+// Datasets are downloaded as zips that download-service builds per request, so there's no fixed
+// URL for the whole dataset to give FAIR assessors (e.g. F-UJI) as a `distribution`. Every SDS
+// dataset publishes a dataset_description.xlsx (the same file already treated as the point of truth
+// for contributors above) at a predictable path, so it's exposed as a small, individually-fetchable
+// `distribution` entry with its real encodingFormat declared explicitly (S3 objects here are
+// otherwise served as generic application/octet-stream, which FAIR assessors can't classify) and its
+// size, which FsF-R1-01M wants alongside the type.
+//
+// The URL is the object's own, in AWS Open Data buckets, which anyone can read without signing: it
+// doesn't expire, making it costs no request, and only an actual fetch is counted (from the bucket's
+// access logs, robots apart). A signed link made on every render would count each page view, and
+// crawlers' too. Requester-pays buckets have no anonymous URL, so those datasets get no entry. If the
+// dataset has no such file, or the request fails, this just resolves to undefined.
+const getOpenDataFileDistribution = async (config, datasetId, version, axios) => {
+  if (!datasetId || !version) return undefined
   const contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   try {
-    const { data: signedUrl } = await axios.get(`${config.public.portal_api}/download`, {
-      params: { key, s3BucketName: s3Bucket, contentType }
-    })
-    if (!signedUrl) return undefined
-    // FsF-R1-01M also wants file size alongside type ("manner and form" of data delivery). The
-    // signed URL is only valid for GET (a HEAD request fails signature validation), so request a
-    // single byte via Range and read the real size back from Content-Range instead of downloading
-    // the whole file. Best-effort: omitted if the request fails.
-    let contentSize
-    try {
-      const rangeResponse = await axios.get(signedUrl, { headers: { Range: 'bytes=0-0' } })
-      const contentRange = rangeResponse.headers?.['content-range']
-      const totalSize = contentRange?.split('/')?.[1]
-      contentSize = totalSize ? `${totalSize} bytes` : undefined
-    } catch (rangeError) {
-      contentSize = undefined
-    }
+    const { data: file } = await axios.get(
+      `${config.public.discover_api_host}/datasets/${datasetId}/versions/${version}/files`,
+      { params: { path: 'files/dataset_description.xlsx' } }
+    )
+    const match = /^s3:\/\/([^/]+)\/(.+)$/.exec(file?.uri || '')
+    if (!match || awsAccess(file.uri) !== 'open-data') return undefined
+    const [, bucket, key] = match
+    const objectVersion = file.s3Version ? `?versionId=${encodeURIComponent(file.s3Version)}` : ''
     return {
       '@type': 'DataDownload',
       name: 'dataset_description.xlsx',
-      contentUrl: signedUrl,
+      contentUrl: `https://${bucket}.s3.amazonaws.com/${key.split('/').map(encodeURIComponent).join('/')}${objectVersion}`,
       encodingFormat: contentType,
-      contentSize
+      contentSize: file.size ? `${file.size} bytes` : undefined
     }
   } catch (error) {
     return undefined
@@ -330,7 +324,7 @@ export default {
       const openDataFileDistribution = await getOpenDataFileDistribution(
         config,
         propOr(datasetId, 'id', datasetDetails),
-        extractS3BucketName(propOr('', 'uri', datasetDetails)),
+        propOr(undefined, 'version', datasetDetails),
         $axios
       )
       const algoliaDatasetVersion = algoliaDatasetMetadata?.pennsieve?.version?.identifier
@@ -419,14 +413,7 @@ export default {
         // Distribution info (name/contentUrl/encodingFormat/contentSize) so FAIR assessors can resolve
         // FsF-F3-01M (which requires name + type + size together), FsF-R1-01M, FsF-R1.3-01M, and
         // FsF-R1.3-02D's dataset-distribution checks.
-        const fullPackageDistribution = info.size ? {
-          '@type': 'DataDownload',
-          name: `${info.name} (version ${info.version})`,
-          contentUrl: `${config.public.discover_api_host}/datasets/${info.id}/versions/${info.version}/download?downloadOrigin=SPARC`,
-          encodingFormat: 'application/zip',
-          contentSize: `${info.size} bytes`
-        } : undefined
-        const distribution = [fullPackageDistribution, openDataFileDistribution].filter(Boolean)
+        const distribution = [openDataFileDistribution].filter(Boolean)
 
         return {
           script: [{

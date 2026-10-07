@@ -165,7 +165,11 @@ export default defineNuxtConfig({
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
       PENNSIEVE_DISCOVER_API_HOST_V2: process.env.PENNSIEVE_DISCOVER_API_HOST_V2 || 'https://api2.pennsieve.io',
-      zipit_api_host: process.env.ZIPIT_API_HOST || 'https://api.pennsieve.io/zipit/discover',
+      api2_host: process.env.PENNSIEVE_API2_HOST || 'https://api2.pennsieve.io',
+      // The anonymous public downloads API (https://downloads.pennsieve.io):
+      // file links, zips and selections without signing in. Empty means
+      // downloads.<domain> beside api2.<domain>.
+      download_public_host: process.env.PENNSIEVE_DOWNLOAD_PUBLIC_HOST || '',
       CTF_SPACE_ID: process.env.CTF_SPACE_ID,
       CTF_CDA_ACCESS_TOKEN: process.env.CTF_CDA_ACCESS_TOKEN,
       CTF_API_HOST: process.env.CTF_API_HOST || 'preview.contentful.com',
@@ -222,7 +226,8 @@ export default defineNuxtConfig({
       METACELL_SDS_VIEWER_URL: process.env.METACELL_SDS_VIEWER_URL || 'https://metacell.github.io/sds-viewer',
       ORCID_API_URL: process.env.ORCID_API_URL || 'https://pub.orcid.org/v2.1',
       crosscite_api_host: process.env.CROSSCITE_API_HOST || 'https://citation.doi.org',
-      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '5000000000'),
+      // download-service builds zips of up to 10 GB; above, the agent.
+      max_download_size: parseInt(process.env.MAX_DOWNLOAD_SIZE || '10000000000'),
       osparc_host: process.env.OSPARC_HOST || 'https://osparc.io',
       MBF_SPARC_API: process.env.MBF_SPARC_API || 'https://mbfsparcapi.com',
       ROOT_URL: process.env.ROOT_URL || 'http://localhost:3000',

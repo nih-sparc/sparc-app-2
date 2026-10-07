@@ -5,9 +5,6 @@
       <breadcrumb :breadcrumb="breadcrumb" :title="fileName" />
       <div class="container">
         <h1 hidden>File viewer for {{ file.path }}</h1>
-        <form ref="zipForm" method="POST" :action="zipitUrl">
-          <input v-model="zipData" type="hidden" name="data" />
-        </form>
         <span class="help-link" v-if="hasViewer && (activeHelperId in helpers)">
           <a :href="`https://docs.sparc.science/docs/${helpers[activeHelperId].link}`" target="_blank">
             Find out more about the {{ helpers[activeHelperId].name }}
@@ -65,7 +62,9 @@ import FileDetails from '@/mixins/file-details'
 import Gallery from '@/components/Gallery/Gallery.vue'
 import error400 from '@/components/Error/400.vue'
 
-import { extractS3BucketName } from '@/utils/common'
+import { downloadPublicFile, usePublicFileLink } from '@/composables/usePublicFileLink'
+import { failMessage } from '@/utils/notification-messages'
+import { datasetIdOf, filePathOf } from '@/utils/publicDownloads'
 
 import { isEmpty, pathOr, propOr } from 'ramda'
 
@@ -100,7 +99,6 @@ export default {
     }).then(({ data }) => {
       datasetInfo = data
     })
-    const s3Bucket = datasetInfo ? extractS3BucketName(datasetInfo.uri) : undefined
     const filePath = route.query.path
     const file = await FetchPennsieveFile.methods.fetchPennsieveFile(
       filePath,
@@ -151,21 +149,18 @@ export default {
     })
     videoData = matchedVideoData?.length > 0 ? matchedVideoData[0] : {}
     const hasVideoViewer = !isEmpty(videoData)
+    // The video player streams the file from a download-service view link, made in the browser
+    // only: the page renders there, and a link made on the server would count as a view too.
     let signedUrl = ""
-    if (hasVideoViewer) {
-      const videoConfig = {
-        params: {
-          key: `${route.params.datasetId}/${filePath}`,
-          contentType: videoData.mimetype.name,
-          s3BucketName: s3Bucket
-        }
-      }
-      signedUrl = await $axios.get(
-          `${config.public.portal_api}/download`,
-          videoConfig
-        )
-        .then(({ data }) => {
-          return data
+    if (hasVideoViewer && import.meta.client) {
+      signedUrl = await usePublicFileLink(
+        { datasetId: route.params.datasetId, version: route.params.datasetVersion, path: filePath, purpose: 'view' },
+        config
+      )
+        .then(({ url }) => url)
+        .catch(e => {
+          console.log(`Could not get a link to the video: ${e}`)
+          return ""
         })
     }
 
@@ -257,8 +252,6 @@ export default {
       apiLocation: config.public.portal_api,
       tabs: [],
       file: {},
-      zipData: '',
-      zipitUrl: config.public.zipit_api_host,
       helpers: {
         simulationViewer: {
           name: 'Simulation Viewer',
@@ -418,35 +411,26 @@ export default {
   },
 
   methods: {
+    // Downloads the file through a download-service link
     executeDownload(file) {
       const version = this.$route.params.datasetVersion
-      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
-      let params = file.uri.replace("s3://", "")
-      let firstIndex = params.indexOf("/") + 1
-      params = params.substr(firstIndex)
-      const matches = params.match(datasetVersionRegexp)
+      const datasetId = datasetIdOf(file) || this.$route.params.datasetId
+      const path = filePathOf({ uri: file.uri })
 
-      const payload = {
-        paths: [matches.groups.filePath],
-        datasetId: matches.groups.datasetId,
-        version: version,
-      }
-
-      this.zipData = JSON.stringify(payload, undefined)
-      this.$nextTick(() => {
-        this.$refs.zipForm.submit() // eslint-disable-line no-undef
+      downloadPublicFile({ datasetId, version, path }).catch(e => {
+        failMessage(e.message || "Couldn't download the file. Try again.")
       })
 
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload),
+        files: [path],
         file_name: '',
         file_path: '',
         file_type: '',
         location: '',
         category: '',
-        dataset_id: matches.groups.datasetId,
+        dataset_id: datasetId,
         version_id: version,
         doi: '',
         citation_type: ''

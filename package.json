@@ -7,6 +7,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "start": "node .output/server/index.mjs",
+    "test": "node --test 'tests/unit/*.test.js'",
     "postinstall": "node ./postinstall.js",
     "heroku-postbuild": "patch-package && node ./fix-plotdatahelpers.js && nuxt prepare && node ./verify-resolutions.js && NODE_OPTIONS=\"--max-old-space-size=4096\" nuxt build",
     "cypress": "cypress run",

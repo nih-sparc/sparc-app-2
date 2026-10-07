@@ -14,8 +14,11 @@ datasetIds.forEach((datasetId) => {
     })
 
     beforeEach(function () {
-      cy.intercept('**/download?**').as('download')
-      cy.intercept('**/zipit/**').as('zipit')
+      // download-service: file links (view links for viewers and previews) and archives
+      cy.intercept('POST', '**/public/files/url', (req) => {
+        req.alias = req.body.purpose === 'view' ? 'viewUrl' : 'fileUrl'
+      })
+      cy.intercept('POST', '**/public/archives').as('archive')
       cy.waitForPageLoading()
     })
 
@@ -332,26 +335,29 @@ datasetIds.forEach((datasetId) => {
       it('Download', function () {
         cy.get('.mb-8 .label4:visible').contains(/Dataset size/i).parent().then(($size) => {
           const size = parseFloat($size.text().match(/[0-9]+(.[0-9]+)?/i)[0])
-          if (($size.text().includes('GB') && size > 5) || $size.text().includes('TB')) {
+          if (($size.text().includes('GB') && size > 10) || $size.text().includes('TB')) {
             cy.get('.el-tooltip__trigger > .el-button').should(($button) => {
-              expect($button, 'Download button should be disabled when size is greater than 5GB').to.be.disabled
+              expect($button, 'Download button should be disabled when size is greater than 10GB').to.be.disabled
+            })
+            cy.get('.left-column .agent-download-command code').should(($command) => {
+              expect($command.text(), 'Pennsieve agent command should download the dataset').to.contain(`pennsieve download public ${datasetId}`)
             })
           } else {
-            cy.get('.left-column > :nth-child(1) > a > .el-button').should(($button) => {
-              expect($button, 'Download button should be enabled when size is less than 5GB').to.be.enabled
+            // The button itself: .contains on a found element would yield its inner <span>
+            cy.contains('.left-column .el-button', 'Download Full Dataset').as('downloadDataset')
+            cy.get('@downloadDataset').should(($button) => {
+              expect($button, 'Download button should be enabled when size is less than 10GB').to.be.enabled
             })
             if ($size.text().includes('MB') && size < 50) {
-              // Check if datasets is downloaded
-              cy.get('.left-column > :nth-child(1) > a > .el-button').click()
-              cy.wait('@download', { timeout: 20000 }).then((intercept) => {
-                expect(intercept.response.statusCode).to.eq(200)
+              // Check that download-service starts a zip of the version
+              cy.get('@downloadDataset').click()
+              cy.wait('@archive', { timeout: 20000 }).then((intercept) => {
+                expect(intercept.request.headers['x-pennsieve-client'], 'Request should name the SPARC Portal').to.eq('sparc-portal')
+                expect(intercept.request.body.datasetId, 'Archive should be of this dataset').to.eq(Number(datasetId))
+                expect(intercept.response.statusCode).to.eq(202)
               })
-            } else {
-              cy.get('.left-column > :nth-child(1) > a').invoke('attr', 'href').then((href) => {
-                cy.get('.dataset-information-box > :nth-child(1)').then(($version) => {
-                  const versionNumber = $version.text().match(/[0-9]+/i)[0]
-                  expect(href, 'Download link should have correct href').to.contain(`https://api.pennsieve.io/discover/datasets/${datasetId}/versions/${versionNumber}/download?downloadOrigin=SPARC`)
-                })
+              cy.get('.left-column .public-archive-status').should(($status) => {
+                expect($status, 'Archive progress should be visible').to.be.visible
               })
             }
           }
@@ -371,7 +377,8 @@ datasetIds.forEach((datasetId) => {
         })
         // Check download
         cy.get('@actions').eq(0).click({ force: true })
-        cy.wait('@zipit', { timeout: 20000 }).then((intercept) => {
+        cy.wait('@fileUrl', { timeout: 20000 }).then((intercept) => {
+          expect(intercept.request.body.paths, 'Link should be to the file').to.deep.eq(['files/dataset_description.xlsx'])
           expect(intercept.response.statusCode).to.eq(200)
         })
         // Check oSPARC
@@ -527,7 +534,7 @@ datasetIds.forEach((datasetId) => {
             cy.wait(5000)
             // Check for download
             cy.get('@icons').eq(1).click()
-            cy.wait('@zipit', { timeout: 20000 }).then((intercept) => {
+            cy.wait('@fileUrl', { timeout: 20000 }).then((intercept) => {
               expect(intercept.response.statusCode).to.eq(200)
             })
           }

@@ -3,11 +3,9 @@
     <el-button class="secondary alt" @click="onDownloadClick" :disabled="disabled">
       Download Selected Files and Folders
     </el-button>
-    <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
-      <input v-model="zipData" type="hidden" name="data" />
-    </form>
     <el-dialog
       v-model="confirmDownloadVisible"
+      :width="showReduceSize ? 'clamp(min(760px, 92vw), 50%, 92vw)' : undefined"
       show-close
       @close="closeConfirmDownload"
     >
@@ -19,26 +17,20 @@
       <div class="bf-dialog-body">
         <div v-if="showReduceSize" class="mb-24">
           <p>
-            The file(s) you are trying to download exceed the limit of
-            {{ maxDownloadSize }}. Please reduce the number of files selected
-            and try again.
+            The file(s) you are trying to download are {{ selectedSize }},
+            more than the limit of {{ maxDownloadSize }} for a zip archive.
+            Download them with the Pennsieve agent instead:
           </p>
-          <el-table :show-header="false" :border="false" :data="selected">
-            <el-table-column prop="name" />
-            <el-table-column align="right">
-              <template v-slot="scope">
-                {{ formatMetric(scope.row.size) }}
-                <button @click="$emit('remove-selection', scope.row)" class="btn btn-remove">
-                  <svgo-icon-remove
-                    height="12"
-                    width="12"
-                  />
-                </button>
-              </template>
-            </el-table-column>
-          </el-table>
+          <agent-download-command
+            :dataset-id="dataset.id"
+            :version="dataset.version"
+            :paths="selectedPaths"
+            :folder-name="archiveName"
+            :aws-uri="awsUri"
+            :aws-items="awsItems"
+          />
         </div>
-        <div v-if="selected.length > 1" class="download-name mb-16">
+        <div v-else-if="selected.length > 1" class="download-name mb-16">
           <label for="downloadName">
             File Name
           </label>
@@ -49,9 +41,9 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button class="secondary" @click="closeConfirmDownload">
-            Cancel
+            {{ showReduceSize ? 'Close' : 'Cancel' }}
           </el-button>
-          <el-button :disabled="downloadDisabled" @click="confirmDownload">
+          <el-button v-if="!showReduceSize" :disabled="downloadDisabled" @click="confirmDownload">
             Download
           </el-button>
         </div>
@@ -62,10 +54,20 @@
 
 <script>
 import StorageMetrics from '@/mixins/bf-storage-metrics'
-import { propOr } from 'ramda'
+import AgentDownloadCommand from '@/components/AgentDownloadCommand/AgentDownloadCommand.vue'
+import { downloadPublicFile } from '@/composables/usePublicFileLink'
+import { failMessage, infoMessage } from '@/utils/notification-messages'
 
+// Selected files and folders: one file downloads through a download-service
+// link; folders and several files as a zip that download-service builds
+// (start-archive, for the files table to follow); more than the limit with
+// the Pennsieve agent.
 export default {
   name: 'BfDownloadFile',
+
+  components: {
+    AgentDownloadCommand
+  },
 
   mixins: [StorageMetrics],
 
@@ -85,12 +87,24 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    // A zip is being prepared
+    busy: {
+      type: Boolean,
+      default: false
+    },
+    // The latest version's S3 location, for the AWS CLI alternative to the
+    // agent; empty for older versions
+    awsUri: {
+      type: String,
+      default: ''
     }
   },
 
+  emits: ['start-archive'],
+
   data(props) {
     return {
-      zipData: '',
       confirmDownloadVisible: false,
       archiveName: `sparc-portal-dataset-${this.dataset.id}-version-${this.dataset.version}-data`,
       showReduceSize: false,
@@ -99,14 +113,6 @@ export default {
   },
 
   computed: {
-    /**
-     * Compute URL for zipit service
-     * @returns {String}
-     */
-    zipitUrl: function() {
-      return this.$config.public.zipit_api_host
-    },
-
     /**
      * download is disabled if the total size is greater than the threshold, or no rows are selected
      * @returns {Boolean}
@@ -138,6 +144,18 @@ export default {
      */
     maxDownloadSize() {
       return this.formatMetric(this.$config.public.max_download_size)
+    },
+
+    selectedSize() {
+      return this.formatMetric(this.selected.reduce((total, node) => total + (node.size || 0), 0))
+    },
+
+    selectedPaths() {
+      return this.selected.map(f => f.path)
+    },
+
+    awsItems() {
+      return this.selected.map(f => ({ path: f.path, isFolder: f.type === 'Directory' }))
     }
   },
 
@@ -164,30 +182,32 @@ export default {
     },
 
     executeDownload() {
-      const mainPayload = {
-        paths: [...this.selected.map(f => f.path), "manifest.json"],
-        datasetId: `${this.dataset.id}`,
-        version: `${this.dataset.version}`
+      const oneFile = this.selected.length === 1 && this.selected[0].type !== 'Directory'
+      if (!oneFile && this.busy) {
+        infoMessage('Another download is being prepared; wait for it to finish.')
+        this.closeConfirmDownload()
+        return
       }
 
       if (this.archiveName == "") {
         this.archiveName = `sparc-portal-dataset-${this.dataset.id}-version-${this.dataset.version}-data`
       }
-      const archiveNamePayload = { archiveName: this.archiveName }
-
       const payload = {
-        ...mainPayload,
-        ...archiveNamePayload
+        paths: oneFile ? this.selectedPaths : [...this.selectedPaths, "manifest.json"],
+        archiveName: this.archiveName
       }
 
-      this.zipData = JSON.stringify(payload, undefined)
-      this.$nextTick(() => {
-        this.$refs.zipForm.submit() // eslint-disable-line no-undef
-      })
+      if (oneFile) {
+        downloadPublicFile({ datasetId: this.dataset.id, version: this.dataset.version, path: payload.paths[0] }).catch(e => {
+          failMessage(e.message || "Couldn't download the file. Try again.")
+        })
+      } else {
+        this.$emit('start-archive', payload)
+      }
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload),
+        files: payload.paths,
         file_name: "",
         file_path: "",
         file_type: "",
@@ -211,20 +231,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.btn {
-  background: none;
-  border: none;
-  color: #000;
-  cursor: pointer;
-  &:active {
-    outline: none;
-  }
-}
-.btn-remove {
-  box-sizing: border-box;
-  height: 1rem;
-  width: 1rem;
-}
 .bf-dialog-header {
   align-items: center;
   display: flex;

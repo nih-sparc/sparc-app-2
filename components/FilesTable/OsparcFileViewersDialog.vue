@@ -38,10 +38,11 @@
 </template>
 
 <script>
-import { compose, split, last, defaultTo, pathOr } from 'ramda'
 import { extractExtension } from '@/utils/utils'
-import { contentTypes } from '@/components/FilesTable/FilesTable.vue'
+import { usePublicFileLink } from '@/composables/usePublicFileLink'
+import { failMessage } from '@/utils/notification-messages'
 import { ref } from 'vue'
+import { useMainStore } from '@/store/index.js'
 
 export default {
   name: 'OsparcFileViewersDialog',
@@ -110,34 +111,24 @@ export default {
     }
   },
   methods: {
+    // oSPARC copies the file into its platform to run the viewer, maybe after
+    // its own sign-in: a handoff link is a download that lasts 3 hours
     openFile() {
       const fileSize = this.selectedFile.size
-      let uri = `${pathOr('', ['uri'], this.selectedFile).replace("s3://", "")}`
-      let s3BucketName = uri.substring(0, uri.indexOf("/"))
-      const filePath = compose(
-        last,
-        defaultTo([]),
-        split(`s3://${s3BucketName}/`),
-        pathOr('', ['uri'])
-      )(this.selectedFile)
+      const datasetInfo = useMainStore().datasetInfo
 
       this.isFetching = true
 
-      const requestUrl = new URL(this.$config.public.portal_api + '/download')
-      requestUrl.searchParams.append('key', filePath)
-      requestUrl.searchParams.append('s3BucketName', s3BucketName)
-      const fileType = this.selectedFile.fileType.toLowerCase()
-      const contentType = contentTypes[fileType]
-      if (contentType) {
-        requestUrl.searchParams.append('contentType', contentType)
-      }
-
-      this.$axios
-        .get(requestUrl)
-        .then(({ data }) => {
+      usePublicFileLink({
+        datasetId: datasetInfo.id,
+        version: datasetInfo.version,
+        path: this.selectedFile.path,
+        purpose: 'handoff'
+      })
+        .then(({ url }) => {
           const redirectionUrl = new URL(this.selectedViewer['view_url'])
 
-          redirectionUrl.searchParams.append('download_link', data)
+          redirectionUrl.searchParams.append('download_link', url)
           redirectionUrl.searchParams.append('file_size', fileSize)
           redirectionUrl.searchParams.append('file_type', this.fileExtension)
           if (this.selectedFile.name) {
@@ -146,6 +137,9 @@ export default {
 
           window.open(redirectionUrl, '_blank')
           this.dialogVisible = false
+        })
+        .catch(() => {
+          failMessage('Cannot open the file in o²S²PARC.')
         })
         .finally(() => {
           this.isFetching = false

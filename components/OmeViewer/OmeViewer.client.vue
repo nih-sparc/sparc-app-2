@@ -29,6 +29,7 @@
 import { ref, onMounted, defineComponent } from 'vue'
 import { propOr } from 'ramda'
 import GenericViewerMetadata from '@/components/ViewersMetadata/GenericViewerMetadata.vue'
+import { usePublicFileLink } from '@/composables/usePublicFileLink'
 import { OmeViewer as MicroCtOmeViewer } from '@pennsieve-viz/micro-ct'
 import '@pennsieve-viz/micro-ct/style.css'
 
@@ -54,7 +55,6 @@ export default defineComponent({
   emits: ['download-file'],
 
   async setup(props) {
-    const { $axios } = useNuxtApp()
     const config = useRuntimeConfig()
 
     const presignedUrl = ref('')
@@ -63,15 +63,11 @@ export default defineComponent({
     const hasError = ref(false)
     const errorMessage = ref('')
 
-    const discoverUrl = config.public.discover_api_host
-
-    const fetchManifestUrl = async (datasetId, version, filePath) => {
+    // A download-service view link: the viewer reads the file, recorded as a view, not a download
+    const fetchViewUrl = async (datasetId, version, filePath) => {
       try {
-        const response = await $axios.post(
-          `${discoverUrl}/datasets/${datasetId}/versions/${version}/files/download-manifest`,
-          { paths: [filePath] }
-        )
-        return response?.data?.data?.[0]?.url || ''
+        const { url } = await usePublicFileLink({ datasetId, version, path: filePath, purpose: 'view' }, config)
+        return url || ''
       } catch (error) {
         console.error('Error fetching presigned URL:', error)
         return ''
@@ -96,8 +92,8 @@ export default defineComponent({
           throw new Error('Missing dataset ID or version')
         }
 
-        // Get presigned URL from download manifest
-        const url = await fetchManifestUrl(datasetId, version, filePath.value)
+        // Get presigned URL for the viewer
+        const url = await fetchViewUrl(datasetId, version, filePath.value)
 
         if (!url) {
           throw new Error('Failed to get presigned URL for file')

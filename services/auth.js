@@ -1,3 +1,4 @@
+import { nextTick } from 'vue'
 import { Auth } from '@aws-amplify/auth'
 import { Hub } from '@aws-amplify/core'
 import { useMainStore } from "@/store"
@@ -60,9 +61,12 @@ const user = async() => {
 
 const login = async (providerName) => {
   const signInCookie = useCookie('sign-in-redirect-url', { default: () => null })
-  await Auth.federatedSignIn({ customProvider: providerName }).then(() => {
-    signInCookie.value = useRoute().fullPath
-  }).catch((err) => {
+  // The page to come back to, query and all (an emailed archive's ?archive=),
+  // saved before the browser leaves for the sign-in page: useCookie writes
+  // the cookie from a watcher, so wait for it to run
+  signInCookie.value = useRoute().fullPath
+  await nextTick()
+  await Auth.federatedSignIn({ customProvider: providerName }).catch((err) => {
     signInCookie.value = null
     console.log("Error signing in: ", err)
   })

@@ -144,9 +144,6 @@
           <template v-slot="scope">
             <template v-if="scope.row.type === 'File'">
               <div v-if="!isFileTooLarge(scope.row)" class="circle" @click="executeDownload(scope.row)">
-                <form id="zipForm" ref="zipForm" method="POST" :action="zipitUrl">
-                  <input v-model="zipData" type="hidden" name="data" />
-                </form>
                 <sparc-tooltip placement="bottom-center" content="Download file">
                   <template #item>
                     <svgo-icon-download class="action-icon" />
@@ -154,7 +151,7 @@
                 </sparc-tooltip>
               </div>
               <div v-else class="circle disabled">
-                <sparc-tooltip placement="bottom-center" content="Files over 5GB in size must be downloaded via AWS">
+                <sparc-tooltip placement="bottom-center" :content="`Files over ${maxDownloadSize} in size must be downloaded via AWS`">
                   <template #item>
                     <svgo-icon-download class="action-icon" />
                   </template>
@@ -282,24 +279,6 @@
           :selected="selected"
           :dataset="datasetInfo"
           :file-path="path"
-          @remove-selection="removeSelection"
-        />
-      </template>
-    </sparc-tooltip>
-    <sparc-tooltip
-      v-else-if="selectedFilesSizeTooLarge"
-      class="tooltip"
-      placement="left-center"
-      content="Selected file size(s) exceed 5GB"
-    >
-      <template #item>
-        <bf-download-file
-          class="mt-16"
-          disabled
-          :selected="selected"
-          :dataset="datasetInfo"
-          :file-path="path"
-          @remove-selection="removeSelection"
         />
       </template>
     </sparc-tooltip>
@@ -309,41 +288,46 @@
       :selected="selected"
       :dataset="datasetInfo"
       :file-path="path"
-      @remove-selection="removeSelection"
+      :busy="archiveBusy"
+      :aws-uri="awsUri"
+      @start-archive="onStartArchive"
+    />
+    <public-archive-status
+      class="mt-16"
+      :archive="archive"
+      :error="archiveError"
+      :starting="starting"
+      :signed-in="signedIn"
+      @download="downloadArchive"
+      @remove="removeArchive"
     />
   </div>
 </template>
 
 <script>
-import { compose, isEmpty, join, reject, slice, split, propOr, last, defaultTo, pathOr } from 'ramda'
+import { compose, isEmpty, join, reject, slice, split, propOr, pathOr } from 'ramda'
 
 import BfDownloadFile from '@/components/BfDownloadFile/BfDownloadFile'
 import OsparcFileViewersDialog from '@/components/FilesTable/OsparcFileViewersDialog.vue'
+import PublicArchiveStatus from '@/components/PublicArchiveStatus/PublicArchiveStatus.vue'
 import { mapState } from 'pinia'
 import { useMainStore } from '../../store'
 
 import FormatStorage from '@/mixins/bf-storage-metrics/index'
 import { successMessage, failMessage } from '@/utils/notification-messages'
+import { usePublicArchive } from '@/composables/usePublicArchive'
+import { downloadPublicFile, usePublicFileLink } from '@/composables/usePublicFileLink'
+import { isActive, rememberedArchives } from '@/utils/publicDownloads'
 
 const openableFileTypes = ['pdf', 'text', 'jpeg', 'png', 'svg']
-
-export const contentTypes = {
-  pdf: 'application/pdf',
-  text: 'text/plain',
-  jpeg: 'image/jpeg',
-  png: 'image/png',
-  svg: 'img/svg+xml',
-  mp4: 'video/mp4',
-  csv: 'text/csv',
-  msword: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-}
 
 export default {
   name: 'FilesTable',
 
   components: {
     BfDownloadFile,
-    OsparcFileViewersDialog
+    OsparcFileViewersDialog,
+    PublicArchiveStatus
   },
 
   mixins: [FormatStorage],
@@ -363,6 +347,22 @@ export default {
     }
   },
 
+  setup() {
+    // Folders and several files download as a zip that download-service
+    // builds; it's followed here, so it outlives a change of selection.
+    const {
+      archive,
+      error: archiveError,
+      starting,
+      signedIn,
+      start: startArchive,
+      resume: resumeArchive,
+      download: downloadArchive,
+      remove: removeArchive
+    } = usePublicArchive()
+    return { archive, archiveError, starting, signedIn, startArchive, resumeArchive, downloadArchive, removeArchive }
+  },
+
   data: function() {
     return {
       previousPath: '',
@@ -373,7 +373,6 @@ export default {
       limit: 500,
       selected: [],
       dialogSelectedFile: null,
-      zipData: '',
       filtersApplied: []
     }
   },
@@ -433,19 +432,18 @@ export default {
     datasetVersion: function() {
       return propOr(1, 'version', this.datasetInfo)
     },
+    maxDownloadSize: function() {
+      return this.formatMetric(this.$config.public.max_download_size)
+    },
+    archiveBusy: function() {
+      return this.starting || isActive(this.archive)
+    },
     /**
-     * Compute URL for zipit service
+     * The latest version's S3 location, for the AWS CLI; older versions' files need their object versions
      * @returns {String}
      */
-    zipitUrl: function() {
-      return this.$config.public.zipit_api_host
-    },
-    selectedFilesSizeTooLarge: function() {
-      let totalSize = 0
-      this.selected.forEach(file => {
-        totalSize += file.size
-      })
-      return totalSize >= this.$config.public.max_download_size
+    awsUri: function() {
+      return this.datasetVersion == this.datasetInfo.latestVersion ? propOr('', 'uri', this.datasetInfo) : ''
     },
     isFilterApplied() {
       return this.filtersApplied.length > 0
@@ -460,6 +458,13 @@ export default {
       },
       immediate: true
     }
+  },
+
+  mounted() {
+    // A selection's zip this browser asked for and may come back to; an emailed one (?archive=) shows above the tab.
+    const remembered = rememberedArchives({ datasetId: this.datasetInfo.id, version: this.datasetVersion })
+      .filter(a => !a.whole && a.id !== this.$route.query.archive)
+    if (remembered.length) this.resumeArchive(remembered[remembered.length - 1])
   },
 
   methods: {
@@ -597,18 +602,17 @@ export default {
       this.dialogSelectedFile = scope ? scope.row : null
     },
 
+    /**
+     * A download-service view link to the file, opened in the browser or Microsoft's Office viewer
+     * @param {Object} scope
+     */
     getViewFileUrl(scope) {
-      let uri = `${pathOr('', ['row', 'uri'], scope).replace('s3://', '')}`
-      let s3BucketName = uri.substring(0, uri.indexOf('/'))
-      const filePath = compose(last, defaultTo([]), split(`s3://${s3BucketName}/`), pathOr('', ['row', 'uri']))(scope)
-
-      const fileType = scope.row.fileType.toLowerCase()
-      const contentType = contentTypes[fileType]
-
-      const requestUrl = `${this.$config.public.portal_api}/download?s3BucketName=${s3BucketName}&key=${filePath}&contentType=${contentType}`
-
-      return this.$axios.get(requestUrl).then(({ data }) => {
-        const url = data
+      return usePublicFileLink({
+        datasetId: this.datasetInfo.id,
+        version: this.datasetVersion,
+        path: scope.row.path,
+        purpose: 'view'
+      }).then(({ url }) => {
         const encodedUrl = encodeURIComponent(url)
         return this.isMicrosoftFileType(scope) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}` : url
       })
@@ -636,31 +640,23 @@ export default {
       })
       this.getViewFileUrl(scope).then(response => {
         window.open(response, '_blank')
+      }).catch(() => {
+        failMessage(`Cannot open the file.`)
       })
     },
 
-    executeDownload(downloadInfo) {
-      const datasetVersionRegexp = /(?<datasetId>\d*)\/(?<filePath>.*)/
-      let params = downloadInfo.uri.replace('s3://', '')
-      let firstIndex = params.indexOf('/') + 1
-      params = params.substr(firstIndex)
-      const matches = params.match(datasetVersionRegexp)
-
-      const payload = {
-        paths: [matches.groups.filePath, 'manifest.json'],
-        datasetId: matches.groups.datasetId,
-        version: this.datasetVersion,
-        archiveName: `sparc-portal-dataset-${this.datasetInfo.id}-version-${this.datasetVersion}-data`
-      }
-
-      this.zipData = JSON.stringify(payload, undefined)
-      this.$nextTick(() => {
-        this.$refs.zipForm.submit() // eslint-disable-line no-undef
+    /**
+     * Downloads a file through a download-service link
+     * @param {Object} file
+     */
+    executeDownload(file) {
+      downloadPublicFile({ datasetId: this.datasetInfo.id, version: this.datasetVersion, path: file.path }).catch(e => {
+        failMessage(e.message || `Couldn't download the file. Try again.`)
       })
       this.$gtm.trackEvent({
         event: 'interaction_event',
         event_name: 'dataset_file_download',
-        files: propOr('', 'paths', payload),
+        files: [file.path],
         file_name: '',
         file_path: '',
         file_type: '',
@@ -805,16 +801,11 @@ export default {
     },
 
     /**
-     * Remove selection
-     * @param {Object} row
+     * Starts a zip of the selection; it downloads when it's ready
+     * @param {Object} payload paths and archive name
      */
-    removeSelection(row) {
-      this.selected = this.selected.filter(f => f.path !== row.path)
-
-      const selectedPaths = this.selected.map(s => s.path)
-      this.data.forEach(r => {
-        this.$refs.table.toggleRowSelection(r, selectedPaths.includes(r.path))
-      })
+    onStartArchive({ paths, archiveName }) {
+      this.startArchive({ datasetId: this.datasetInfo.id, version: this.datasetVersion, paths, archiveName })
     },
 
     /**
@@ -822,7 +813,10 @@ export default {
      * @param {Object} scope
      */
     copyS3Url(scope) {
-      this.getViewFileUrl(scope).then(response => {
+      this.getViewFileUrl(scope).catch(() => {
+        failMessage(`Cannot create a link to the file.`)
+      }).then(response => {
+        if (!response) return
         navigator.clipboard.writeText(response).then(
           () => {
             successMessage(`File URL copied to clipboard.`)

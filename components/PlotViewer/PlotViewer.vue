@@ -36,7 +36,6 @@ import { pathOr } from "ramda";
 import PlotViewerMetadata from "@/components/ViewersMetadata/PlotViewerMetadata.vue";
 
 import discover from "@/services/discover";
-import { extractS3BucketName } from "@/utils/common";
 import { getPlotlyInstance } from "@/utils/setupPlotly";
 
 import {
@@ -114,9 +113,7 @@ function isArrayWithEmptyString(arr) {
 watch(
   [() => plotInfo, () => datasetInfo],
   () => {
-    const s3Bucket = datasetInfo
-      ? extractS3BucketName(datasetInfo.uri)
-      : undefined;
+    const { id, version } = toValue(datasetInfo);
 
     try {
       metadata.value = JSON.parse(
@@ -126,30 +123,26 @@ watch(
       failMessage("Metadata for plot is invalid, unable to show plot data.");
     }
     let apiCalls = [
-      discover.downloadLink(
-        `${toValue(datasetInfo).id}/files/${toValue(plotInfo).dataset.path}`,
-        s3Bucket
-      ),
+      discover.viewLink(id, version, `files/${toValue(plotInfo).dataset.path}`),
     ];
     if (
       toValue(plotInfo).datacite.isSupplementedBy.path.length > 0 &&
       !isArrayWithEmptyString(toValue(plotInfo).datacite.isSupplementedBy.path)
     ) {
       apiCalls.push(
-        discover.downloadLink(
-          `${toValue(datasetInfo).id}/files/${
-            toValue(plotInfo).datacite.isSupplementedBy.path[0]
-          }`,
-          s3Bucket
+        discover.viewLink(
+          id,
+          version,
+          `files/${toValue(plotInfo).datacite.isSupplementedBy.path[0]}`
         )
       );
     }
     supplemental_data.value = [];
     Promise.allSettled(apiCalls).then(responses => {
-      if (responses[0].value.status === 200) {
-        source_uri.value = responses[0].value.data;
-        if (responses.length > 1 && responses[1].value.status === 200) {
-          supplemental_data.value = [{ uri: responses[1].value.data }];
+      if (responses[0].status === "fulfilled") {
+        source_uri.value = responses[0].value;
+        if (responses.length > 1 && responses[1].status === "fulfilled") {
+          supplemental_data.value = [{ uri: responses[1].value }];
         }
       }
     });
