@@ -138,15 +138,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/mapintegratedvuer@npm:1.21.2":
-  version: 1.21.2
-  resolution: "@abi-software/mapintegratedvuer@npm:1.21.2"
+"@abi-software/mapintegratedvuer@npm:1.22.0":
+  version: 1.22.0
+  resolution: "@abi-software/mapintegratedvuer@npm:1.22.0"
   dependencies:
-    "@abi-software/flatmapvuer": "npm:1.17.0"
+    "@abi-software/flatmapvuer": "npm:1.19.0"
     "@abi-software/map-side-bar": "npm:2.19.0"
     "@abi-software/map-utilities": "npm:1.12.0"
     "@abi-software/plotvuer": "npm:1.3.0"
-    "@abi-software/scaffoldvuer": "npm:1.21.0"
+    "@abi-software/scaffoldvuer": "npm:2.0.0"
     "@abi-software/simulationvuer": "npm:4.3.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
     "@abi-software/svg-sprite": "npm:1.4.0"
@@ -176,7 +176,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/00c2c22e954197229da8bb2e247502162db2556ad643c3adb994589760288f22a1a5cd966463cfd9d27e1fd0257977e1d8cfd0718350777f1ee904245d2acbe1
+  checksum: 10c0/a9fef771f7e70a4fa1d3fff1413a78be979de17dece6a481491d8b5ade8f44b403a4cf1f917a8c2aa885aa7991e2d7042e5d16e0241d634ad881af1fbba50229
   languageName: node
   linkType: hard
 
@@ -233,11 +233,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/scaffoldvuer@npm:1.21.0":
-  version: 1.21.0
-  resolution: "@abi-software/scaffoldvuer@npm:1.21.0"
+"@abi-software/scaffoldvuer@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@abi-software/scaffoldvuer@npm:2.0.0"
   dependencies:
-    "@abi-software/map-utilities": "npm:1.11.0"
+    "@abi-software/map-utilities": "npm:1.12.0"
     "@abi-software/sparc-annotation": "npm:^0.3.2"
     "@abi-software/svg-sprite": "npm:1.4.0"
     "@element-plus/icons-vue": "npm:^2.3.2"
@@ -253,7 +253,7 @@ __metadata:
     simple-dropzone: "npm:^0.8.3"
     vue: "npm:^3.5.41"
     vue-router: "npm:^5.2.0"
-    zincjs: "npm:^2.4.0"
+    zincjs: "npm:^3.0.0"
   dependenciesMeta:
     "@esbuild/darwin-arm64":
       optional: true
@@ -265,7 +265,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/abd87174992404f7039def32acccf81701c3daeecb4a34297d00e32d8a5343e2f5a97eb0c0b0386fe8bb341a76e3e44c7897f2aeeb04cabeb35f7df5153a9817
+  checksum: 10c0/9aecb45836c68cb302ef03393f0d466a97b5d57d752ba084eb300a6c56994066e86973568ca0e05942f376e46a1269cefb6de6235e04f0dd7b081a55e8ce0257
   languageName: node
   linkType: hard
 
@@ -15598,7 +15598,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@abi-software/mapintegratedvuer": "npm:1.21.2"
+    "@abi-software/mapintegratedvuer": "npm:1.22.0"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.3"
     "@abi-software/simulationvuer": "npm:4.3.0"
@@ -21495,16 +21495,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zincjs@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "zincjs@npm:2.4.0"
+"zincjs@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "zincjs@npm:3.0.0"
   dependencies:
     css-element-queries: "npm:^1.2.2"
     lodash: "npm:^4.17.19"
     nifti-reader-js: "npm:0.8.0"
     three: "npm:^0.185.1"
     three-spritetext: "npm:1.10.0"
-  checksum: 10c0/460d33a1de8ef26bf5c53ec7de4c950c21e1c04ebd1a931cdc9f31095e1654facf7bd17336339f69e20b47da3ab6a07abcb3348aba0f42d6568eb4e5512311fd
+  checksum: 10c0/eac522f516659c0df5dc8c44d7b32767d6b7d0661540573d76caffa43706015c7a6febf83dc467ccf8b5574c3660bff53435960d0112c3e70db73f3c7ca57f4b
   languageName: node
   linkType: hard
 
