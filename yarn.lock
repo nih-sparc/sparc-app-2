@@ -12,11 +12,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/flatmapvuer@npm:1.17.0":
-  version: 1.17.0
-  resolution: "@abi-software/flatmapvuer@npm:1.17.0"
+"@abi-software/flatmapvuer@npm:1.19.0":
+  version: 1.19.0
+  resolution: "@abi-software/flatmapvuer@npm:1.19.0"
   dependencies:
-    "@abi-software/map-utilities": "npm:1.11.0"
+    "@abi-software/map-utilities": "npm:1.12.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
     "@abi-software/svg-sprite": "npm:1.4.0"
     "@element-plus/icons-vue": "npm:^2.3.2"
@@ -41,7 +41,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/6584325f3c78a0a7f1944f24c67bc54a27d995c8b0e99170bed453204a9dbdcc6a7960facfd37433831b9c36b7368fa0bcd5e0a1e9f056a14f2d2b82dd95915e
+  checksum: 10c0/daf50a90e9cdbd834025c6298e94060c0fdceca993ad733680a6ee27a95861beac5dffc7805fa77140b2f84ebb894094048d64151de6b2e49ed951e58e4008e0
   languageName: node
   linkType: hard
 
