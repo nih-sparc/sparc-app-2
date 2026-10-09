@@ -246,19 +246,24 @@ Cypress.Commands.add('clickOnDetailTab', (tabName) => {
 })
 
 Cypress.Commands.add('backToDetailPage', (datasetId) => {
+  const detailPath = new RegExp(`/datasets/${datasetId}(\\?|/|$)`)
+  const maxRetry = 3
   let retry = 0
   const backToDetailPage = () => {
     cy.url().then((url) => {
-      if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
+      if (detailPath.test(url)) {
+        return
+      }
+      if (retry < maxRetry) {
+        retry += 1
         cy.go('back')
         cy.waitForPageLoading()
-        retry += 1
-      }
-      if (retry > 3) {
-        cy.visit(`/datasets/${datasetId}?type=dataset`)
-      }
-      if (!url.includes(`/datasets/${datasetId}?type=dataset`)) {
         backToDetailPage()
+      } else {
+        // Give up on history navigation, visit directly and fail loudly if still not there
+        cy.visit(`/datasets/${datasetId}?type=dataset`)
+        cy.waitForPageLoading()
+        cy.url().should('match', detailPath)
       }
     })
   }
