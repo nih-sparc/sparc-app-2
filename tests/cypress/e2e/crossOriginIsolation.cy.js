@@ -6,7 +6,8 @@
  *
  * Cypress runs the app inside an iframe, so the page can't be cross-origin isolated here.
  * These tests check the server headers and image attributes instead.
- * The real simulation run is covered by the Playwright test in tests/playwright.
+ * The real simulation run, and images actually loading on isolated pages,
+ * are covered by the Playwright tests in tests/playwright.
  */
 import { retryableBefore } from '../support/utils.js'
 
@@ -56,19 +57,6 @@ describe('Cross-origin isolation headers', function () {
   it('proxies only allowlisted hosts', function () {
     cy.request({ url: '/api/coi-proxy?url=https://example.com/image.png', failOnStatusCode: false })
       .its('status').should('equal', 403)
-  })
-})
-
-describe('Footer images on isolated pages', function () {
-
-  it('Footer images are same-origin so COEP cannot block them', function () {
-    cy.visit('/apps/maps?type=ac')
-    cy.get('.footer img').should('have.length.greaterThan', 0).each(($img) => {
-      const src = $img.attr('src') || ''
-      if (/^https?:/.test(src)) {
-        expect(new URL(src).origin, `origin of ${src}`).to.equal(new URL(Cypress.config('baseUrl')).origin)
-      }
-    })
   })
 })
 
