@@ -44,9 +44,30 @@ describe('Cross-origin isolation headers', function () {
     })
   })
 
-  it('does not send COEP on routes without a simulation viewer', function () {
-    cy.request({ url: '/', headers: { 'user-agent': userAgents['macOS Safari'] } }).then((response) => {
-      expect(response.headers, 'COEP').to.not.have.property('cross-origin-embedder-policy')
+  const nonIsolatedRoutes = ['/', '/datasets/file/135/8?path=files/primary/image.jpg']
+  nonIsolatedRoutes.forEach((route) => {
+    it(`${route} does not send COEP (no simulation viewer)`, function () {
+      cy.request({ url: route, headers: { 'user-agent': userAgents['macOS Safari'] }, failOnStatusCode: false }).then((response) => {
+        expect(response.headers, 'COEP').to.not.have.property('cross-origin-embedder-policy')
+      })
+    })
+  })
+
+  it('proxies only allowlisted hosts', function () {
+    cy.request({ url: '/api/coi-proxy?url=https://example.com/image.png', failOnStatusCode: false })
+      .its('status').should('equal', 403)
+  })
+})
+
+describe('Footer images on isolated pages', function () {
+
+  it('Footer images are same-origin so COEP cannot block them', function () {
+    cy.visit('/apps/maps?type=ac')
+    cy.get('.footer img').should('have.length.greaterThan', 0).each(($img) => {
+      const src = $img.attr('src') || ''
+      if (/^https?:/.test(src)) {
+        expect(new URL(src).origin, `origin of ${src}`).to.equal(new URL(Cypress.config('baseUrl')).origin)
+      }
     })
   })
 })

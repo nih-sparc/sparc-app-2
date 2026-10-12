@@ -8,10 +8,13 @@
 // Copy of ISOLATED_ROUTES in utils/crossOriginIsolation.js - a service worker
 // cannot import app modules, so keep the two in sync.
 const ISOLATED_ROUTES = [
-  /^\/apps\/maps\/?$/,
-  /^\/datasets\/file\//,
-  /^\/datasets\/simulationviewer\/?$/,
+  { path: /^\/apps\/maps\/?$/ },
+  { path: /^\/datasets\/file\//, filePath: /\.omex$/i },
+  { path: /^\/datasets\/simulationviewer\/?$/ },
 ]
+
+// Same-origin proxy for allowlisted hosts without CORS (server/api/coi-proxy.get.js).
+const PROXY_URL = '/api/coi-proxy'
 
 const REWRITE_DESTINATIONS = ['image', 'script', 'style']
 
@@ -22,8 +25,11 @@ const isFromIsolatedPage = async (clientId) => {
   if (!clientId) return false
   const client = await self.clients.get(clientId)
   if (!client) return false
-  const path = new URL(client.url).pathname
-  return ISOLATED_ROUTES.some((re) => re.test(path))
+  const { pathname, searchParams } = new URL(client.url)
+  return ISOLATED_ROUTES.some((route) =>
+    route.path.test(pathname) &&
+    (!route.filePath || route.filePath.test(searchParams.get('path') || ''))
+  )
 }
 
 const fetchWithCorp = async (request, clientId) => {
@@ -38,7 +44,10 @@ const fetchWithCorp = async (request, clientId) => {
         headers,
       })
     } catch (e) {
-      // Host does not support CORS - fall through to the original request.
+      // Host does not support CORS - try the same-origin proxy,
+      // which only serves allowlisted hosts (server/api/coi-proxy.get.js).
+      const proxied = await fetch(`${PROXY_URL}?url=${encodeURIComponent(request.url)}`).catch(() => null)
+      if (proxied?.ok) return proxied
     }
   }
   return fetch(request)
