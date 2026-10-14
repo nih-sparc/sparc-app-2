@@ -2,10 +2,10 @@
 // Safari has no COEP: credentialless, so it gets require-corp instead
 // (cross-origin subresources are then patched up by public/coi-sw.js).
 
-import { needsIsolation, supportsCredentialless } from '../../utils/crossOriginIsolation'
+import { needsIsolation, supportsCredentialless } from '~~/utils/crossOriginIsolation'
 
 export default defineEventHandler((event) => {
-  if (!needsIsolation(getRequestURL(event).pathname)) return
+  if (!needsIsolation(getRequestURL(event))) return
 
   const userAgent = getRequestHeader(event, 'user-agent')
   setResponseHeaders(event, {

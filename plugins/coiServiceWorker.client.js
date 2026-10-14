@@ -26,7 +26,7 @@ const setUpServiceWorker = async () => {
 
   // First visit lands directly on an isolated page: subresources already loaded
   // without the worker, so reload once now that it is in control.
-  if (needsIsolation(window.location.pathname) && !navigator.serviceWorker.controller) {
+  if (needsIsolation(window.location.href) && !navigator.serviceWorker.controller) {
     let reloaded = false
     try {
       reloaded = sessionStorage.getItem(RELOAD_FLAG) === 'true'
