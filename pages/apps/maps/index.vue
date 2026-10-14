@@ -26,7 +26,7 @@
         <div class="portal-features">
           <div class="feature-container" v-for="item in appEntries">
             <img class="logo" :src="item.logoUrl" />
-            <el-popover width="fit-content" trigger="click">
+            <el-popover v-model:visible="popoverVisible[item.buttonText]" width="fit-content" trigger="click">
               <template #reference>
                 <el-button class="secondary">Open {{ item.buttonText }}</el-button>
               </template>
@@ -541,7 +541,12 @@ export default {
         'AC Map': ['Human Female', 'Human Male', 'Rat', 'Mouse', 'Pig', 'Cat'],
         '3D Whole Body': ['Human', 'Rat'],
         'FC Map': ['Functional Connectivity'],
-      }
+      },
+      popoverVisible: {
+        'AC Map': false,
+        '3D Whole Body': false,
+        'FC Map': false,
+      },
     }
   },
   mounted: function () {
@@ -616,6 +621,7 @@ export default {
       }
     },
     setCurrentEntry: function (entry, type) {
+      this.popoverVisible[type] = false
       let mapEntry = {}
       if (type === 'AC Map') {
         mapEntry = {type: 'MultiFlatmap', resource: entry}
