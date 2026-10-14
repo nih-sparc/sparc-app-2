@@ -540,12 +540,10 @@ export default {
       mapEntries: {
         'AC Map': ['Human Female', 'Human Male', 'Rat', 'Mouse', 'Pig', 'Cat'],
         '3D Whole Body': ['Human', 'Rat'],
-        'FC Map': ['Functional Connectivity'],
       },
       popoverVisible: {
         'AC Map': false,
         '3D Whole Body': false,
-        'FC Map': false,
       },
     }
   },
@@ -627,8 +625,6 @@ export default {
         mapEntry = {type: 'MultiFlatmap', resource: entry}
       } else if (type === '3D Whole Body') {
         mapEntry = {type: 'Scaffold', isBodyScaffold: true, label: entry}
-      } else if (type === 'FC Map') {
-        mapEntry = {type: 'Flatmap', resource: entry.replace(' ', ''), label: 'Functional'}
       }
       if (this._instance) {
         this._instance.setCurrentEntry(mapEntry)
