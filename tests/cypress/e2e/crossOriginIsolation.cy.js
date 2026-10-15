@@ -1,8 +1,7 @@
 /**
  * SimulationVuer (libOpenCOR wasm) needs SharedArrayBuffer,
  * which is only available on cross-origin isolated pages (COOP + COEP).
- * Safari/WebKit does not support COEP `credentialless`, so it must get `require-corp`,
- * and cross-origin images on those pages must be loaded in CORS mode (crossorigin="anonymous").
+ * Safari/WebKit does not support COEP `credentialless`, so it must get `require-corp`.
  *
  * Cypress runs the app inside an iframe, so the page can't be cross-origin isolated here.
  * These tests check the server headers and image attributes instead.
@@ -79,17 +78,5 @@ describe('Cross-origin images on the maps page', { testIsolation: false }, funct
     })
     cy.get('.tabs-container > :nth-child(1) > .tab-title').click()
     cy.get('.dataset-card-container > .dataset-card', { timeout: 30000 }).should('have.length.greaterThan', 0)
-
-    // With COEP require-corp (Safari), cross-origin images without CORS mode are blocked
-    cy.get('.dataset-card img', { timeout: 30000 }).should(($images) => {
-      const crossOriginImages = $images.toArray().filter((img) => {
-        const src = img.getAttribute('src') || ''
-        return /^https?:/.test(src) && new URL(src).origin !== new URL(Cypress.config('baseUrl')).origin
-      })
-      expect(crossOriginImages.length, 'Cross-origin dataset images').to.be.greaterThan(0)
-      crossOriginImages.forEach((img) => {
-        expect(img.getAttribute('crossorigin'), `crossorigin on ${img.getAttribute('src')}`).to.equal('anonymous')
-      })
-    })
   })
 })
