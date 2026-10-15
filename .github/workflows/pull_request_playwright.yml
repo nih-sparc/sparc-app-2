@@ -1,0 +1,101 @@
+name: Pull Request Playwright Testing
+
+# Cross-origin isolation (COOP/COEP) tests in real browsers (tests/playwright).
+# Cypress runs the app in an iframe, so pages are never cross-origin isolated there.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [master, main]
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+  ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+  ALGOLIA_INDEX: ${{ secrets.ALGOLIA_INDEX }}
+  AWS_USER_POOL_ID: ${{ secrets.AWS_USER_POOL_ID }}
+  AWS_USER_POOL_WEB_CLIENT_ID: ${{ secrets.AWS_USER_POOL_WEB_CLIENT_ID }}
+  BITLY_ACCESS_TOKEN: ${{ secrets.BITLY_ACCESS_TOKEN }}
+  CTF_API_HOST: ${{ secrets.CTF_API_HOST }}
+  CTF_CDA_ACCESS_TOKEN: ${{ secrets.CTF_CDA_ACCESS_TOKEN }}
+  CTF_SPACE_ID: ${{ secrets.CTF_SPACE_ID }}
+  DEPLOY_ENV: ${{ secrets.DEPLOY_ENV }}
+  FLATMAP_API_HOST: ${{ secrets.FLATMAP_API_HOST }}
+  DASHBOARD_FLATMAP_API: ${{ secrets.DASHBOARD_FLATMAP_API}}
+  LOGIN_API_URL: ${{ secrets.LOGIN_API_URL }}
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  OSPARC_HOST: ${{ secrets.OSPARC_HOST }}
+  PORTAL_API_HOST: ${{ secrets.PORTAL_API_HOST }}
+  SHOW_TIMESERIES_VIEWER: ${{ secrets.SHOW_TIMESERIES_VIEWER }}
+  ROOT_URL: ${{ secrets.ROOT_URL }} # http://localhost:3000
+  SIMULATION_FILE_URL: ${{ vars.SIMULATION_FILE_URL }}
+
+jobs:
+  check-permission:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check user permission
+        uses: actions-cool/check-user-permission@v2
+        id: checkUser
+        with:
+          require: "write"
+          username: ${{ github.event.pull_request.user.login }}
+
+      - name: Skip tests
+        if: steps.checkUser.outputs.require-result == 'false'
+        uses: actions/github-script@v4
+        with:
+          script: |
+            core.setFailed('Pull request is opened by an user without write permission, tests are skipped for security reason')
+
+  playwright-run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    needs: check-permission
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          allow-unsafe-pr-checkout: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.0
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Install Playwright browsers
+        # `yarn exec`, as `yarn playwright` runs the "playwright" script (`playwright test`)
+        run: yarn exec playwright install --with-deps webkit chromium
+
+      - name: Build and start
+        run: |
+          yarn build
+          yarn preview &
+          for i in $(seq 1 60); do curl -sf -o /dev/null "$ROOT_URL" && exit 0; sleep 5; done
+          echo "Server did not start at $ROOT_URL" && exit 1
+
+      - name: Run Playwright tests
+        run: yarn playwright
+
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: tests/playwright/results
+          retention-days: 7

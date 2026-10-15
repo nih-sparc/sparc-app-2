@@ -3,7 +3,7 @@
     <nav class="nav" :class="{ 'nav--scrolled': scrolled }">
       <!-- Logo -->
       <nuxt-link :to="{ name: 'index' }" class="nav-logo" aria-label="SPARC">
-        <img src="/sparc-logo-primary.svg" alt="SPARC" height="auto" />
+        <img src="/sparc-logo-primary.svg" alt="SPARC" />
       </nuxt-link>
 
       <!-- Desktop nav -->
@@ -202,7 +202,7 @@ const navItems = [
     label: 'Tools',
     iconLabel: 'Tools & Resources',
     iconHtml: TOOLS_ICON,
-    links: [    
+    links: [
       { title: 'Apps', sub: 'Tools to help you Find, Use, and Share', href: '/apps' },
       { title: 'Explore', sub: 'Browse all tools & resources', href: '/tools-and-resources' },
       { divider: true },
@@ -355,6 +355,12 @@ verifyProfileComplete() {
   flex-shrink: 0;
   width: 100px;
   margin-top: .5rem;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 }
 
 /* ── Desktop nav links ── */
