@@ -13,11 +13,13 @@
     "cypress": "cypress run",
     "cypress-ui": "cypress open",
     "cypress-record": "cypress run --record --tag local",
-    "cypress-record-parallel": "cypress run --record --tag local --parallel --ci-build-id $CI_BUILD_ID"
+    "cypress-record-parallel": "cypress run --record --tag local --parallel --ci-build-id $CI_BUILD_ID",
+    "playwright": "playwright test"
   },
   "devDependencies": {
     "@nuxt/devtools": "^3.4.1",
     "@nuxtjs/turnstile": "^0.6.3",
+    "@playwright/test": "^1.64.0",
     "cypress": "15.21.1",
     "cypress-visual-regression": "^6.0.0",
     "nuxt": "^4.5.2",

@@ -117,18 +117,8 @@ export default defineNuxtConfig({
     '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
     '/resources/submit': { redirect: '/contact-us?type=tool' },
     '/apps/precision-dashboard': { ssr:false },
-    '/apps/maps': {
-      headers: {
-        'Cross-Origin-Opener-Policy': 'same-origin',
-        'Cross-Origin-Embedder-Policy': 'credentialless',
-      },
-    },
-    '/datasets/file/**': {
-      headers: {
-        'Cross-Origin-Opener-Policy': 'same-origin',
-        'Cross-Origin-Embedder-Policy': 'credentialless',
-      },
-    }
+    // COOP/COEP for cross-origin isolated routes are set per browser in
+    // server/middleware/crossOriginIsolation.js
   },
   hooks: {
     'pages:extend'(pages) {
