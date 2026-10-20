@@ -4767,9 +4767,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pennsieve-viz/core@npm:0.3.3":
-  version: 0.3.3
-  resolution: "@pennsieve-viz/core@npm:0.3.3"
+"@pennsieve-viz/core@npm:0.4.0":
+  version: 0.4.0
+  resolution: "@pennsieve-viz/core@npm:0.4.0"
   dependencies:
     d3: "npm:^7.9.0"
     dompurify: "npm:^3.2.6"
@@ -4782,7 +4782,6 @@ __metadata:
     "@element-plus/icons-vue": ^2.3.1
     "@pennsieve-viz/micro-ct": ^1.0.0
     "@pennsieve-viz/orthogonal": ^0.1.0
-    "@pennsieve-viz/tsviewer": ^1.0.0
     element-plus: ^2.3.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.2.0
@@ -4793,41 +4792,7 @@ __metadata:
       optional: true
     "@pennsieve-viz/orthogonal":
       optional: true
-    "@pennsieve-viz/tsviewer":
-      optional: true
-  checksum: 10c0/b5408abe47fa3f39c63dd4b6bc0e5f87f76ea36b082f0436793abd02c6a2ad332b937fb201b6cb1b038193b4b8f60cb8ce6cfa1224fcd69ac2624c6a64b12d8d
-  languageName: node
-  linkType: hard
-
-"@pennsieve-viz/core@npm:^0.3.4":
-  version: 0.3.4
-  resolution: "@pennsieve-viz/core@npm:0.3.4"
-  dependencies:
-    d3: "npm:^7.9.0"
-    dompurify: "npm:^3.2.6"
-    hyparquet: "npm:^1.12.1"
-    marked: "npm:^15.0.7"
-    ramda: "npm:^0.31.3"
-  peerDependencies:
-    "@aws-amplify/auth": ^6.0.0
-    "@duckdb/duckdb-wasm": ^1.29.0
-    "@element-plus/icons-vue": ^2.3.1
-    "@pennsieve-viz/micro-ct": ^1.0.0
-    "@pennsieve-viz/orthogonal": ^0.1.0
-    "@pennsieve-viz/tsviewer": ^1.0.0
-    element-plus: ^2.3.0
-    pinia: ^2.0.0 || ^3.0.0
-    vue: ^3.2.0
-  peerDependenciesMeta:
-    "@aws-amplify/auth":
-      optional: true
-    "@pennsieve-viz/micro-ct":
-      optional: true
-    "@pennsieve-viz/orthogonal":
-      optional: true
-    "@pennsieve-viz/tsviewer":
-      optional: true
-  checksum: 10c0/f47d1247d0754c42e59b661921ade681a7a9d58b47422cabb87abe72789f096d28785f7a89f7e55862e60c66990affdf691dde2c7b8a0579d6b74c843a3b5b10
+  checksum: 10c0/ade7a49a6f7e789266da630107f1663b1a457e68f6f5690e46d9474df27513390956b4312ab15c9d24fd5576867da085956c290b4bd0105348b31bdbd9c02bdf
   languageName: node
   linkType: hard
 
@@ -15628,7 +15593,7 @@ __metadata:
     "@nuxt/devtools": "npm:^3.4.1"
     "@nuxtjs/sitemap": "npm:^5.3.5"
     "@nuxtjs/turnstile": "npm:^0.6.3"
-    "@pennsieve-viz/core": "npm:0.3.3"
+    "@pennsieve-viz/core": "npm:0.4.0"
     "@pennsieve-viz/micro-ct": "npm:1.0.72"
     "@pinia-plugin-persistedstate/nuxt": "npm:^1.2.1"
     "@pinia/nuxt": "npm:^0.5.5"
@@ -15651,7 +15616,7 @@ __metadata:
     nuxt-simple-robots: "npm:^4.0.1"
     nuxt-svgo: "npm:^5.3.0"
     patch-package: "npm:^8.0.1"
-    pennsieve-dashboard: "npm:1.2.0"
+    pennsieve-dashboard: "npm:1.4.0"
     plotly.js: "npm:2.35.3"
     plyr: "npm:^3.8.4"
     postinstall-postinstall: "npm:^2.1.0"
@@ -15660,7 +15625,7 @@ __metadata:
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
-    sparc-dashwidgets: "npm:1.4.3"
+    sparc-dashwidgets: "npm:1.5.0"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.5.0"
@@ -16468,9 +16433,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pennsieve-dashboard@npm:1.2.0":
-  version: 1.2.0
-  resolution: "pennsieve-dashboard@npm:1.2.0"
+"pennsieve-dashboard@npm:1.4.0":
+  version: 1.4.0
+  resolution: "pennsieve-dashboard@npm:1.4.0"
   dependencies:
     "@element-plus/icons-vue": "npm:^2.3.2"
     dompurify: "npm:^3.2.6"
@@ -16480,7 +16445,7 @@ __metadata:
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/e3748e4b0d6862409fbe2bba69ed31c57c08771b9d6d602c2fefa16c15d63742b370d1b10c174e3f20cceca9ec5d37eceeb584adca44424f7dc4304184112aac
+  checksum: 10c0/a1709e3cc824c2d6d34a3280dfc3e67ed5b41b2cb158ff5da5715ff6414425774fc9220d0153e9ec8ab0ec285994f6f6f9d15faa50dfeac3e655d2172ac4e499
   languageName: node
   linkType: hard
 
@@ -18788,11 +18753,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.4.3":
-  version: 1.4.3
-  resolution: "sparc-dashwidgets@npm:1.4.3"
+"sparc-dashwidgets@npm:1.5.0":
+  version: 1.5.0
+  resolution: "sparc-dashwidgets@npm:1.5.0"
   dependencies:
-    "@pennsieve-viz/core": "npm:^0.3.4"
     "@pennsieve-viz/micro-ct": "npm:^1.0.72"
     axios: "npm:^1.6.7"
     epic-spinners: "npm:^2.0.0"
@@ -18810,10 +18774,11 @@ __metadata:
     "@luma.gl/engine": ">=9.1.0"
     "@luma.gl/shadertools": ">=9.1.0"
     "@luma.gl/webgl": ">=9.1.0"
+    "@pennsieve-viz/core": ^0.3.4 || ^0.4.0
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/67b449c54c65e87eb1f1b3af81cf43b7cc1a9bcf2fe6dd96a204d00627a9972ce5a838295c673fab4bdf3536814f9517f0d5954acb66744af97ef64e27866c4b
+  checksum: 10c0/75d7f82d0f5a0152416163180da038f29c1cc2b0af87b18d0fbf170b0021e5e15b6c8c4c230cb771160b0f85796e38b246cc3be3357be600fe8a193add16af0b
   languageName: node
   linkType: hard
 
