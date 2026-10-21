@@ -4735,41 +4735,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pennsieve-viz/core@npm:0.1.6":
-  version: 0.1.6
-  resolution: "@pennsieve-viz/core@npm:0.1.6"
-  dependencies:
-    "@element-plus/icons-vue": "npm:^2.3.1"
-    d3: "npm:^7.9.0"
-    dompurify: "npm:^3.2.6"
-    element-plus: "npm:^2.3.0"
-    hyparquet: "npm:^1.12.1"
-    marked: "npm:^15.0.7"
-    ramda: "npm:^0.31.3"
-  peerDependencies:
-    "@aws-amplify/auth": ^6.0.0
-    "@duckdb/duckdb-wasm": ^1.29.0
-    "@pennsieve-viz/micro-ct": ^1.0.0
-    "@pennsieve-viz/tsviewer": ^1.0.0
-    pinia: ^2.0.0 || ^3.0.0
-    plotly.js: ^2.35.0
-    vue: ^3.2.0
-  peerDependenciesMeta:
-    "@aws-amplify/auth":
-      optional: true
-    "@pennsieve-viz/micro-ct":
-      optional: true
-    "@pennsieve-viz/tsviewer":
-      optional: true
-    plotly.js:
-      optional: true
-  checksum: 10c0/67712354f990ce61239ec274f4139c7f1dab511992aa2e4f3783e3b0f9c54351946301a6bf8ac2b4d8a970f0762b293af6005e586101f1ad8e6fafa1bea26834
-  languageName: node
-  linkType: hard
-
-"@pennsieve-viz/core@npm:0.4.0":
-  version: 0.4.0
-  resolution: "@pennsieve-viz/core@npm:0.4.0"
+"@pennsieve-viz/core@npm:0.5.0":
+  version: 0.5.0
+  resolution: "@pennsieve-viz/core@npm:0.5.0"
   dependencies:
     d3: "npm:^7.9.0"
     dompurify: "npm:^3.2.6"
@@ -4792,7 +4760,7 @@ __metadata:
       optional: true
     "@pennsieve-viz/orthogonal":
       optional: true
-  checksum: 10c0/ade7a49a6f7e789266da630107f1663b1a457e68f6f5690e46d9474df27513390956b4312ab15c9d24fd5576867da085956c290b4bd0105348b31bdbd9c02bdf
+  checksum: 10c0/18cb69c01b292ad15c0a9c1d396b2a1e7d08e4e1b968a4453be98a3cdfe20639b731a7fa4b4d32f0e036ba03a75cc57e0b1309462606932bd6e8b99d1e068e17
   languageName: node
   linkType: hard
 
@@ -6267,13 +6235,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.20":
-  version: 4.17.24
-  resolution: "@types/lodash@npm:4.17.24"
-  checksum: 10c0/b72f60d4daacdad1fa643edb3faba204c02a01eb1ac00a83ff73496a6d236fc55e459c06106e8ced42277dba932d087d8fc090f8de4ef590d3f91e6d6f7ce85a
-  languageName: node
-  linkType: hard
-
 "@types/lodash@npm:^4.17.24":
   version: 4.17.25
   resolution: "@types/lodash@npm:4.17.25"
@@ -6412,13 +6373,6 @@ __metadata:
   version: 0.0.16
   resolution: "@types/web-bluetooth@npm:0.0.16"
   checksum: 10c0/9a265fdd048319e174f9a0ae2dfb748d0b3e07f888d9797f89dd78b96d680fd304fbfa9fd0e11ccf283bd6a441641333ec8c3184e61a50c7ee61507add63f0a2
-  languageName: node
-  linkType: hard
-
-"@types/web-bluetooth@npm:^0.0.20":
-  version: 0.0.20
-  resolution: "@types/web-bluetooth@npm:0.0.20"
-  checksum: 10c0/3a49bd9396506af8f1b047db087aeeea9fe4301b7fad4fe06ae0f6e00d331138caae878fd09e6410658b70b4aaf10e4b191c41c1a5ff72211fe58da290c7d003
   languageName: node
   linkType: hard
 
@@ -6874,18 +6828,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vueuse/core@npm:^10.11.0":
-  version: 10.11.1
-  resolution: "@vueuse/core@npm:10.11.1"
-  dependencies:
-    "@types/web-bluetooth": "npm:^0.0.20"
-    "@vueuse/metadata": "npm:10.11.1"
-    "@vueuse/shared": "npm:10.11.1"
-    vue-demi: "npm:>=0.14.8"
-  checksum: 10c0/6a974c1510ce84e652e3d180a4f4373e37e59a5ec025a7a8cec7f144a4ccff25dbdd82e3143ffb057323f467a1076b39da30953981e822c4bd41a7841121afee
-  languageName: node
-  linkType: hard
-
 "@vueuse/core@npm:^9.1.0":
   version: 9.13.0
   resolution: "@vueuse/core@npm:9.13.0"
@@ -6895,13 +6837,6 @@ __metadata:
     "@vueuse/shared": "npm:9.13.0"
     vue-demi: "npm:*"
   checksum: 10c0/59791dbfad5725810139c22adb4d8266ca9de419a4b252cb99f1b2a0bdb2f500988a7aabd42583c255fa45499ebb43dafc9d6ddc45fdf09ef15fdadd02958f42
-  languageName: node
-  linkType: hard
-
-"@vueuse/metadata@npm:10.11.1":
-  version: 10.11.1
-  resolution: "@vueuse/metadata@npm:10.11.1"
-  checksum: 10c0/c252056aa7e7bd5d207791a2e3b415dcb81fef5b24bfe18cefdec026ae9b7e5a5813100d2e55262fc66feafe15ccdc11a69351d724d848fafe4b3b052e559283
   languageName: node
   linkType: hard
 
@@ -6923,15 +6858,6 @@ __metadata:
   version: 9.13.0
   resolution: "@vueuse/metadata@npm:9.13.0"
   checksum: 10c0/c2a8a85946f382b9b51b4e96f17f0913091e7c271fbde565b59d3c4fd8f67f2f34778e002d65dd78c420700781e725c05d72cb65acec9c773a423116e8d49cd4
-  languageName: node
-  linkType: hard
-
-"@vueuse/shared@npm:10.11.1":
-  version: 10.11.1
-  resolution: "@vueuse/shared@npm:10.11.1"
-  dependencies:
-    vue-demi: "npm:>=0.14.8"
-  checksum: 10c0/22c4f04be8fdb5e95535cf20f13956fc1f3707540f3730282905e6f9b24f314ada28292e82f4401d88b2c1fcf7fc7203011260958f517abc2b756779243147e3
   languageName: node
   linkType: hard
 
@@ -9782,13 +9708,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.11.19":
-  version: 1.11.19
-  resolution: "dayjs@npm:1.11.19"
-  checksum: 10c0/7d8a6074a343f821f81ea284d700bd34ea6c7abbe8d93bce7aba818948957c1b7f56131702e5e890a5622cdfc05dcebe8aed0b8313bdc6838a594d7846b0b000
-  languageName: node
-  linkType: hard
-
 "dayjs@npm:^1.11.20":
   version: 1.11.23
   resolution: "dayjs@npm:1.11.23"
@@ -10285,30 +10204,6 @@ __metadata:
   peerDependencies:
     vue: ^3.3.7
   checksum: 10c0/a82d9e828c0f09fddf339a5434e0eb95b8ec02d5906d7a76bd5deba843b4a856c31f9e5814d623e8d9f8e91179fbf33f3017673befbb76d77889603106b89987
-  languageName: node
-  linkType: hard
-
-"element-plus@npm:^2.3.0":
-  version: 2.13.3
-  resolution: "element-plus@npm:2.13.3"
-  dependencies:
-    "@ctrl/tinycolor": "npm:^3.4.1"
-    "@element-plus/icons-vue": "npm:^2.3.2"
-    "@floating-ui/dom": "npm:^1.0.1"
-    "@popperjs/core": "npm:@sxzz/popperjs-es@^2.11.7"
-    "@types/lodash": "npm:^4.17.20"
-    "@types/lodash-es": "npm:^4.17.12"
-    "@vueuse/core": "npm:^10.11.0"
-    async-validator: "npm:^4.2.5"
-    dayjs: "npm:^1.11.19"
-    lodash: "npm:^4.17.23"
-    lodash-es: "npm:^4.17.23"
-    lodash-unified: "npm:^1.0.3"
-    memoize-one: "npm:^6.0.0"
-    normalize-wheel-es: "npm:^1.2.0"
-  peerDependencies:
-    vue: ^3.3.0
-  checksum: 10c0/762c517e77044d2b98a8881cc6989d84984cd2dc01105e7baa5691d7e606590cb21c60c0bda950d5346f85f9c99105ec2104151f463290566fc9eb2182d8f3cc
   languageName: node
   linkType: hard
 
@@ -14410,13 +14305,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.23":
-  version: 4.17.23
-  resolution: "lodash-es@npm:4.17.23"
-  checksum: 10c0/3150fb6660c14c7a6b5f23bd11597d884b140c0e862a17fdb415aaa5ef7741523182904a6b7929f04e5f60a11edb5a79499eb448734381c99ffb3c4734beeddd
-  languageName: node
-  linkType: hard
-
 "lodash-es@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash-es@npm:4.18.1"
@@ -15593,7 +15481,7 @@ __metadata:
     "@nuxt/devtools": "npm:^3.4.1"
     "@nuxtjs/sitemap": "npm:^5.3.5"
     "@nuxtjs/turnstile": "npm:^0.6.3"
-    "@pennsieve-viz/core": "npm:0.4.0"
+    "@pennsieve-viz/core": "npm:0.5.0"
     "@pennsieve-viz/micro-ct": "npm:1.0.72"
     "@pinia-plugin-persistedstate/nuxt": "npm:^1.2.1"
     "@pinia/nuxt": "npm:^0.5.5"
@@ -15621,11 +15509,11 @@ __metadata:
     plyr: "npm:^3.8.4"
     postinstall-postinstall: "npm:^2.1.0"
     postscribe: "npm:^2.0.8"
-    precision-dashwidgets: "npm:1.0.1"
+    precision-dashwidgets: "npm:1.1.0"
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
-    sparc-dashwidgets: "npm:1.5.0"
+    sparc-dashwidgets: "npm:1.5.1"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.5.0"
@@ -17191,31 +17079,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"precision-dashwidgets@npm:1.0.1":
-  version: 1.0.1
-  resolution: "precision-dashwidgets@npm:1.0.1"
+"precision-dashwidgets@npm:1.1.0":
+  version: 1.1.0
+  resolution: "precision-dashwidgets@npm:1.1.0"
   dependencies:
     "@duckdb/duckdb-wasm": "npm:^1.30.0"
-    "@pennsieve-viz/core": "npm:0.1.6"
     chart.js: "npm:^4.5.1"
     d3: "npm:^7.9.0"
     regl: "npm:^2.1.1"
     vue: "npm:^3.5.18"
   peerDependencies:
-    "@deck.gl/core": ">=9.1.0"
-    "@deck.gl/extensions": ">=9.1.0"
-    "@deck.gl/geo-layers": ">=9.1.0"
-    "@deck.gl/layers": ">=9.1.0"
-    "@deck.gl/mesh-layers": ">=9.1.0"
     "@element-plus/icons-vue": ^2.3.1
-    "@luma.gl/constants": ">=9.1.0"
-    "@luma.gl/core": ">=9.1.0"
-    "@luma.gl/engine": ">=9.1.0"
-    "@luma.gl/shadertools": ">=9.1.0"
-    "@luma.gl/webgl": ">=9.1.0"
+    "@pennsieve-viz/core": ^0.5.0
     element-plus: ^2.11.0
     pinia: ^3.0.3
-  checksum: 10c0/c4762f444a4ae974d647ed08e33fffbf7ca216d4523ec7a2895f65c365420c1599251abdec271a90293feaf7d173b92d89ee1640afadc9908e60c1a72360dacc
+  checksum: 10c0/cb703fa81d4b30a8de9f940e5170062c760c745f4dc179be15c69711d7a5007d1774f996275dd5f7bc6ae5247e88c09fa4017f2aa679f9ccb25ffe39488b63a8
   languageName: node
   linkType: hard
 
@@ -18753,9 +18631,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.5.0":
-  version: 1.5.0
-  resolution: "sparc-dashwidgets@npm:1.5.0"
+"sparc-dashwidgets@npm:1.5.1":
+  version: 1.5.1
+  resolution: "sparc-dashwidgets@npm:1.5.1"
   dependencies:
     "@pennsieve-viz/micro-ct": "npm:^1.0.72"
     axios: "npm:^1.6.7"
@@ -18774,11 +18652,11 @@ __metadata:
     "@luma.gl/engine": ">=9.1.0"
     "@luma.gl/shadertools": ">=9.1.0"
     "@luma.gl/webgl": ">=9.1.0"
-    "@pennsieve-viz/core": ^0.3.4 || ^0.4.0
+    "@pennsieve-viz/core": ^0.3.4 || ^0.4.0 || ^0.5.0
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/75d7f82d0f5a0152416163180da038f29c1cc2b0af87b18d0fbf170b0021e5e15b6c8c4c230cb771160b0f85796e38b246cc3be3357be600fe8a193add16af0b
+  checksum: 10c0/c6e40082e1e623a891e68ecf79e560d278fbbeae5da06d16778b9cbcae7422c049a389ef287f3fe964bf895d0cb44c98946e8d8410e90e7906f1525ace182f40
   languageName: node
   linkType: hard
 
@@ -20803,7 +20681,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-demi@npm:>=0.14.8, vue-demi@npm:^0.14.10":
+"vue-demi@npm:^0.14.10":
   version: 0.14.10
   resolution: "vue-demi@npm:0.14.10"
   peerDependencies:
