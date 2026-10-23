@@ -15509,7 +15509,7 @@ __metadata:
     plyr: "npm:^3.8.4"
     postinstall-postinstall: "npm:^2.1.0"
     postscribe: "npm:^2.0.8"
-    precision-dashwidgets: "npm:1.1.0"
+    precision-dashwidgets: "npm:1.2.0"
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
@@ -17079,9 +17079,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"precision-dashwidgets@npm:1.1.0":
-  version: 1.1.0
-  resolution: "precision-dashwidgets@npm:1.1.0"
+"precision-dashwidgets@npm:1.2.0":
+  version: 1.2.0
+  resolution: "precision-dashwidgets@npm:1.2.0"
   dependencies:
     "@duckdb/duckdb-wasm": "npm:^1.30.0"
     chart.js: "npm:^4.5.1"
@@ -17093,7 +17093,7 @@ __metadata:
     "@pennsieve-viz/core": ^0.5.0
     element-plus: ^2.11.0
     pinia: ^3.0.3
-  checksum: 10c0/cb703fa81d4b30a8de9f940e5170062c760c745f4dc179be15c69711d7a5007d1774f996275dd5f7bc6ae5247e88c09fa4017f2aa679f9ccb25ffe39488b63a8
+  checksum: 10c0/d1bfe7258777fee2f03fbd56223390ff55ba51e6b8626fcae9501375a9bfde255002c69b608cf359e9566dcf3a459a0ab700219b58ec13bbf7866fd88579cb9f
   languageName: node
   linkType: hard
 
