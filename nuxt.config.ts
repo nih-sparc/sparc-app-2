@@ -155,6 +155,13 @@ export default defineNuxtConfig({
     public: {
       discover_api_host: process.env.PENNSIEVE_DISCOVER_API_HOST || 'https://api.pennsieve.io/discover',
       PENNSIEVE_DISCOVER_API_HOST_V2: process.env.PENNSIEVE_DISCOVER_API_HOST_V2 || 'https://api2.pennsieve.io',
+      // Discover API for the Precision dashboard's Pennsieve datasets
+      // (utils/precisionDatasets.js). Set separately so the dashboard can read datasets
+      // published on dev (https://api2.pennsieve.net) while the rest of the site uses prod.
+      PRECISION_DISCOVER_API_HOST:
+        process.env.PRECISION_DISCOVER_API_HOST ||
+        process.env.PENNSIEVE_DISCOVER_API_HOST_V2 ||
+        'https://api2.pennsieve.io',
       api2_host: process.env.PENNSIEVE_API2_HOST || 'https://api2.pennsieve.io',
       // The anonymous public downloads API (https://downloads.pennsieve.io):
       // file links, zips and selections without signing in. Empty means
