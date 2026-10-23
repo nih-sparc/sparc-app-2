@@ -58,7 +58,8 @@ export const PRECISION_DATASETS = [
 
 /** The datasets available against this discover API host, with their `packageId` resolved. */
 export function precisionDatasetsFor(api2Url) {
-  const host = String(api2Url || "").replace(/\/+$/, "");
+  // Tolerate stray whitespace and trailing slashes in the env var
+  const host = String(api2Url || "").trim().replace(/\/+$/, "");
   return PRECISION_DATASETS.map((d) => ({ ...d, packageId: d.packageIds?.[host] ?? null })).filter(
     (d) => d.url || d.packageId
   );

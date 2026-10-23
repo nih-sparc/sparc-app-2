@@ -70,7 +70,11 @@ const breadcrumb = [
 ];
 
 // --- Dataset (see utils/precisionDatasets.js) ---
-const api2Url = useRuntimeConfig().public.PRECISION_DISCOVER_API_HOST;
+// Trimmed: a config var saved with a trailing space would otherwise hide the package
+// datasets and break the API URL
+const api2Url = String(useRuntimeConfig().public.PRECISION_DISCOVER_API_HOST || "")
+  .trim()
+  .replace(/\/+$/, "");
 const datasets = precisionDatasetsFor(api2Url);
 const selectedDatasetId = ref(datasets[0]?.id ?? null);
 const selectedDataset = computed(() => datasets.find((d) => d.id === selectedDatasetId.value));
