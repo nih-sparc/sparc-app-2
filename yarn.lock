@@ -15504,12 +15504,12 @@ __metadata:
     nuxt-simple-robots: "npm:^4.0.1"
     nuxt-svgo: "npm:^5.3.0"
     patch-package: "npm:^8.0.1"
-    pennsieve-dashboard: "npm:1.4.0"
+    pennsieve-dashboard: "npm:1.4.1"
     plotly.js: "npm:2.35.3"
     plyr: "npm:^3.8.4"
     postinstall-postinstall: "npm:^2.1.0"
     postscribe: "npm:^2.0.8"
-    precision-dashwidgets: "npm:1.2.0"
+    precision-dashwidgets: "npm:1.2.1"
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
@@ -16321,9 +16321,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pennsieve-dashboard@npm:1.4.0":
-  version: 1.4.0
-  resolution: "pennsieve-dashboard@npm:1.4.0"
+"pennsieve-dashboard@npm:1.4.1":
+  version: 1.4.1
+  resolution: "pennsieve-dashboard@npm:1.4.1"
   dependencies:
     "@element-plus/icons-vue": "npm:^2.3.2"
     dompurify: "npm:^3.2.6"
@@ -16333,7 +16333,7 @@ __metadata:
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/a1709e3cc824c2d6d34a3280dfc3e67ed5b41b2cb158ff5da5715ff6414425774fc9220d0153e9ec8ab0ec285994f6f6f9d15faa50dfeac3e655d2172ac4e499
+  checksum: 10c0/d010e96278240271ac8acb944e5963f7c50edaec31191c63290dc25281887ac3ddf5df209cf8bebb42b1e4f47ddc4cf7e16aea789af1e0d42735142fc7c2c6d9
   languageName: node
   linkType: hard
 
@@ -17079,9 +17079,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"precision-dashwidgets@npm:1.2.0":
-  version: 1.2.0
-  resolution: "precision-dashwidgets@npm:1.2.0"
+"precision-dashwidgets@npm:1.2.1":
+  version: 1.2.1
+  resolution: "precision-dashwidgets@npm:1.2.1"
   dependencies:
     "@duckdb/duckdb-wasm": "npm:^1.30.0"
     chart.js: "npm:^4.5.1"
@@ -17093,7 +17093,7 @@ __metadata:
     "@pennsieve-viz/core": ^0.5.0
     element-plus: ^2.11.0
     pinia: ^3.0.3
-  checksum: 10c0/d1bfe7258777fee2f03fbd56223390ff55ba51e6b8626fcae9501375a9bfde255002c69b608cf359e9566dcf3a459a0ab700219b58ec13bbf7866fd88579cb9f
+  checksum: 10c0/16c347f15da6f0237c527f7565c13ce75ced11e1b033d6808fe45764be386551fdd8493a2cca6896057cc5f7745049cbe1a9ba41f4844ad7200f8e0fc32fc9ce
   languageName: node
   linkType: hard
 
