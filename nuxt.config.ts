@@ -117,6 +117,7 @@ export default defineNuxtConfig({
     '/resources/osparc-services': { redirect: '/tools-and-resources/4LkLiH5s4FV0LVJd3htsvH' },
     '/resources/submit': { redirect: '/contact-us?type=tool' },
     '/apps/precision-dashboard': { ssr:false },
+    '/apps/precision-dashboard/**': { ssr:false },
     // COOP/COEP for cross-origin isolated routes are set per browser in
     // server/middleware/crossOriginIsolation.js
   },
