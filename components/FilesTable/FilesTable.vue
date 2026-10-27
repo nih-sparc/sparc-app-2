@@ -603,18 +603,22 @@ export default {
     },
 
     /**
-     * A download-service view link to the file, opened in the browser or Microsoft's Office viewer
+     * A download-service view link to the file, opened in the browser or Microsoft's Office viewer.
+     * The Office viewer caps the URL it opens, which a presigned link is over, so an Office
+     * file gets a short link that redirects to one.
      * @param {Object} scope
      */
     getViewFileUrl(scope) {
+      const office = this.isMicrosoftFileType(scope)
       return usePublicFileLink({
         datasetId: this.datasetInfo.id,
         version: this.datasetVersion,
         path: scope.row.path,
-        purpose: 'view'
+        purpose: 'view',
+        short: office
       }).then(({ url }) => {
         const encodedUrl = encodeURIComponent(url)
-        return this.isMicrosoftFileType(scope) ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}` : url
+        return office ? `https://view.officeapps.live.com/op/view.aspx?src=${encodedUrl}` : url
       })
     },
 

@@ -5,17 +5,19 @@ import { publicDownloadsBase, publicFileUrl, startBrowserDownload } from '@/util
  * A download-service link to one file of a published version, as the
  * signed-in visitor if there is one: { url, expiresAt, fileName, size }.
  * purpose "view" is for viewers and previews (recorded as a view, not a
- * download); without it, the link downloads the file. Pass config where
- * useRuntimeConfig can't be called (after an await in setup on the server).
+ * download); without it, the link downloads the file. short asks for a
+ * short link in place of the presigned one (Microsoft's Office viewer).
+ * Pass config where useRuntimeConfig can't be called (after an await in
+ * setup on the server).
  */
-export async function usePublicFileLink({ datasetId, version, path, purpose }, config = useRuntimeConfig()) {
+export async function usePublicFileLink({ datasetId, version, path, purpose, short }, config = useRuntimeConfig()) {
   const token = (await useGetToken()) || ''
   const base = publicDownloadsBase({
     api2Host: config.public.api2_host,
     publicHost: config.public.download_public_host,
     token,
   })
-  return publicFileUrl({ base, token, datasetId, version, path, purpose })
+  return publicFileUrl({ base, token, datasetId, version, path, purpose, short })
 }
 
 // Downloads one file of a published version through a link.
