@@ -2,8 +2,8 @@
   <div class="page-container">
     <Breadcrumb :breadcrumb="breadcrumb" :title="dataset.label" />
     <div class="px-32 py-4 page-actions">
-      <PrecisionBetaTag />
       <NuxtLink class="all-datasets" to="/apps/precision-dashboard">← All datasets</NuxtLink>
+      <PrecisionBetaTag />
     </div>
     <PrecisionDashboard :key="dataset.id" :dataset="dataset" :api2Url="api2Url" />
   </div>
