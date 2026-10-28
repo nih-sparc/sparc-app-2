@@ -116,7 +116,7 @@ const services = {
 };
 
 function widget(id, component, componentKey, componentName, Props, { x = 0, w = 12 } = {}) {
-  return { id, x, y: 0, w, h: 16, componentKey, componentName, component, Props };
+  return { id, x, y: 0, w, h: 15, componentKey, componentName, component, Props };
 }
 
 // One dashboard (tab) per entry in the dataset's `tabs`
