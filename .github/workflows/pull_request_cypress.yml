@@ -106,7 +106,14 @@ jobs:
           install: false
           build: yarn build
           start: yarn preview --port 3000
-          wait-on: http://localhost:3000
+          # cypress-io/github-action's default wait-on sends a HEAD request and has
+          # been failing here with "Socket closed before the connection was
+          # established" (not a timeout - it fails almost immediately) for reasons
+          # we couldn't reproduce locally on Windows or a real Linux kernel (WSL2)
+          # with an identical build. Use a GET-based check instead - the same
+          # method pull_request_playwright.yml already uses reliably on this same
+          # runner - and dump diagnostics if it still fails.
+          wait-on: "bash .github/scripts/wait-for-preview.sh http://localhost:3000"
           record: true
           parallel: true
           tag: PR
