@@ -115,7 +115,7 @@ const services = {
   cloudfront,
 };
 
-function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 15 } = {}) {
+function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 14 } = {}) {
   return { id, x, y, w, h, componentKey, componentName, component, Props };
 }
 
@@ -166,12 +166,12 @@ const TABS = {
         "Chromatin Accessibility",
         { initialGene: genes.chromatin, config },
         // Full width, with the links table underneath; both fit on one screen
-        { h: 9 }
+        { h: 8 }
       ),
       widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
         initialGene: genes.chromatin,
         config,
-      }, { y: 9, h: 7 }),
+      }, { y: 8, h: 6 }),
     ],
   }),
 };
