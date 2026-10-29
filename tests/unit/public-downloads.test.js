@@ -58,6 +58,21 @@ describe('download-service requests', () => {
     assert.equal(fetchFn.mock.calls[0].arguments[1].headers.Authorization, 'Bearer tok')
   })
 
+  it('asks for a short link only when told to: the Office viewer', async () => {
+    const fetchFn = respond(200, { url: 'https://downloads.pennsieve.io/l/abcdefghijklmnopqrstuv' })
+    const base = 'https://downloads.pennsieve.io/public'
+    await publicFileUrl({ base, token: '', datasetId: 520, version: 1, path: 'files/manifest.xlsx', purpose: 'view', short: true }, fetchFn)
+    assert.deepEqual(JSON.parse(fetchFn.mock.calls[0].arguments[1].body), {
+      datasetId: 520,
+      version: 1,
+      paths: ['files/manifest.xlsx'],
+      purpose: 'view',
+      short: true,
+    })
+    await publicFileUrl({ base, token: '', datasetId: 520, version: 1, path: 'files/a.pdf', purpose: 'view', short: false }, fetchFn)
+    assert.equal(JSON.parse(fetchFn.mock.calls[1].arguments[1].body).short, undefined)
+  })
+
   it("sends the archive's paths and name", async () => {
     const fetchFn = respond(202, { id: 'pa_x', status: 'QUEUED' })
     await createPublicArchive(

@@ -44,10 +44,13 @@ async function call(base, token, method, path, body, fetchFn) {
 
 // A link to one file of a version: { url, expiresAt, fileName, size }.
 // purpose "view" opens it in the browser (a viewer, a preview) and is
-// recorded as a view, not a download.
-export function publicFileUrl({ base, token, datasetId, version, path, purpose }, fetchFn = globalThis.fetch) {
+// recorded as a view, not a download. short asks for a short link that
+// redirects to the presigned one, for a client that can't carry a presigned
+// link (Microsoft's Office viewer caps the URL it opens).
+export function publicFileUrl({ base, token, datasetId, version, path, purpose, short }, fetchFn = globalThis.fetch) {
   const body = { datasetId: Number(datasetId), version: Number(version) || undefined, paths: [path] }
   if (purpose) body.purpose = purpose
+  if (short) body.short = true
   return call(base, token, 'POST', '/files/url', body, fetchFn)
 }
 
