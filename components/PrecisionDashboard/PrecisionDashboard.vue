@@ -115,7 +115,7 @@ const services = {
   cloudfront,
 };
 
-function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 13 } = {}) {
+function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 12 } = {}) {
   return { id, x, y, w, h, componentKey, componentName, component, Props };
 }
 
