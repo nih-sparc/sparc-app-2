@@ -115,7 +115,7 @@ const services = {
   cloudfront,
 };
 
-function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 14 } = {}) {
+function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 13 } = {}) {
   return { id, x, y, w, h, componentKey, componentName, component, Props };
 }
 
@@ -166,12 +166,12 @@ const TABS = {
         "Chromatin Accessibility",
         { initialGene: genes.chromatin, config },
         // Full width, with the links table underneath; both fit on one screen
-        { h: 8 }
+        { h: 7 }
       ),
       widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
         initialGene: genes.chromatin,
         config,
-      }, { y: 8, h: 6 }),
+      }, { y: 7, h: 6 }),
     ],
   }),
 };
@@ -212,9 +212,5 @@ const dashboardOptions = props.dataset.tabs.map((tab) => {
 }
 .dataset-error {
   color: #b91c1c;
-}
-:deep(.grid-stack-item) {
-  width: 100%;
-  height: 100% !important;
 }
 </style>
