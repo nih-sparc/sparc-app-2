@@ -166,12 +166,12 @@ const TABS = {
         "Chromatin Accessibility",
         { initialGene: genes.chromatin, config },
         // Full width, with the links table underneath; both fit on one screen
-        { h: 11 }
+        { h: 9 }
       ),
       widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
         initialGene: genes.chromatin,
         config,
-      }, { y: 11, h: 8 }),
+      }, { y: 9, h: 7 }),
     ],
   }),
 };
