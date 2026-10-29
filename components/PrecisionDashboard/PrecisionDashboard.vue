@@ -115,8 +115,8 @@ const services = {
   cloudfront,
 };
 
-function widget(id, component, componentKey, componentName, Props, { x = 0, w = 12 } = {}) {
-  return { id, x, y: 0, w, h: 15, componentKey, componentName, component, Props };
+function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 15 } = {}) {
+  return { id, x, y, w, h, componentKey, componentName, component, Props };
 }
 
 // One dashboard (tab) per entry in the dataset's `tabs`
@@ -165,12 +165,13 @@ const TABS = {
         "ChromatinAccessibility",
         "Chromatin Accessibility",
         { initialGene: genes.chromatin, config },
-        { w: 6 }
+        // Full width, with the links table underneath; both fit on one screen
+        { h: 11 }
       ),
       widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
         initialGene: genes.chromatin,
         config,
-      }, { x: 6, w: 6 }),
+      }, { y: 11, h: 8 }),
     ],
   }),
 };
