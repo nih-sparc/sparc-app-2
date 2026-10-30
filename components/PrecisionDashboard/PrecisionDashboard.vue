@@ -32,8 +32,7 @@ import {
   SideBySide as SideBySideWidget,
   GeneXDistribution as GeneXDistributionWidget,
   ProportionPlot as ProportionPlotWidget,
-  ChromatinAccessibility as ChromatinAccessibilityWidget,
-  LinkedPeaks as LinkedPeaksWidget,
+  ChromatinLinks as ChromatinLinksWidget,
   usePrecisionStore,
 } from "precision-dashwidgets";
 import "pennsieve-dashboard/style.css";
@@ -96,16 +95,14 @@ const GeneExpression = markRaw(GeneExpressionWidget);
 const SideBySide = markRaw(SideBySideWidget);
 const GeneXDistribution = markRaw(GeneXDistributionWidget);
 const ProportionPlot = markRaw(ProportionPlotWidget);
-const ChromatinAccessibility = markRaw(ChromatinAccessibilityWidget);
-const LinkedPeaks = markRaw(LinkedPeaksWidget);
+const ChromatinLinks = markRaw(ChromatinLinksWidget);
 
 const availableWidgets = [
   { name: "GeneExpression", component: GeneExpression },
   { name: "SideBySide", component: SideBySide },
   { name: "GeneXDistribution", component: GeneXDistribution },
   { name: "ProportionPlot", component: ProportionPlot },
-  { name: "ChromatinAccessibility", component: ChromatinAccessibility },
-  { name: "LinkedPeaks", component: LinkedPeaks },
+  { name: "ChromatinLinks", component: ChromatinLinks },
 ];
 
 // Refs, not values: the dashboard copies `services` once, and refs are how loaded assets
@@ -158,20 +155,15 @@ const TABS = {
   }),
   chromatin: (genes, config) => ({
     name: "Chromatin Accessibility",
+    // One widget: the chromatin view with its linked peaks table underneath
     layout: [
       widget(
-        "ChromatinAccessibility-1",
-        ChromatinAccessibility,
-        "ChromatinAccessibility",
-        "Chromatin Accessibility",
-        { initialGene: genes.chromatin, config },
-        // Full width, with the links table underneath; both fit on one screen
-        { h: 7 }
+        "ChromatinLinks-1",
+        ChromatinLinks,
+        "ChromatinLinks",
+        "Chromatin Accessibility & Linked Peaks",
+        { initialGene: genes.chromatin, config }
       ),
-      widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
-        initialGene: genes.chromatin,
-        config,
-      }, { y: 7, h: 6 }),
     ],
   }),
 };
