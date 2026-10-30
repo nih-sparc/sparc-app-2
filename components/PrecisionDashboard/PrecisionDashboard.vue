@@ -49,6 +49,7 @@ const props = defineProps({
 const {
   assets,
   cloudfront,
+  refresh: refreshCloudfront,
   loading: assetsLoading,
   error: assetsError,
 } = useCoreViewerAssets({
@@ -106,10 +107,12 @@ const availableWidgets = [
 ];
 
 // Refs, not values: the dashboard copies `services` once, and refs are how loaded assets
-// and renewed credentials reach the widgets
+// and renewed credentials reach the widgets. Widgets call refreshCloudfront when they find
+// the credentials expired (renewal timers pause while the computer sleeps).
 const services = {
   s3Url,
   cloudfront,
+  refreshCloudfront,
 };
 
 function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 13 } = {}) {
