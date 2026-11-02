@@ -24,8 +24,11 @@ export const PRECISION_DATASETS = [
   {
     id: "human-drg-atlas",
     label: "Human DRG Atlas",
-    sparcDatasetId: 480,
-    summary: "Single nucleus sequencing atlas of human dorsal root ganglion.",
+    // sparcDatasetId: add once the dataset is published on SPARC. Not SPARC 480, which is a
+    // single site's data; this atlas pools neurons from the PRECISION sites and published studies.
+    summary:
+      "Atlas of human dorsal root ganglion neurons: 22 sensory neuron types, pooled from " +
+      "PRECISION network sites and published single-cell and single-nucleus studies.",
     modalities: ["snRNA-seq"],
     url: "https://temp-precision-dashboard-data.s3.us-east-1.amazonaws.com/humandrg/v2",
     tabs: ["coexpression", "sideBySide", "distribution", "proportion"],
