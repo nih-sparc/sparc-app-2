@@ -83,6 +83,8 @@ for (const key of [
   precisionStore.setSelection(key, null);
 }
 precisionStore.setChromatinFocus(null);
+precisionStore.setChromatinZoom(null);
+precisionStore.resetLinkFilters();
 // Cell atlas links pick the column to group by
 const urlMetadataColumn = useRoute().query.metadataColumn;
 precisionStore.setSelection(
