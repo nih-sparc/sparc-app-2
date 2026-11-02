@@ -32,8 +32,7 @@ import {
   SideBySide as SideBySideWidget,
   GeneXDistribution as GeneXDistributionWidget,
   ProportionPlot as ProportionPlotWidget,
-  ChromatinAccessibility as ChromatinAccessibilityWidget,
-  LinkedPeaks as LinkedPeaksWidget,
+  ChromatinLinks as ChromatinLinksWidget,
   usePrecisionStore,
 } from "precision-dashwidgets";
 import "pennsieve-dashboard/style.css";
@@ -50,6 +49,7 @@ const props = defineProps({
 const {
   assets,
   cloudfront,
+  refresh: refreshCloudfront,
   loading: assetsLoading,
   error: assetsError,
 } = useCoreViewerAssets({
@@ -83,6 +83,8 @@ for (const key of [
   precisionStore.setSelection(key, null);
 }
 precisionStore.setChromatinFocus(null);
+precisionStore.setChromatinZoom(null);
+precisionStore.resetLinkFilters();
 // Cell atlas links pick the column to group by
 const urlMetadataColumn = useRoute().query.metadataColumn;
 precisionStore.setSelection(
@@ -96,27 +98,27 @@ const GeneExpression = markRaw(GeneExpressionWidget);
 const SideBySide = markRaw(SideBySideWidget);
 const GeneXDistribution = markRaw(GeneXDistributionWidget);
 const ProportionPlot = markRaw(ProportionPlotWidget);
-const ChromatinAccessibility = markRaw(ChromatinAccessibilityWidget);
-const LinkedPeaks = markRaw(LinkedPeaksWidget);
+const ChromatinLinks = markRaw(ChromatinLinksWidget);
 
 const availableWidgets = [
   { name: "GeneExpression", component: GeneExpression },
   { name: "SideBySide", component: SideBySide },
   { name: "GeneXDistribution", component: GeneXDistribution },
   { name: "ProportionPlot", component: ProportionPlot },
-  { name: "ChromatinAccessibility", component: ChromatinAccessibility },
-  { name: "LinkedPeaks", component: LinkedPeaks },
+  { name: "ChromatinLinks", component: ChromatinLinks },
 ];
 
 // Refs, not values: the dashboard copies `services` once, and refs are how loaded assets
-// and renewed credentials reach the widgets
+// and renewed credentials reach the widgets. Widgets call refreshCloudfront when they find
+// the credentials expired (renewal timers pause while the computer sleeps).
 const services = {
   s3Url,
   cloudfront,
+  refreshCloudfront,
 };
 
-function widget(id, component, componentKey, componentName, Props, { x = 0, w = 12 } = {}) {
-  return { id, x, y: 0, w, h: 16, componentKey, componentName, component, Props };
+function widget(id, component, componentKey, componentName, Props, { x = 0, y = 0, w = 12, h = 13 } = {}) {
+  return { id, x, y, w, h, componentKey, componentName, component, Props };
 }
 
 // One dashboard (tab) per entry in the dataset's `tabs`
@@ -158,19 +160,15 @@ const TABS = {
   }),
   chromatin: (genes, config) => ({
     name: "Chromatin Accessibility",
+    // One widget: the chromatin view with its linked peaks table underneath
     layout: [
       widget(
-        "ChromatinAccessibility-1",
-        ChromatinAccessibility,
-        "ChromatinAccessibility",
-        "Chromatin Accessibility",
-        { initialGene: genes.chromatin, config },
-        { w: 6 }
+        "ChromatinLinks-1",
+        ChromatinLinks,
+        "ChromatinLinks",
+        "Chromatin Accessibility & Linked Peaks",
+        { initialGene: genes.chromatin, config }
       ),
-      widget("LinkedPeaks-1", LinkedPeaks, "LinkedPeaks", "Linked Peaks", {
-        initialGene: genes.chromatin,
-        config,
-      }, { x: 6, w: 6 }),
     ],
   }),
 };
@@ -199,11 +197,31 @@ const dashboardOptions = props.dataset.tabs.map((tab) => {
   --color: #243d8e;
   --el-dialog-width: 90%;
   --dash-secondary: #981f3280;
-  --dash-background: #f6f7fb;
+  /* Widgets are white cards on the page's grey background, so each one reads as a card.
+     The hover color matches, so a card doesn't turn grey under the mouse. */
+  --dash-background: #ffffff;
+  --dash-backgroundBlocked: #ffffff;
+  --dash-widget-border: 1px solid #e4e7ec;
+  /* Square corners on cards and controls */
+  --dash-widget-radius: 0;
+  --precision-radius: 0;
   /* Precision widgets follow --el-color-primary above. To give them their own look
      on this page, set --precision-* here (see the precision-dashwidgets README, "Theming"),
      e.g. --precision-primary: #243d8e; */
   height: 900px;
+
+  /* The dashboard defaults to Roboto, which this site doesn't load: use the site's font */
+  &,
+  :deep(.dashboard-app) {
+    font-family: inherit;
+  }
+  :deep(.grid-stack-item-content) {
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+  }
+  /* Widget titles: the strongest text in the card (the dashboard's default is 13px) */
+  :deep(.widget-name) {
+    font-size: 16px;
+  }
 }
 .dataset-status {
   font-size: 16px;
@@ -211,9 +229,5 @@ const dashboardOptions = props.dataset.tabs.map((tab) => {
 }
 .dataset-error {
   color: #b91c1c;
-}
-:deep(.grid-stack-item) {
-  width: 100%;
-  height: 100% !important;
 }
 </style>
