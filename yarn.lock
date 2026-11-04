@@ -12,11 +12,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/flatmapvuer@npm:1.20.0":
-  version: 1.20.0
-  resolution: "@abi-software/flatmapvuer@npm:1.20.0"
+"@abi-software/flatmapvuer@npm:1.21.0":
+  version: 1.21.0
+  resolution: "@abi-software/flatmapvuer@npm:1.21.0"
   dependencies:
-    "@abi-software/map-utilities": "npm:1.13.0"
+    "@abi-software/map-utilities": "npm:1.14.0"
     "@abi-software/sparc-annotation": "npm:0.3.2"
     "@abi-software/svg-sprite": "npm:1.4.0"
     "@element-plus/icons-vue": "npm:^2.3.2"
@@ -41,7 +41,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/bde8882e39e58e401d720426e614fd14465eb4259cee226521ed9ad0cba3228436b249fec18799910d04ba3f235e834dbf756c039967d21f30f629d4e3a532b8
+  checksum: 10c0/902e3f75f53d850918d7b9c16da278e1b6ff99fe9d6706eda08ad87690979d4df6b8f4f1b9508663c62fb639221b6a22942ca2ad0f8605659920b6674b255c37
   languageName: node
   linkType: hard
 
@@ -107,9 +107,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@abi-software/map-utilities@npm:1.13.0":
-  version: 1.13.0
-  resolution: "@abi-software/map-utilities@npm:1.13.0"
+"@abi-software/map-utilities@npm:1.14.0":
+  version: 1.14.0
+  resolution: "@abi-software/map-utilities@npm:1.14.0"
   dependencies:
     "@abi-software/svg-sprite": "npm:1.4.0"
     "@element-plus/icons-vue": "npm:^2.3.2"
@@ -134,17 +134,17 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/304909257bd251509eaedba58a189313e8856545ebd9dfd3ba50fe41b837f16956950a415ba0b6502d84a7292e2bf45d7ca7222e2ff8ee63d023ac5dcca9fb68
+  checksum: 10c0/0c36f25115238e29a99c48c1786b84fdf4c735bf51598dfc63ff8b57833b1c594b3a1e82ef2adf75cb8872ed730eebe064a8ed12247e58697a6c77a7eb997d5a
   languageName: node
   linkType: hard
 
-"@abi-software/mapintegratedvuer@npm:1.23.0":
-  version: 1.23.0
-  resolution: "@abi-software/mapintegratedvuer@npm:1.23.0"
+"@abi-software/mapintegratedvuer@npm:1.24.1":
+  version: 1.24.1
+  resolution: "@abi-software/mapintegratedvuer@npm:1.24.1"
   dependencies:
-    "@abi-software/flatmapvuer": "npm:1.20.0"
+    "@abi-software/flatmapvuer": "npm:1.21.0"
     "@abi-software/map-side-bar": "npm:2.20.0"
-    "@abi-software/map-utilities": "npm:1.13.0"
+    "@abi-software/map-utilities": "npm:1.14.0"
     "@abi-software/plotvuer": "npm:1.3.0"
     "@abi-software/scaffoldvuer": "npm:2.1.0"
     "@abi-software/simulationvuer": "npm:4.4.0"
@@ -157,8 +157,8 @@ __metadata:
     "@rollup/rollup-linux-x64-gnu": "npm:4.63.0"
     "@rollup/rollup-win32-x64-msvc": "npm:4.63.0"
     "@vitejs/plugin-vue": "npm:^6.0.8"
-    css-element-queries: "npm:^1.2.3"
     element-plus: "npm:^2.14.5"
+    html-to-image: "npm:^1.11.13"
     marked: "npm:^8.0.1"
     mitt: "npm:^3.0.1"
     pinia: "npm:^4.0.3"
@@ -176,7 +176,7 @@ __metadata:
       optional: true
     "@rollup/rollup-win32-x64-msvc":
       optional: true
-  checksum: 10c0/a363c80ef7feb10f4da0fc8d09e22101d42693f18ec69655474bc563b9c56b1c55d47bfc902317e7248b3a4acb7c021fb822492bd72448c8bef6d6c3ebbcfcb9
+  checksum: 10c0/3d0e393951d10ffdbef7082aeac8a86177b4f80a3031b9b05e29745f3ced04086450dda32189010252e5c5300d93d4bb471f0f7d6eb23ccb0234cf5cb3d8a1c8
   languageName: node
   linkType: hard
 
@@ -12684,6 +12684,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-to-image@npm:^1.11.13":
+  version: 1.11.13
+  resolution: "html-to-image@npm:1.11.13"
+  checksum: 10c0/03bd7192d87b99499e37ff12a8e2b41ddce4cf8e33a93dfadff18df0f213434c7f1ba8328db2158f4805da07b7aec3c90aec3152908281153217e86784218b10
+  languageName: node
+  linkType: hard
+
 "http-errors@npm:^2.0.1":
   version: 2.0.1
   resolution: "http-errors@npm:2.0.1"
@@ -15462,7 +15469,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-app@workspace:."
   dependencies:
-    "@abi-software/mapintegratedvuer": "npm:1.23.0"
+    "@abi-software/mapintegratedvuer": "npm:1.24.1"
     "@abi-software/plotcomponents": "npm:^0.2.4"
     "@abi-software/plotdatahelpers": "npm:^0.1.3"
     "@abi-software/simulationvuer": "npm:4.4.0"

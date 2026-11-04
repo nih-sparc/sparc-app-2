@@ -21,6 +21,22 @@ export default defineConfig({
     // pageLoadTimeout: 1024*1024*1024,
     setupNodeEvents(on, config) {
       configureVisualRegression(on)
+      // Headless browsers default to a 1280x720 window, which is smaller than the
+      // 1600x900 viewport. That scales the app down and makes element screenshots
+      // crop outside the captured image (negative Buffer size). Use a larger window.
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        const width = 1920
+        const height = 1080
+        if (browser.name === 'electron') {
+          launchOptions.preferences.width = width
+          launchOptions.preferences.height = height
+        } else if (browser.family === 'chromium') {
+          launchOptions.args.push(`--window-size=${width},${height}`)
+        } else if (browser.family === 'firefox') {
+          launchOptions.args.push(`--width=${width}`, `--height=${height}`)
+        }
+        return launchOptions
+      })
       return dynamicConfig(config)
     },
     expose: {
