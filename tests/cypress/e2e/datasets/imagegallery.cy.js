@@ -95,7 +95,7 @@ datasetIds.forEach((datasetId) => {
                         expect($content, 'Map Viewer should display content').to.contain('Maps')
                       })
                       if (item === 'Scaffold') {
-                        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container > .el-select > .el-select__wrapper > .el-select__selection > .el-select__placeholder > span').should(($title) => {
+                        cy.get('.pane-1 > .content-container > .toolbar > .toolbar-flex-container > .toolbar-left > .el-select > .el-select__wrapper > .el-select__selection > .el-select__placeholder > span').should(($title) => {
                           expect($title, 'Map Viewer should display scaffold').to.contain('Scaffold')
                         })
                         cy.waitForScaffoldLoading()
