@@ -15,6 +15,8 @@
  *   out (no card, and its URL is a 404).
  * - `url`: a plain public URL to the parquet files (no credentials).
  *
+ * `hidden: true` leaves a dataset off the card list; its URL still opens it.
+ *
  * `config` is passed to every widget: `hiddenColumns` are left out of metadata dropdowns,
  * `defaultColorBy` is the column selected first, `cellTypeColumn` groups cells by type
  * (the processor's manifest calls it `cell_type_column`), and `externalLink` turns legend
@@ -46,6 +48,8 @@ export const PRECISION_DATASETS = [
   {
     id: "human-drg-multiome",
     label: "Human DRG Multiome ATAC + RNA-seq",
+    // Not ready for the card list yet; still opens at /apps/precision-dashboard/human-drg-multiome
+    hidden: true,
     // sparcDatasetId: add once the dataset is published on SPARC
     summary: "Single-nucleus multiome (ATAC + RNA-seq) of human dorsal root ganglion.",
     modalities: ["snRNA-seq", "snATAC-seq"],

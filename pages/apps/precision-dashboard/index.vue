@@ -40,7 +40,9 @@ const breadcrumb = [
   { label: "SPARC Apps", to: { name: "apps" } },
 ];
 
-const datasets = precisionDatasetsFor(precisionApiHost(useRuntimeConfig()));
+const datasets = precisionDatasetsFor(precisionApiHost(useRuntimeConfig())).filter(
+  (d) => !d.hidden
+);
 </script>
 
 <style scoped lang="scss">
