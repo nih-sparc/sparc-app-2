@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="heading2 subpage">
-      Dataset does not exist anymore: <b>{{datasetName}}</b>
+      {{ itemLabel }} does not exist anymore: <b>{{datasetName}}</b>
       <hr class="my-16"/>
       <div class="heading3">
-        The dataset with the identifier: <b>{{ doiUrl }}</b> was removed on {{ unpublishedDate }} and is no longer available on the SPARC portal.
+        The {{ itemLabelLower }} with the identifier: <b>{{ doiUrl }}</b> was removed on {{ unpublishedDate }} and is no longer available on the SPARC portal.
         <br/>
         Please refer to the <a href="https://docs.sparc.science/docs/list-of-datasets-that-have-been-removed" target="_blank">List of SPARC Datasets Removed from the SPARC Portal</a>
         for its full bibliographic citation and its statement of unavailability. For information on SPARC's policy on dataset removal, please refer to the Removal of Published Data section of the <a href="https://docs.sparc.science/docs/sparc-changes-to-published-datasets-policy" target="_blank">SPARC Changes to Published Datasets Policy</a>.
@@ -28,7 +28,16 @@ export default {
     },
   },
   computed: {
-    datasetName: function() {
+    isCollection: function () {
+      return propOr('', 'datasetType', this.datasetDetails) === 'collection'
+    },
+    itemLabel: function () {
+      return this.isCollection ? 'Collection' : 'Dataset'
+    },
+    itemLabelLower: function () {
+      return this.isCollection ? 'collection' : 'dataset'
+    },
+    datasetName: function () {
       return propOr('', 'name', this.datasetDetails)
     },
     doiUrl: function() {

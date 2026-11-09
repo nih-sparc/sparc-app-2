@@ -321,6 +321,17 @@ export default {
       })
       datasetDetails = propOr(datasetDetails, 'data', datasetDetails)
       datasetDetails.contributors = datasetDetailsContributors
+      // Pennsieve strips datasetType/updatedAt down to a bare "UNPUBLISHED" stub on the
+      // single-dataset endpoint, but the versions list still carries the full last-known
+      // metadata (including the real unpublish timestamp), so pull those back in for the tombstone.
+      if (propOr(false, 'isUnpublished', datasetDetails)) {
+        const unpublishedVersion = versions.find(v => v.version === datasetDetails.version) || head(versions)
+        datasetDetails = {
+          ...datasetDetails,
+          datasetType: propOr(datasetDetails.datasetType, 'datasetType', unpublishedVersion),
+          updatedAt: propOr(datasetDetails.updatedAt, 'updatedAt', unpublishedVersion)
+        }
+      }
       const openDataFileDistribution = await getOpenDataFileDistribution(
         config,
         propOr(datasetId, 'id', datasetDetails),
