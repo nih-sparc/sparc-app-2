@@ -503,23 +503,6 @@ export default {
 
   data() {
     return {
-      breadcrumb: [
-        {
-          to: {
-            name: 'index'
-          },
-          label: 'Home'
-        },
-        {
-          to: {
-            name: 'data',
-            query: {
-              type: this.$route.query.type
-            }
-          },
-          label: 'Data & Models'
-        }
-      ],
       activeTabId: this.$route.query.datasetDetailsTab ? this.$route.query.datasetDetailsTab : 'abstract',
       markdown: {},
       associatedProjects: [],
@@ -567,6 +550,40 @@ export default {
 
   computed: {
     ...mapState(useMainStore, ['datasetInfo', 'datasetFacetsData']),
+    isCollection() {
+      return propOr('', 'datasetType', this.datasetInfo) === 'collection'
+    },
+    breadcrumb() {
+      const crumbs = [
+        {
+          to: {
+            name: 'index'
+          },
+          label: 'Home'
+        },
+        {
+          to: {
+            name: 'data',
+            query: {
+              type: this.$route.query.type
+            }
+          },
+          label: 'Data & Models'
+        }
+      ]
+      if (this.isCollection) {
+        crumbs.push({
+          to: {
+            name: 'data',
+            query: {
+              type: 'collection'
+            }
+          },
+          label: 'Collections'
+        })
+      }
+      return crumbs
+    },
     defaultTab() {
       return this.tabs[0].id
     },
