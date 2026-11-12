@@ -65,26 +65,26 @@ export default {
       return firstName.charAt(0).toUpperCase() + firstName.slice(1)
     },
     /**
-     * Get the Title from doi.org
+     * Get the Title from doi.org, proxied through our own server. doi.org's
+     * content negotiation redirects through citation.doi.org/CrossRef, and
+     * following that redirect from the browser is subject to each browser's
+     * own CORS/redirect handling (Safari in particular can get a 406 from a
+     * dropped Accept header and throw parsing the non-JSON response), so the
+     * request is made server-side instead to get consistent results everywhere.
      */
     getCitationInfo() {
       this.citationLoading = true
-      fetch(this.doiLink, {
-        method: 'GET',
-        headers: { Accept: 'application/json'}
+      this.$axios.get(`/api/citation?doi=${encodeURIComponent(this.doi)}`)
+      .then(({ data: json }) => {
+        this.title = json.title
+        this.authors = json.author
+        this.publisher = json["container-title"]
+        this.year = json.published["date-parts"][0][0]
+        this.url = json.URL
       })
-      .then(async response => {
-        if (response.status == '404') {
-          this.isDoiValid = false
-          this.$emit('doi-invalid', this.doi)
-        } else {
-          const json = await response.json()
-          this.title = json.title
-          this.authors = json.author
-          this.publisher = json["container-title"]
-          this.year = json.published["date-parts"][0][0]
-          this.url = json.URL
-        }
+      .catch(() => {
+        this.isDoiValid = false
+        this.$emit('doi-invalid', this.doi)
       })
       .finally(() => {
         this.citationLoading = false
@@ -106,12 +106,6 @@ export default {
   },
 
   computed: {
-    doiLink() {
-      if (this.doi === "") {
-        return undefined
-      }
-      return `https://doi.org/${this.doi}`
-    },
     authorCitations() {
       let authorCitationText = ""
       let num = 0
