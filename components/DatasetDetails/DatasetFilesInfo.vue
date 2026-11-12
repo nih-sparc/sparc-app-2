@@ -381,19 +381,16 @@ osparcViewers.value =
       return {}
     })
 
-const url = `${config.public.crosscite_api_host}/format?doi=${doi}&style=apa&lang=en-US`
+// Proxied through our own server (see server/api/citation-format.get.js)
+// since this is the same CrossRef-backed service that behaves inconsistently
+// across browsers when called directly from one.
 const citationText = ref('')
 try {
-  fetch(url).then((crossciteResponse) => {
-    if (crossciteResponse.status != '200') {
-      hasCitationError.value = true
-      failMessage(crossciteResponse.text())
-    }
-    else {
-      crossciteResponse.text().then((text) => {
-        citationText.value = text
-      })
-    }
+  $axios.get(`/api/citation-format?doi=${encodeURIComponent(doi)}&style=apa&lang=en-US`).then(({ data: text }) => {
+    citationText.value = text
+  }).catch(() => {
+    hasCitationError.value = true
+    failMessage(ErrorMessages.methods.crosscite())
   }).finally(() => {
     citationLoading.value = false
   })

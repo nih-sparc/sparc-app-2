@@ -146,22 +146,18 @@ export default {
   },
   methods: {
     /**
-     * gets bibiolography based on citation type for current DOI
+     * gets bibiolography based on citation type for current DOI, proxied
+     * through our own server (see server/api/citation-format.get.js) since
+     * this is the same CrossRef-backed service that behaves inconsistently
+     * across browsers when called directly from one.
      * @param {String} citationType
      */
     getCitationText: function() {
       this.citationLoading = true
       // find all citation types at https://github.com/citation-style-language/style
       this.citationTypes.forEach(citationType => {
-        const url = `${this.crosscite_host}/format?doi=${this.doiValue}&style=${citationType.type}&lang=en-US`
-        fetch(url)
-          .then(response => {
-            if (response.status !== 200) {
-              throw Error
-            }
-            return response.text()
-          })
-          .then(text => {
+        this.$axios.get(`/api/citation-format?doi=${encodeURIComponent(this.doiValue)}&style=${citationType.type}&lang=en-US`)
+          .then(({ data: text }) => {
             citationType.citationText = text
           })
           .catch(() => {
