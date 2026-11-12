@@ -101,6 +101,16 @@ export default {
   watch: {
     items() {
       this.currentIndex = 1
+    },
+    // Lets a parent act on just the cards on screen (and the next page), e.g. to load
+    // details lazily: emits `visible-items-changed` with `{ visible, next }`.
+    windowedItems: {
+      immediate: true,
+      handler(visible) {
+        const start = this.valueAdjustment + this.numberOfItemsVisible
+        const next = (this.items || []).slice(start, start + this.numberOfItemsVisible)
+        this.$emit('visible-items-changed', { visible: visible.filter(Boolean), next })
+      }
     }
   },
   mounted() {
