@@ -74,17 +74,25 @@ export default {
         headers: { Accept: 'application/json'}
       })
       .then(async response => {
-        if (response.status == '404') {
+        if (!response.ok) {
           this.isDoiValid = false
           this.$emit('doi-invalid', this.doi)
-        } else {
-          const json = await response.json()
-          this.title = json.title
-          this.authors = json.author
-          this.publisher = json["container-title"]
-          this.year = json.published["date-parts"][0][0]
-          this.url = json.URL
+          return
         }
+        const json = await response.json()
+        this.title = json.title
+        this.authors = json.author
+        this.publisher = json["container-title"]
+        this.year = json.published["date-parts"][0][0]
+        this.url = json.URL
+      })
+      .catch(() => {
+        // doi.org redirects to each publisher's own site for content negotiation, and that
+        // final hop can fail (CORS, network error, a non-JSON error page) independently of
+        // the DOI itself being valid, so treat it the same as a 404 rather than leaving a
+        // half-populated citation behind.
+        this.isDoiValid = false
+        this.$emit('doi-invalid', this.doi)
       })
       .finally(() => {
         this.citationLoading = false
