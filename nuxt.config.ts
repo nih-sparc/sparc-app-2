@@ -249,7 +249,7 @@ export default defineNuxtConfig({
         compatibility: false,
         source: 'https://www.googletagmanager.com/gtm.js',
         enabled: process.env.ROOT_URL == 'https://sparc.science' ? true : false,
-        debug: true,
+        debug: process.env.NODE_ENV !== 'production',
         loadScript: true,
         enableRouterSync: true,
         trackOnNextTick: false,
