@@ -6,7 +6,6 @@
         :source="asset.asset_url"
         :embed-url="embedUrl"
         :cloudfront="asset.cloudfront || null"
-        @ready="onReady"
         @error="onError"
       />
     </div>
@@ -59,24 +58,12 @@ export default defineComponent({
     const config = useRuntimeConfig()
     const embedUrl = config.public.orthogonal_viewer_url
 
-    console.log('[OrthogonalViewer] embedUrl:', embedUrl)
-    console.log('[OrthogonalViewer] asset.asset_url:', props.asset?.asset_url)
-    console.log('[OrthogonalViewer] asset.cloudfront:', props.asset?.cloudfront ? {
-      policy: props.asset.cloudfront.policy?.substring(0, 20) + '...',
-      signature: props.asset.cloudfront.signature?.substring(0, 20) + '...',
-      key_pair_id: props.asset.cloudfront.key_pair_id,
-    } : null)
-
-    const onReady = () => {
-      console.log('[OrthogonalViewer] iframe ready')
-    }
     const onError = (message) => {
       console.error('Orthogonal viewer error:', message)
     }
 
     return {
       embedUrl,
-      onReady,
       onError,
     }
   },
