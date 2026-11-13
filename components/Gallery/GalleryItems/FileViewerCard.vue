@@ -2,7 +2,7 @@
   <el-card :shadow="shadow" :style="{ padding: '0px', width: width + 'rem' }">
     <div v-loading="!isReady">
       <div class="cursor-pointer" @click.prevent="cardClicked">
-        <img class="thumbnail" :src="thumbnail" alt="thumbnail loading ..." />
+        <img class="thumbnail" :src="thumbnail" alt="thumbnail loading ..." @error="thumbnail = defaultImg" />
       </div>
       <div v-if="showCardDetails" class="details">
         <p v-if="!data.hideType">

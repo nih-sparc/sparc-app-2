@@ -18,9 +18,17 @@
           @selection-changed="galleryFilterChanged"
         />
       </div>
-      <gallery class="file-viewer-gallery" galleryItemType="fileViewer" :items="galleryItems" :cardWidth="13.8" />
+      <gallery
+        class="file-viewer-gallery"
+        galleryItemType="fileViewer"
+        :items="galleryItems"
+        :cardWidth="13.8"
+        @visible-items-changed="onVisibleItemsChanged"
+        @card-clicked="openImageViewer"
+      />
     </div>
     <div v-else>This dataset does not contain any gallery item.</div>
+    <gallery-image-viewer v-model="imageViewerOpen" :item="imageViewerItem" :datasetInfo="datasetInfo" />
   </div>
 </template>
 
@@ -31,6 +39,8 @@ import scicrunch from '@/services/scicrunch'
 import flatmaps from '@/services/flatmaps'
 import Uberons from '@/static/js/uberon-map.js'
 import Gallery from '@/components/Gallery/Gallery.vue'
+import GalleryImageViewer from '@/components/GalleryImageViewer/GalleryImageViewer.vue'
+import { useViewerAssets } from '@/composables/useViewerAssets'
 
 import FormatString from '@/mixins/format-string'
 import MarkedMixin from '@/mixins/marked'
@@ -134,9 +144,14 @@ const getThumbnailData = async (datasetDoi, datasetId, datasetVersion, datasetFa
 export default {
   name: 'ImagesGallery',
   components: {
-    Gallery
+    Gallery,
+    GalleryImageViewer
   },
   mixins: [FormatString, MarkedMixin],
+  setup() {
+    const { fetchDatasetThumbnails, fetchPackageFile } = useViewerAssets()
+    return { fetchDatasetThumbnails, fetchPackageFile }
+  },
   props: {
     markdown: {
       type: String,
@@ -174,6 +189,11 @@ export default {
       scicrunchItems: [],
       timeseriesItems: [],
       timeseriesData: [],
+      thumbnailItems: [],
+      imageViewerOpen: false,
+      imageViewerItem: null,
+      // Bumped by clearGallery() so responses for a previous dataset are ignored.
+      galleryGeneration: 0,
       datasetScicrunch: {},
       galleryFilterOptions: [],
       selectedGalleryFilter: []
@@ -190,9 +210,12 @@ export default {
     isGalleryFilterSet() {
       return this.selectedGalleryFilter.length > 0 && this.selectedGalleryFilter[0] != 'showAll'
     },
+    filterableItems() {
+      return this.thumbnailItems.concat(this.scicrunchItems)
+    },
     galleryItems() {
       if (this.isGalleryFilterSet) {
-        const items = this.scicrunchItems.filter(item => {
+        const items = this.filterableItems.filter(item => {
           return this.selectedGalleryFilter.some(filter => {
             const index = filter[0]
             const label = this.galleryFilterOptions.find(option => option.value == index)?.label
@@ -201,7 +224,7 @@ export default {
         })
         return items
       } else {
-        return this.scicrunchItems.concat(this.timeseriesItems)
+        return this.filterableItems.concat(this.timeseriesItems)
       }
     },
     hasDescription() {
@@ -214,6 +237,9 @@ export default {
   },
   async created() {
     this.loading = true
+    // Processed-image thumbnails (viewer assets), fetched alongside SciCrunch.
+    const generation = this.galleryGeneration
+    const thumbnailsPromise = this.fetchThumbnailItems()
     const { scicrunchData, hasError } = await getThumbnailData(
       this.datasetInfo.doi,
       this.datasetId,
@@ -257,10 +283,23 @@ export default {
             })
         : []
     this.timeseriesData = timeseriesData
+    const thumbnailItems = await thumbnailsPromise
+    if (generation === this.galleryGeneration) this.thumbnailItems = thumbnailItems
+    this.updateGalleryFilterOptions()
 
     this.loading = false
   },
   watch: {
+    // Same component, different dataset: drop the old dataset's thumbnails and load the new ones.
+    async datasetId(newId, oldId) {
+      if (!newId || newId === oldId) return
+      this.clearGallery()
+      const generation = this.galleryGeneration
+      const thumbnailItems = await this.fetchThumbnailItems()
+      if (generation !== this.galleryGeneration) return
+      this.thumbnailItems = thumbnailItems
+      this.updateGalleryFilterOptions()
+    },
     markdown: {
       immediate: true,
       handler: function (text) {
@@ -490,17 +529,7 @@ export default {
           )
         }
         this.scicrunchItems = items
-
-        const galleryItems = this.scicrunchItems
-        const filterLabels = [...new Set(galleryItems.map(item => item.type))]
-        const labelCounts = galleryItems.reduce((counts, item) => {
-          counts[item.type] = (counts[item.type] || 0) + 1
-          return counts
-        }, {})
-        this.galleryFilterOptions = filterLabels.map((type, index) => ({
-          value: index,
-          label: `${type} (${labelCounts[type]})`
-        }))
+        this.updateGalleryFilterOptions()
       }
     }
   },
@@ -510,8 +539,91 @@ export default {
   destroyed() {
     delete this.ro
   },
+  beforeUnmount() {
+    this.clearGallery()
+  },
   methods: {
     ...mapActions(useMainStore, ['setDatasetInfo']),
+    /**
+     * Processed images as gallery items: the viewer-asset thumbnail, opening the image
+     * viewer popup. Titles and file details are filled in lazily by resolveItemFile.
+     */
+    async fetchThumbnailItems() {
+      const thumbnails = await this.fetchDatasetThumbnails(this.datasetId)
+      return thumbnails.map(t => ({
+        id: t.packageId,
+        packageId: t.packageId,
+        title: '',
+        hideTitle: true,
+        type: 'Image',
+        thumbnail: t.thumbnailUrl,
+        zarrAsset: t.zarrAsset,
+        userData: { packageId: t.packageId },
+        filePageLink: '', // not `link`: FileViewerCard opens `link` in a new tab on click
+        file: null,
+        fileLoading: false,
+        fileError: false
+      }))
+    },
+    /**
+     * Look up the published file (name, path, ...) of a thumbnail item once, and keep it on
+     * the item. Lookups already in flight are reused; results for a cleared gallery are dropped.
+     */
+    async resolveItemFile(packageId) {
+      const item = this.thumbnailItems.find(i => i.packageId === packageId)
+      if (!item || item.file || item.fileLoading) return
+      const generation = this.galleryGeneration
+      item.fileLoading = true
+      item.fileError = false
+      try {
+        const file = await this.fetchPackageFile(packageId)
+        if (generation !== this.galleryGeneration) return
+        if (!file?.path) throw new Error(`No published file for ${packageId}`)
+        const baseRoute = this.$router.options.base || '/'
+        item.file = file
+        item.title = file.name || baseName(file.path)
+        item.hideTitle = false
+        item.filePageLink = `${baseRoute}datasets/file/${this.datasetId}/${this.datasetInfo.version}?path=${encodeURIComponent(file.path)}`
+      } catch (error) {
+        if (generation !== this.galleryGeneration) return
+        console.error('Error fetching gallery image file:', error)
+        item.fileError = true
+      } finally {
+        if (generation === this.galleryGeneration) item.fileLoading = false
+      }
+    },
+    // Resolve titles for the cards on screen and the next page.
+    onVisibleItemsChanged({ visible, next }) {
+      ;[...visible, ...next].forEach(item => {
+        if (item?.packageId) this.resolveItemFile(item.packageId)
+      })
+    },
+    openImageViewer(userData) {
+      const item = this.thumbnailItems.find(i => i.packageId === userData?.packageId)
+      if (!item) return
+      this.imageViewerItem = item
+      this.imageViewerOpen = true
+      this.resolveItemFile(item.packageId)
+    },
+    // Forget this dataset's thumbnails and looked-up files (leaving the dataset, or switching to another).
+    clearGallery() {
+      this.galleryGeneration += 1
+      this.thumbnailItems = []
+      this.imageViewerOpen = false
+      this.imageViewerItem = null
+    },
+    updateGalleryFilterOptions() {
+      const galleryItems = this.filterableItems
+      const filterLabels = [...new Set(galleryItems.map(item => item.type))]
+      const labelCounts = galleryItems.reduce((counts, item) => {
+        counts[item.type] = (counts[item.type] || 0) + 1
+        return counts
+      }, {})
+      this.galleryFilterOptions = filterLabels.map((type, index) => ({
+        value: index,
+        label: `${type} (${labelCounts[type]})`
+      }))
+    },
     /**
      * Returns a file path for S3.
      * @param {String} dataset_id dataset id.
