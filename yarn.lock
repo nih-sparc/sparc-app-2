@@ -15521,7 +15521,7 @@ __metadata:
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
-    sparc-dashwidgets: "npm:1.5.1"
+    sparc-dashwidgets: "npm:1.5.2"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.5.0"
@@ -18639,9 +18639,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.5.1":
-  version: 1.5.1
-  resolution: "sparc-dashwidgets@npm:1.5.1"
+"sparc-dashwidgets@npm:1.5.2":
+  version: 1.5.2
+  resolution: "sparc-dashwidgets@npm:1.5.2"
   dependencies:
     "@pennsieve-viz/micro-ct": "npm:^1.0.72"
     axios: "npm:^1.6.7"
@@ -18660,11 +18660,11 @@ __metadata:
     "@luma.gl/engine": ">=9.1.0"
     "@luma.gl/shadertools": ">=9.1.0"
     "@luma.gl/webgl": ">=9.1.0"
-    "@pennsieve-viz/core": ^0.3.4 || ^0.4.0 || ^0.5.0
+    "@pennsieve-viz/core": ^0.5.0
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/c6e40082e1e623a891e68ecf79e560d278fbbeae5da06d16778b9cbcae7422c049a389ef287f3fe964bf895d0cb44c98946e8d8410e90e7906f1525ace182f40
+  checksum: 10c0/c5a2a1ff299ca78c2a0622f5fd9f32911fdd28e5ecc2f732f9f16f3926b340844269e2c0022c3e0413444690549069365e5d0d87dc58073c9c1932f5c7987c1f
   languageName: node
   linkType: hard
 
