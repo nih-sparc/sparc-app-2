@@ -15521,7 +15521,7 @@ __metadata:
     ramda: "npm:^0.29.0"
     sass: "npm:^1.102.0"
     semver: "npm:^7.8.5"
-    sparc-dashwidgets: "npm:1.5.2"
+    sparc-dashwidgets: "npm:1.5.3"
     sparc-design-system-components-2: "npm:1.0.1"
     striptags: "npm:^3.2.0"
     uint8array-extras: "npm:^1.5.0"
@@ -18639,16 +18639,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sparc-dashwidgets@npm:1.5.2":
-  version: 1.5.2
-  resolution: "sparc-dashwidgets@npm:1.5.2"
+"sparc-dashwidgets@npm:1.5.3":
+  version: 1.5.3
+  resolution: "sparc-dashwidgets@npm:1.5.3"
   dependencies:
     "@pennsieve-viz/micro-ct": "npm:^1.0.72"
     axios: "npm:^1.6.7"
     epic-spinners: "npm:^2.0.0"
     js-base64: "npm:^3.7.7"
   peerDependencies:
-    "@abi-software/flatmapvuer": 1.14.1
+    "@abi-software/flatmapvuer": ^1.14.1
     "@deck.gl/core": ">=9.1.0"
     "@deck.gl/extensions": ">=9.1.0"
     "@deck.gl/geo-layers": ">=9.1.0"
@@ -18664,7 +18664,7 @@ __metadata:
     element-plus: ^2.11.0
     pinia: ^2.0.0 || ^3.0.0
     vue: ^3.4.0
-  checksum: 10c0/c5a2a1ff299ca78c2a0622f5fd9f32911fdd28e5ecc2f732f9f16f3926b340844269e2c0022c3e0413444690549069365e5d0d87dc58073c9c1932f5c7987c1f
+  checksum: 10c0/01c207357106bbbd4aa674c1fbaac6dee8dfc37a23e7540edf8191714fc3ea8e27a3355a244d16657b479d784a1cab47b2e8f46f9da4b30ff0275f60561de416
   languageName: node
   linkType: hard
 
